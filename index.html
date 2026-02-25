@@ -180,7 +180,7 @@
             flex-wrap: nowrap;
         }
 
-        /* Ícones e botões - NOVAS CORES (tons de azul/cinza) */
+        /* Ícones e botões */
         .nav-item, .btn-share-nav, .menu-toggle, .theme-btn, .fullscreen-btn, .car-mode-btn {
             background: linear-gradient(135deg, #2c3e50, #1e2a3a);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -326,7 +326,7 @@
             width: 0%;
         }
 
-        /* Controles com NOVAS CORES (tons de azul) */
+        /* Controles */
         .controls {
             display: flex;
             align-items: center;
@@ -465,7 +465,7 @@
             white-space: nowrap;
         }
 
-        /* Ticker corrigido */
+        /* Ticker */
         .ticker-content {
             display: flex;
             align-items: center;
@@ -833,7 +833,13 @@
             <div class="ticker-content">
                 <div class="ticker-icon"><i class="fas fa-bullhorn"></i></div>
                 <div class="ticker-text">
+                    <!-- ============================================= -->
+                    <!-- ===== 🔴 MESSAGEM PARA SUBSTITUIR AQUI ===== -->
+                    <!-- ============================================= -->
                     <marquee id="ticker" scrollamount="4" direction="left" behavior="scroll">🎵 RÁDIO PLAYLIST - CLIQUE NO CORAÇÃO PARA FAVORITAR • MODO CARRO DISPONÍVEL 🎵</marquee>
+                    <!-- ============================================= -->
+                    <!-- ===== SUBSTITUA O TEXTO ACIMA PELO QUE DESEJAR ===== -->
+                    <!-- ============================================= -->
                 </div>
                 <div class="ticker-edit" onclick="editTicker()">
                     <i class="fas fa-pencil-alt"></i>
@@ -844,12 +850,25 @@
         <!-- PLAYER -->
         <div class="player-card">
             <div class="video-container" id="videoContainer">
+                <!-- Vídeo principal -->
                 <video autoplay loop muted playsinline id="mainVideo">
+                    <!-- ============================================= -->
+                    <!-- ===== 🔴 LINK DO VÍDEO PRINCIPAL ===== -->
+                    <!-- ============================================= -->
                     <source src="6995d87e653782dfa4035483-4.mp4" type="video/mp4">
+                    <!-- ============================================= -->
                 </video>
+                
+                <!-- Vídeo do modo carro -->
                 <video autoplay loop muted playsinline id="carVideo" style="display: none;">
+                    <!-- ============================================= -->
+                    <!-- ===== 🔴 LINK DO VÍDEO DO MODO CARRO ===== -->
+                    <!-- ============================================= -->
                     <source src="car-mode-banner.mp4" type="video/mp4">
+                    <!-- ============================================= -->
                 </video>
+                
+                <!-- Overlay fallback -->
                 <div class="car-mode-overlay" id="carModeOverlay" style="display: none;">
                     <i class="fas fa-car"></i>
                 </div>
