@@ -284,6 +284,9 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.2s;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .control-btn:hover {
             background: rgba(255, 255, 255, 0.2);
@@ -493,37 +496,39 @@
             color: #ff4444;
         }
 
-        /* WhatsApp - maior e mais fino */
+        /* WhatsApp - MESMO TAMANHO DOS BOTÕES DE MÚSICA */
         .contact-mini {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
             cursor: pointer;
-            padding: 16px 30px;
+            padding: 0;
             margin: 15px auto 15px auto;
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             font-weight: 500;
             background: linear-gradient(135deg, #25D366, #128C7E);
             border: 2px solid rgba(255, 255, 255, 0.3);
             color: white;
-            border-radius: 60px;
-            max-width: 90%;
-            width: fit-content;
-            white-space: nowrap;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            border-radius: 25px;
+            width: 50px;
+            height: 50px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
             transition: all 0.3s;
-            letter-spacing: 0.5px;
         }
         
         .contact-mini:hover {
-            transform: scale(1.02);
-            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.6);
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.6);
         }
         
         .contact-mini i { 
             color: white; 
-            font-size: 1.8rem;
+            font-size: 1.5rem;
+        }
+        
+        .contact-mini span {
+            display: none; /* Esconde o texto, mostra só o ícone */
         }
 
         /* Notification */
@@ -704,7 +709,7 @@
             <div class="playlist-items" id="playlistContainer"></div>
         </div>
 
-        <!-- WHATSAPP - MAIOR E MAIS FINO -->
+        <!-- WHATSAPP - MESMO TAMANHO DOS BOTÕES DE MÚSICA -->
         <div class="contact-mini" onclick="window.open('https://wa.me/5512988461978', '_blank')">
             <i class="fab fa-whatsapp"></i>
             <span>FALE CONOSCO NO WHATSAPP</span>
@@ -1020,7 +1025,11 @@
                         adPlayer.pause();
                     }
                 } else {
-                    isPlaying ? pauseMusic() : playMusic();
+                    if (isPlaying) {
+                        pauseMusic();
+                    } else {
+                        playMusic();
+                    }
                 }
             }
 
@@ -1035,16 +1044,13 @@
                     currentIndex = newIndex;
                 } else {
                     currentIndex = (currentIndex + 1) % playlistAtual.length;
-                    if (!repeatMode && currentIndex === 0 && musicPlayedCount > 0) {
-                        pauseMusic();
-                        return;
-                    }
                 }
                 
                 loadTrack(currentIndex);
                 if (isPlaying) playMusic();
                 
                 musicPlayedCount++;
+                if (playedCountEl) playedCountEl.textContent = musicPlayedCount;
                 checkAdInterval();
             }
 
