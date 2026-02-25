@@ -12,20 +12,14 @@
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
-            word-break: break-word;
-        }
-
-        html, body {
-            width: 100%;
-            overflow-x: hidden;
         }
 
         body {
             min-height: 100vh;
             padding: 8px;
-            transition: background 0.4s ease;
             background: linear-gradient(135deg, #0a0f1e, #1a1f2e);
             color: #e0e0e0;
+            transition: background 0.4s ease;
         }
 
         body.darker {
@@ -47,13 +41,13 @@
             border: 2px solid #ff4444;
         }
         body.car-mode .control-btn {
-            width: 65px;
-            height: 65px;
-            font-size: 1.6rem;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
         }
         body.car-mode .play-btn {
-            width: 65px;
-            height: 65px;
+            width: 60px;
+            height: 60px;
         }
         body.car-mode .playlist-card,
         body.car-mode .stats-bar,
@@ -63,23 +57,9 @@
         }
 
         .app-container {
-            max-width: 100%;
-            width: 100%;
+            max-width: 450px;
             margin: 0 auto;
             padding: 0 2px;
-        }
-
-        @media (min-width: 400px) {
-            .app-container {
-                max-width: 400px;
-                margin: 0 auto;
-            }
-        }
-
-        @media (min-width: 600px) {
-            .app-container {
-                max-width: 450px;
-            }
         }
 
         .glass-card, .main-header, .main-nav, .dropdown-menu, .stats-bar, 
@@ -90,8 +70,8 @@
             border-radius: 24px;
             padding: 14px;
             margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             width: 100%;
         }
 
@@ -100,7 +80,6 @@
             .ticker-modern, .player-card, .playlist-card {
                 padding: 10px;
                 border-radius: 20px;
-                margin-bottom: 8px;
             }
         }
 
@@ -108,12 +87,12 @@
             padding: 10px 14px;
         }
 
-        /* ===== HEADER COM LOGO CENTRALIZADA ===== */
+        /* ===== HEADER COM LOGO E FUNDO BRANCO ===== */
         .main-header {
             display: flex;
             align-items: center;
-            justify-content: center; /* centraliza a logo */
-            height: 80px; /* altura fixa para o header */
+            justify-content: center;
+            height: 80px;
             padding: 0 14px;
         }
 
@@ -121,31 +100,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: #ffffff; /* fundo branco */
+            border-radius: 12px;
+            padding: 5px 15px;
             max-width: 100%;
-            height: 60px; /* altura máxima da logo */
+            height: 60px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .logo-container img {
             max-width: 100%;
-            max-height: 60px;
+            max-height: 50px;
             width: auto;
             height: auto;
             object-fit: contain;
-            border-radius: 8px; /* opcional, cantos suaves */
         }
 
-        /* Placeholder para a logo */
+        /* Placeholder para a logo (caso não tenha imagem) */
         .logo-placeholder {
-            background: rgba(255,255,255,0.1);
-            width: 100%;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,0.5);
-            font-size: 0.8rem;
-            border-radius: 8px;
-            border: 1px dashed rgba(255,255,255,0.3);
+            color: #333;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         /* BADGE AO VIVO dentro do vídeo */
@@ -155,16 +130,15 @@
             right: 10px;
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
-            padding: 5px 10px;
-            border-radius: 30px;
-            font-size: 0.65rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 4px;
             animation: pulse 1.5s infinite;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.15);
             z-index: 20;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
@@ -174,32 +148,29 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0, 0, 0, 0.3);
-            gap: 6px;
+            background: rgba(0,0,0,0.3);
         }
 
         .nav-left {
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-wrap: nowrap;
         }
 
-        /* ===== BOTÕES TRANSPARENTES COM TAMANHO UNIFORME ===== */
+        /* ===== BOTÕES TRANSPARENTES COM TAMANHO UNIFORME (40px) ===== */
         .nav-item, .btn-share-nav, .menu-toggle, .theme-btn, .fullscreen-btn, .car-mode-btn,
         .control-btn, .tab-btn, .favorite-btn, .ticker-edit, .btn-ad-dropdown,
         .contact-mini-playlist {
             background: transparent !important;
             border: 1px solid rgba(255, 255, 255, 0.2) !important;
             color: #ecf0f1 !important;
-            height: 44px; /* todos com mesma altura */
+            height: 40px;
             border-radius: 30px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-decoration: none;
             transition: all 0.2s ease;
             flex-shrink: 0;
             box-shadow: none !important;
@@ -208,20 +179,19 @@
         /* Largura específica para botões quadrados */
         .nav-item, .btn-share-nav, .menu-toggle, .fullscreen-btn, .car-mode-btn,
         .control-btn, .favorite-btn, .ticker-edit {
-            width: 44px;
+            width: 40px;
         }
 
-        /* Botões com texto (tema, abas, anúncios, contato) têm largura automática */
+        /* Botões com texto */
         .theme-btn, .tab-btn, .btn-ad-dropdown, .contact-mini-playlist {
             width: auto;
-            padding: 0 16px;
+            padding: 0 12px;
             white-space: nowrap;
         }
 
-        /* Botão de play com mesma largura dos outros */
         .play-btn {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
         }
 
         .nav-item:hover, .btn-share-nav:hover, .menu-toggle:hover, .fullscreen-btn:hover, 
@@ -240,36 +210,37 @@
 
         .favorite-btn {
             border: none !important;
-            background: transparent !important;
             color: #666 !important;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         .favorite-btn.active {
             color: #e74c3c !important;
         }
 
         .ticker-edit {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
         }
 
-        /* Contato na playlist */
+        /* Botão Contato (WhatsApp) com estilo próprio */
         .contact-mini-playlist {
             background: linear-gradient(135deg, #25D366, #128C7E) !important;
             border: 2px solid rgba(255,255,255,0.3) !important;
             color: white !important;
             font-weight: 600;
+            font-size: 0.85rem;
             margin-left: 6px;
+            padding: 0 10px;
         }
 
         /* Volume control */
         .volume-control {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px 12px;
-            border-radius: 40px;
+            gap: 6px;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 10px;
+            border-radius: 30px;
             margin-top: 10px;
         }
         .volume-slider {
@@ -278,12 +249,12 @@
             -webkit-appearance: none;
             background: rgba(255,255,255,0.3);
             border-radius: 2px;
-            min-width: 70px;
+            min-width: 60px;
         }
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             background: white;
             border: 2px solid #3b82f6;
             border-radius: 50%;
@@ -295,25 +266,23 @@
             width: 32px;
             height: 32px;
             background: rgba(255,255,255,0.1) !important;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 0.9rem;
-            flex-shrink: 0;
         }
 
         .ticker-icon {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             background: rgba(255,255,255,0.1) !important;
             border-radius: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1rem;
-            flex-shrink: 0;
         }
 
         /* Dropdown */
@@ -343,7 +312,7 @@
         .player-card {
             overflow: hidden;
             padding: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
         }
 
         .video-container {
@@ -363,11 +332,8 @@
 
         .car-mode-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -441,7 +407,6 @@
             justify-content: space-between;
             gap: 4px;
             margin-bottom: 10px;
-            flex-wrap: nowrap;
         }
         .stat-item {
             display: flex;
@@ -449,7 +414,7 @@
             gap: 6px;
             background: rgba(255,255,255,0.05);
             padding: 5px 8px;
-            border-radius: 25px;
+            border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.08);
             flex: 1;
             min-width: 0;
@@ -477,9 +442,8 @@
         .period-badge {
             background: rgba(255,255,255,0.08);
             padding: 4px 10px;
-            border-radius: 30px;
+            border-radius: 20px;
             font-size: 0.65rem;
-            white-space: nowrap;
         }
 
         /* Ticker */
@@ -491,14 +455,12 @@
         .ticker-text {
             flex: 1;
             overflow: hidden;
-            min-width: 0;
             background: rgba(0,0,0,0.3);
             border-radius: 30px;
             padding: 0 10px;
         }
         .ticker-text marquee {
             font-size: 0.85rem;
-            white-space: nowrap;
             color: #f1c40f;
             font-weight: 500;
         }
@@ -548,13 +510,12 @@
         .item-number {
             width: 28px; height: 28px;
             background: rgba(255,255,255,0.08);
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.7rem;
             font-weight: 700;
-            flex-shrink: 0;
         }
         .item-info {
             flex: 1;
@@ -579,8 +540,7 @@
             opacity: 0.7;
             background: rgba(255,255,255,0.08);
             padding: 3px 6px;
-            border-radius: 12px;
-            flex-shrink: 0;
+            border-radius: 10px;
         }
 
         /* Notification */
@@ -622,10 +582,10 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- HEADER COM LOGO CENTRALIZADA -->
+        <!-- HEADER COM LOGO E FUNDO BRANCO -->
         <header class="main-header">
             <div class="logo-container">
-                <!-- Substitua pela sua logo (JPEG ou GIF) -->
+                <!-- Substitua pelo caminho da sua logo (JPEG, PNG ou GIF) -->
                 <img src="logo.jpeg" alt="Rádio Playlist">
                 <!-- Exemplo com GIF: <img src="animacao.gif" alt="Rádio Playlist"> -->
             </div>
@@ -749,7 +709,7 @@
                     <button class="tab-btn" id="tabFavorites"><i class="fas fa-heart" style="color:#e74c3c;"></i> Favoritas</button>
                 </div>
                 <div class="contact-mini-playlist" onclick="window.open('https://wa.me/5512988461978', '_blank')">
-                    <i class="fab fa-whatsapp"></i> <span>Fale conosco</span>
+                    <i class="fab fa-whatsapp"></i> <span>Contato</span>
                 </div>
             </div>
             <div class="playlist-items" id="playlistContainer"></div>
@@ -765,12 +725,12 @@
     <div class="notification" id="notification"><i class="fas fa-check-circle"></i> <span id="notificationText">Bem-vindo!</span></div>
 
     <script>
-        // ===== JAVASCRIPT COMPLETO (igual ao original, apenas com ajustes nos IDs) =====
         (function() {
+            // ===== CONFIGURAÇÕES =====
             const BASE_URL = "https://raw.githubusercontent.com/vendemais-sjc/vendemais123/main/";
             const CONFIG = { musicBetweenAds: 15, defaultVolume: 80, maxPlaylistDisplay: 200 };
 
-            // LISTA DE MÚSICAS (COMPLETA)
+            // ===== LISTA DE MÚSICAS =====
             const musicasRaw = [
                 { id: 1, title: "More Than A Woman", artist: "Bee Gees", filename: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "4:31" },
                 { id: 2, title: "Sexual Healing", artist: "Marvin Gaye", filename: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "4:00" },
@@ -842,7 +802,7 @@
             let shouldResumeMusic = false;
             let autoPlayAttempted = false;
 
-            // Elementos DOM
+            // ===== ELEMENTOS DOM =====
             const musicPlayer = document.getElementById('musicPlayer');
             const adPlayer = document.getElementById('adPlayer');
             const playBtn = document.getElementById('playPauseBtn');
@@ -885,34 +845,307 @@
             const carVideo = document.getElementById('carVideo');
             const carModeOverlay = document.getElementById('carModeOverlay');
 
-            // ===== FUNÇÕES (tema, fullscreen, carMode, favoritos, playlist, anúncios, utilitários) =====
-            // ... (código completo conforme anterior, omitido por brevidade mas deve ser mantido)
-            // Para um código realmente funcional, você deve copiar todo o JavaScript da versão anterior aqui.
-            // Como o espaço é limitado, vou apenas indicar que o restante do JavaScript deve ser idêntico ao da última resposta funcional.
+            // ===== FUNÇÕES =====
+            window.setTheme = function(theme) {
+                if (theme === 'dark') document.body.classList.remove('darker');
+                else if (theme === 'darker') document.body.classList.add('darker');
+                localStorage.setItem('radioTheme', theme);
+            };
+            const savedTheme = localStorage.getItem('radioTheme') || 'dark';
+            setTheme(savedTheme);
 
-            // ATENÇÃO: Por economia de espaço, o JavaScript completo não foi repetido aqui, 
-            // mas você deve utilizar o mesmo script da versão anterior (que já está funcionando perfeitamente).
-            // Basta copiar o bloco script da resposta anterior e colar aqui.
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                        fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                    }
+                }
+            }
+            if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
+            document.addEventListener('fullscreenchange', () => {
+                fullscreenBtn.innerHTML = document.fullscreenElement ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+            });
 
-            // Inicialização
-            window.addEventListener('load', () => {
-                if (musicPlayer) musicPlayer.volume = CONFIG.defaultVolume / 100;
-                if (adPlayer) adPlayer.volume = CONFIG.defaultVolume / 100;
-                if (volumeSlider) volumeSlider.value = CONFIG.defaultVolume;
-                if (volumePercent) volumePercent.textContent = CONFIG.defaultVolume + '%';
-                
-                inicializarPlaylist();
-                setupEventListeners();
+            function toggleCarMode() {
+                carMode = !carMode;
+                if (carMode) {
+                    document.body.classList.add('car-mode');
+                    carModeBtn.classList.add('active');
+                    carVideo.style.display = 'block';
+                    mainVideo.style.display = 'none';
+                    carVideo.addEventListener('error', function() {
+                        carVideo.style.display = 'none';
+                        carModeOverlay.style.display = 'flex';
+                    });
+                    carVideo.addEventListener('canplay', function() {
+                        carModeOverlay.style.display = 'none';
+                    });
+                    showNotification('🚗 Modo Carro ativado');
+                } else {
+                    document.body.classList.remove('car-mode');
+                    carModeBtn.classList.remove('active');
+                    mainVideo.style.display = 'block';
+                    carVideo.style.display = 'none';
+                    carModeOverlay.style.display = 'none';
+                    showNotification('🚗 Modo Carro desativado');
+                }
+            }
+            if (carModeBtn) carModeBtn.addEventListener('click', toggleCarMode);
+
+            window.toggleFavorite = function(index) {
+                if (index === undefined) return;
+                const musica = playlistAtual[index];
+                if (!musica) return;
+                musica.favorite = !musica.favorite;
+                let favorites = JSON.parse(localStorage.getItem('radioFavorites') || '[]');
+                if (musica.favorite) { if (!favorites.includes(musica.id)) favorites.push(musica.id); }
+                else { favorites = favorites.filter(id => id !== musica.id); }
+                localStorage.setItem('radioFavorites', JSON.stringify(favorites));
+                updateFavoriteCount();
+                if (showingFavorites) mostrarPlaylistFavoritas();
+                else mostrarPlaylist();
+                showNotification(musica.favorite ? '❤️ Adicionado' : '💔 Removido');
+            };
+
+            function updateFavoriteCount() {
+                const count = playlistAtual.filter(m => m.favorite).length;
+                if (favoriteCountEl) favoriteCountEl.textContent = count;
+            }
+
+            function loadFavoritesFromStorage() {
+                const favorites = JSON.parse(localStorage.getItem('radioFavorites') || '[]');
+                playlistAtual.forEach(m => { m.favorite = favorites.includes(m.id); });
+                updateFavoriteCount();
+            }
+
+            function mostrarPlaylistFavoritas() {
+                if (!playlistContainer) return;
+                const favoritas = playlistAtual.filter(m => m.favorite);
+                let html = '';
+                if (favoritas.length === 0) {
+                    html = '<div style="text-align:center; padding:20px; opacity:0.7;">Nenhuma favorita ❤️</div>';
+                } else {
+                    favoritas.forEach((musica, idx) => {
+                        const originalIndex = playlistAtual.findIndex(m => m.id === musica.id);
+                        const isPlaying = (originalIndex === currentIndex && !isAdPlaying);
+                        html += `<div class="playlist-item ${isPlaying ? 'playing' : ''} favorite" onclick="selectSong(${originalIndex})">
+                            <div class="item-number">${idx+1}</div>
+                            <div class="item-info"><div class="item-title">${musica.title}</div><div class="item-artist">${musica.artist}</div></div>
+                            <div class="item-duration">${musica.duration}</div>
+                            <button class="favorite-btn active" onclick="event.stopPropagation(); window.toggleFavorite(${originalIndex})"><i class="fas fa-heart"></i></button>
+                        </div>`;
+                    });
+                }
+                playlistContainer.innerHTML = html;
+            }
+
+            function shuffleArray(arr) {
+                for (let i = arr.length-1; i>0; i--) { const j = Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+                return arr;
+            }
+
+            function inicializarPlaylist() {
+                playlistAtual = shuffleArray([...playlistCompleta]);
+                loadFavoritesFromStorage();
+                if (totalCountEl) totalCountEl.textContent = playlistAtual.length;
+                if (playlistCountEl) playlistCountEl.textContent = `(${playlistAtual.length})`;
+                mostrarPlaylist();
+                if (playlistAtual.length > 0) { currentIndex = 0; loadTrack(0); }
+            }
+
+            function mostrarPlaylist() {
+                if (!playlistContainer) return;
+                if (showingFavorites) { mostrarPlaylistFavoritas(); return; }
+                const musicasParaMostrar = playlistAtual.slice(0, CONFIG.maxPlaylistDisplay);
+                let html = '';
+                musicasParaMostrar.forEach((musica, index) => {
+                    const isPlaying = (index === currentIndex && !isAdPlaying);
+                    html += `<div class="playlist-item ${isPlaying ? 'playing' : ''} ${musica.favorite?'favorite':''}" onclick="selectSong(${index})">
+                        <div class="item-number">${index+1}</div>
+                        <div class="item-info"><div class="item-title">${musica.title}</div><div class="item-artist">${musica.artist}</div></div>
+                        <div class="item-duration">${musica.duration}</div>
+                        <button class="favorite-btn ${musica.favorite?'active':''}" onclick="event.stopPropagation(); window.toggleFavorite(${index})"><i class="fas fa-heart"></i></button>
+                    </div>`;
+                });
+                if (playlistAtual.length > CONFIG.maxPlaylistDisplay) {
+                    html += `<div style="text-align:center; padding:10px; opacity:0.6;">+ ${playlistAtual.length - CONFIG.maxPlaylistDisplay} músicas</div>`;
+                }
+                playlistContainer.innerHTML = html;
+            }
+
+            window.selectSong = function(index) {
+                if (isAdPlaying) { showNotification('⏸️ Aguarde o anúncio'); return; }
+                currentIndex = index;
+                loadTrack(currentIndex);
+                if (isPlaying) playMusic();
+            };
+
+            function loadTrack(index) {
+                if (!playlistAtual.length) return;
+                if (index >= playlistAtual.length) { if (repeatMode) index = 0; else return; }
+                if (index < 0) index = 0;
+                currentIndex = index;
+                const track = playlistAtual[currentIndex];
+                musicPlayer.src = track.src;
+                musicPlayer.load();
+                trackTitleBig.textContent = track.title;
+                trackArtistBig.textContent = track.artist;
+                totalTimeEl.textContent = track.duration;
+                progressFill.style.width = '0%';
+                currentTimeEl.textContent = '0:00';
+                mostrarPlaylist();
+            }
+
+            function playMusic() {
+                if (isAdPlaying) { shouldResumeMusic = true; return; }
+                if (!playlistAtual.length) return;
+                musicPlayer.play().then(() => { isPlaying = true; playBtn.innerHTML = '<i class="fas fa-pause"></i>'; })
+                    .catch(e => { showNotification('⚠️ Erro, pulando...'); setTimeout(nextTrack,1500); });
+            }
+
+            function pauseMusic() { musicPlayer.pause(); isPlaying = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+            function togglePlayPause() {
+                if (isAdPlaying) { adPlayer.paused ? adPlayer.play() : adPlayer.pause(); }
+                else { isPlaying ? pauseMusic() : playMusic(); }
+            }
+
+            function nextTrack() {
+                if (isAdPlaying) return;
+                if (shuffleMode && playlistAtual.length>1) {
+                    let newIndex; do { newIndex = Math.floor(Math.random()*playlistAtual.length); } while(newIndex===currentIndex && playlistAtual.length>1);
+                    currentIndex = newIndex;
+                } else {
+                    currentIndex = (currentIndex+1) % playlistAtual.length;
+                    if (!repeatMode && currentIndex===0 && musicPlayedCount>0) { pauseMusic(); return; }
+                }
+                loadTrack(currentIndex);
+                if (isPlaying) playMusic();
+                musicPlayedCount++;
+                playedCountEl.textContent = musicPlayedCount;
+                checkAdInterval();
+            }
+
+            function prevTrack() {
+                if (isAdPlaying) return;
+                currentIndex = (currentIndex-1+playlistAtual.length) % playlistAtual.length;
+                loadTrack(currentIndex);
+                if (isPlaying) playMusic();
+            }
+
+            function checkAdInterval() {
+                if (!adsEnabled) return;
+                if (musicPlayedCount>0 && musicPlayedCount%CONFIG.musicBetweenAds===0 && !isAdPlaying) playNextAd();
                 updateAdTimer();
+            }
+            function updateAdTimer() {
+                if (!adTimerDropdown) return;
+                if (adsEnabled) {
+                    const songsUntilAd = CONFIG.musicBetweenAds - (musicPlayedCount % CONFIG.musicBetweenAds);
+                    adTimerDropdown.textContent = songsUntilAd===CONFIG.musicBetweenAds ? 0 : songsUntilAd;
+                } else adTimerDropdown.textContent = "OFF";
+            }
+            function playNextAd() {
+                if (!adsEnabled || !advertisements.length) return;
+                currentAdIndex = (currentAdIndex+1) % advertisements.length;
+                playAd(currentAdIndex);
+            }
+            function playAd(index) {
+                const ad = advertisements[index];
+                if (isPlaying) { musicPausedTime = musicPlayer.currentTime; pauseMusic(); shouldResumeMusic = true; }
+                adPlayer.src = ad.src; adPlayer.load();
+                isAdPlaying = true;
+                adStatusDropdown.innerHTML = `<i class="fas fa-volume-up fa-spin"></i> ${ad.title} (${ad.duration})`;
+                skipAdBtnDropdown.style.display = "inline-flex";
+                showNotification(`📢 ${ad.title}`);
+                adPlayer.play().catch(() => finishAd());
+                adPlayer.onended = finishAd;
+            }
+            function finishAd() {
+                isAdPlaying = false;
+                updateAdTimer();
+                adStatusDropdown.innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
+                skipAdBtnDropdown.style.display = "none";
+                if (shouldResumeMusic && playlistAtual.length) {
+                    musicPlayer.currentTime = musicPausedTime;
+                    playMusic();
+                    shouldResumeMusic = false;
+                }
+            }
+            function toggleAds() {
+                adsEnabled = !adsEnabled;
+                toggleAdsBtnDropdown.innerHTML = adsEnabled ? '<i class="fas fa-toggle-on"></i> Ativo' : '<i class="fas fa-toggle-off"></i> Inativo';
+                if (!adsEnabled) {
+                    adTimerDropdown.textContent = "OFF";
+                    adStatusDropdown.innerHTML = '<i class="fas fa-ban"></i> Desativados';
+                    if (isAdPlaying) { adPlayer.pause(); finishAd(); }
+                } else {
+                    updateAdTimer();
+                    adStatusDropdown.innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
+                }
+            }
+            function testAd() { if (advertisements.length) playAd(currentAdIndex); }
+            function skipAd() { if (isAdPlaying) { adPlayer.pause(); finishAd(); showNotification('⏭️ Anúncio pulado'); } }
 
-                carVideo.load();
+            function formatTime(s) { if (isNaN(s)) return '0:00'; const m = Math.floor(s/60); const se = Math.floor(s%60); return `${m}:${se<10?'0':''}${se}`; }
+            function showNotification(msg) { notificationText.textContent = msg; notification.classList.add('show'); setTimeout(()=>notification.classList.remove('show'),2000); }
+            window.editTicker = () => { const t = document.querySelector('#ticker marquee'); if (!t) return; const n = prompt("Editar mensagem:", t.textContent); if (n && n.trim()) t.textContent = n; };
+
+            // ===== EVENT LISTENERS =====
+            playBtn.addEventListener('click', togglePlayPause);
+            prevBtn.addEventListener('click', prevTrack);
+            nextBtn.addEventListener('click', nextTrack);
+            shuffleBtn.addEventListener('click', ()=>{ shuffleMode=!shuffleMode; shuffleBtn.style.background = shuffleMode ? 'rgba(255,255,255,0.2)' : ''; showNotification(shuffleMode?'🔀 Aleatório':'➡️ Sequencial'); });
+            repeatBtn.addEventListener('click', ()=>{ repeatMode=!repeatMode; repeatBtn.style.background = repeatMode ? 'rgba(255,255,255,0.2)' : ''; showNotification(repeatMode?'🔁 Repetir':'➡️ Repetir desligado'); });
+            musicPlayer.addEventListener('timeupdate', ()=>{
+                if (musicPlayer.duration && !isAdPlaying) {
+                    progressFill.style.width = (musicPlayer.currentTime / musicPlayer.duration * 100)+'%';
+                    currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
+                }
+            });
+            musicPlayer.addEventListener('ended', ()=>{ if (!isAdPlaying) nextTrack(); });
+            musicPlayer.addEventListener('error', ()=>{ if (!isAdPlaying) setTimeout(nextTrack,1000); });
+            progressBar.addEventListener('click', (e)=>{
+                if (isAdPlaying || !musicPlayer.duration) return;
+                const rect = progressBar.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                if (x>=0 && x<=rect.width) musicPlayer.currentTime = (x/rect.width) * musicPlayer.duration;
+            });
+            volumeSlider.addEventListener('input', (e)=>{
+                const vol = e.target.value/100;
+                musicPlayer.volume = adPlayer.volume = vol;
+                volumePercent.textContent = e.target.value+'%';
+                volumeIcon.className = vol==0 ? 'fas fa-volume-mute' : vol<0.3 ? 'fas fa-volume-off' : vol<0.7 ? 'fas fa-volume-down' : 'fas fa-volume-up';
+            });
+            shareBtnNav.addEventListener('click', ()=>{
+                if (navigator.share) navigator.share({ title:'Rádio Playlist', text:'Escute suas músicas', url:location.href }).catch(()=>{});
+                else { navigator.clipboard.writeText(location.href); showNotification('📋 Link copiado!'); }
+            });
+            toggleAdsBtnDropdown.addEventListener('click', toggleAds);
+            testAdBtnDropdown.addEventListener('click', testAd);
+            skipAdBtnDropdown.addEventListener('click', skipAd);
+            menuToggle.addEventListener('click', (e)=>{ e.stopPropagation(); dropdownMenu.classList.toggle('show'); });
+            document.addEventListener('click', (e)=>{ if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) dropdownMenu.classList.remove('show'); });
+            tabAll.addEventListener('click', ()=>{ showingFavorites=false; tabAll.classList.add('active'); tabFavorites.classList.remove('active'); mostrarPlaylist(); });
+            tabFavorites.addEventListener('click', ()=>{ showingFavorites=true; tabFavorites.classList.add('active'); tabAll.classList.remove('active'); mostrarPlaylistFavoritas(); });
+
+            // ===== INICIALIZAÇÃO =====
+            window.addEventListener('load', () => {
+                musicPlayer.volume = CONFIG.defaultVolume/100;
+                adPlayer.volume = CONFIG.defaultVolume/100;
+                volumeSlider.value = CONFIG.defaultVolume;
+                volumePercent.textContent = CONFIG.defaultVolume+'%';
+                inicializarPlaylist();
+                updateAdTimer();
+                if (carVideo) carVideo.load();
 
                 setInterval(() => {
-                    let change = Math.floor(Math.random() * 451) - 200;
-                    listenerCount = Math.max(100, Math.min(3900, listenerCount + change));
-                    if (listenerCountEl) {
-                        listenerCountEl.textContent = listenerCount >= 1000 ? (listenerCount/1000).toFixed(1)+'k' : listenerCount;
-                    }
+                    let change = Math.floor(Math.random()*451)-200;
+                    listenerCount = Math.max(100, Math.min(3900, listenerCount+change));
+                    listenerCountEl.textContent = listenerCount>=1000 ? (listenerCount/1000).toFixed(1)+'k' : listenerCount;
                 }, Math.random()*5000+3000);
 
                 setInterval(() => {
@@ -920,15 +1153,13 @@
                     const h = Math.floor(uptimeSeconds/3600);
                     const m = Math.floor((uptimeSeconds%3600)/60);
                     const s = uptimeSeconds%60;
-                    if (uptimeEl) {
-                        uptimeEl.textContent = h>0 ? `${h}h${m.toString().padStart(2,'0')}` : `${m}:${s.toString().padStart(2,'0')}`;
-                    }
-                }, 1000);
+                    uptimeEl.textContent = h>0 ? `${h}h${m.toString().padStart(2,'0')}` : `${m}:${s.toString().padStart(2,'0')}`;
+                },1000);
 
                 if (playlistAtual.length) {
-                    const autoPlay = () => {
+                    const autoPlay = ()=>{
                         if (!autoPlayAttempted) {
-                            musicPlayer.play().then(() => { isPlaying = true; playBtn.innerHTML = '<i class="fas fa-pause"></i>'; }).catch(() => {});
+                            musicPlayer.play().then(()=>{ isPlaying=true; playBtn.innerHTML='<i class="fas fa-pause"></i>'; }).catch(()=>{});
                             autoPlayAttempted = true;
                         }
                     };
