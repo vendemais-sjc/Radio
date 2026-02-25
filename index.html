@@ -29,7 +29,7 @@
             color: #e0e0e0;
         }
 
-        /* Modo Carro - Interface simplificada e botões maiores */
+        /* Modo Carro */
         body.car-mode {
             background: #000000;
         }
@@ -48,8 +48,6 @@
             width: 65px;
             height: 65px;
             font-size: 1.6rem;
-            background: rgba(255, 68, 68, 0.2);
-            border: 2px solid #ff4444;
         }
         body.car-mode .play-btn {
             width: 85px;
@@ -182,7 +180,6 @@
             flex-wrap: nowrap;
         }
 
-        /* Ícones e botões com cores melhoradas */
         .nav-item, .btn-share-nav, .menu-toggle, .theme-btn, .fullscreen-btn, .car-mode-btn {
             background: linear-gradient(135deg, #4a5568, #2d3748);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -235,7 +232,7 @@
             height: 38px;
         }
 
-        /* Player card com vídeo quadrado 1920x1080 proporcional */
+        /* Player card com vídeo 1920x1080 proporcional */
         .player-card {
             overflow: hidden;
             padding: 0;
@@ -244,7 +241,7 @@
 
         .video-container {
             width: 100%;
-            aspect-ratio: 1 / 1;
+            aspect-ratio: 16 / 9; /* 1920x1080 proporcional */
             background: linear-gradient(135deg, #1a1f2e, #2a2f3e);
             border-radius: 24px 24px 0 0;
             overflow: hidden;
@@ -264,7 +261,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -467,7 +464,7 @@
             white-space: nowrap;
         }
 
-        /* Ticker corrigido - nunca volta ao contrário */
+        /* Ticker corrigido */
         .ticker-content {
             display: flex;
             align-items: center;
@@ -646,7 +643,7 @@
             pointer-events: none;
         }
 
-        /* Contact maior */
+        /* Contact */
         .contact-mini {
             display: flex;
             align-items: center;
@@ -830,7 +827,7 @@
             </div>
         </div>
 
-        <!-- TICKER CORRIGIDO -->
+        <!-- TICKER -->
         <div class="ticker-modern">
             <div class="ticker-content">
                 <div class="ticker-icon"><i class="fas fa-bullhorn"></i></div>
@@ -843,21 +840,20 @@
             </div>
         </div>
 
-        <!-- PLAYER - VÍDEO QUADRADO 1920x1080 PROPORCIONAL -->
+        <!-- PLAYER - VÍDEO 1920x1080 PROPORCIONAL -->
         <div class="player-card">
             <div class="video-container" id="videoContainer">
-                <!-- Vídeo principal (modo normal) -->
-                <video autoplay loop muted playsinline id="mainVideo" style="display: block;">
+                <!-- Vídeo principal -->
+                <video autoplay loop muted playsinline id="mainVideo">
                     <source src="6995d87e653782dfa4035483-4.mp4" type="video/mp4">
                 </video>
                 
-                <!-- Vídeo do modo carro (inicialmente oculto) -->
+                <!-- Vídeo do modo carro -->
                 <video autoplay loop muted playsinline id="carVideo" style="display: none;">
                     <source src="car-mode-banner.mp4" type="video/mp4">
-                    <!-- Se não encontrar o arquivo, usa um fallback com overlay -->
                 </video>
                 
-                <!-- Overlay para indicar modo carro (aparece se o vídeo não carregar) -->
+                <!-- Overlay fallback -->
                 <div class="car-mode-overlay" id="carModeOverlay" style="display: none;">
                     <i class="fas fa-car"></i>
                 </div>
@@ -891,7 +887,7 @@
             </div>
         </div>
 
-        <!-- PLAYLIST COM TABS -->
+        <!-- PLAYLIST -->
         <div class="playlist-card">
             <div class="playlist-tabs">
                 <button class="tab-btn active" id="tabAll"><i class="fas fa-list"></i> Todas</button>
@@ -906,7 +902,7 @@
             <div class="playlist-items" id="playlistContainer"></div>
         </div>
 
-        <!-- WHATSAPP MAIOR -->
+        <!-- WHATSAPP -->
         <div class="contact-mini" onclick="window.open('https://wa.me/5512988461978', '_blank')">
             <i class="fab fa-whatsapp"></i>
             <span>Fale conosco no WhatsApp</span>
@@ -923,7 +919,7 @@
 
     <script>
         (function() {
-            // ==================== CONFIGURAÇÕES ====================
+            // CONFIGURAÇÕES
             const BASE_URL = "https://raw.githubusercontent.com/vendemais-sjc/vendemais123/main/";
             const CONFIG = { 
                 musicBetweenAds: 15, 
@@ -931,7 +927,7 @@
                 maxPlaylistDisplay: 200
             };
 
-            // ==================== LISTA DE MÚSICAS ====================
+            // LISTA DE MÚSICAS
             const musicasRaw = [
                 { id: 1, title: "More Than A Woman", artist: "Bee Gees", filename: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "4:31" },
                 { id: 2, title: "Sexual Healing", artist: "Marvin Gaye", filename: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "4:00" },
@@ -975,7 +971,6 @@
                 { id: 40, title: "Retrovisor", artist: "Gustavo Lima", filename: "Gusttavo_Lima_Retrovisor_DVD_muzzik.m4a", duration: "3:12" }
             ];
 
-            // ==================== ANÚNCIOS ====================
             const advertisements = [
                 { id: 1, title: "Super Promoção - 50% OFF", artist: "Comercial", src: "zzcv.mp3", duration: "0:35" },
                 { id: 2, title: "Mega Oferta - Só hoje", artist: "Comercial", src: "zzcv.mp3", duration: "0:30" },
@@ -983,14 +978,13 @@
                 { id: 4, title: "Parceiro Oficial", artist: "Comercial", src: "zzcv.mp3", duration: "0:40" }
             ];
 
-            // ==================== GERAR PLAYLIST COMPLETA ====================
             const playlistCompleta = musicasRaw.map(musica => ({
                 ...musica,
                 src: BASE_URL + encodeURIComponent(musica.filename),
                 favorite: false
             }));
 
-            // ==================== ESTADO ====================
+            // ESTADO
             let playlistAtual = [];
             let currentIndex = 0;
             let isPlaying = false;
@@ -1048,12 +1042,11 @@
             const tabAll = document.getElementById('tabAll');
             const tabFavorites = document.getElementById('tabFavorites');
             
-            // Elementos de vídeo
             const mainVideo = document.getElementById('mainVideo');
             const carVideo = document.getElementById('carVideo');
             const carModeOverlay = document.getElementById('carModeOverlay');
 
-            // ==================== FUNÇÕES DE TEMA ====================
+            // FUNÇÕES DE TEMA
             window.setTheme = function(theme) {
                 if (theme === 'dark') {
                     document.body.style.background = 'linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%)';
@@ -1066,7 +1059,30 @@
             const savedTheme = localStorage.getItem('radioTheme') || 'dark';
             setTheme(savedTheme);
 
-            // ==================== MODO CARRO ====================
+            // FULLSCREEN CORRIGIDO
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                        fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                    }
+                }
+            }
+
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', toggleFullscreen);
+            }
+
+            document.addEventListener('fullscreenchange', () => {
+                if (fullscreenBtn) {
+                    fullscreenBtn.innerHTML = document.fullscreenElement ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+                }
+            });
+
+            // MODO CARRO
             function toggleCarMode() {
                 carMode = !carMode;
                 
@@ -1074,27 +1090,23 @@
                     document.body.classList.add('car-mode');
                     carModeBtn.classList.add('active');
                     
-                    // Tenta carregar o vídeo do modo carro
                     carVideo.style.display = 'block';
                     mainVideo.style.display = 'none';
                     
-                    // Verifica se o vídeo carregou, senão mostra o overlay
                     carVideo.addEventListener('error', function() {
                         carVideo.style.display = 'none';
                         carModeOverlay.style.display = 'flex';
                     });
                     
-                    // Se carregar, esconde o overlay
                     carVideo.addEventListener('canplay', function() {
                         carModeOverlay.style.display = 'none';
                     });
                     
-                    showNotification('🚗 Modo Carro ativado - Vídeo alternativo');
+                    showNotification('🚗 Modo Carro ativado');
                 } else {
                     document.body.classList.remove('car-mode');
                     carModeBtn.classList.remove('active');
                     
-                    // Volta para o vídeo normal
                     mainVideo.style.display = 'block';
                     carVideo.style.display = 'none';
                     carModeOverlay.style.display = 'none';
@@ -1107,7 +1119,7 @@
                 carModeBtn.addEventListener('click', toggleCarMode);
             }
 
-            // ==================== FUNÇÕES DE FAVORITOS ====================
+            // FAVORITOS
             function toggleFavorite(index) {
                 if (index === undefined || index === null) return;
                 
@@ -1183,7 +1195,7 @@
                 playlistContainer.innerHTML = html;
             }
 
-            // ==================== FUNÇÕES DA PLAYLIST ====================
+            // PLAYLIST
             function shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -1343,7 +1355,7 @@
                 if (isPlaying) playMusic();
             }
 
-            // ==================== ANÚNCIOS ====================
+            // ANÚNCIOS
             function checkAdInterval() {
                 if (!adsEnabled) return;
                 if (musicPlayedCount > 0 && musicPlayedCount % CONFIG.musicBetweenAds === 0 && !isAdPlaying) {
@@ -1438,7 +1450,7 @@
                 } 
             }
 
-            // ==================== UTILITÁRIOS ====================
+            // UTILITÁRIOS
             function formatTime(seconds) {
                 if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
                 const mins = Math.floor(seconds / 60);
@@ -1462,7 +1474,7 @@
                 }
             };
 
-            // ==================== EVENT LISTENERS ====================
+            // EVENT LISTENERS
             function setupEventListeners() {
                 if (playBtn) playBtn.addEventListener('click', togglePlayPause);
                 if (prevBtn) prevBtn.addEventListener('click', prevTrack);
@@ -1579,7 +1591,7 @@
                 }
             }
 
-            // ==================== INICIALIZAÇÃO ====================
+            // INICIALIZAÇÃO
             window.addEventListener('load', () => {
                 if (musicPlayer) musicPlayer.volume = CONFIG.defaultVolume / 100;
                 if (adPlayer) adPlayer.volume = CONFIG.defaultVolume / 100;
@@ -1590,7 +1602,6 @@
                 setupEventListeners();
                 updateAdTimer();
 
-                // Pré-carrega o vídeo do modo carro
                 carVideo.load();
 
                 setInterval(() => {
