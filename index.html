@@ -29,7 +29,7 @@
             color: #e0e0e0;
         }
 
-        /* Modo Carro - Interface simplificada e botões maiores */
+        /* Modo Carro */
         body.car-mode {
             background: #000000;
         }
@@ -69,7 +69,6 @@
             padding: 0 2px;
         }
 
-        /* Ajuste para telas médias */
         @media (min-width: 400px) {
             .app-container {
                 max-width: 400px;
@@ -77,7 +76,6 @@
             }
         }
 
-        /* Ajuste para tablets pequenos */
         @media (min-width: 600px) {
             .app-container {
                 max-width: 450px;
@@ -98,7 +96,6 @@
             width: 100%;
         }
 
-        /* Ajustes para telas muito pequenas */
         @media (max-width: 360px) {
             .glass-card, .main-header, .main-nav, .dropdown-menu, .stats-bar, 
             .ticker-modern, .player-card, .playlist-card, .contact-mini {
@@ -110,12 +107,6 @@
 
         .main-header, .main-nav, .stats-bar, .ticker-modern {
             padding: 10px 14px;
-        }
-
-        @media (max-width: 360px) {
-            .main-header, .main-nav, .stats-bar, .ticker-modern {
-                padding: 8px 12px;
-            }
         }
 
         .main-header {
@@ -131,7 +122,7 @@
             align-items: center;
             gap: 8px;
             flex: 1;
-            min-width: 0; /* Permite que o texto seja truncado */
+            min-width: 0;
         }
 
         .logo-icon {
@@ -148,14 +139,6 @@
             flex-shrink: 0;
         }
 
-        @media (max-width: 360px) {
-            .logo-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 1rem;
-            }
-        }
-
         .logo-text h1 {
             font-size: 1.2rem;
             font-weight: 800;
@@ -167,13 +150,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 150px;
-        }
-
-        @media (max-width: 360px) {
-            .logo-text h1 {
-                font-size: 1rem;
-                max-width: 120px;
-            }
         }
 
         .live-badge {
@@ -190,13 +166,6 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             white-space: nowrap;
             flex-shrink: 0;
-        }
-
-        @media (max-width: 360px) {
-            .live-badge {
-                padding: 4px 8px;
-                font-size: 0.6rem;
-            }
         }
 
         .main-nav {
@@ -229,14 +198,6 @@
             text-decoration: none;
             transition: all 0.2s ease;
             flex-shrink: 0;
-        }
-
-        @media (max-width: 360px) {
-            .nav-item, .btn-share-nav, .menu-toggle, .fullscreen-btn, .car-mode-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 0.85rem;
-            }
         }
 
         .car-mode-btn.active {
@@ -276,7 +237,7 @@
 
         .video-container {
             width: 100%;
-            aspect-ratio: 1 / 1; /* Formato quadrado */
+            aspect-ratio: 1 / 1;
             background: linear-gradient(135deg, #1a1f2e, #2a2f3e);
             border-radius: 24px 24px 0 0;
             overflow: hidden;
@@ -289,20 +250,8 @@
             object-fit: cover;
         }
 
-        @media (max-width: 360px) {
-            .video-container {
-                border-radius: 20px 20px 0 0;
-            }
-        }
-
         .player-controls {
             padding: 16px;
-        }
-
-        @media (max-width: 360px) {
-            .player-controls {
-                padding: 12px;
-            }
         }
 
         .track-info {
@@ -326,15 +275,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             padding: 0 5px;
-        }
-
-        @media (max-width: 360px) {
-            .track-info h2 {
-                font-size: 1rem;
-            }
-            .track-info p {
-                font-size: 0.75rem;
-            }
         }
 
         .progress-time {
@@ -380,15 +320,6 @@
             transition: all 0.2s;
             flex-shrink: 0;
         }
-
-        @media (max-width: 360px) {
-            .control-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 0.9rem;
-            }
-        }
-
         .play-btn {
             width: 55px;
             height: 55px;
@@ -396,14 +327,6 @@
             color: white;
             font-size: 1.4rem;
             border: none;
-        }
-
-        @media (max-width: 360px) {
-            .play-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-            }
         }
 
         .volume-control {
@@ -431,12 +354,8 @@
             border-radius: 50%;
             cursor: pointer;
         }
-        .volume-control span {
-            font-size: 0.75rem;
-            min-width: 35px;
-        }
 
-        /* Stats bar responsiva */
+        /* Stats bar */
         .stats-bar {
             padding: 12px;
         }
@@ -458,7 +377,7 @@
             border-radius: 25px;
             border: 1px solid rgba(255,255,255,0.08);
             flex: 1;
-            min-width: 0; /* Permite que o conteúdo seja truncado */
+            min-width: 0;
         }
 
         .stat-icon {
@@ -472,14 +391,6 @@
             color: white;
             font-size: 0.9rem;
             flex-shrink: 0;
-        }
-
-        @media (max-width: 360px) {
-            .stat-icon {
-                width: 28px;
-                height: 28px;
-                font-size: 0.8rem;
-            }
         }
 
         .stat-info {
@@ -498,12 +409,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-
-        @media (max-width: 360px) {
-            .stat-info span {
-                font-size: 0.8rem;
-            }
         }
 
         .period-indicator {
@@ -526,7 +431,7 @@
             white-space: nowrap;
         }
 
-        /* Ticker responsivo */
+        /* Ticker */
         .ticker-content {
             display: flex;
             align-items: center;
@@ -564,7 +469,7 @@
             flex-shrink: 0;
         }
 
-        /* Playlist responsiva */
+        /* Playlist */
         .playlist-tabs {
             display: flex;
             gap: 6px;
@@ -613,6 +518,7 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
         
         .playlist-item.playing {
@@ -665,17 +571,39 @@
             flex-shrink: 0;
         }
 
+        /* Botão de favorito - CORRIGIDO */
         .favorite-btn {
             background: transparent;
             border: none;
-            color: #ffd700;
-            font-size: 1rem;
+            color: #666;
+            font-size: 1.1rem;
             cursor: pointer;
-            padding: 4px;
+            padding: 5px;
             flex-shrink: 0;
+            transition: all 0.2s;
+            z-index: 10;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .favorite-btn.active {
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff4444;
+        }
+        
+        .favorite-btn i {
+            pointer-events: none;
         }
 
-        /* Contact responsivo */
+        /* Contact */
         .contact-mini {
             display: flex;
             align-items: center;
@@ -693,13 +621,8 @@
             max-width: 90%;
             white-space: nowrap;
         }
-        
-        .contact-mini i { 
-            color: white; 
-            font-size: 1.1rem;
-        }
 
-        /* Notification responsiva */
+        /* Notification */
         .notification {
             position: fixed;
             bottom: 10px;
@@ -729,57 +652,33 @@
             font-size: 0.65rem;
         }
 
-        /* Scrollbar personalizada */
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); }
-        ::-webkit-scrollbar-thumb { background: #ff6b6b; border-radius: 3px; }
-
-        /* Animações */
         @keyframes pulse { 
             0%, 100% { opacity: 1; } 
             50% { opacity: 0.7; } 
         }
 
-        /* Ajustes para telas muito pequenas (320px e abaixo) */
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.8); }
+            50% { transform: scaleY(1.6); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); }
+        ::-webkit-scrollbar-thumb { background: #ff6b6b; border-radius: 3px; }
+
+        /* Ajustes para telas muito pequenas */
         @media (max-width: 320px) {
-            .logo-text h1 {
-                font-size: 0.9rem;
-                max-width: 100px;
-            }
-            
-            .stat-item {
-                padding: 4px 5px;
-            }
-            
-            .stat-icon {
-                width: 24px;
-                height: 24px;
-                font-size: 0.7rem;
-            }
-            
-            .stat-info span {
-                font-size: 0.7rem;
-            }
-            
-            .control-btn {
-                width: 36px;
-                height: 36px;
-            }
-            
-            .play-btn {
-                width: 45px;
-                height: 45px;
-            }
-            
-            .item-number {
-                width: 24px;
-                height: 24px;
-                font-size: 0.65rem;
-            }
-            
-            .item-title {
-                font-size: 0.7rem;
-            }
+            .logo-text h1 { font-size: 0.9rem; max-width: 100px; }
+            .stat-icon { width: 24px; height: 24px; font-size: 0.7rem; }
+            .stat-info span { font-size: 0.7rem; }
+            .control-btn { width: 36px; height: 36px; }
+            .play-btn { width: 45px; height: 45px; }
         }
     </style>
 </head>
@@ -879,7 +778,7 @@
             <div class="ticker-content">
                 <div class="ticker-icon"><i class="fas fa-bullhorn"></i></div>
                 <div class="ticker-text">
-                    <marquee id="ticker" scrollamount="4" behavior="alternate">🎵 RÁDIO PLAYLIST - ESCOLHA SUAS MÚSICAS FAVORITAS • MODO CARRO DISPONÍVEL 🎵</marquee>
+                    <marquee id="ticker" scrollamount="4" behavior="alternate">🎵 RÁDIO PLAYLIST - CLIQUE NO CORAÇÃO PARA FAVORITAR • MODO CARRO DISPONÍVEL 🎵</marquee>
                 </div>
                 <div class="ticker-edit" onclick="editTicker()">
                     <i class="fas fa-pencil-alt"></i>
@@ -887,7 +786,7 @@
             </div>
         </div>
 
-        <!-- PLAYER - VÍDEO QUADRADO -->
+        <!-- PLAYER -->
         <div class="player-card">
             <div class="video-container" id="videoContainer">
                 <video autoplay loop muted playsinline id="bgVideo">
@@ -945,20 +844,13 @@
         </div>
 
         <footer class="main-footer">
-            <p>Rádio Playlist © 2025 • Marque suas favoritas com ❤️</p>
+            <p>Rádio Playlist © 2025 • Clique no ❤️ para favoritar</p>
         </footer>
     </div>
 
     <audio id="musicPlayer" preload="auto"></audio>
     <audio id="adPlayer" preload="auto"></audio>
     <div class="notification" id="notification"><i class="fas fa-check-circle"></i> <span id="notificationText">Bem-vindo!</span></div>
-
-    <style>
-        @keyframes wave {
-            0%, 100% { transform: scaleY(0.8); }
-            50% { transform: scaleY(1.6); }
-        }
-    </style>
 
     <script>
         (function() {
@@ -1118,11 +1010,17 @@
                 carModeBtn.addEventListener('click', toggleCarMode);
             }
 
-            // ==================== FUNÇÕES DE FAVORITOS ====================
+            // ==================== FUNÇÕES DE FAVORITOS - CORRIGIDO ====================
             function toggleFavorite(index) {
+                if (index === undefined || index === null) return;
+                
                 const musica = playlistAtual[index];
+                if (!musica) return;
+                
+                // Inverte o estado
                 musica.favorite = !musica.favorite;
                 
+                // Salvar no localStorage
                 let favorites = JSON.parse(localStorage.getItem('radioFavorites') || '[]');
                 if (musica.favorite) {
                     if (!favorites.includes(musica.id)) {
@@ -1133,7 +1031,10 @@
                 }
                 localStorage.setItem('radioFavorites', JSON.stringify(favorites));
                 
+                // Atualizar contador
                 updateFavoriteCount();
+                
+                // Atualizar a visualização atual
                 if (showingFavorites) {
                     mostrarPlaylistFavoritas();
                 } else {
@@ -1142,6 +1043,9 @@
                 
                 showNotification(musica.favorite ? '❤️ Adicionado aos favoritos' : '💔 Removido dos favoritos');
             }
+
+            // Tornar a função global para ser acessível pelo onclick
+            window.toggleFavorite = toggleFavorite;
 
             function updateFavoriteCount() {
                 const count = playlistAtual.filter(m => m.favorite).length;
@@ -1176,7 +1080,7 @@
                                     <div class="item-artist" title="${musica.artist}">${musica.artist}</div>
                                 </div>
                                 <div class="item-duration">${musica.duration}</div>
-                                <button class="favorite-btn active" onclick="event.stopPropagation(); toggleFavorite(${originalIndex})">
+                                <button class="favorite-btn active" onclick="event.stopPropagation(); window.toggleFavorite(${originalIndex})">
                                     <i class="fas fa-heart"></i>
                                 </button>
                             </div>
@@ -1233,7 +1137,7 @@
                                 <div class="item-artist" title="${musica.artist.replace(/"/g, '&quot;')}">${musica.artist}</div>
                             </div>
                             <div class="item-duration">${musica.duration}</div>
-                            <button class="favorite-btn ${musica.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite(${index})">
+                            <button class="favorite-btn ${musica.favorite ? 'active' : ''}" onclick="event.stopPropagation(); window.toggleFavorite(${index})">
                                 <i class="fas fa-heart"></i>
                             </button>
                         </div>
