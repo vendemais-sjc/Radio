@@ -126,14 +126,14 @@
         .logo-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
             color: white;
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
             flex-shrink: 0;
         }
 
@@ -150,7 +150,7 @@
         }
 
         .live-badge {
-            background: linear-gradient(135deg, #ff4444, #ff6b6b);
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
             padding: 5px 10px;
             border-radius: 30px;
@@ -180,10 +180,11 @@
             flex-wrap: nowrap;
         }
 
+        /* Ícones e botões - NOVAS CORES (tons de azul/cinza) */
         .nav-item, .btn-share-nav, .menu-toggle, .theme-btn, .fullscreen-btn, .car-mode-btn {
-            background: linear-gradient(135deg, #4a5568, #2d3748);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
+            background: linear-gradient(135deg, #2c3e50, #1e2a3a);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ecf0f1;
             width: 40px;
             height: 40px;
             border-radius: 30px;
@@ -199,13 +200,13 @@
         }
 
         .nav-item:hover, .btn-share-nav:hover, .menu-toggle:hover, .fullscreen-btn:hover, .car-mode-btn:hover {
-            background: linear-gradient(135deg, #5f6b7a, #3a4455);
+            background: linear-gradient(135deg, #3a4a5a, #2a3a4a);
             transform: scale(1.05);
             box-shadow: 0 6px 15px rgba(0,0,0,0.4);
         }
 
         .car-mode-btn.active {
-            background: linear-gradient(135deg, #ff4444, #cc0000);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
             border-color: #ff8888;
         }
@@ -241,7 +242,7 @@
 
         .video-container {
             width: 100%;
-            aspect-ratio: 16 / 9; /* 1920x1080 proporcional */
+            aspect-ratio: 16 / 9;
             background: linear-gradient(135deg, #1a1f2e, #2a2f3e);
             border-radius: 24px 24px 0 0;
             overflow: hidden;
@@ -288,7 +289,7 @@
             font-size: 1.2rem;
             font-weight: 800;
             margin-bottom: 4px;
-            color: #ffb347;
+            color: #f1c40f;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -321,11 +322,11 @@
         }
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
             width: 0%;
         }
 
-        /* Controles com cores melhoradas */
+        /* Controles com NOVAS CORES (tons de azul) */
         .controls {
             display: flex;
             align-items: center;
@@ -341,25 +342,25 @@
             border-radius: 20px;
             font-size: 1rem;
             cursor: pointer;
-            background: linear-gradient(135deg, #4a5568, #2d3748);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #2c3e50, #1e2a3a);
+            color: #ecf0f1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.2s;
             flex-shrink: 0;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .control-btn:hover {
-            background: linear-gradient(135deg, #5f6b7a, #3a4455);
+            background: linear-gradient(135deg, #3a4a5a, #2a3a4a);
             transform: scale(1.05);
         }
         .play-btn {
             width: 55px;
             height: 55px;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
             font-size: 1.4rem;
             border: none;
-            box-shadow: 0 4px 15px rgba(255,107,107,0.5);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
         }
 
         .volume-control {
@@ -374,7 +375,7 @@
             flex: 1;
             height: 4px;
             -webkit-appearance: none;
-            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
             border-radius: 2px;
             min-width: 70px;
         }
@@ -383,7 +384,7 @@
             width: 14px;
             height: 14px;
             background: white;
-            border: 2px solid #ff6b6b;
+            border: 2px solid #3b82f6;
             border-radius: 50%;
             cursor: pointer;
         }
@@ -416,7 +417,7 @@
         .stat-icon {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -473,7 +474,7 @@
         .ticker-icon {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             border-radius: 30px;
             display: flex;
             align-items: center;
@@ -492,13 +493,13 @@
         .ticker-text marquee {
             font-size: 0.85rem;
             white-space: nowrap;
-            color: #ffd700;
+            color: #f1c40f;
             font-weight: 500;
         }
         .ticker-edit {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, #4a5568, #2d3748);
+            background: linear-gradient(135deg, #2c3e50, #1e2a3a);
             border-radius: 30px;
             display: flex;
             align-items: center;
@@ -535,7 +536,7 @@
         }
         
         .tab-btn.active {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
         }
 
@@ -562,12 +563,12 @@
         }
         
         .playlist-item.playing {
-            background: linear-gradient(90deg, rgba(255,107,107,0.15), rgba(255,142,83,0.15));
-            border-left: 3px solid #ff6b6b;
+            background: linear-gradient(90deg, rgba(59,130,246,0.15), rgba(37,99,235,0.15));
+            border-left: 3px solid #3b82f6;
         }
         
         .playlist-item.favorite {
-            border-right: 3px solid #ffd700;
+            border-right: 3px solid #f1c40f;
         }
         
         .item-number {
@@ -635,8 +636,8 @@
         }
         
         .favorite-btn.active {
-            color: #ff4444;
-            text-shadow: 0 0 10px #ff4444;
+            color: #e74c3c;
+            text-shadow: 0 0 10px #e74c3c;
         }
         
         .favorite-btn i {
@@ -689,7 +690,7 @@
             border-radius: 50px;
             transition: 0.3s;
             z-index: 1000;
-            border-left: 4px solid #ff6b6b;
+            border-left: 4px solid #3b82f6;
             font-size: 0.9rem;
             text-align: center;
             max-width: 380px;
@@ -723,7 +724,7 @@
         /* Scrollbar */
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); }
-        ::-webkit-scrollbar-thumb { background: #ff6b6b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
 
         /* Ajustes para telas muito pequenas */
         @media (max-width: 320px) {
@@ -823,7 +824,7 @@
             </div>
             <div class="period-indicator">
                 <span><i class="fas fa-music"></i> <span id="totalCount">0</span> músicas</span>
-                <span class="period-badge"><i class="fas fa-heart" style="color: #ff6b6b;"></i> <span id="favoriteCount">0</span> favoritas</span>
+                <span class="period-badge"><i class="fas fa-heart" style="color: #e74c3c;"></i> <span id="favoriteCount">0</span> favoritas</span>
             </div>
         </div>
 
@@ -840,20 +841,15 @@
             </div>
         </div>
 
-        <!-- PLAYER - VÍDEO 1920x1080 PROPORCIONAL -->
+        <!-- PLAYER -->
         <div class="player-card">
             <div class="video-container" id="videoContainer">
-                <!-- Vídeo principal -->
                 <video autoplay loop muted playsinline id="mainVideo">
                     <source src="6995d87e653782dfa4035483-4.mp4" type="video/mp4">
                 </video>
-                
-                <!-- Vídeo do modo carro -->
                 <video autoplay loop muted playsinline id="carVideo" style="display: none;">
                     <source src="car-mode-banner.mp4" type="video/mp4">
                 </video>
-                
-                <!-- Overlay fallback -->
                 <div class="car-mode-overlay" id="carModeOverlay" style="display: none;">
                     <i class="fas fa-car"></i>
                 </div>
@@ -891,7 +887,7 @@
         <div class="playlist-card">
             <div class="playlist-tabs">
                 <button class="tab-btn active" id="tabAll"><i class="fas fa-list"></i> Todas</button>
-                <button class="tab-btn" id="tabFavorites"><i class="fas fa-heart" style="color: #ff6b6b;"></i> Favoritas</button>
+                <button class="tab-btn" id="tabFavorites"><i class="fas fa-heart" style="color: #e74c3c;"></i> Favoritas</button>
             </div>
             <div class="playlist-header">
                 <div class="playlist-title">
@@ -1059,7 +1055,7 @@
             const savedTheme = localStorage.getItem('radioTheme') || 'dark';
             setTheme(savedTheme);
 
-            // FULLSCREEN CORRIGIDO
+            // FULLSCREEN
             function toggleFullscreen() {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen();
@@ -1483,7 +1479,7 @@
                 if (shuffleBtn) {
                     shuffleBtn.addEventListener('click', () => {
                         shuffleMode = !shuffleMode;
-                        shuffleBtn.style.background = shuffleMode ? 'linear-gradient(135deg, #ff6b6b, #ff8e53)' : '';
+                        shuffleBtn.style.background = shuffleMode ? 'linear-gradient(135deg, #3b82f6, #2563eb)' : '';
                         shuffleBtn.style.color = shuffleMode ? 'white' : '';
                         showNotification(shuffleMode ? '🔀 Modo aleatório' : '➡️ Modo sequencial');
                     });
@@ -1492,7 +1488,7 @@
                 if (repeatBtn) {
                     repeatBtn.addEventListener('click', () => {
                         repeatMode = !repeatMode;
-                        repeatBtn.style.background = repeatMode ? 'linear-gradient(135deg, #ff6b6b, #ff8e53)' : '';
+                        repeatBtn.style.background = repeatMode ? 'linear-gradient(135deg, #3b82f6, #2563eb)' : '';
                         repeatBtn.style.color = repeatMode ? 'white' : '';
                         showNotification(repeatMode ? '🔁 Repetir' : '➡️ Repetir desligado');
                     });
