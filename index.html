@@ -496,23 +496,19 @@
             color: #ff4444;
         }
 
-        /* WhatsApp - MESMO TAMANHO DOS BOTÕES DE MÚSICA */
+        /* WhatsApp - AJUSTADO PARA 40X40 (IGUAL AOS BOTÕES DE CONTROLE) */
         .contact-mini {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
             cursor: pointer;
-            padding: 0;
-            margin: 15px auto 15px auto;
-            font-size: 0.9rem;
-            font-weight: 500;
+            margin: 15px auto;
             background: linear-gradient(135deg, #25D366, #128C7E);
             border: 2px solid rgba(255, 255, 255, 0.3);
             color: white;
             border-radius: 25px;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
             transition: all 0.3s;
         }
@@ -524,11 +520,11 @@
         
         .contact-mini i { 
             color: white; 
-            font-size: 1.5rem;
+            font-size: 1.2rem; /* Reduzido para caber melhor */
         }
         
         .contact-mini span {
-            display: none; /* Esconde o texto, mostra só o ícone */
+            display: none;
         }
 
         /* Notification */
@@ -709,7 +705,7 @@
             <div class="playlist-items" id="playlistContainer"></div>
         </div>
 
-        <!-- WHATSAPP - MESMO TAMANHO DOS BOTÕES DE MÚSICA -->
+        <!-- WHATSAPP - AGORA COM TAMANHO 40X40 -->
         <div class="contact-mini" onclick="window.open('https://wa.me/5512988461978', '_blank')">
             <i class="fab fa-whatsapp"></i>
             <span>FALE CONOSCO NO WHATSAPP</span>
@@ -835,10 +831,8 @@
             const shareBtnNav = document.getElementById('shareBtnNav');
             const menuToggle = document.getElementById('menuToggle');
             const dropdownMenu = document.getElementById('dropdownMenu');
-            const totalCountEl = document.getElementById('totalCount');
             const playlistCountEl = document.getElementById('playlistCount');
             const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const favoriteCountEl = document.getElementById('favoriteCount');
             const tabAll = document.getElementById('tabAll');
             const tabFavorites = document.getElementById('tabFavorites');
 
@@ -856,12 +850,7 @@
                 playlistAtual.forEach(musica => {
                     musica.favorite = favorites.includes(musica.id);
                 });
-                updateFavoriteCount();
-            }
-
-            function updateFavoriteCount() {
-                const count = playlistAtual.filter(m => m.favorite).length;
-                if (favoriteCountEl) favoriteCountEl.textContent = count;
+                // Não há mais elemento favoriteCountEl, então removemos a chamada
             }
 
             function toggleFavorite(index) {
@@ -881,8 +870,6 @@
                     favorites = favorites.filter(id => id !== musica.id);
                 }
                 localStorage.setItem('radioFavorites', JSON.stringify(favorites));
-                
-                updateFavoriteCount();
                 
                 if (showingFavorites) {
                     mostrarPlaylistFavoritas();
@@ -1050,7 +1037,6 @@
                 if (isPlaying) playMusic();
                 
                 musicPlayedCount++;
-                if (playedCountEl) playedCountEl.textContent = musicPlayedCount;
                 checkAdInterval();
             }
 
@@ -1172,7 +1158,7 @@
             }
 
             window.editTicker = () => {
-                const tickerElem = document.querySelector('#ticker marquee');
+                const tickerElem = document.getElementById('ticker');
                 if (!tickerElem) return;
                 const newText = prompt("Editar mensagem do ticker:", tickerElem.textContent);
                 if (newText && newText.trim()) {
@@ -1181,7 +1167,7 @@
             };
 
             window.editVideoTicker = () => {
-                const videoTickerElem = document.querySelector('#videoTicker');
+                const videoTickerElem = document.getElementById('videoTicker');
                 if (!videoTickerElem) return;
                 const newText = prompt("Editar letreiro do vídeo:", videoTickerElem.textContent);
                 if (newText && newText.trim()) {
@@ -1194,7 +1180,6 @@
                 loadFavoritesFromStorage();
                 
                 const totalMusicas = playlistAtual.length;
-                if (totalCountEl) totalCountEl.textContent = totalMusicas;
                 if (playlistCountEl) playlistCountEl.textContent = `(${totalMusicas})`;
                 
                 mostrarPlaylist();
