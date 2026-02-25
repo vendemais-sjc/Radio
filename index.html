@@ -87,11 +87,11 @@
             padding: 10px 14px;
         }
 
-        /* ===== HEADER COM LOGO E FUNDO BRANCO ===== */
+        /* ===== HEADER COM LOGO E BADGE AO VIVO ===== */
         .main-header {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between; /* logo à esquerda, badge à direita */
             height: 80px;
             padding: 0 14px;
         }
@@ -103,7 +103,7 @@
             background-color: #ffffff; /* fundo branco */
             border-radius: 12px;
             padding: 5px 15px;
-            max-width: 100%;
+            max-width: 70%; /* para não ocupar todo o espaço */
             height: 60px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
@@ -123,24 +123,22 @@
             font-weight: 500;
         }
 
-        /* BADGE AO VIVO dentro do vídeo */
-        .live-badge-video {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        /* BADGE AO VIVO no cabeçalho */
+        .live-badge-header {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 0.6rem;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             animation: pulse 1.5s infinite;
             border: 1px solid rgba(255,255,255,0.15);
-            z-index: 20;
+            white-space: nowrap;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            margin-left: 10px; /* espaçamento da logo */
         }
 
         /* ===== NAVEGAÇÃO ===== */
@@ -582,12 +580,15 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- HEADER COM LOGO E FUNDO BRANCO -->
+        <!-- HEADER COM LOGO E BADGE AO VIVO -->
         <header class="main-header">
             <div class="logo-container">
                 <!-- Substitua pelo caminho da sua logo (JPEG, PNG ou GIF) -->
                 <img src="logo.jpeg" alt="Rádio Playlist">
                 <!-- Exemplo com GIF: <img src="animacao.gif" alt="Rádio Playlist"> -->
+            </div>
+            <div class="live-badge-header">
+                <i class="fas fa-circle"></i> AO VIVO
             </div>
         </header>
 
@@ -670,7 +671,6 @@
         <!-- PLAYER -->
         <div class="player-card">
             <div class="video-container" id="videoContainer">
-                <div class="live-badge-video"><i class="fas fa-circle"></i> AO VIVO</div>
                 <video autoplay loop muted playsinline id="mainVideo">
                     <source src="6995d87e653782dfa4035483-4.mp4" type="video/mp4">
                 </video>
