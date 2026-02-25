@@ -87,13 +87,13 @@
             padding: 10px 14px;
         }
 
-        /* ===== HEADER ESCURO COM LOGO CENTRALIZADA ===== */
+        /* ===== HEADER ESCURO COM LOGO CENTRALIZADA (REDUZIDO) ===== */
         .main-header {
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100px;
-            padding: 10px 14px;
+            min-height: 70px; /* Reduzido de 100px */
+            padding: 8px 14px; /* Ajuste no padding vertical */
             background: rgba(10, 15, 30, 0.95);
             border-radius: 28px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.6);
@@ -106,16 +106,16 @@
             justify-content: center;
             width: 100%;
             max-width: 400px;
-            height: 100px;
+            height: 60px; /* Reduzido de 100px */
         }
 
         .logo-container img {
             max-width: 100%;
-            max-height: 90px;
+            max-height: 55px; /* Ajustado para caber no novo container */
             width: auto;
             height: auto;
             object-fit: contain;
-            border-radius: 12px;
+            border-radius: 10px;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
         }
 
@@ -573,7 +573,7 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- HEADER ESCURO COM LOGO CENTRALIZADA -->
+        <!-- HEADER ESCURO COM LOGO CENTRALIZADA (REDUZIDO) -->
         <header class="main-header">
             <div class="logo-container">
                 <!-- Substitua pelo caminho da sua logo (GIF, JPEG ou PNG) -->
@@ -1163,4 +1163,3 @@
     </script>
 </body>
 </html>
-
