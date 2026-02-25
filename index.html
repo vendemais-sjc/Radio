@@ -110,21 +110,22 @@
             object-fit: cover;
             display: block;
         }
+        /* LETREIRO COM LETRAS PRETAS E FUNDO CLARO */
         .video-ticker {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.6);
-            color: #f1c40f;
+            background: rgba(255, 255, 255, 0.7); /* fundo branco semi-transparente */
+            color: #000000; /* letras pretas */
             padding: 8px 0;
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             z-index: 10;
             backdrop-filter: blur(4px);
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            border-bottom: 1px solid rgba(0,0,0,0.2);
             cursor: pointer;
         }
         .video-ticker span {
@@ -557,6 +558,7 @@
                 <video autoplay loop muted playsinline id="carVideo" style="display:none;">
                     <source src="sebb.mp4" type="video/mp4">
                 </video>
+                <!-- LETREIRO COM LETRAS PRETAS E FUNDO CLARO -->
                 <div class="video-ticker" id="videoTicker" title="Clique para editar">
                     <span id="tickerText">🎵 RÁDIO PLAYLIST - A MELHOR SELEÇÃO MUSICAL 🎵</span>
                 </div>
@@ -617,7 +619,7 @@
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
-            <!-- NOVO ITEM WHATSAPP -->
+            <!-- BOTÃO WHATSAPP -->
             <button class="drawer-item" id="whatsappBtn" onclick="window.open('https://wa.me/5512988461978', '_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
             <div class="drawer-divider"></div>
             <div class="ad-panel">
