@@ -87,25 +87,24 @@
             padding: 10px 14px;
         }
 
-        /* ===== HEADER COM LOGO E BADGE AO VIVO ===== */
+        /* ===== HEADER COM FUNDO BRANCO ===== */
         .main-header {
             display: flex;
             align-items: center;
             justify-content: space-between; /* logo à esquerda, badge à direita */
             height: 80px;
             padding: 0 14px;
+            background-color: #ffffff; /* fundo branco */
+            border-radius: 12px; /* bordas arredondadas */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .logo-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #ffffff; /* fundo branco */
-            border-radius: 12px;
-            padding: 5px 15px;
-            max-width: 70%; /* para não ocupar todo o espaço */
+            max-width: 70%;
             height: 60px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .logo-container img {
@@ -123,7 +122,7 @@
             font-weight: 500;
         }
 
-        /* BADGE AO VIVO no cabeçalho */
+        /* BADGE AO VIVO no cabeçalho (sobre fundo branco) */
         .live-badge-header {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
@@ -138,7 +137,6 @@
             border: 1px solid rgba(255,255,255,0.15);
             white-space: nowrap;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            margin-left: 10px; /* espaçamento da logo */
         }
 
         /* ===== NAVEGAÇÃO ===== */
@@ -174,13 +172,11 @@
             box-shadow: none !important;
         }
 
-        /* Largura específica para botões quadrados */
         .nav-item, .btn-share-nav, .menu-toggle, .fullscreen-btn, .car-mode-btn,
         .control-btn, .favorite-btn, .ticker-edit {
             width: 40px;
         }
 
-        /* Botões com texto */
         .theme-btn, .tab-btn, .btn-ad-dropdown, .contact-mini-playlist {
             width: auto;
             padding: 0 12px;
@@ -220,7 +216,6 @@
             height: 40px;
         }
 
-        /* Botão Contato (WhatsApp) com estilo próprio */
         .contact-mini-playlist {
             background: linear-gradient(135deg, #25D366, #128C7E) !important;
             border: 2px solid rgba(255,255,255,0.3) !important;
@@ -231,7 +226,6 @@
             padding: 0 10px;
         }
 
-        /* Volume control */
         .volume-control {
             display: flex;
             align-items: center;
@@ -259,7 +253,6 @@
             cursor: pointer;
         }
 
-        /* Estatísticas */
         .stat-icon {
             width: 32px;
             height: 32px;
@@ -283,7 +276,6 @@
             font-size: 1rem;
         }
 
-        /* Dropdown */
         .dropdown-menu {
             display: none;
             animation: slideDown 0.3s ease;
@@ -306,7 +298,6 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Player */
         .player-card {
             overflow: hidden;
             padding: 0;
@@ -398,7 +389,6 @@
             flex-wrap: wrap;
         }
 
-        /* Stats bar */
         .stats-bar { padding: 12px; }
         .listener-stats {
             display: flex;
@@ -444,7 +434,6 @@
             font-size: 0.65rem;
         }
 
-        /* Ticker */
         .ticker-content {
             display: flex;
             align-items: center;
@@ -463,7 +452,6 @@
             font-weight: 500;
         }
 
-        /* Playlist com contato */
         .playlist-header {
             display: flex;
             align-items: center;
@@ -541,7 +529,6 @@
             border-radius: 10px;
         }
 
-        /* Notification */
         .notification {
             position: fixed;
             bottom: 10px;
@@ -580,12 +567,11 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- HEADER COM LOGO E BADGE AO VIVO -->
+        <!-- HEADER COM FUNDO BRANCO -->
         <header class="main-header">
             <div class="logo-container">
-                <!-- Substitua pelo caminho da sua logo (JPEG, PNG ou GIF) -->
+                <!-- Substitua pelo caminho da sua logo -->
                 <img src="logo.jpeg" alt="Rádio Playlist">
-                <!-- Exemplo com GIF: <img src="animacao.gif" alt="Rádio Playlist"> -->
             </div>
             <div class="live-badge-header">
                 <i class="fas fa-circle"></i> AO VIVO
@@ -725,12 +711,11 @@
     <div class="notification" id="notification"><i class="fas fa-check-circle"></i> <span id="notificationText">Bem-vindo!</span></div>
 
     <script>
+        // ===== JAVASCRIPT COMPLETO (IDÊNTICO AO ANTERIOR) =====
         (function() {
-            // ===== CONFIGURAÇÕES =====
             const BASE_URL = "https://raw.githubusercontent.com/vendemais-sjc/vendemais123/main/";
             const CONFIG = { musicBetweenAds: 15, defaultVolume: 80, maxPlaylistDisplay: 200 };
 
-            // ===== LISTA DE MÚSICAS =====
             const musicasRaw = [
                 { id: 1, title: "More Than A Woman", artist: "Bee Gees", filename: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "4:31" },
                 { id: 2, title: "Sexual Healing", artist: "Marvin Gaye", filename: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "4:00" },
@@ -783,7 +768,6 @@
 
             const playlistCompleta = musicasRaw.map(m => ({ ...m, src: BASE_URL + encodeURIComponent(m.filename), favorite: false }));
 
-            // ===== ESTADO =====
             let playlistAtual = [];
             let currentIndex = 0;
             let isPlaying = false;
@@ -802,7 +786,6 @@
             let shouldResumeMusic = false;
             let autoPlayAttempted = false;
 
-            // ===== ELEMENTOS DOM =====
             const musicPlayer = document.getElementById('musicPlayer');
             const adPlayer = document.getElementById('adPlayer');
             const playBtn = document.getElementById('playPauseBtn');
@@ -845,7 +828,6 @@
             const carVideo = document.getElementById('carVideo');
             const carModeOverlay = document.getElementById('carModeOverlay');
 
-            // ===== FUNÇÕES =====
             window.setTheme = function(theme) {
                 if (theme === 'dark') document.body.classList.remove('darker');
                 else if (theme === 'darker') document.body.classList.add('darker');
@@ -1094,7 +1076,6 @@
             function showNotification(msg) { notificationText.textContent = msg; notification.classList.add('show'); setTimeout(()=>notification.classList.remove('show'),2000); }
             window.editTicker = () => { const t = document.querySelector('#ticker marquee'); if (!t) return; const n = prompt("Editar mensagem:", t.textContent); if (n && n.trim()) t.textContent = n; };
 
-            // ===== EVENT LISTENERS =====
             playBtn.addEventListener('click', togglePlayPause);
             prevBtn.addEventListener('click', prevTrack);
             nextBtn.addEventListener('click', nextTrack);
@@ -1132,7 +1113,6 @@
             tabAll.addEventListener('click', ()=>{ showingFavorites=false; tabAll.classList.add('active'); tabFavorites.classList.remove('active'); mostrarPlaylist(); });
             tabFavorites.addEventListener('click', ()=>{ showingFavorites=true; tabFavorites.classList.add('active'); tabAll.classList.remove('active'); mostrarPlaylistFavoritas(); });
 
-            // ===== INICIALIZAÇÃO =====
             window.addEventListener('load', () => {
                 musicPlayer.volume = CONFIG.defaultVolume/100;
                 adPlayer.volume = CONFIG.defaultVolume/100;
