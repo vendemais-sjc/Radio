@@ -87,39 +87,36 @@
             padding: 10px 14px;
         }
 
-        /* ===== HEADER TOTALMENTE BRANCO COM LOGO CENTRALIZADA ===== */
+        /* ===== HEADER ESCURO COM LOGO CENTRALIZADA ===== */
         .main-header {
             display: flex;
             align-items: center;
-            justify-content: center; /* centraliza horizontalmente */
-            height: 80px;
-            padding: 0 14px;
-            background-color: #ffffff; /* fundo branco */
-            border-radius: 24px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            justify-content: center;
+            min-height: 100px;
+            padding: 10px 14px;
+            background: rgba(10, 15, 30, 0.95);
+            border-radius: 28px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .logo-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            max-width: 100%;
-            height: 80px; /* mesma altura do cabeçalho para centralizar verticalmente */
+            width: 100%;
+            max-width: 400px;
+            height: 100px;
         }
 
         .logo-container img {
             max-width: 100%;
-            max-height: 80px; /* altura aumentada para 70px (GIF 1920x1080 ficará maior) */
+            max-height: 90px;
             width: auto;
             height: auto;
             object-fit: contain;
-        }
-
-        /* Placeholder para a logo (caso não tenha imagem) */
-        .logo-placeholder {
-            color: #333;
-            font-size: 0.9rem;
-            font-weight: 500;
+            border-radius: 12px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
         }
 
         /* ===== NAVEGAÇÃO ===== */
@@ -136,7 +133,7 @@
             gap: 6px;
         }
 
-        /* ===== BOTÕES TRANSPARENTES COM TAMANHO UNIFORME (40px) ===== */
+        /* ===== BOTÕES TRANSPARENTES COM TAMANHO UNIFORME ===== */
         .nav-item, .btn-share-nav, .menu-toggle, .theme-btn, .fullscreen-btn, .car-mode-btn,
         .control-btn, .tab-btn, .favorite-btn, .ticker-edit, .btn-ad-dropdown,
         .contact-mini-playlist {
@@ -155,13 +152,11 @@
             box-shadow: none !important;
         }
 
-        /* Largura específica para botões quadrados */
         .nav-item, .btn-share-nav, .menu-toggle, .fullscreen-btn, .car-mode-btn,
         .control-btn, .favorite-btn, .ticker-edit {
             width: 40px;
         }
 
-        /* Botões com texto */
         .theme-btn, .tab-btn, .btn-ad-dropdown, .contact-mini-playlist {
             width: auto;
             padding: 0 12px;
@@ -201,7 +196,6 @@
             height: 40px;
         }
 
-        /* Botão Contato (WhatsApp) com estilo próprio */
         .contact-mini-playlist {
             background: linear-gradient(135deg, #25D366, #128C7E) !important;
             border: 2px solid rgba(255,255,255,0.3) !important;
@@ -426,7 +420,7 @@
             white-space: nowrap;
         }
 
-        /* Badge AO VIVO na linha de indicadores */
+        /* Badge AO VIVO */
         .live-badge-indicator {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
@@ -579,11 +573,11 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- HEADER COM LOGO CENTRALIZADA (FUNDO BRANCO) -->
+        <!-- HEADER ESCURO COM LOGO CENTRALIZADA -->
         <header class="main-header">
             <div class="logo-container">
                 <!-- Substitua pelo caminho da sua logo (GIF, JPEG ou PNG) -->
-                <img src="rogergif.gif">
+                <img src="rogergif.gif" alt="Rádio Playlist Logo">
             </div>
         </header>
 
@@ -648,7 +642,7 @@
             </div>
             <div class="period-indicator">
                 <span><i class="fas fa-music"></i> <span id="totalCount">0</span> músicas</span>
-                <!-- Badge AO VIVO inserido entre músicas e favoritas -->
+                <!-- Badge AO VIVO -->
                 <span class="live-badge-indicator"><i class="fas fa-circle"></i> AO VIVO</span>
                 <span class="period-badge"><i class="fas fa-heart" style="color:#e74c3c;"></i> <span id="favoriteCount">0</span> favoritas</span>
             </div>
@@ -1169,11 +1163,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
