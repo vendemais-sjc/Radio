@@ -75,9 +75,9 @@
             --primary-dark: #707070;
         }
 
-        /* Aplicação das variáveis */
+        /* Aplicação das variáveis (fallback) */
         body {
-            --bg-primary: #1a0c0c;      /* fallback red */
+            --bg-primary: #1a0c0c;
             --bg-secondary: #2d1a1a;
             --bg-drawer: #221212;
             --text-primary: #ffe6e6;
@@ -472,7 +472,7 @@
         }
         .color-option.red { background: #e63946; }
         .color-option.lilac { background: #b380ff; }
-        .color-option.black { background: #bb86fc; } /* Roxo claro para preto */
+        .color-option.black { background: #bb86fc; }
         .color-option.gray { background: #a0a0a0; }
 
         /* PAINEL DE ANÚNCIOS */
@@ -748,10 +748,13 @@
                 adsInterval: 2,          // número de músicas entre anúncios
                 defaultVolume: 80,
                 adsList: [                // lista de anúncios (SUBSTITUA PELOS SEUS)
-                    
+                    // Exemplo: { src: 'caminho/para/anuncio1.mp3', title: 'Oferta relâmpago' }
                 ]
             };
- { id: 1, title: "Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "4:00" },
+
+            // ========== PLAYLIST PRINCIPAL (SUBSTITUA PELOS SEUS ARQUIVOS) ==========
+            const musicas = [
+                { id: 1, title: "Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "4:00" },
                 { id: 2, title: "Ah Como Eu Amei", artist: "Ivete Sangalo", src: "Ivete Sangalo - Ah_ Como Eu Amei (Benito di Paula)(MP3_160K).mp3", duration: "3:45" },
                 { id: 3, title: "I've Had The Time Of My Life", artist: "Mauricio Manieri", src: "Mauricio_Manieri_I_ve_Had_The_Time_Of_My_Life_muzzik.m4a", duration: "4:15" },
                 { id: 4, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "4:05" },
@@ -857,7 +860,6 @@
                 { id: 104, title: "Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", duration: "00:01" },
                 { id: 105, title: "Save Your Tears", artist: "The Weeknd", src: "The_Weeknd_Save_Your_Tears_muzzik.m4a", duration: "00:01" },
                 { id: 106, title: "Wicked Game", artist: "Chris Isaak", src: "Wicked_Game_Wicked_Game_muzzik.m4a", duration: "00:01" }
-         
             ];
 
             // ========== ESTADO GLOBAL ==========
@@ -1323,4 +1325,3 @@
     </script>
 </body>
 </html>
-
