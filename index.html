@@ -135,7 +135,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             text-align: center;
             transition: opacity 0.5s;
-            pointer-events: none; /* não bloqueia cliques */
+            pointer-events: none;
         }
         #tap-to-start.hidden {
             opacity: 0;
@@ -163,7 +163,7 @@
             background-color: #000000;
             color: #ffffff;
             font-weight: 800;
-            font-size: 1.2rem; /* Tamanho reduzido */
+            font-size: 1.2rem;
             padding: 12px 16px;
             cursor: pointer;
             border: none;
@@ -261,13 +261,13 @@
             color: var(--text-secondary);
             margin-bottom: 4px;
         }
-        /* BARRA DE PROGRESSO MAIS GROSSA */
+        /* ===== BARRA DE PROGRESSO BEM GROSSA ===== */
         .progress-bar {
-            height: 12px;  /* Aumentado de 8px para 12px */
+            height: 16px;  /* Aumentado para 16px para ficar bem visível */
             background: var(--border-color);
             cursor: pointer;
             overflow: hidden;
-            border-radius: 6px;
+            border-radius: 8px;
         }
         .progress-fill {
             height: 100%;
@@ -321,18 +321,18 @@
             height: 36px;
             cursor: pointer;
         }
-        /* BARRA DE VOLUME MAIS GROSSA */
+        /* ===== BARRA DE VOLUME BEM GROSSA ===== */
         .volume-slider {
             flex: 1;
-            height: 12px;   /* Aumentado de 8px para 12px */
+            height: 16px;   /* Aumentado para 16px */
             background: var(--border-color);
             -webkit-appearance: none;
-            border-radius: 6px;
+            border-radius: 8px;
         }
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 20px;    /* thumb maior para combinar */
-            height: 20px;
+            width: 24px;    /* Thumb maior para combinar com a barra grossa */
+            height: 24px;
             background: white;
             border: 2px solid var(--primary-color);
             border-radius: 50%;
