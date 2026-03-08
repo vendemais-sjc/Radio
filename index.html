@@ -95,7 +95,7 @@
             justify-content: center;
             z-index: 9999;
             transition: opacity 0.5s ease;
-            pointer-events: none; /* não bloqueia cliques */
+            pointer-events: none;
         }
         #splash.hidden {
             opacity: 0;
@@ -119,6 +119,28 @@
             opacity: 0.8;
             margin-top: 0.5rem;
         }
+
+        /* MENSAGEM PARA INICIAR NO MOBILE */
+        #tap-to-start {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+            transition: opacity 0.5s;
+            pointer-events: none; /* não bloqueia cliques */
+        }
+        #tap-to-start.hidden {
+            opacity: 0;
+        }
+
         @keyframes pulse {
             0% { opacity: 0.6; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.1); }
@@ -141,7 +163,7 @@
             background-color: #000000;
             color: #ffffff;
             font-weight: 800;
-            font-size: 1.2rem;  /* TAMANHO REDUZIDO (antes 1.4rem) */
+            font-size: 1.2rem; /* Tamanho reduzido */
             padding: 12px 16px;
             cursor: pointer;
             border: none;
@@ -239,12 +261,13 @@
             color: var(--text-secondary);
             margin-bottom: 4px;
         }
+        /* BARRA DE PROGRESSO MAIS GROSSA */
         .progress-bar {
-            height: 8px;  /* BARRA DE PROGRESSO MAIS GROSSA (antes 5px) */
+            height: 12px;  /* Aumentado de 8px para 12px */
             background: var(--border-color);
             cursor: pointer;
             overflow: hidden;
-            border-radius: 4px;
+            border-radius: 6px;
         }
         .progress-fill {
             height: 100%;
@@ -298,17 +321,18 @@
             height: 36px;
             cursor: pointer;
         }
+        /* BARRA DE VOLUME MAIS GROSSA */
         .volume-slider {
             flex: 1;
-            height: 8px;   /* BARRA DE VOLUME MAIS GROSSA (antes 4px) */
+            height: 12px;   /* Aumentado de 8px para 12px */
             background: var(--border-color);
             -webkit-appearance: none;
-            border-radius: 4px;
+            border-radius: 6px;
         }
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 20px;    /* thumb maior para combinar */
+            height: 20px;
             background: white;
             border: 2px solid var(--primary-color);
             border-radius: 50%;
@@ -628,7 +652,6 @@
             border-top: 1px solid var(--primary-color);
         }
 
-        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: var(--border-color); }
         ::-webkit-scrollbar-thumb { background: var(--primary-color); }
@@ -644,25 +667,20 @@
         </div>
     </div>
 
+    <!-- MENSAGEM PARA TOQUE INICIAL NO MOBILE -->
+    <div id="tap-to-start" class="hidden">
+        <i class="fas fa-hand-point-up"></i> Toque na tela para iniciar
+    </div>
+
     <div class="app">
-        <!-- TOPO COM LETREIRO (Ticker) -->
+        <!-- TOPO COM LETREIRO (AGORA COM ÍCONES ANIMADOS) -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
-                <!-- 
-                    LETREIRO COM ÍCONES ANIMADOS DO FONT AWESOME:
-                    - fa-spin: rotação contínua
-                    - fa-beat: pulsação
-                    - fa-fade: fade in/out
-                    - fa-spin-pulse: rotação com pulsação
-                    - fa-bounce: efeito de quique
-                    Você pode misturar ícones e textos normalmente.
-                -->
                 <span id="topTickerText">
                     <i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - A MELHOR SELEÇÃO MUSICAL 
                     <i class="fas fa-music fa-beat"></i> - SEM ANÚNCIOS SEM VINHETAS 
                     <i class="fas fa-radio fa-fade"></i> - ATUALIZAÇÃO DIARIA 
                     <i class="fas fa-star fa-spin-pulse"></i> - ANÚNCIE AQUI, ENTRE CONTATO 12 98846-1978
-                    <i class="fas fa-heart fa-beat" style="--fa-beat-scale: 1.3;"></i> 
                 </span>
             </div>
         </div>
@@ -715,7 +733,7 @@
         <div class="footer">Rádio Playlist © 2025 • desenvolvido por Roger Mendes</div>
     </div>
 
-    <!-- DRAWER (MENU LATERAL) -->
+    <!-- DRAWER -->
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <div class="drawer" id="drawer">
         <div class="drawer-header">
@@ -964,6 +982,7 @@
             const colorOptions = document.querySelectorAll('.color-option');
             const body = document.body;
             const splash = document.getElementById('splash');
+            const tapToStart = document.getElementById('tap-to-start');
 
             // ========== FUNÇÕES ==========
             function showNotification(msg) {
@@ -972,7 +991,7 @@
                 setTimeout(() => notification.classList.remove('show'), 2000);
             }
 
-            // Esconder splash screen
+            // Esconder splash screen e mensagem de toque
             function hideSplash() {
                 if (splash) {
                     splash.classList.add('hidden');
@@ -980,16 +999,35 @@
                         splash.style.display = 'none';
                     }, 500);
                 }
+                if (tapToStart) {
+                    tapToStart.classList.add('hidden');
+                }
             }
-            // Esconder automaticamente após 2 segundos ou quando a primeira música tocar
-            setTimeout(hideSplash, 2000);
-            musicPlayer.addEventListener('play', hideSplash, { once: true });
+
+            // Função para tentar iniciar a reprodução (autoplay)
+            function attemptAutoPlay() {
+                if (autoPlayAttempted) return;
+                autoPlayAttempted = true;
+                musicPlayer.play().then(() => {
+                    isPlaying = true;
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    hideSplash();
+                }).catch(e => {
+                    console.log('Autoplay bloqueado:', e);
+                    // Mostrar mensagem para toque na tela
+                    if (tapToStart) {
+                        tapToStart.classList.remove('hidden');
+                    }
+                });
+            }
 
             // Ticker
             topTicker.addEventListener('click', () => {
-                const novoTexto = prompt('Editar texto do letreiro:', topTickerText.textContent);
+                const novoTexto = prompt('Editar texto do letreiro:', topTickerText.innerText);
                 if (novoTexto && novoTexto.trim() !== '') {
-                    topTickerText.textContent = novoTexto.trim();
+                    // Substituir o texto mantendo os ícones? Para simplificar, substitui o conteúdo inteiro.
+                    // Para manter ícones, seria necessário um editor mais complexo.
+                    topTickerText.innerHTML = novoTexto.trim();
                 }
             });
 
@@ -1193,6 +1231,7 @@
                 musicPlayer.play().then(() => {
                     isPlaying = true;
                     playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    hideSplash(); // Se ainda estiver visível, esconde
                 }).catch(e => {
                     console.log('Erro ao reproduzir:', e);
                     showNotification('⚠️ Erro, pulando...');
@@ -1450,19 +1489,24 @@
                 updateAdTimer();
                 updateShuffleUI();
 
-                const autoPlay = () => {
-                    if (!autoPlayAttempted) {
-                        musicPlayer.play().then(() => {
-                            isPlaying = true;
-                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        }).catch(() => {});
-                        autoPlayAttempted = true;
+                // Tenta autoplay (pode falhar no mobile)
+                attemptAutoPlay();
+
+                // Qualquer toque na tela tenta iniciar se ainda não tiver começado
+                document.addEventListener('touchstart', function onTouch() {
+                    if (!isPlaying && !autoPlayAttempted) {
+                        attemptAutoPlay();
                     }
-                };
-                autoPlay();
-                document.addEventListener('touchstart', autoPlay, { once: true });
-                document.addEventListener('click', autoPlay, { once: true });
+                }, { once: true });
+                document.addEventListener('click', function onClick() {
+                    if (!isPlaying && !autoPlayAttempted) {
+                        attemptAutoPlay();
+                    }
+                }, { once: true });
             });
+
+            // Se a música começar por qualquer outro meio, esconde a mensagem
+            musicPlayer.addEventListener('play', hideSplash);
         })();
     </script>
 </body>
