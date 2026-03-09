@@ -20,10 +20,10 @@
             display: flex;
             justify-content: center;
             transition: background-color 0.3s, color 0.3s;
-            background-color: #000000 !important; /* Fundo 100% preto */
+            background-color: #000000 !important;
         }
 
-        /* Tema padrão (vermelho moderno) */
+        /* Temas (mantidos iguais) */
         body.theme-red {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -36,7 +36,6 @@
             --primary-dark: #b71c1c;
         }
 
-        /* Tema lilás */
         body.theme-lilac {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -49,7 +48,6 @@
             --primary-dark: #7a4db3;
         }
 
-        /* Tema preto (dark moderno) */
         body.theme-black {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -62,7 +60,6 @@
             --primary-dark: #9b6ad0;
         }
 
-        /* Tema cinza */
         body.theme-gray {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -75,7 +72,6 @@
             --primary-dark: #707070;
         }
 
-        /* Tema azul elétrico */
         body.theme-blue {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -88,7 +84,6 @@
             --primary-dark: #0077be;
         }
 
-        /* Tema verde neon */
         body.theme-green {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -101,7 +96,6 @@
             --primary-dark: #00cc6a;
         }
 
-        /* Tema laranja */
         body.theme-orange {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -114,7 +108,6 @@
             --primary-dark: #cc5500;
         }
 
-        /* Tema rosa */
         body.theme-pink {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -127,7 +120,6 @@
             --primary-dark: #cc0088;
         }
 
-        /* Tema roxo profundo */
         body.theme-purple {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -140,7 +132,6 @@
             --primary-dark: #7700cc;
         }
 
-        /* Tema amarelo */
         body.theme-yellow {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -153,7 +144,6 @@
             --primary-dark: #ccaa00;
         }
 
-        /* Aplicação das variáveis (fallback) */
         body {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -367,7 +357,6 @@
             color: var(--text-secondary);
             margin-bottom: 4px;
         }
-        /* BARRA DE PROGRESSO FINA */
         .progress-bar {
             height: 4px;
             background: var(--border-color);
@@ -446,16 +435,18 @@
             color: var(--text-secondary);
         }
 
-        /* VÍDEO EXTRA */
+        /* VÍDEO EXTRA (agora clicável) */
         .extra-video-container {
             flex: 1;
             background: #000;
             border-top: 1px solid var(--primary-color);
+            cursor: pointer; /* indica que é clicável */
         }
         .extra-video-container video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            pointer-events: none; /* para que o clique seja capturado pelo container */
         }
 
         /* DRAWER */
@@ -707,7 +698,7 @@
         }
     </style>
 </head>
-<body class="theme-red"> <!-- tema inicial -->
+<body class="theme-red">
     <!-- SPLASH SCREEN -->
     <div id="splash">
         <div class="splash-content">
@@ -772,9 +763,9 @@
             </div>
         </div>
 
-        <!-- VÍDEO EXTRA -->
-        <div class="extra-video-container">
-            <video autoplay loop muted playsinline>
+        <!-- VÍDEO EXTRA (clicável) -->
+        <div class="extra-video-container" id="extraVideoContainer">
+            <video autoplay loop muted playsinline id="extraVideo">
                 <source src="coposze.mp4" type="video/mp4">
             </video>
         </div>
@@ -840,16 +831,16 @@
         (function() {
             // ========== CONFIGURAÇÕES ==========
             const CONFIG = {
-                adsInterval: 20,          // número de músicas entre anúncios (agora a cada 20)
+                adsInterval: 20,
                 defaultVolume: 80,
-                adsList: [                // lista de anúncios (SUBSTITUA PELOS SEUS)
+                adsList: [
                     { src: 'zzcv.mp3', title: 'Oferta relâmpago' },
                     { src: 'zzcv.mp3', title: 'Promoção especial' },
                     { src: 'zzcv.mp3', title: 'Novidade na loja' }
                 ]
             };
 
-            // ========== PLAYLIST PRINCIPAL (SUBSTITUA PELOS SEUS ARQUIVOS) ==========
+            // ========== PLAYLIST PRINCIPAL (mantida completa) ==========
             const musicas = [
                 { id: 1, title: "Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "4:00" },
                 { id: 2, title: "Ah Como Eu Amei", artist: "Ivete Sangalo", src: "Ivete Sangalo - Ah_ Como Eu Amei (Benito di Paula)(MP3_160K).mp3", duration: "3:45" },
@@ -961,7 +952,8 @@
 
             // ========== ESTADO GLOBAL ==========
             let playlist = musicas.map(m => ({ ...m, favorite: false }));
-            let currentIndex = 8; // Começa com a música de índice 8 (What's Up - 4 Non Blondes)
+            // Índice inicial aleatório
+            let currentIndex = Math.floor(Math.random() * musicas.length);
             let isPlaying = false;
             let isAdPlaying = false;
             let adsEnabled = true;
@@ -1003,6 +995,7 @@
             const shuffleBtn = document.getElementById('shufflePlayerBtn');
             const colorOptions = document.querySelectorAll('.color-option');
             const body = document.body;
+            const extraVideoContainer = document.getElementById('extraVideoContainer');
 
             // ========== FUNÇÕES AUXILIARES ==========
             function showNotification(msg) {
@@ -1017,7 +1010,6 @@
                 setTimeout(() => splash.classList.add('display-none'), 500);
             }
 
-            // Carrega favoritos do localStorage
             function loadFavorites() {
                 const favs = JSON.parse(localStorage.getItem('radioFavorites')) || [];
                 playlist.forEach(m => {
@@ -1025,13 +1017,11 @@
                 });
             }
 
-            // Salva favoritos no localStorage
             function saveFavorites() {
                 const favs = playlist.filter(m => m.favorite).map(m => m.id);
                 localStorage.setItem('radioFavorites', JSON.stringify(favs));
             }
 
-            // Alterna favorito de uma música
             window.toggleFavorite = function(id) {
                 const musica = playlist.find(m => m.id === id);
                 if (musica) {
@@ -1042,7 +1032,6 @@
                 }
             };
 
-            // Renderiza a playlist no drawer (com base no filtro)
             function renderPlaylist() {
                 let lista = showingFavorites ? playlist.filter(m => m.favorite) : playlist;
                 let html = '';
@@ -1063,7 +1052,6 @@
                 playlistContainer.innerHTML = html || '<div style="text-align:center; padding:10px;">Nenhuma música</div>';
             }
 
-            // Seleciona uma música pelo ID
             window.selectSong = function(id) {
                 if (isAdPlaying) {
                     showNotification('⏸️ Aguarde o anúncio terminar');
@@ -1078,7 +1066,6 @@
                 }
             };
 
-            // Carrega uma faixa
             function loadTrack(index) {
                 if (!playlist.length) return;
                 if (index >= playlist.length) index = 0;
@@ -1095,7 +1082,6 @@
                 renderPlaylist();
             }
 
-            // Tocar música
             function playMusic() {
                 if (isAdPlaying) return;
                 musicPlayer.play()
@@ -1125,7 +1111,6 @@
                 }
             }
 
-            // Próxima faixa
             function nextTrack() {
                 if (isAdPlaying) return;
                 if (shuffle && playlist.length > 1) {
@@ -1158,7 +1143,6 @@
                 if (isPlaying) playMusic();
             }
 
-            // ========== SISTEMA DE ANÚNCIOS ==========
             function updateAdTimer() {
                 if (!adsEnabled) {
                     adTimerEl.textContent = 'OFF';
@@ -1172,18 +1156,14 @@
                 if (!adsEnabled || isAdPlaying) return;
                 const ad = CONFIG.adsList[currentAdIndex];
                 if (!ad) return;
-                // Pausa a música atual
-                if (isPlaying) {
-                    musicPlayer.pause();
-                }
+                if (isPlaying) musicPlayer.pause();
                 adPlayer.src = ad.src;
                 adPlayer.load();
                 isAdPlaying = true;
                 adStatus.innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.title}`;
                 skipAdBtn.style.display = 'inline-block';
                 showNotification(`📢 Anúncio: ${ad.title}`);
-                adPlayer.play()
-                    .catch(() => finishAd());
+                adPlayer.play().catch(() => finishAd());
                 adPlayer.onended = finishAd;
                 adPlayer.onerror = finishAd;
             }
@@ -1192,18 +1172,13 @@
                 isAdPlaying = false;
                 adStatus.innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
                 skipAdBtn.style.display = 'none';
-                if (isPlaying) {
-                    musicPlayer.play();
-                }
-                // Avança para o próximo anúncio na lista
+                if (isPlaying) musicPlayer.play();
                 currentAdIndex = (currentAdIndex + 1) % CONFIG.adsList.length;
             }
 
             function checkAdInterval() {
                 if (!adsEnabled) return;
-                if (musicPlayedCount > 0 && musicPlayedCount % CONFIG.adsInterval === 0) {
-                    playAd();
-                }
+                if (musicPlayedCount > 0 && musicPlayedCount % CONFIG.adsInterval === 0) playAd();
                 updateAdTimer();
             }
 
@@ -1217,9 +1192,7 @@
                 updateAdTimer();
             }
 
-            function testAd() {
-                playAd();
-            }
+            function testAd() { playAd(); }
 
             function skipAd() {
                 if (isAdPlaying) {
@@ -1229,25 +1202,19 @@
                 }
             }
 
-            // ========== TROCAR CORES ==========
             function setTheme(themeClass) {
-                body.className = themeClass; // remove todas as outras classes e adiciona a nova
+                body.className = themeClass;
                 localStorage.setItem('radioTheme', themeClass);
-                colorOptions.forEach(opt => {
-                    opt.classList.toggle('active', opt.dataset.theme === themeClass);
-                });
+                colorOptions.forEach(opt => opt.classList.toggle('active', opt.dataset.theme === themeClass));
                 showNotification('🎨 Tema alterado');
             }
 
-            // Carregar tema salvo
-            const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
-            setTheme(savedTheme);
-
-            colorOptions.forEach(opt => {
-                opt.addEventListener('click', () => {
-                    setTheme(opt.dataset.theme);
+            // ========== EVENTO DE CLIQUE NO VÍDEO EXTRA ==========
+            if (extraVideoContainer) {
+                extraVideoContainer.addEventListener('click', function() {
+                    window.open('https://share.google/clrrmR0x3Dl19bMom', '_blank');
                 });
-            });
+            }
 
             // ========== EVENTOS DO PLAYER ==========
             musicPlayer.addEventListener('timeupdate', () => {
@@ -1275,14 +1242,12 @@
             nextBtn.addEventListener('click', nextTrack);
             playBtn.addEventListener('click', togglePlayPause);
 
-            // Shuffle
             shuffleBtn.addEventListener('click', () => {
                 shuffle = !shuffle;
                 shuffleBtn.classList.toggle('active', shuffle);
                 showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial');
             });
 
-            // Volume
             volumeSlider.addEventListener('input', (e) => {
                 const vol = e.target.value / 100;
                 musicPlayer.volume = vol;
@@ -1293,21 +1258,18 @@
 
             volumeIcon.addEventListener('click', () => {
                 if (musicPlayer.volume > 0) {
-                    musicPlayer.volume = 0;
-                    adPlayer.volume = 0;
+                    musicPlayer.volume = adPlayer.volume = 0;
                     volumeSlider.value = 0;
                     volumePercent.textContent = '0%';
                     volumeIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
                 } else {
-                    musicPlayer.volume = 0.8;
-                    adPlayer.volume = 0.8;
+                    musicPlayer.volume = adPlayer.volume = 0.8;
                     volumeSlider.value = 80;
                     volumePercent.textContent = '80%';
                     volumeIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
                 }
             });
 
-            // Barra de progresso clicável
             document.getElementById('progressBar').addEventListener('click', (e) => {
                 if (isAdPlaying || !musicPlayer.duration) return;
                 const rect = e.currentTarget.getBoundingClientRect();
@@ -1345,11 +1307,8 @@
 
             // ========== OUTRAS OPÇÕES DO DRAWER ==========
             document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen();
-                } else {
-                    document.exitFullscreen();
-                }
+                if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+                else document.exitFullscreen();
             });
 
             document.getElementById('shareDrawerBtn').addEventListener('click', () => {
@@ -1371,21 +1330,19 @@
             testAdBtn.addEventListener('click', testAd);
             skipAdBtn.addEventListener('click', skipAd);
 
+            // Cores
+            const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
+            setTheme(savedTheme);
+            colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
+
             // ========== INICIALIZAÇÃO ==========
             window.addEventListener('load', () => {
-                // Carrega favoritos
                 loadFavorites();
-
-                // Ajusta volume inicial
                 musicPlayer.volume = CONFIG.defaultVolume / 100;
                 adPlayer.volume = CONFIG.defaultVolume / 100;
                 volumeSlider.value = CONFIG.defaultVolume;
                 volumePercent.textContent = CONFIG.defaultVolume + '%';
-
-                // Carrega primeira música (índice 8 - What's Up)
-                loadTrack(8);
-
-                // Tenta autoplay
+                loadTrack(currentIndex); // índice aleatório
                 const attemptPlay = () => {
                     if (!autoPlayAttempted) {
                         autoPlayAttempted = true;
@@ -1393,37 +1350,22 @@
                     }
                 };
                 attemptPlay();
-
-                // Fallback: esconde splash após 3 segundos
                 setTimeout(hideSplash, 3000);
-
-                // Se falhou, ao tocar na tela tenta de novo
                 document.addEventListener('touchstart', () => {
                     if (!isPlaying && musicPlayer.paused && !autoPlayAttempted) {
                         autoPlayAttempted = true;
                         playMusic();
-                    } else if (!isPlaying && musicPlayer.paused) {
-                        playMusic();
-                    }
+                    } else if (!isPlaying && musicPlayer.paused) playMusic();
                 }, { once: true });
                 document.addEventListener('click', () => {
                     if (!isPlaying && musicPlayer.paused && !autoPlayAttempted) {
                         autoPlayAttempted = true;
                         playMusic();
-                    } else if (!isPlaying && musicPlayer.paused) {
-                        playMusic();
-                    }
+                    } else if (!isPlaying && musicPlayer.paused) playMusic();
                 }, { once: true });
-
-                // Atualiza timer de anúncios
                 updateAdTimer();
             });
         })();
     </script>
 </body>
 </html>
-
-
-
-
-
