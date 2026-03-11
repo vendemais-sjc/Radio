@@ -23,7 +23,7 @@
             background-color: #000000 !important;
         }
 
-        /* Temas (mantidos iguais) */
+        /* Temas */
         body.theme-red {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -840,7 +840,7 @@
                 ]
             };
 
-            // ========== PLAYLIST PRINCIPAL (CORRIGIDA) ==========
+            // ========== PLAYLIST PRINCIPAL ==========
             const musicas = [
                 { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
                 { id: 2, title: "A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
@@ -965,7 +965,6 @@
 
             // ========== ESTADO GLOBAL ==========
             let playlist = musicas.map(m => ({ ...m, favorite: false }));
-            // Índice inicial aleatório
             let currentIndex = Math.floor(Math.random() * musicas.length);
             let isPlaying = false;
             let isAdPlaying = false;
@@ -1009,6 +1008,27 @@
             const colorOptions = document.querySelectorAll('.color-option');
             const body = document.body;
             const extraVideoContainer = document.getElementById('extraVideoContainer');
+            const mainVideo = document.getElementById('mainVideo');
+            const carVideo = document.getElementById('carVideo');
+
+            // ========== FUNÇÃO PARA ALTERNAR VÍDEOS ==========
+            function toggleCarModeVideos() {
+                const isCarMode = document.body.classList.contains('car-mode');
+                
+                if (isCarMode) {
+                    // Modo carro: mostra vídeo do carro
+                    mainVideo.style.display = 'none';
+                    carVideo.style.display = 'block';
+                    mainVideo.pause();
+                    carVideo.play().catch(e => console.log('Erro ao iniciar vídeo do carro:', e));
+                } else {
+                    // Modo normal: mostra vídeo principal
+                    mainVideo.style.display = 'block';
+                    carVideo.style.display = 'none';
+                    carVideo.pause();
+                    mainVideo.play().catch(e => console.log('Erro ao iniciar vídeo principal:', e));
+                }
+            }
 
             // ========== FUNÇÕES AUXILIARES ==========
             function showNotification(msg) {
@@ -1333,8 +1353,10 @@
                 }
             });
 
+            // Botão Modo Carro atualizado
             document.getElementById('carModeDrawerBtn').addEventListener('click', () => {
                 document.body.classList.toggle('car-mode');
+                toggleCarModeVideos();
                 showNotification('🚗 Modo carro ' + (document.body.classList.contains('car-mode') ? 'ativado' : 'desativado'));
             });
 
@@ -1355,7 +1377,13 @@
                 adPlayer.volume = CONFIG.defaultVolume / 100;
                 volumeSlider.value = CONFIG.defaultVolume;
                 volumePercent.textContent = CONFIG.defaultVolume + '%';
-                loadTrack(currentIndex); // índice aleatório
+                loadTrack(currentIndex);
+                
+                // Configuração inicial dos vídeos
+                mainVideo.style.display = 'block';
+                carVideo.style.display = 'none';
+                mainVideo.play().catch(e => console.log('Autoplay bloqueado:', e));
+                
                 const attemptPlay = () => {
                     if (!autoPlayAttempted) {
                         autoPlayAttempted = true;
@@ -1382,8 +1410,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
