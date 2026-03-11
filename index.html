@@ -1047,6 +1047,36 @@
                 }
             });
 
+            // ========== FALLBACK PARA MUDAR DE MÚSICA QUANDO A TELA ESTIVER DESLIGADA ==========
+            let lastCheckTime = 0;
+            musicPlayer.addEventListener('timeupdate', function() {
+                // Se não houver anúncio, a música estiver tocando e tiver duração válida
+                if (!isAdPlaying && musicPlayer.duration && musicPlayer.currentTime > 0) {
+                    const timeLeft = musicPlayer.duration - musicPlayer.currentTime;
+                    // Se faltar menos de 0.2 segundos e não tivermos processado este final ainda
+                    if (timeLeft < 0.2 && musicPlayer.currentTime > lastCheckTime) {
+                        lastCheckTime = musicPlayer.currentTime;
+                        // Evita chamadas múltiplas
+                        if (!musicPlayer.ended && musicPlayer.currentTime >= musicPlayer.duration - 0.3) {
+                            // Dispara o próximo manualmente
+                            nextTrack();
+                        }
+                    }
+                }
+            });
+
+            // ========== TENTATIVA DE RETOMAR SE PAUSADO INESPERADAMENTE EM BACKGROUND ==========
+            musicPlayer.addEventListener('pause', function() {
+                if (document.hidden && isPlaying && !isAdPlaying && !musicPlayer.ended) {
+                    // Tenta retomar após um pequeno intervalo (caso o navegador tenha pausado por economia)
+                    setTimeout(() => {
+                        if (document.hidden && isPlaying && musicPlayer.paused) {
+                            musicPlayer.play().catch(e => console.log('Não foi possível retomar em background', e));
+                        }
+                    }, 100);
+                }
+            });
+
             // ========== FUNÇÃO PARA ALTERNAR VÍDEOS ==========
             function toggleCarModeVideos() {
                 const isCarMode = document.body.classList.contains('car-mode');
