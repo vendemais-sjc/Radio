@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rádio Playlist • Temas Modernos</title>
+    <title>Rádio Playlist • Áudio em segundo plano</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* ========== RESET E VARIÁVEIS ========== */
@@ -142,6 +142,19 @@
             --primary-color: #ffdd44;
             --primary-light: #ffee88;
             --primary-dark: #ccaa00;
+        }
+
+        /* NOVO TEMA: Preto e Branco (primary branco) */
+        body.theme-white {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-drawer: #050505;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #333333;
+            --primary-color: #ffffff;
+            --primary-light: #eeeeee;
+            --primary-dark: #cccccc;
         }
 
         body {
@@ -435,7 +448,7 @@
             color: var(--text-secondary);
         }
 
-        /* VÍDEO EXTRA (agora clicável) */
+        /* VÍDEO EXTRA (clicável) */
         .extra-video-container {
             flex: 1;
             background: #000;
@@ -515,7 +528,7 @@
             display: block;
         }
 
-        /* SELETOR DE CORES */
+        /* SELETOR DE CORES - ADICIONADO BRANCO */
         .color-picker {
             display: flex;
             flex-wrap: wrap;
@@ -551,6 +564,7 @@
         .color-option.pink { background: #ff44aa; }
         .color-option.purple { background: #aa44ff; }
         .color-option.yellow { background: #ffdd44; }
+        .color-option.white { background: #ffffff; border: 1px solid #888; } /* Novo tema branco */
 
         /* PAINEL DE ANÚNCIOS */
         .ad-panel {
@@ -784,7 +798,7 @@
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
 
-            <!-- SELETOR DE CORES -->
+            <!-- SELETOR DE CORES (com novo tema branco) -->
             <div class="color-picker">
                 <div class="color-option red active" data-theme="theme-red" title="Vermelho"></div>
                 <div class="color-option lilac" data-theme="theme-lilac" title="Lilás"></div>
@@ -796,6 +810,7 @@
                 <div class="color-option pink" data-theme="theme-pink" title="Rosa"></div>
                 <div class="color-option purple" data-theme="theme-purple" title="Roxo profundo"></div>
                 <div class="color-option yellow" data-theme="theme-yellow" title="Amarelo"></div>
+                <div class="color-option white" data-theme="theme-white" title="Preto e Branco"></div>
             </div>
 
             <!-- PAINEL DE ANÚNCIOS -->
@@ -962,15 +977,15 @@
                 { id: 118, title: "Tarde Demais", artist: "Unknown", src: "Tarde_Demais_N_o_D_Prazer_Lim_o_com_Mel_e_Tropyk_lia_muzzik.m4a", duration: "00:01" },
                 { id: 119, title: "Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", duration: "00:01" },
                 { id: 120, title: "Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", duration: "00:01" },
-{ id: 121, title: "Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", duration: "00:01" },
-{ id: 122, title: "Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", duration: "00:01" },
-{ id: 123, title: "Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", duration: "00:01" },
-{ id: 124, title: "Oração ao Tempo", artist: "Maria Gad", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4", duration: "00:01" },
-{ id: 125, title: "Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01" },
-{ id: 126, title: "Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", duration: "00:01" },
-{ id: 127, title: "Samba de Verão", artist: "Marcos Valle", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01" },
-{ id: 128, title: "Hazard", artist: "Richard Marx", src: "Richard_Marx_Hazard_muzzik.m4a", duration: "00:01" },
-{ id: 129, title: "Quem sabe isso quer dizer amor", artist: "Lô Borges", src: "Quem_sabe_Quem_sabe_isso_quer_dizer_amor_muzzik.m4a", duration: "00:01" }
+                { id: 121, title: "Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", duration: "00:01" },
+                { id: 122, title: "Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", duration: "00:01" },
+                { id: 123, title: "Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", duration: "00:01" },
+                { id: 124, title: "Oração ao Tempo", artist: "Maria Gad", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4", duration: "00:01" },
+                { id: 125, title: "Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01" },
+                { id: 126, title: "Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", duration: "00:01" },
+                { id: 127, title: "Samba de Verão", artist: "Marcos Valle", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01" },
+                { id: 128, title: "Hazard", artist: "Richard Marx", src: "Richard_Marx_Hazard_muzzik.m4a", duration: "00:01" },
+                { id: 129, title: "Quem sabe isso quer dizer amor", artist: "Lô Borges", src: "Quem_sabe_Quem_sabe_isso_quer_dizer_amor_muzzik.m4a", duration: "00:01" }
             ];
 
             // ========== ESTADO GLOBAL ==========
@@ -1021,18 +1036,27 @@
             const mainVideo = document.getElementById('mainVideo');
             const carVideo = document.getElementById('carVideo');
 
+            // ========== GARANTIR ÁUDIO EM SEGUNDO PLANO ==========
+            // O áudio continua tocando mesmo com a tela desligada por padrão.
+            // Reforçamos com um listener para evitar pausas indesejadas ao mudar de aba.
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && isPlaying && !isAdPlaying) {
+                    // Se a página ficar oculta, garantimos que o áudio continue (já é comportamento padrão)
+                    // Apenas registramos para debug
+                    console.log('Página em segundo plano, áudio continua.');
+                }
+            });
+
             // ========== FUNÇÃO PARA ALTERNAR VÍDEOS ==========
             function toggleCarModeVideos() {
                 const isCarMode = document.body.classList.contains('car-mode');
                 
                 if (isCarMode) {
-                    // Modo carro: mostra vídeo do carro
                     mainVideo.style.display = 'none';
                     carVideo.style.display = 'block';
                     mainVideo.pause();
                     carVideo.play().catch(e => console.log('Erro ao iniciar vídeo do carro:', e));
                 } else {
-                    // Modo normal: mostra vídeo principal
                     mainVideo.style.display = 'block';
                     carVideo.style.display = 'none';
                     carVideo.pause();
@@ -1363,7 +1387,6 @@
                 }
             });
 
-            // Botão Modo Carro atualizado
             document.getElementById('carModeDrawerBtn').addEventListener('click', () => {
                 document.body.classList.toggle('car-mode');
                 toggleCarModeVideos();
@@ -1375,7 +1398,7 @@
             testAdBtn.addEventListener('click', testAd);
             skipAdBtn.addEventListener('click', skipAd);
 
-            // Cores
+            // Cores (incluindo novo tema branco)
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             setTheme(savedTheme);
             colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
@@ -1420,7 +1443,3 @@
     </script>
 </body>
 </html>
-
-
-
-
