@@ -6,7 +6,7 @@
     <title>Rádio Playlist • Player Musical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ========== RESET E VARIÁVEIS ========== */
+        /* (mantido o mesmo CSS anterior) */
         * {
             margin: 0;
             padding: 0;
@@ -1175,7 +1175,6 @@
                 playBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
 
-            // ========== CORREÇÃO: USAR isPlaying EM VEZ DE musicPlayer.paused ==========
             function togglePlayPause() {
                 if (isAdPlaying) {
                     if (adPlayer.paused) {
@@ -1496,8 +1495,9 @@
                     tapToStart.classList.add('hidden');
                 };
                 
-                document.addEventListener('touchstart', startPlayer, { once: false });
-                document.addEventListener('click', startPlayer, { once: false });
+                // CORREÇÃO: listeners executam apenas uma vez
+                document.addEventListener('touchstart', startPlayer, { once: true });
+                document.addEventListener('click', startPlayer, { once: true });
                 
                 updateAdTimer();
             });
