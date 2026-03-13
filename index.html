@@ -1175,6 +1175,7 @@
                 playBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
 
+            // ========== CORREÇÃO: USAR isPlaying EM VEZ DE musicPlayer.paused ==========
             function togglePlayPause() {
                 if (isAdPlaying) {
                     if (adPlayer.paused) {
@@ -1183,11 +1184,10 @@
                         adPlayer.pause();
                     }
                 } else {
-                    // Usa a propriedade paused do elemento de áudio para decidir
-                    if (musicPlayer.paused) {
-                        playMusic();
-                    } else {
+                    if (isPlaying) {
                         pauseMusic();
+                    } else {
+                        playMusic();
                     }
                 }
             }
