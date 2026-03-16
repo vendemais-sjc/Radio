@@ -6,7 +6,7 @@
     <title>Rádio Playlist • Player Musical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (mantido o mesmo CSS anterior) */
+        /* (TODO O CSS PERMANECE IGUAL AO ORIGINAL) */
         * {
             margin: 0;
             padding: 0;
@@ -767,7 +767,7 @@
     </div>
 
     <div class="app">
-        <!-- LETREIRO COM ÍCONES ANIMADOS E SAUDAÇÃO PERSONALIZADA -->
+        <!-- LETREIRO COM ÍCONES ANIMADOS -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
                 <span id="topTickerText">
@@ -1089,8 +1089,8 @@
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
 
-            // Elemento do ticker (letreiro) e texto do título
-            const topTickerSpan = document.querySelector('#topTickerText span');
+            // ========== VARIÁVEIS PARA O LETREIRO ==========
+            const topTickerSpan = document.querySelector('#topTickerText');
 
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
@@ -1121,7 +1121,12 @@
                 if (!topTickerSpan) return;
                 const saudacao = getSaudacao();
                 const musicaAtual = playlist[currentIndex];
-                const nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist'; // Remove números do início se houver
+                // Remove os números do início do título (ex: "01 ", "02 " etc)
+                let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
+                // Se o título começar com número sem espaço, tenta outro padrão
+                if (nomeMusica === musicaAtual?.title && musicaAtual?.title.match(/^\d/)) {
+                    nomeMusica = musicaAtual.title.substring(3).trim(); // Remove os primeiros 3 caracteres (ex: "01F" vira "F")
+                }
                 topTickerSpan.innerHTML = `<i class="fas fa-headphones-alt fa-spin"></i> ${saudacao}, você está ouvindo ${nomeMusica} <i class="fas fa-music fa-beat"></i> - continue aqui. <i class="fas fa-radio fa-fade"></i> - RÁDIO PLAYLIST`;
             }
 
@@ -1649,7 +1654,6 @@
                     tapToStart.classList.add('hidden');
                 };
                 
-                // CORREÇÃO: listeners executam apenas uma vez
                 document.addEventListener('touchstart', startPlayer, { once: true });
                 document.addEventListener('click', startPlayer, { once: true });
                 
