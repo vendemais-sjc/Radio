@@ -6,7 +6,7 @@
     <title>Rádio Playlist • Player Musical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (mantido o mesmo CSS anterior) */
+        /* (TODO O CSS PERMANECE IGUAL, APENAS AJUSTEI OS 2 EFEITOS) */
         * {
             margin: 0;
             padding: 0;
@@ -282,7 +282,7 @@
             pointer-events: none;
         }
 
-        /* TOP BAR E TICKER */
+        /* TOP BAR E TICKER (ORIGINAL) */
         .top-bar {
             background: #000;
             border-top: 3px solid var(--primary-color);
@@ -351,26 +351,132 @@
             cursor: pointer;
             z-index: 20;
         }
+
+        /* ========== 2 EFEITOS ========== */
         .track-info {
             padding: 16px 16px 8px;
             text-align: center;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .track-info h2 {
+
+        /* EFEITO 1: LASER (MANTIDO) */
+        .effect-laser {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-color);
-            white-space: nowrap;
+            text-align: center;
+            width: 100%;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+            position: relative;
             overflow: hidden;
-            text-overflow: ellipsis;
+            animation: laser-pulse 2s ease-in-out infinite;
         }
+
+        .effect-laser::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 70%
+            );
+            animation: laser-scan 2.5s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes laser-scan {
+            from { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            to { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes laser-pulse {
+            0%, 100% { text-shadow: 0 0 5px var(--primary-color); }
+            50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-light); }
+        }
+
+        /* EFEITO 2: GLOW MELHORADO (SUBSTITUI O GLITCH) */
+        .effect-glow {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            width: 100%;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+            position: relative;
+            animation: glow-pulse 1.8s ease-in-out infinite;
+            text-shadow: 
+                0 0 10px var(--primary-color),
+                0 0 20px var(--primary-color),
+                0 0 40px var(--primary-light),
+                0 0 80px var(--primary-light);
+        }
+
+        .effect-glow::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: var(--primary-color);
+            filter: blur(15px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: glow-expand 2s ease-in-out infinite;
+            border-radius: 10px;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { 
+                opacity: 1;
+                text-shadow: 
+                    0 0 10px var(--primary-color),
+                    0 0 20px var(--primary-color),
+                    0 0 40px var(--primary-light),
+                    0 0 80px var(--primary-light);
+            }
+            50% { 
+                opacity: 0.9;
+                text-shadow: 
+                    0 0 20px var(--primary-color),
+                    0 0 40px var(--primary-color),
+                    0 0 60px var(--primary-light),
+                    0 0 100px var(--primary-light);
+            }
+        }
+
+        @keyframes glow-expand {
+            0%, 100% { 
+                opacity: 0.3;
+                filter: blur(15px);
+            }
+            50% { 
+                opacity: 0.5;
+                filter: blur(20px);
+            }
+        }
+
         .track-info p {
             font-size: 0.9rem;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .progress-area {
             padding: 0 16px 8px;
         }
@@ -565,6 +671,52 @@
         }
         .drawer-overlay.active {
             display: block;
+        }
+
+        /* SELETOR DE EFEITOS (APENAS 2) */
+        .effect-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #0a0a0a;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .effect-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .effect-btn i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        .effect-btn:hover {
+            background: #1a1a1a;
+        }
+
+        .effect-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .effect-btn.active i {
+            color: white;
         }
 
         /* SELETOR DE CORES */
@@ -767,7 +919,7 @@
     </div>
 
     <div class="app">
-        <!-- LETREIRO COM ÍCONES ANIMADOS -->
+        <!-- LETREIRO DO TOPO (ORIGINAL) -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
                 <span id="topTickerText">
@@ -790,10 +942,15 @@
                 </video>
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
+            
+            <!-- LETREIRO COM EFEITOS (LASER E GLOW) -->
             <div class="track-info">
-                <h2 id="trackTitle">Rádio Playlist</h2>
+                <div class="effect-laser" id="musicTicker">
+                    <i class="fas fa-music"></i> Carregando...
+                </div>
                 <p id="trackArtist">Carregando...</p>
             </div>
+
             <div class="progress-area">
                 <div class="progress-time">
                     <span id="currentTime">0:00</span>
@@ -840,6 +997,16 @@
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
+
+            <!-- SELETOR DE EFEITOS (LASER E GLOW) -->
+            <div class="effect-selector">
+                <div class="effect-btn active" data-effect="laser">
+                    <i class="fas fa-bolt"></i> Efeito Laser
+                </div>
+                <div class="effect-btn" data-effect="glow">
+                    <i class="fas fa-sun"></i> Efeito Glow
+                </div>
+            </div>
 
             <!-- SELETOR DE CORES -->
             <div class="color-picker">
@@ -900,19 +1067,19 @@
 
             // ========== PLAYLIST PRINCIPAL ==========
             const musicas = [
-                { id: 1, title: " 01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
-                { id: 2, title: " 02 A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
-                { id: 3, title: " 03 Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01" },
-                { id: 4, title: " 04 Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01" },
-                { id: 5, title: " 05 I_Love_You", artist: "Jim_Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "00:01" },
-                { id: 6, title: " 06 Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "00:01" },
-                { id: 7, title: " 07 Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "00:01" },
-                { id: 8, title: " 08 What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "00:01" },
-                { id: 9, title: " 09 More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "00:01" },
+                { id: 1, title: "01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
+                { id: 2, title: "02 A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
+                { id: 3, title: "03 Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01" },
+                { id: 4, title: "04 Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01" },
+                { id: 5, title: "05 I_Love_You", artist: "Jim_Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "00:01" },
+                { id: 6, title: "06 Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "00:01" },
+                { id: 7, title: "07 Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "00:01" },
+                { id: 8, title: "08 What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "00:01" },
+                { id: 9, title: "09 More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "00:01" },
                 { id: 10, title: "10 Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", duration: "00:01" },
-                { id: 11, title: "11FaJura_Secreta_Revelação", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
+                { id: 11, title: "11 FaJura_Secreta_Revelação", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
                 { id: 12, title: "12 Noite do Prazer", artist: "Brylho", src: "Brylho_Noite_do_Prazer_muzzik.m4a", duration: "00:01" },
-                { id: 13, title:  "13 Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", duration: "00:01" },
+                { id: 13, title: "13 Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", duration: "00:01" },
                 { id: 14, title: "14 Codinome Beija-Flor", artist: "Cazuza", src: "Cazuza_Codinome_Beija_Flor.m4a", duration: "00:01" },
                 { id: 15, title: "15 Só os Loucos Sabem", artist: "Charlie Brown Jr.", src: "Charlie_Brown_Jr_S_os_loucos_sabem_muzzik.m4a", duration: "00:01" },
                 { id: 16, title: "16 Charme do Mundo", artist: "Marina Lima", src: "Charme_do_Charme_do_Mundo_muzzik.m4a", duration: "00:01" },
@@ -927,7 +1094,7 @@
                 { id: 25, title: "25 Casinha Branca", artist: "DINO & Renato Vianna", src: "DINO_feat_Renato_Vianna_Casinha_Branca_DVD_Barzim_de_Rock_muzzik (1).m4a", duration: "00:01" },
                 { id: 26, title: "26 Send It Back", artist: "Don West", src: "DON_WEST_Send_It_Back_muzzik.m4a", duration: "00:01" },
                 { id: 27, title: "27 Thank You", artist: "Dido", src: "Dido_Thank_You_muzzik.m4a", duration: "00:01" },
-                { id: 28, title: " 28 Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", duration: "00:01" },
+                { id: 28, title: "28 Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", duration: "00:01" },
                 { id: 29, title: "29 Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", duration: "00:01" },
                 { id: 30, title: "30 Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", duration: "00:01" },
                 { id: 31, title: "31 Pensando Nela", artist: "Dom Beto", src: "Dom_Beto_Pensando_Nela_2.m4a", duration: "00:01" },
@@ -945,7 +1112,7 @@
                 { id: 43, title: "43 Noites com Sol", artist: "Flávio Venturini & Vanessa da Mata", src: "Flavio venturininoitescom sol.m4a", duration: "00:01" },
                 { id: 44, title: "44 I_Like_Chopin", artist: "Gazebo", src: "Gazebo_I_Like_Chopin_muzzik.m4a", duration: "00:01" },
                 { id: 45, title: "45 I Was Born To Love You", artist: "Freddie Mercury", src: "Freddie_Mercury_I_Was_Born_To_Love_You_muzzik.m4a", duration: "00:01" },
-                { id: 46, title: "48 Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", duration: "00:01" },
+                { id: 46, title: "46 Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", duration: "00:01" },
                 { id: 47, title: "47 Careless Whisper", artist: "George Michael", src: "George_Michael_Careless_Whisper_muzzik.m4a", duration: "00:01" },
                 { id: 48, title: "48 Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01" },
                 { id: 49, title: "49 Dona Da Minha Cabeça", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dona_da_Minha_Cabe_a_muzzik.m4a", duration: "00:01" },
@@ -959,7 +1126,7 @@
                 { id: 57, title: "57 Papel Machê", artist: "João Bosco", src: "Jo_o_Bosco_Papel_Machê.m4a", duration: "00:01" },
                 { id: 58, title: "58 P.D.A.", artist: "John Legend", src: "John_Legend_P_D_A_muzzik.m4a", duration: "00:01" },
                 { id: 59, title: "59 Gostosa", artist: "Jorge Ben Jor", src: "Jorge_Ben_Jor_Gostosa_muzzik.m4a", duration: "00:01" },
-                { id: 60, title: "69 Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", duration: "00:01" },
+                { id: 60, title: "60 Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", duration: "00:01" },
                 { id: 61, title: "61 Dentro de um Abraço", artist: "Jota Quest", src: "Jota_Quest_Dentro_de_um_Abra_o_muzzik.m4a", duration: "00:01" },
                 { id: 62, title: "62 Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "00:01" },
                 { id: 63, title: "63 Everybody's Changing", artist: "Keane", src: "Keane_Everybody_s_Changing_muzzik.m4a", duration: "00:01" },
@@ -968,8 +1135,8 @@
                 { id: 66, title: "66 Lanterna dos Afogados", artist: "Paralamas", src: "Lanterna_Dos_Lanterna_Dos_Afogados_muzzik.m4a", duration: "00:01" },
                 { id: 67, title: "67 Let It Be Music", artist: "Travel Love Friends", src: "Let_It_Be_Music_Travel_Love_Friends_20.m4a", duration: "00:01" },
                 { id: 68, title: "68 Muito Estranho", artist: "Liga Joe", src: "Liga_Joe_Muito_Estranho_Flashbacks_ (1).m4a", duration: "00:01" },
-                { id: 69, title: "96 Mordida de Amor", artist: "Yahoo ", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", duration: "00:01" },
-                { id: 70, title: "70 oda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", duration: "00:01" },
+                { id: 69, title: "69 Mordida de Amor", artist: "Yahoo ", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", duration: "00:01" },
+                { id: 70, title: "70 Toda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", duration: "00:01" },
                 { id: 71, title: "71 For_Your_Babies ", artist: "Simply_Red", src: "Simply_Red_For_Your_Babies_muzzik.m4a", duration: "00:01" },
                 { id: 72, title: "72 Reluz", artist: "Marcos Sabino", src: "MARCOS_SABINO_MARCOS_SABINO_reluz_muzzik.m4a", duration: "00:01" },
                 { id: 73, title: "73 Meu Mundo e Nada Mais", artist: "Guilherme Arantes", src: "MEU_MUNDO_E_NADA_MAIS_Guilherme_Arantes_muzzik.m4a", duration: "00:01" },
@@ -992,7 +1159,7 @@
                 { id: 90, title: "90 Let Her Go", artist: "Passenger", src: "Passenger_Passenger_Let_Her_Go_Official_Video__18.m4a", duration: "00:01" },
                 { id: 91, title: "91 Mil e Uma Noites de Amor", artist: "Pepeu Gomes", src: "Pepeu_Gomes_Mil_e_uma_noites_de_amor_muzzik.m4a", duration: "00:01" },
                 { id: 92, title: "92 Baby Come Back", artist: "Player", src: "Player_Baby_Come_Back_7.m4a", duration: "00:01" },
-                { id: 93, title: "93Lady_Lady_Lady ", artist: "Joe_Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", duration: "00:01" },
+                { id: 93, title: "93 Lady_Lady_Lady ", artist: "Joe_Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", duration: "00:01" },
                 { id: 94, title: "94 Primavera", artist: "Primavera", src: "Primavera_Album_Primavera_Album_Version__muzzik.m4a", duration: "00:01" },
                 { id: 95, title: "95 Jura_Secreta_Revela", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
                 { id: 96, title: "96 Calm Down", artist: "Rema & Selena Gomez", src: "Rema_Selena_Gomez_Calm_Down_muzzik.m4a", duration: "00:01" },
@@ -1017,26 +1184,23 @@
                 { id: 115, title: "115 Stand by Me", artist: "Ben E. King", src: "Stand_by_Stand_by_Me_muzzik.m4a", duration: "00:01" },
                 { id: 116, title: "116 Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", duration: "00:01" },
                 { id: 117, title: "117 Sultans of Swing", artist: "Dire Straits", src: "Sultans_of_Sultans_of_Swing_Backing_roger.m4a", duration: "00:01" },
-                { id: 118, title: "118A The_Time_KorgStyle_Life ", artist: "A_cha_Remember", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", duration: "00:01" },
+                { id: 118, title: "118 The_Time_KorgStyle_Life ", artist: "A_cha_Remember", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", duration: "00:01" },
                 { id: 119, title: "119 Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", duration: "00:01" },
                 { id: 120, title: "120 Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", duration: "00:01" },
                 { id: 121, title: "121 Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", duration: "00:01" },
                 { id: 122, title: "122 Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", duration: "00:01" },
                 { id: 123, title: "123 Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", duration: "00:01" },
                 { id: 124, title: "124 Oração ao Tempo", artist: "Maria Gad", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4a", duration: "00:01" },
-                { id: 125, title: " 125 Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01" },
+                { id: 125, title: "125 Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01" },
                 { id: 126, title: "126 Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", duration: "00:01" },
                 { id: 127, title: "127 Samba de Verão", artist: "Marcos Valle", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01" },
-{ id: 128, title: "128 Não Vá Embora", artist: "Marisa Monte", src: "Marisa-Montes-não vá embora.m4a", duration: "00:01" },
-{ id: 129, title: "129 My_Love_My_Love", artist: "My_Love_My_Love", src: "My_Love_My_Love_muzzik.m4a", duration: "00:01" },
-{ id: 130, title: "130 Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", duration: "00:01" },
-{ id: 131, title: "131 Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "00:01" },
-{ id: 132, title: "132Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
-{ id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
-{ id: 134, title: "135 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" }
-                
-    
-        
+                { id: 128, title: "128 Não Vá Embora", artist: "Marisa Monte", src: "Marisa-Montes-não vá embora.m4a", duration: "00:01" },
+                { id: 129, title: "129 My_Love_My_Love", artist: "My_Love_My_Love", src: "My_Love_My_Love_muzzik.m4a", duration: "00:01" },
+                { id: 130, title: "130 Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", duration: "00:01" },
+                { id: 131, title: "131 Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "00:01" },
+                { id: 132, title: "132 Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
+                { id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
+                { id: 134, title: "134 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" }
             ];
 
             // ========== ESTADO GLOBAL ==========
@@ -1060,7 +1224,6 @@
             const progressFill = document.getElementById('progressFill');
             const currentTimeEl = document.getElementById('currentTime');
             const totalTimeEl = document.getElementById('totalTime');
-            const trackTitle = document.getElementById('trackTitle');
             const trackArtist = document.getElementById('trackArtist');
             const volumeSlider = document.getElementById('volumeSlider');
             const volumePercent = document.getElementById('volumePercent');
@@ -1092,6 +1255,10 @@
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
 
+            // Elementos do letreiro e seletor de efeitos
+            const musicTicker = document.getElementById('musicTicker');
+            const effectBtns = document.querySelectorAll('.effect-btn');
+
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
                 { src: 'coposze.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
@@ -1104,16 +1271,56 @@
             let timerInterval = null;
             let videoInterval = null;
 
+            // ========== FUNÇÃO PARA OBTER SAUDAÇÃO BASEADA NA HORA ==========
+            function getSaudacao() {
+                const hora = new Date().getHours();
+                if (hora >= 5 && hora < 12) {
+                    return "Bom dia";
+                } else if (hora >= 12 && hora < 18) {
+                    return "Boa tarde";
+                } else {
+                    return "Boa noite";
+                }
+            }
+
+            // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO ==========
+            function updateMusicTicker() {
+                if (!musicTicker) return;
+                const saudacao = getSaudacao();
+                const musicaAtual = playlist[currentIndex];
+                // Remove os números do início do título
+                let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
+                musicTicker.innerHTML = `<i class="fas fa-music"></i> ${saudacao}, você está ouvindo: ${nomeMusica} - continue aqui. <i class="fas fa-headphones-alt"></i>`;
+            }
+
+            // ========== FUNÇÃO PARA TROCAR O EFEITO ==========
+            function changeEffect(effectName) {
+                // Remove todas as classes de efeito
+                musicTicker.className = ''; // Remove todas as classes
+                // Adiciona a nova classe de efeito
+                musicTicker.classList.add(`effect-${effectName}`);
+                
+                // Atualiza botões ativos
+                effectBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.effect === effectName) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Salva preferência
+                localStorage.setItem('tickerEffect', effectName);
+                showNotification(`🎨 Efeito alterado para ${effectName === 'laser' ? 'Laser' : 'Glow'}`);
+            }
+
             // ========== FUNÇÕES PARA CONTROLAR O VÍDEO ÚNICO ==========
             function iniciarVideoUnico() {
-                // Inicia o primeiro vídeo
                 const primeiroVideo = videosExtra[0];
                 extraVideo.src = primeiroVideo.src;
                 extraVideo.load();
                 extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo:', e));
                 extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
                 
-                // Timer
                 if (timerInterval) clearInterval(timerInterval);
                 timerInterval = setInterval(() => {
                     if (tempoRestante > 0) {
@@ -1124,7 +1331,6 @@
                     }
                 }, 1000);
                 
-                // Troca vídeo a cada 60 segundos
                 if (videoInterval) clearInterval(videoInterval);
                 videoInterval = setInterval(() => {
                     videoIndex = (videoIndex + 1) % videosExtra.length;
@@ -1271,15 +1477,15 @@
                 const track = playlist[currentIndex];
                 musicPlayer.src = track.src;
                 musicPlayer.load();
-                trackTitle.textContent = track.title;
                 trackArtist.textContent = track.artist;
                 totalTimeEl.textContent = track.duration;
                 progressFill.style.width = '0%';
                 currentTimeEl.textContent = '0:00';
                 renderPlaylist();
+                updateMusicTicker();
             }
 
-            // ========== FUNÇÕES CORRIGIDAS DO PLAYER ==========
+            // ========== FUNÇÕES DO PLAYER ==========
             function playMusic() {
                 if (isAdPlaying) return;
                 
@@ -1578,12 +1784,25 @@
                 showNotification('🚗 Modo carro ' + (document.body.classList.contains('car-mode') ? 'ativado' : 'desativado'));
             });
 
+            // Event listeners para os botões de efeito
+            effectBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const effect = btn.dataset.effect;
+                    changeEffect(effect);
+                });
+            });
+
             toggleAdsBtn.addEventListener('click', toggleAds);
             testAdBtn.addEventListener('click', testAd);
             skipAdBtn.addEventListener('click', skipAd);
 
+            // ========== CARREGAR TEMA E EFEITO SALVO ==========
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             setTheme(savedTheme);
+            
+            const savedEffect = localStorage.getItem('tickerEffect') || 'laser';
+            changeEffect(savedEffect);
+            
             colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
 
             // ========== LIMPEZA AO SAIR ==========
@@ -1627,11 +1846,11 @@
                     tapToStart.classList.add('hidden');
                 };
                 
-                // CORREÇÃO: listeners executam apenas uma vez
                 document.addEventListener('touchstart', startPlayer, { once: true });
                 document.addEventListener('click', startPlayer, { once: true });
                 
                 updateAdTimer();
+                updateMusicTicker();
             });
         })();
     </script>
