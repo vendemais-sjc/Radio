@@ -6,7 +6,7 @@
     <title>Rádio Playlist • Player Musical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (TODO O CSS PERMANECE IGUAL AO ORIGINAL, APENAS ADICIONEI O NOVO LETREIRO) */
+        /* (TODO O CSS PERMANECE IGUAL, APENAS MODIFIQUEI A PARTE DO NOME DA MÚSICA) */
         * {
             margin: 0;
             padding: 0;
@@ -282,7 +282,7 @@
             pointer-events: none;
         }
 
-        /* TOP BAR E TICKER (ORIGINAL) */
+        /* TOP BAR E TICKER (ORIGINAL - MANTIDO IGUAL) */
         .top-bar {
             background: #000;
             border-top: 3px solid var(--primary-color);
@@ -313,29 +313,6 @@
         }
         
         @keyframes ticker-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* NOVO LETREIRO PARA O NOME DA MÚSICA */
-        .music-ticker-container {
-            background: #000;
-            border-bottom: 1px solid var(--primary-color);
-            padding: 8px 0;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        
-        .music-ticker {
-            display: inline-block;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-            font-weight: 600;
-            padding-left: 100%;
-            animation: music-scroll 20s linear infinite;
-        }
-        
-        @keyframes music-scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
         }
@@ -374,18 +351,44 @@
             cursor: pointer;
             z-index: 20;
         }
+
+        /* NOVO ESTILO PARA O LETREIRO PISCANTE */
         .track-info {
-            padding: 8px 16px 8px;
+            padding: 16px 16px 8px;
             text-align: center;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
+
+        .blinking-ticker {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            width: 100%;
+            animation: blink-animation 1.5s infinite;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        @keyframes blink-animation {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
         .track-info p {
             font-size: 0.9rem;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .progress-area {
             padding: 0 16px 8px;
         }
@@ -782,7 +785,7 @@
     </div>
 
     <div class="app">
-        <!-- LETREIRO DO TOPO (ORIGINAL) -->
+        <!-- LETREIRO DO TOPO (ORIGINAL - CONTINUA IGUAL) -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
                 <span id="topTickerText">
@@ -791,13 +794,6 @@
                     <i class="fas fa-radio fa-fade"></i> - ATUALIZAÇÃO DIÁRIA 
                     <i class="fas fa-star fa-spin-pulse"></i> - CONTATO 12 98846-1978
                 </span>
-            </div>
-        </div>
-
-        <!-- NOVO LETREIRO PARA O NOME DA MÚSICA COM SAUDAÇÃO -->
-        <div class="music-ticker-container">
-            <div class="music-ticker" id="musicTicker">
-                <i class="fas fa-music"></i> Carregando música...
             </div>
         </div>
 
@@ -812,10 +808,15 @@
                 </video>
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
+            
+            <!-- NOVO LETREIRO PISCANTE ONDE FICA O NOME DA MÚSICA -->
             <div class="track-info">
-                <!-- O nome da música agora está no letreiro acima, então removemos o h2 -->
+                <div class="blinking-ticker" id="musicTicker">
+                    <i class="fas fa-music"></i> Carregando...
+                </div>
                 <p id="trackArtist">Carregando...</p>
             </div>
+
             <div class="progress-area">
                 <div class="progress-time">
                     <span id="currentTime">0:00</span>
@@ -1110,7 +1111,7 @@
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
 
-            // NOVO: Elemento do letreiro de música
+            // NOVO: Elemento do letreiro piscante
             const musicTicker = document.getElementById('musicTicker');
 
             // ========== LISTA DE VÍDEOS EXTRA ==========
@@ -1137,13 +1138,17 @@
                 }
             }
 
-            // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO DA MÚSICA ==========
+            // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO PISCANTE ==========
             function updateMusicTicker() {
                 if (!musicTicker) return;
                 const saudacao = getSaudacao();
                 const musicaAtual = playlist[currentIndex];
                 // Remove os números do início do título
                 let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
+                // Se ainda começar com número, remove os primeiros 3 caracteres
+                if (nomeMusica === musicaAtual?.title && musicaAtual?.title.match(/^\d/)) {
+                    nomeMusica = musicaAtual.title.substring(3).trim();
+                }
                 musicTicker.innerHTML = `<i class="fas fa-music"></i> ${saudacao}, você está ouvindo: ${nomeMusica} - continue aqui. <i class="fas fa-headphones-alt"></i>`;
             }
 
@@ -1319,7 +1324,7 @@
                 progressFill.style.width = '0%';
                 currentTimeEl.textContent = '0:00';
                 renderPlaylist();
-                updateMusicTicker(); // Atualiza o letreiro da música
+                updateMusicTicker(); // Atualiza o letreiro piscante
             }
 
             // ========== FUNÇÕES CORRIGIDAS DO PLAYER ==========
@@ -1674,7 +1679,7 @@
                 document.addEventListener('click', startPlayer, { once: true });
                 
                 updateAdTimer();
-                updateMusicTicker(); // Atualiza o letreiro da música
+                updateMusicTicker(); // Atualiza o letreiro piscante
             });
         })();
     </script>
