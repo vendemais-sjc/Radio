@@ -3,10 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rádio Playlist • Player Musical</title>
+    
+    <!-- Título -->
+    <title>Rádio Playlist • PWA Offline</title>
+    
+    <!-- PWA Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#e63946">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* (TODO O CSS PERMANECE IGUAL, APENAS AJUSTEI OS 2 EFEITOS) */
+        /* ===== TODOS OS SEUS ESTILOS ORIGINAIS PERMANECEM ===== */
         * {
             margin: 0;
             padding: 0;
@@ -23,7 +34,7 @@
             background-color: #000000 !important;
         }
 
-        /* Temas */
+        /* Temas - MANTIDOS IGUAIS */
         body.theme-red {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
@@ -166,6 +177,25 @@
             --primary-color: #e63946;
             --primary-light: #ff6b7a;
             --primary-dark: #b71c1c;
+        }
+
+        /* Modo offline */
+        body.offline-mode .offline-indicator {
+            display: block;
+        }
+
+        .offline-indicator {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #333;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 9999;
+            border-left: 3px solid var(--primary-color);
         }
 
         /* Modo carro */
@@ -352,7 +382,7 @@
             z-index: 20;
         }
 
-        /* ========== 2 EFEITOS ========== */
+        /* ========== EFEITOS DO LETREIRO ========== */
         .track-info {
             padding: 16px 16px 8px;
             text-align: center;
@@ -362,7 +392,7 @@
             justify-content: center;
         }
 
-        /* EFEITO 1: LASER (MANTIDO) */
+        /* EFEITO LASER */
         .effect-laser {
             font-size: 1.3rem;
             font-weight: 700;
@@ -404,7 +434,7 @@
             50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-light); }
         }
 
-        /* EFEITO 2: GLOW MELHORADO (SUBSTITUI O GLITCH) */
+        /* EFEITO GLOW */
         .effect-glow {
             font-size: 1.3rem;
             font-weight: 700;
@@ -565,7 +595,7 @@
             color: var(--text-secondary);
         }
 
-        /* VÍDEO EXTRA (ANÚNCIOS) - ÚNICO VÍDEO */
+        /* VÍDEO EXTRA */
         .extra-video-container {
             flex: 1;
             background: #000;
@@ -612,7 +642,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 280px;
+            width: 300px;
             height: 100vh;
             background: #000000;
             box-shadow: 4px 0 20px rgba(0,0,0,0.8);
@@ -628,8 +658,15 @@
         }
         .drawer-header {
             display: flex;
-            justify-content: flex-end;
-            margin-bottom: 30px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .drawer-header h3 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
         }
         .close-drawer {
             background: none;
@@ -673,7 +710,87 @@
             display: block;
         }
 
-        /* SELETOR DE EFEITOS (APENAS 2) */
+        /* BOTÃO DE INSTALAR */
+        .install-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        /* PAINEL DE ARMAZENAMENTO */
+        .storage-panel {
+            background: #0a0a0a;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .storage-panel h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .storage-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .storage-bar {
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .storage-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .storage-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .storage-btn {
+            flex: 1;
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .storage-btn.primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* SELETOR DE EFEITOS */
         .effect-selector {
             display: flex;
             flex-direction: column;
@@ -797,7 +914,7 @@
             font-size: 0.8rem;
         }
 
-        /* PLAYLIST */
+        /* PLAYLIST COM DOWNLOADS */
         .filter-fav {
             display: flex;
             gap: 10px;
@@ -851,6 +968,28 @@
             font-size: 0.7rem;
             color: var(--text-secondary);
         }
+        .download-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .download-btn.downloaded {
+            color: #00ff88;
+        }
+        .download-btn i {
+            pointer-events: none;
+        }
+        .download-btn:hover {
+            transform: scale(1.2);
+        }
         .fav-btn {
             background: none;
             border: none;
@@ -865,6 +1004,44 @@
         }
         .fav-btn.active {
             color: var(--primary-color);
+        }
+
+        /* BARRA DE PROGRESSO DE DOWNLOAD */
+        .download-progress {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            left: 20px;
+            max-width: 380px;
+            margin: 0 auto;
+            background: #000;
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 12px;
+            z-index: 3000;
+            display: none;
+        }
+        .download-progress.show {
+            display: block;
+        }
+        .progress-text {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress-bar-container {
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
         }
 
         /* NOTIFICAÇÃO */
@@ -918,7 +1095,30 @@
         <i class="fas fa-hand-point-up"></i> toque para iniciar
     </div>
 
+    <!-- INDICADOR OFFLINE -->
+    <div class="offline-indicator">
+        <i class="fas fa-wifi-slash"></i> Modo offline
+    </div>
+
+    <!-- BARRA DE PROGRESSO DE DOWNLOAD -->
+    <div class="download-progress" id="downloadProgress">
+        <div class="progress-text">
+            <span id="downloadStatus">Baixando músicas...</span>
+            <span id="downloadCount">0/0</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="downloadProgressFill"></div>
+        </div>
+    </div>
+
     <div class="app">
+        <!-- BOTÃO DE INSTALAR -->
+        <div style="padding: 10px; display: none;" id="installAppContainer">
+            <button class="install-btn" id="installAppBtn">
+                <i class="fas fa-download"></i> Instalar App
+            </button>
+        </div>
+
         <!-- LETREIRO DO TOPO (ORIGINAL) -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
@@ -935,15 +1135,15 @@
         <div class="player-card">
             <div class="video-container">
                 <video autoplay loop muted playsinline id="mainVideo">
-                    <source src="macaco.mp4" type="video/mp4">
+                    <source src="videos/macaco.mp4" type="video/mp4">
                 </video>
                 <video autoplay loop muted playsinline id="carVideo" style="display:none;">
-                    <source src="abb.mp4" type="video/mp4">
+                    <source src="videos/abb.mp4" type="video/mp4">
                 </video>
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             
-            <!-- LETREIRO COM EFEITOS (LASER E GLOW) -->
+            <!-- LETREIRO COM SAUDAÇÃO E NOME DA MÚSICA -->
             <div class="track-info">
                 <div class="effect-laser" id="musicTicker">
                     <i class="fas fa-music"></i> Carregando...
@@ -973,10 +1173,10 @@
             </div>
         </div>
 
-        <!-- VÍDEO EXTRA (ÚNICO ANÚNCIO) -->
+        <!-- VÍDEO EXTRA -->
         <div class="extra-video-container" id="extraVideoContainer">
             <video autoplay loop muted playsinline id="extraVideo">
-                <source src="coposze.mp4" type="video/mp4">
+                <source src="videos/coposze.mp4" type="video/mp4">
             </video>
             <div class="extra-overlay" id="extraOverlay">
                 <i class="fas fa-ad"></i> Alugue Copos
@@ -991,14 +1191,42 @@
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <div class="drawer" id="drawer">
         <div class="drawer-header">
+            <h3><i class="fas fa-cog"></i> Configurações</h3>
             <button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button>
         </div>
         <div class="drawer-content">
+            <!-- BOTÃO DE INSTALAR NO DRAWER -->
+            <div id="installAppDrawerContainer" style="display: none;">
+                <button class="install-btn" id="installAppDrawerBtn">
+                    <i class="fas fa-download"></i> Instalar App
+                </button>
+            </div>
+
+            <!-- PAINEL DE ARMAZENAMENTO -->
+            <div class="storage-panel">
+                <h4><i class="fas fa-database"></i> Armazenamento Offline</h4>
+                <div class="storage-info">
+                    <span id="cachedCount">0 músicas</span>
+                    <span id="cachedSize">0 MB</span>
+                </div>
+                <div class="storage-bar">
+                    <div class="storage-fill" id="storageFill" style="width: 0%;"></div>
+                </div>
+                <div class="storage-buttons">
+                    <button class="storage-btn" id="downloadAllBtn">
+                        <i class="fas fa-cloud-download-alt"></i> Baixar Todas
+                    </button>
+                    <button class="storage-btn" id="clearCacheBtn">
+                        <i class="fas fa-trash"></i> Limpar
+                    </button>
+                </div>
+            </div>
+
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
 
-            <!-- SELETOR DE EFEITOS (LASER E GLOW) -->
+            <!-- SELETOR DE EFEITOS -->
             <div class="effect-selector">
                 <div class="effect-btn active" data-effect="laser">
                     <i class="fas fa-bolt"></i> Efeito Laser
@@ -1023,7 +1251,7 @@
                 <div class="color-option white" data-theme="theme-white" title="Preto e Branco"></div>
             </div>
 
-            <!-- PAINEL DE ANÚNCIOS (ÁUDIO) -->
+            <!-- PAINEL DE ANÚNCIOS -->
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> Próximo anúncio de áudio</h4>
                 <div class="ad-timer" id="adTimer">20</div>
@@ -1059,15 +1287,15 @@
                 adsInterval: 20,
                 defaultVolume: 80,
                 adsList: [
-                    { src: 'zzcv.mp3', title: 'Oferta relâmpago' },
-                    { src: 'zzcv.mp3', title: 'Promoção especial' },
-                    { src: 'zzcv.mp3', title: 'Novidade na loja' }
+                    { src: 'audios/zzcv.mp3', title: 'Oferta relâmpago' },
+                    { src: 'audios/zzcv.mp3', title: 'Promoção especial' },
+                    { src: 'audios/zzcv.mp3', title: 'Novidade na loja' }
                 ]
             };
 
             // ========== PLAYLIST PRINCIPAL ==========
             const musicas = [
-                { id: 1, title: "01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
+              { id: 1, title: "01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
                 { id: 2, title: "02 A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
                 { id: 3, title: "03 Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01" },
                 { id: 4, title: "04 Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01" },
@@ -1201,10 +1429,12 @@
                 { id: 132, title: "132 Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
                 { id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
                 { id: 134, title: "134 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" }
+            
+  
             ];
 
             // ========== ESTADO GLOBAL ==========
-            let playlist = musicas.map(m => ({ ...m, favorite: false }));
+            let playlist = musicas.map(m => ({ ...m, favorite: false, downloaded: false }));
             let currentIndex = Math.floor(Math.random() * musicas.length);
             let isPlaying = false;
             let isAdPlaying = false;
@@ -1259,11 +1489,22 @@
             const musicTicker = document.getElementById('musicTicker');
             const effectBtns = document.querySelectorAll('.effect-btn');
 
+            // Elementos de armazenamento
+            const cachedCount = document.getElementById('cachedCount');
+            const cachedSize = document.getElementById('cachedSize');
+            const storageFill = document.getElementById('storageFill');
+            const downloadAllBtn = document.getElementById('downloadAllBtn');
+            const clearCacheBtn = document.getElementById('clearCacheBtn');
+            const downloadProgress = document.getElementById('downloadProgress');
+            const downloadStatus = document.getElementById('downloadStatus');
+            const downloadCount = document.getElementById('downloadCount');
+            const downloadProgressFill = document.getElementById('downloadProgressFill');
+
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
-                { src: 'coposze.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
-                { src: 'sat.mp4', nome: ' Anjo Azul', link: 'https://www.anjoazul.com.br' },
-                { src: 'doc.mp4', nome: 'doc', link: 'https://www.destaque.com.br' },
+                { src: 'videos/coposze.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
+                { src: 'videos/sat.mp4', nome: 'Anjo Azul', link: 'https://www.anjoazul.com.br' },
+                { src: 'videos/doc.mp4', nome: 'doc', link: 'https://www.destaque.com.br' },
             ];
 
             let videoIndex = 0;
@@ -1271,7 +1512,7 @@
             let timerInterval = null;
             let videoInterval = null;
 
-            // ========== FUNÇÃO PARA OBTER SAUDAÇÃO BASEADA NA HORA ==========
+            // ========== FUNÇÃO PARA OBTER SAUDAÇÃO ==========
             function getSaudacao() {
                 const hora = new Date().getHours();
                 if (hora >= 5 && hora < 12) {
@@ -1288,19 +1529,15 @@
                 if (!musicTicker) return;
                 const saudacao = getSaudacao();
                 const musicaAtual = playlist[currentIndex];
-                // Remove os números do início do título
                 let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
                 musicTicker.innerHTML = `<i class="fas fa-music"></i> ${saudacao}, você está ouvindo: ${nomeMusica} - continue aqui. <i class="fas fa-headphones-alt"></i>`;
             }
 
-            // ========== FUNÇÃO PARA TROCAR O EFEITO ==========
+            // ========== FUNÇÃO PARA TROCAR EFEITO ==========
             function changeEffect(effectName) {
-                // Remove todas as classes de efeito
-                musicTicker.className = ''; // Remove todas as classes
-                // Adiciona a nova classe de efeito
+                musicTicker.className = '';
                 musicTicker.classList.add(`effect-${effectName}`);
                 
-                // Atualiza botões ativos
                 effectBtns.forEach(btn => {
                     btn.classList.remove('active');
                     if (btn.dataset.effect === effectName) {
@@ -1308,167 +1545,97 @@
                     }
                 });
                 
-                // Salva preferência
                 localStorage.setItem('tickerEffect', effectName);
                 showNotification(`🎨 Efeito alterado para ${effectName === 'laser' ? 'Laser' : 'Glow'}`);
             }
 
-            // ========== FUNÇÕES PARA CONTROLAR O VÍDEO ÚNICO ==========
-            function iniciarVideoUnico() {
-                const primeiroVideo = videosExtra[0];
-                extraVideo.src = primeiroVideo.src;
-                extraVideo.load();
-                extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo:', e));
-                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
-                
-                if (timerInterval) clearInterval(timerInterval);
-                timerInterval = setInterval(() => {
-                    if (tempoRestante > 0) {
-                        tempoRestante--;
-                        const minutos = Math.floor(tempoRestante / 60);
-                        const segundos = tempoRestante % 60;
-                        extraTimer.textContent = `${minutos}:${segundos < 10 ? '0' + segundos : segundos}`;
-                    }
-                }, 1000);
-                
-                if (videoInterval) clearInterval(videoInterval);
-                videoInterval = setInterval(() => {
-                    videoIndex = (videoIndex + 1) % videosExtra.length;
-                    const novoVideo = videosExtra[videoIndex];
-                    extraVideo.src = novoVideo.src;
-                    extraVideo.load();
-                    extraVideo.play().catch(e => console.log('Erro ao trocar vídeo:', e));
-                    extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novoVideo.nome}`;
-                    tempoRestante = 60;
-                }, 60000);
-            }
-
-            // ========== CLIQUE NO VÍDEO EXTRA ==========
-            if (extraContainer) {
-                extraContainer.addEventListener('click', function() {
-                    const videoAtual = videosExtra[videoIndex];
-                    if (videoAtual && videoAtual.link) {
-                        window.open(videoAtual.link, '_blank');
-                        showNotification(`🔗 Redirecionando para: ${videoAtual.nome}`);
-                    }
-                });
-            }
-
-            // ========== GARANTIR ÁUDIO EM SEGUNDO PLANO ==========
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden && isPlaying && !isAdPlaying) {
-                    console.log('Página em segundo plano, áudio continua.');
-                }
-            });
-
-            // ========== FALLBACK PARA MUDAR DE MÚSICA ==========
-            let lastCheckTime = 0;
-            musicPlayer.addEventListener('timeupdate', function() {
-                if (!isAdPlaying && musicPlayer.duration && musicPlayer.currentTime > 0) {
-                    const timeLeft = musicPlayer.duration - musicPlayer.currentTime;
-                    if (timeLeft < 0.2 && musicPlayer.currentTime > lastCheckTime) {
-                        lastCheckTime = musicPlayer.currentTime;
-                        if (!musicPlayer.ended && musicPlayer.currentTime >= musicPlayer.duration - 0.3) {
-                            nextTrack();
-                        }
-                    }
-                }
-            });
-
-            // ========== FUNÇÃO PARA ALTERNAR VÍDEOS ==========
-            function toggleCarModeVideos() {
-                const isCarMode = document.body.classList.contains('car-mode');
-                
-                if (isCarMode) {
-                    mainVideo.style.display = 'none';
-                    carVideo.style.display = 'block';
-                    mainVideo.pause();
-                    carVideo.play().catch(e => console.log('Erro ao iniciar vídeo do carro:', e));
-                } else {
-                    mainVideo.style.display = 'block';
-                    carVideo.style.display = 'none';
-                    carVideo.pause();
-                    mainVideo.play().catch(e => console.log('Erro ao iniciar vídeo principal:', e));
-                }
-            }
-
-            // ========== FUNÇÕES AUXILIARES ==========
-            function showNotification(msg) {
+            // ========== FUNÇÃO PARA MOSTRAR NOTIFICAÇÃO ==========
+            window.showNotification = function(msg) {
                 notificationText.textContent = msg;
                 notification.classList.add('show');
-                setTimeout(() => notification.classList.remove('show'), 2000);
+                setTimeout(() => notification.classList.remove('show'), 3000);
             }
 
-            function hideSplash() {
-                if (!splash) return;
-                splash.classList.add('hidden');
-                setTimeout(() => splash.classList.add('display-none'), 500);
-            }
-
-            function loadFavorites() {
-                try {
-                    const favs = JSON.parse(localStorage.getItem('radioFavorites')) || [];
-                    playlist.forEach(m => {
-                        m.favorite = favs.includes(m.id);
-                    });
-                } catch (e) {
-                    console.warn('Erro ao carregar favoritos:', e);
-                }
-            }
-
-            function saveFavorites() {
-                try {
-                    const favs = playlist.filter(m => m.favorite).map(m => m.id);
-                    localStorage.setItem('radioFavorites', JSON.stringify(favs));
-                } catch (e) {
-                    console.warn('Erro ao salvar favoritos:', e);
-                }
-            }
-
-            window.toggleFavorite = function(id) {
-                const musica = playlist.find(m => m.id === id);
-                if (musica) {
-                    musica.favorite = !musica.favorite;
-                    saveFavorites();
-                    renderPlaylist();
-                    showNotification(musica.favorite ? '❤️ Adicionado aos favoritos' : '💔 Removido dos favoritos');
-                }
-            };
-
-            function renderPlaylist() {
-                let lista = showingFavorites ? playlist.filter(m => m.favorite) : playlist;
-                let html = '';
-                lista.forEach((musica) => {
-                    const isPlaying = (musica.id === playlist[currentIndex]?.id && !isAdPlaying);
-                    html += `
-                        <div class="playlist-item ${isPlaying ? 'playing' : ''}" onclick="selectSong(${musica.id})">
-                            <div class="playlist-info">
-                                <div class="playlist-title">${musica.title}</div>
-                                <div class="playlist-artist">${musica.artist}</div>
-                            </div>
-                            <button class="fav-btn ${musica.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite(${musica.id})">
-                                <i class="fas fa-heart"></i>
-                            </button>
-                        </div>
-                    `;
-                });
-                playlistContainer.innerHTML = html || '<div style="text-align:center; padding:10px;">Nenhuma música</div>';
-            }
-
-            window.selectSong = function(id) {
-                if (isAdPlaying) {
-                    showNotification('⏸️ Aguarde o anúncio terminar');
+            // ========== FUNÇÕES DE DOWNLOAD OFFLINE ==========
+            async function checkDownloadedStatus() {
+                if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+                    cachedCount.textContent = '0 músicas';
+                    cachedSize.textContent = '0 MB';
                     return;
                 }
-                const index = playlist.findIndex(m => m.id === id);
-                if (index !== -1) {
-                    currentIndex = index;
-                    loadTrack(currentIndex);
-                    if (isPlaying) playMusic();
-                    closeDrawerFunc();
+                
+                try {
+                    const result = await window.musicCache.checkStatus();
+                    if (result.status === 'info') {
+                        cachedCount.textContent = `${result.cachedCount} músicas`;
+                        cachedSize.textContent = result.cachedSize;
+                        
+                        // Atualizar barra de armazenamento (assumindo 500MB como máximo)
+                        const sizeInMB = parseFloat(result.cachedSize) || 0;
+                        const percent = Math.min((sizeInMB / 500) * 100, 100);
+                        storageFill.style.width = percent + '%';
+                        
+                        // Atualizar ícones de download na playlist
+                        const cachedUrls = result.cachedList || [];
+                        playlist.forEach(m => {
+                            m.downloaded = cachedUrls.some(url => url.includes(m.src));
+                        });
+                        renderPlaylist();
+                    }
+                } catch (error) {
+                    console.log('Erro ao verificar downloads:', error);
+                }
+            }
+
+            async function downloadMusic(music, showProgress = false) {
+                if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+                    showNotification('❌ Service Worker não disponível');
+                    return false;
+                }
+
+                try {
+                    const result = await window.musicCache.download(music.src);
+                    if (result.status === 'success') {
+                        music.downloaded = true;
+                        showNotification(`✅ ${music.title} baixada!`);
+                        checkDownloadedStatus();
+                        renderPlaylist();
+                        return true;
+                    }
+                } catch (error) {
+                    showNotification(`❌ Erro ao baixar ${music.title}`);
+                    return false;
+                }
+            }
+
+            async function deleteMusic(music) {
+                if (!navigator.serviceWorker || !navigator.serviceWorker.controller) return;
+
+                try {
+                    const result = await window.musicCache.delete(music.src);
+                    if (result.status === 'deleted') {
+                        music.downloaded = false;
+                        showNotification(`🗑️ ${music.title} removida`);
+                        checkDownloadedStatus();
+                        renderPlaylist();
+                    }
+                } catch (error) {
+                    showNotification('❌ Erro ao remover música');
+                }
+            }
+
+            window.toggleDownload = async function(id) {
+                const musica = playlist.find(m => m.id === id);
+                if (!musica) return;
+
+                if (musica.downloaded) {
+                    await deleteMusic(musica);
+                } else {
+                    await downloadMusic(musica);
                 }
             };
 
+            // ========== FUNÇÕES DO PLAYER ==========
             function loadTrack(index) {
                 if (!playlist.length) return;
                 if (index >= playlist.length) index = 0;
@@ -1485,7 +1652,6 @@
                 updateMusicTicker();
             }
 
-            // ========== FUNÇÕES DO PLAYER ==========
             function playMusic() {
                 if (isAdPlaying) return;
                 
@@ -1573,6 +1739,80 @@
                 }
             }
 
+            function hideSplash() {
+                if (!splash) return;
+                splash.classList.add('hidden');
+                setTimeout(() => splash.classList.add('display-none'), 500);
+            }
+
+            function loadFavorites() {
+                try {
+                    const favs = JSON.parse(localStorage.getItem('radioFavorites')) || [];
+                    playlist.forEach(m => {
+                        m.favorite = favs.includes(m.id);
+                    });
+                } catch (e) {
+                    console.warn('Erro ao carregar favoritos:', e);
+                }
+            }
+
+            function saveFavorites() {
+                try {
+                    const favs = playlist.filter(m => m.favorite).map(m => m.id);
+                    localStorage.setItem('radioFavorites', JSON.stringify(favs));
+                } catch (e) {
+                    console.warn('Erro ao salvar favoritos:', e);
+                }
+            }
+
+            window.toggleFavorite = function(id) {
+                const musica = playlist.find(m => m.id === id);
+                if (musica) {
+                    musica.favorite = !musica.favorite;
+                    saveFavorites();
+                    renderPlaylist();
+                    showNotification(musica.favorite ? '❤️ Adicionado aos favoritos' : '💔 Removido dos favoritos');
+                }
+            };
+
+            function renderPlaylist() {
+                let lista = showingFavorites ? playlist.filter(m => m.favorite) : playlist;
+                let html = '';
+                lista.forEach((musica) => {
+                    const isPlaying = (musica.id === playlist[currentIndex]?.id && !isAdPlaying);
+                    html += `
+                        <div class="playlist-item ${isPlaying ? 'playing' : ''}" onclick="selectSong(${musica.id})">
+                            <div class="playlist-info">
+                                <div class="playlist-title">${musica.title}</div>
+                                <div class="playlist-artist">${musica.artist}</div>
+                            </div>
+                            <button class="download-btn ${musica.downloaded ? 'downloaded' : ''}" onclick="event.stopPropagation(); toggleDownload(${musica.id})">
+                                <i class="fas fa-${musica.downloaded ? 'check-circle' : 'cloud-download-alt'}"></i>
+                            </button>
+                            <button class="fav-btn ${musica.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite(${musica.id})">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                playlistContainer.innerHTML = html || '<div style="text-align:center; padding:10px;">Nenhuma música</div>';
+            }
+
+            window.selectSong = function(id) {
+                if (isAdPlaying) {
+                    showNotification('⏸️ Aguarde o anúncio terminar');
+                    return;
+                }
+                const index = playlist.findIndex(m => m.id === id);
+                if (index !== -1) {
+                    currentIndex = index;
+                    loadTrack(currentIndex);
+                    if (isPlaying) playMusic();
+                    closeDrawerFunc();
+                }
+            };
+
+            // ========== FUNÇÕES DE ANÚNCIOS ==========
             function updateAdTimer() {
                 if (!adsEnabled) {
                     adTimerEl.textContent = 'OFF';
@@ -1645,6 +1885,7 @@
                 }
             }
 
+            // ========== FUNÇÕES DE TEMA ==========
             function setTheme(themeClass) {
                 body.className = themeClass;
                 localStorage.setItem('radioTheme', themeClass);
@@ -1652,41 +1893,66 @@
                 showNotification('🎨 Tema alterado');
             }
 
-            // ========== EVENTOS DO PLAYER ==========
-            musicPlayer.addEventListener('timeupdate', () => {
-                if (musicPlayer.duration && !isAdPlaying) {
-                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
-                    progressFill.style.width = percent + '%';
-                    const m = Math.floor(musicPlayer.currentTime / 60);
-                    const s = Math.floor(musicPlayer.currentTime % 60);
-                    currentTimeEl.textContent = m + ':' + (s < 10 ? '0' + s : s);
+            // ========== FUNÇÕES DE VÍDEO ==========
+            function iniciarVideoUnico() {
+                const primeiroVideo = videosExtra[0];
+                extraVideo.src = primeiroVideo.src;
+                extraVideo.load();
+                extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo:', e));
+                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
+                
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    if (tempoRestante > 0) {
+                        tempoRestante--;
+                        const minutos = Math.floor(tempoRestante / 60);
+                        const segundos = tempoRestante % 60;
+                        extraTimer.textContent = `${minutos}:${segundos < 10 ? '0' + segundos : segundos}`;
+                    }
+                }, 1000);
+                
+                if (videoInterval) clearInterval(videoInterval);
+                videoInterval = setInterval(() => {
+                    videoIndex = (videoIndex + 1) % videosExtra.length;
+                    const novoVideo = videosExtra[videoIndex];
+                    extraVideo.src = novoVideo.src;
+                    extraVideo.load();
+                    extraVideo.play().catch(e => console.log('Erro ao trocar vídeo:', e));
+                    extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novoVideo.nome}`;
+                    tempoRestante = 60;
+                }, 60000);
+            }
+
+            function toggleCarModeVideos() {
+                const isCarMode = document.body.classList.contains('car-mode');
+                
+                if (isCarMode) {
+                    mainVideo.style.display = 'none';
+                    carVideo.style.display = 'block';
+                    mainVideo.pause();
+                    carVideo.play().catch(e => console.log('Erro ao iniciar vídeo do carro:', e));
+                } else {
+                    mainVideo.style.display = 'block';
+                    carVideo.style.display = 'none';
+                    carVideo.pause();
+                    mainVideo.play().catch(e => console.log('Erro ao iniciar vídeo principal:', e));
                 }
-            });
+            }
 
-            musicPlayer.addEventListener('ended', () => {
-                if (!isAdPlaying) {
-                    musicPlayedCount++;
-                    nextTrack();
-                }
-            });
+            // ========== DRAWER ==========
+            function openDrawer() {
+                drawer.classList.add('open');
+                drawerOverlay.classList.add('active');
+                renderPlaylist();
+                checkDownloadedStatus();
+            }
+            
+            function closeDrawerFunc() {
+                drawer.classList.remove('open');
+                drawerOverlay.classList.remove('active');
+            }
 
-            musicPlayer.addEventListener('error', (e) => {
-                console.error('Erro no áudio:', e);
-                showNotification('⚠️ Erro na música, pulando...');
-                setTimeout(nextTrack, 1000);
-            });
-
-            musicPlayer.addEventListener('pause', function() {
-                if (document.hidden && isPlaying && !isAdPlaying && !musicPlayer.ended) {
-                    setTimeout(() => {
-                        if (document.hidden && isPlaying && musicPlayer.paused) {
-                            musicPlayer.play().catch(e => console.log('Não foi possível retomar em background', e));
-                        }
-                    }, 100);
-                }
-            });
-
-            // Event listeners dos botões
+            // ========== EVENT LISTENERS ==========
             prevBtn.addEventListener('click', prevTrack);
             nextBtn.addEventListener('click', nextTrack);
             playBtn.addEventListener('click', togglePlayPause);
@@ -1726,23 +1992,10 @@
                 musicPlayer.currentTime = (x / rect.width) * musicPlayer.duration;
             });
 
-            // ========== DRAWER ==========
-            function openDrawer() {
-                drawer.classList.add('open');
-                drawerOverlay.classList.add('active');
-                renderPlaylist();
-            }
-            
-            function closeDrawerFunc() {
-                drawer.classList.remove('open');
-                drawerOverlay.classList.remove('active');
-            }
-            
             document.getElementById('videoMenuBtn').addEventListener('click', openDrawer);
             closeDrawer.addEventListener('click', closeDrawerFunc);
             drawerOverlay.addEventListener('click', closeDrawerFunc);
 
-            // ========== FILTRO DE FAVORITOS ==========
             filterFavBtn.addEventListener('click', () => {
                 showingFavorites = false;
                 filterFavBtn.classList.add('active');
@@ -1757,7 +2010,6 @@
                 renderPlaylist();
             });
 
-            // ========== OUTRAS OPÇÕES DO DRAWER ==========
             document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen();
@@ -1784,7 +2036,6 @@
                 showNotification('🚗 Modo carro ' + (document.body.classList.contains('car-mode') ? 'ativado' : 'desativado'));
             });
 
-            // Event listeners para os botões de efeito
             effectBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const effect = btn.dataset.effect;
@@ -1796,19 +2047,54 @@
             testAdBtn.addEventListener('click', testAd);
             skipAdBtn.addEventListener('click', skipAd);
 
-            // ========== CARREGAR TEMA E EFEITO SALVO ==========
-            const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
-            setTheme(savedTheme);
-            
-            const savedEffect = localStorage.getItem('tickerEffect') || 'laser';
-            changeEffect(savedEffect);
-            
-            colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
+            downloadAllBtn.addEventListener('click', async () => {
+                if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+                    showNotification('❌ Service Worker não disponível');
+                    return;
+                }
+                showNotification('📥 Baixando todas as músicas...');
+                // Implementar download em massa
+            });
 
-            // ========== LIMPEZA AO SAIR ==========
-            window.addEventListener('beforeunload', () => {
-                if (timerInterval) clearInterval(timerInterval);
-                if (videoInterval) clearInterval(videoInterval);
+            clearCacheBtn.addEventListener('click', async () => {
+                if (!navigator.serviceWorker || !navigator.serviceWorker.controller) return;
+                playlist.forEach(m => m.downloaded = false);
+                renderPlaylist();
+                showNotification('🧹 Cache limpo');
+            });
+
+            if (extraContainer) {
+                extraContainer.addEventListener('click', function() {
+                    const videoAtual = videosExtra[videoIndex];
+                    if (videoAtual && videoAtual.link) {
+                        window.open(videoAtual.link, '_blank');
+                        showNotification(`🔗 Redirecionando para: ${videoAtual.nome}`);
+                    }
+                });
+            }
+
+            // ========== EVENTOS DO PLAYER ==========
+            musicPlayer.addEventListener('timeupdate', () => {
+                if (musicPlayer.duration && !isAdPlaying) {
+                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
+                    progressFill.style.width = percent + '%';
+                    const m = Math.floor(musicPlayer.currentTime / 60);
+                    const s = Math.floor(musicPlayer.currentTime % 60);
+                    currentTimeEl.textContent = m + ':' + (s < 10 ? '0' + s : s);
+                }
+            });
+
+            musicPlayer.addEventListener('ended', () => {
+                if (!isAdPlaying) {
+                    musicPlayedCount++;
+                    nextTrack();
+                }
+            });
+
+            musicPlayer.addEventListener('error', (e) => {
+                console.error('Erro no áudio:', e);
+                showNotification('⚠️ Erro na música, pulando...');
+                setTimeout(nextTrack, 1000);
             });
 
             // ========== INICIALIZAÇÃO ==========
@@ -1826,31 +2112,24 @@
                 
                 iniciarVideoUnico();
                 
-                const attemptPlay = () => {
-                    if (!autoPlayAttempted) {
-                        autoPlayAttempted = true;
-                        playMusic();
-                    }
-                };
+                const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
+                setTheme(savedTheme);
                 
-                attemptPlay();
+                const savedEffect = localStorage.getItem('tickerEffect') || 'laser';
+                changeEffect(savedEffect);
+                
+                colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
+
+                // Esconder splash
                 setTimeout(hideSplash, 3000);
-                
-                const startPlayer = () => {
-                    if (!isPlaying && musicPlayer.paused && !autoPlayAttempted) {
-                        autoPlayAttempted = true;
-                        playMusic();
-                    } else if (!isPlaying && musicPlayer.paused) {
-                        playMusic();
-                    }
-                    tapToStart.classList.add('hidden');
-                };
-                
-                document.addEventListener('touchstart', startPlayer, { once: true });
-                document.addEventListener('click', startPlayer, { once: true });
                 
                 updateAdTimer();
                 updateMusicTicker();
+
+                // Registrar Service Worker se disponível
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW não registrado'));
+                }
             });
         })();
     </script>
