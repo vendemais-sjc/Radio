@@ -767,7 +767,7 @@
     </div>
 
     <div class="app">
-        <!-- LETREIRO COM ÍCONES ANIMADOS -->
+        <!-- LETREIRO COM ÍCONES ANIMADOS E SAUDAÇÃO PERSONALIZADA -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
                 <span id="topTickerText">
@@ -900,19 +900,19 @@
 
             // ========== PLAYLIST PRINCIPAL ==========
             const musicas = [
-                { id: 1, title: " 01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
-                { id: 2, title: " 02 A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
-                { id: 3, title: " 03 Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01" },
-                { id: 4, title: " 04 Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01" },
-                { id: 5, title: " 05 I_Love_You", artist: "Jim_Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "00:01" },
-                { id: 6, title: " 06 Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "00:01" },
-                { id: 7, title: " 07 Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "00:01" },
-                { id: 8, title: " 08 What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "00:01" },
-                { id: 9, title: " 09 More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "00:01" },
+                { id: 1, title: "01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
+                { id: 2, title: "02 A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
+                { id: 3, title: "03 Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01" },
+                { id: 4, title: "04 Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01" },
+                { id: 5, title: "05 I_Love_You", artist: "Jim_Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "00:01" },
+                { id: 6, title: "06 Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "00:01" },
+                { id: 7, title: "07 Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "00:01" },
+                { id: 8, title: "08 What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "00:01" },
+                { id: 9, title: "09 More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "00:01" },
                 { id: 10, title: "10 Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", duration: "00:01" },
-                { id: 11, title: "11FaJura_Secreta_Revelação", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
+                { id: 11, title: "11 FaJura_Secreta_Revelação", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
                 { id: 12, title: "12 Noite do Prazer", artist: "Brylho", src: "Brylho_Noite_do_Prazer_muzzik.m4a", duration: "00:01" },
-                { id: 13, title:  "13 Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", duration: "00:01" },
+                { id: 13, title: "13 Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", duration: "00:01" },
                 { id: 14, title: "14 Codinome Beija-Flor", artist: "Cazuza", src: "Cazuza_Codinome_Beija_Flor.m4a", duration: "00:01" },
                 { id: 15, title: "15 Só os Loucos Sabem", artist: "Charlie Brown Jr.", src: "Charlie_Brown_Jr_S_os_loucos_sabem_muzzik.m4a", duration: "00:01" },
                 { id: 16, title: "16 Charme do Mundo", artist: "Marina Lima", src: "Charme_do_Charme_do_Mundo_muzzik.m4a", duration: "00:01" },
@@ -927,7 +927,7 @@
                 { id: 25, title: "25 Casinha Branca", artist: "DINO & Renato Vianna", src: "DINO_feat_Renato_Vianna_Casinha_Branca_DVD_Barzim_de_Rock_muzzik (1).m4a", duration: "00:01" },
                 { id: 26, title: "26 Send It Back", artist: "Don West", src: "DON_WEST_Send_It_Back_muzzik.m4a", duration: "00:01" },
                 { id: 27, title: "27 Thank You", artist: "Dido", src: "Dido_Thank_You_muzzik.m4a", duration: "00:01" },
-                { id: 28, title: " 28 Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", duration: "00:01" },
+                { id: 28, title: "28 Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", duration: "00:01" },
                 { id: 29, title: "29 Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", duration: "00:01" },
                 { id: 30, title: "30 Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", duration: "00:01" },
                 { id: 31, title: "31 Pensando Nela", artist: "Dom Beto", src: "Dom_Beto_Pensando_Nela_2.m4a", duration: "00:01" },
@@ -945,7 +945,7 @@
                 { id: 43, title: "43 Noites com Sol", artist: "Flávio Venturini & Vanessa da Mata", src: "Flavio venturininoitescom sol.m4a", duration: "00:01" },
                 { id: 44, title: "44 I_Like_Chopin", artist: "Gazebo", src: "Gazebo_I_Like_Chopin_muzzik.m4a", duration: "00:01" },
                 { id: 45, title: "45 I Was Born To Love You", artist: "Freddie Mercury", src: "Freddie_Mercury_I_Was_Born_To_Love_You_muzzik.m4a", duration: "00:01" },
-                { id: 46, title: "48 Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", duration: "00:01" },
+                { id: 46, title: "46 Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", duration: "00:01" },
                 { id: 47, title: "47 Careless Whisper", artist: "George Michael", src: "George_Michael_Careless_Whisper_muzzik.m4a", duration: "00:01" },
                 { id: 48, title: "48 Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01" },
                 { id: 49, title: "49 Dona Da Minha Cabeça", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dona_da_Minha_Cabe_a_muzzik.m4a", duration: "00:01" },
@@ -959,7 +959,7 @@
                 { id: 57, title: "57 Papel Machê", artist: "João Bosco", src: "Jo_o_Bosco_Papel_Machê.m4a", duration: "00:01" },
                 { id: 58, title: "58 P.D.A.", artist: "John Legend", src: "John_Legend_P_D_A_muzzik.m4a", duration: "00:01" },
                 { id: 59, title: "59 Gostosa", artist: "Jorge Ben Jor", src: "Jorge_Ben_Jor_Gostosa_muzzik.m4a", duration: "00:01" },
-                { id: 60, title: "69 Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", duration: "00:01" },
+                { id: 60, title: "60 Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", duration: "00:01" },
                 { id: 61, title: "61 Dentro de um Abraço", artist: "Jota Quest", src: "Jota_Quest_Dentro_de_um_Abra_o_muzzik.m4a", duration: "00:01" },
                 { id: 62, title: "62 Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "00:01" },
                 { id: 63, title: "63 Everybody's Changing", artist: "Keane", src: "Keane_Everybody_s_Changing_muzzik.m4a", duration: "00:01" },
@@ -968,8 +968,8 @@
                 { id: 66, title: "66 Lanterna dos Afogados", artist: "Paralamas", src: "Lanterna_Dos_Lanterna_Dos_Afogados_muzzik.m4a", duration: "00:01" },
                 { id: 67, title: "67 Let It Be Music", artist: "Travel Love Friends", src: "Let_It_Be_Music_Travel_Love_Friends_20.m4a", duration: "00:01" },
                 { id: 68, title: "68 Muito Estranho", artist: "Liga Joe", src: "Liga_Joe_Muito_Estranho_Flashbacks_ (1).m4a", duration: "00:01" },
-                { id: 69, title: "96 Mordida de Amor", artist: "Yahoo ", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", duration: "00:01" },
-                { id: 70, title: "70 oda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", duration: "00:01" },
+                { id: 69, title: "69 Mordida de Amor", artist: "Yahoo ", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", duration: "00:01" },
+                { id: 70, title: "70 Toda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", duration: "00:01" },
                 { id: 71, title: "71 For_Your_Babies ", artist: "Simply_Red", src: "Simply_Red_For_Your_Babies_muzzik.m4a", duration: "00:01" },
                 { id: 72, title: "72 Reluz", artist: "Marcos Sabino", src: "MARCOS_SABINO_MARCOS_SABINO_reluz_muzzik.m4a", duration: "00:01" },
                 { id: 73, title: "73 Meu Mundo e Nada Mais", artist: "Guilherme Arantes", src: "MEU_MUNDO_E_NADA_MAIS_Guilherme_Arantes_muzzik.m4a", duration: "00:01" },
@@ -992,7 +992,7 @@
                 { id: 90, title: "90 Let Her Go", artist: "Passenger", src: "Passenger_Passenger_Let_Her_Go_Official_Video__18.m4a", duration: "00:01" },
                 { id: 91, title: "91 Mil e Uma Noites de Amor", artist: "Pepeu Gomes", src: "Pepeu_Gomes_Mil_e_uma_noites_de_amor_muzzik.m4a", duration: "00:01" },
                 { id: 92, title: "92 Baby Come Back", artist: "Player", src: "Player_Baby_Come_Back_7.m4a", duration: "00:01" },
-                { id: 93, title: "93Lady_Lady_Lady ", artist: "Joe_Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", duration: "00:01" },
+                { id: 93, title: "93 Lady_Lady_Lady ", artist: "Joe_Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", duration: "00:01" },
                 { id: 94, title: "94 Primavera", artist: "Primavera", src: "Primavera_Album_Primavera_Album_Version__muzzik.m4a", duration: "00:01" },
                 { id: 95, title: "95 Jura_Secreta_Revela", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
                 { id: 96, title: "96 Calm Down", artist: "Rema & Selena Gomez", src: "Rema_Selena_Gomez_Calm_Down_muzzik.m4a", duration: "00:01" },
@@ -1017,26 +1017,23 @@
                 { id: 115, title: "115 Stand by Me", artist: "Ben E. King", src: "Stand_by_Stand_by_Me_muzzik.m4a", duration: "00:01" },
                 { id: 116, title: "116 Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", duration: "00:01" },
                 { id: 117, title: "117 Sultans of Swing", artist: "Dire Straits", src: "Sultans_of_Sultans_of_Swing_Backing_roger.m4a", duration: "00:01" },
-                { id: 118, title: "118A The_Time_KorgStyle_Life ", artist: "A_cha_Remember", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", duration: "00:01" },
+                { id: 118, title: "118 The_Time_KorgStyle_Life ", artist: "A_cha_Remember", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", duration: "00:01" },
                 { id: 119, title: "119 Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", duration: "00:01" },
                 { id: 120, title: "120 Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", duration: "00:01" },
                 { id: 121, title: "121 Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", duration: "00:01" },
                 { id: 122, title: "122 Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", duration: "00:01" },
                 { id: 123, title: "123 Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", duration: "00:01" },
                 { id: 124, title: "124 Oração ao Tempo", artist: "Maria Gad", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4a", duration: "00:01" },
-                { id: 125, title: " 125 Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01" },
+                { id: 125, title: "125 Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01" },
                 { id: 126, title: "126 Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", duration: "00:01" },
                 { id: 127, title: "127 Samba de Verão", artist: "Marcos Valle", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01" },
-{ id: 128, title: "128 Não Vá Embora", artist: "Marisa Monte", src: "Marisa-Montes-não vá embora.m4a", duration: "00:01" },
-{ id: 129, title: "129 My_Love_My_Love", artist: "My_Love_My_Love", src: "My_Love_My_Love_muzzik.m4a", duration: "00:01" },
-{ id: 130, title: "130 Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", duration: "00:01" },
-{ id: 131, title: "131 Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "00:01" },
-{ id: 132, title: "132Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
-{ id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
-{ id: 134, title: "135 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" }
-                
-    
-        
+                { id: 128, title: "128 Não Vá Embora", artist: "Marisa Monte", src: "Marisa-Montes-não vá embora.m4a", duration: "00:01" },
+                { id: 129, title: "129 My_Love_My_Love", artist: "My_Love_My_Love", src: "My_Love_My_Love_muzzik.m4a", duration: "00:01" },
+                { id: 130, title: "130 Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", duration: "00:01" },
+                { id: 131, title: "131 Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "00:01" },
+                { id: 132, title: "132 Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
+                { id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
+                { id: 134, title: "134 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" }
             ];
 
             // ========== ESTADO GLOBAL ==========
@@ -1092,6 +1089,9 @@
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
 
+            // Elemento do ticker (letreiro) e texto do título
+            const topTickerSpan = document.querySelector('#topTickerText span');
+
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
                 { src: 'coposze.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
@@ -1103,6 +1103,27 @@
             let tempoRestante = 60;
             let timerInterval = null;
             let videoInterval = null;
+
+            // ========== FUNÇÃO PARA OBTER SAUDAÇÃO BASEADA NA HORA ==========
+            function getSaudacao() {
+                const hora = new Date().getHours();
+                if (hora >= 5 && hora < 12) {
+                    return "Bom dia";
+                } else if (hora >= 12 && hora < 18) {
+                    return "Boa tarde";
+                } else {
+                    return "Boa noite";
+                }
+            }
+
+            // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO ==========
+            function updateTickerText() {
+                if (!topTickerSpan) return;
+                const saudacao = getSaudacao();
+                const musicaAtual = playlist[currentIndex];
+                const nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist'; // Remove números do início se houver
+                topTickerSpan.innerHTML = `<i class="fas fa-headphones-alt fa-spin"></i> ${saudacao}, você está ouvindo ${nomeMusica} <i class="fas fa-music fa-beat"></i> - continue aqui. <i class="fas fa-radio fa-fade"></i> - RÁDIO PLAYLIST`;
+            }
 
             // ========== FUNÇÕES PARA CONTROLAR O VÍDEO ÚNICO ==========
             function iniciarVideoUnico() {
@@ -1277,6 +1298,7 @@
                 progressFill.style.width = '0%';
                 currentTimeEl.textContent = '0:00';
                 renderPlaylist();
+                updateTickerText(); // Atualiza o letreiro quando carrega uma nova música
             }
 
             // ========== FUNÇÕES CORRIGIDAS DO PLAYER ==========
@@ -1632,6 +1654,7 @@
                 document.addEventListener('click', startPlayer, { once: true });
                 
                 updateAdTimer();
+                updateTickerText(); // Atualiza o ticker ao carregar a página
             });
         })();
     </script>
