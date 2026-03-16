@@ -6,7 +6,7 @@
     <title>Rádio Playlist • Player Musical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (TODO O CSS PERMANECE IGUAL AO ORIGINAL) */
+        /* (TODO O CSS PERMANECE IGUAL AO ORIGINAL, APENAS ADICIONEI O NOVO LETREIRO) */
         * {
             margin: 0;
             padding: 0;
@@ -282,7 +282,7 @@
             pointer-events: none;
         }
 
-        /* TOP BAR E TICKER */
+        /* TOP BAR E TICKER (ORIGINAL) */
         .top-bar {
             background: #000;
             border-top: 3px solid var(--primary-color);
@@ -313,6 +313,29 @@
         }
         
         @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* NOVO LETREIRO PARA O NOME DA MÚSICA */
+        .music-ticker-container {
+            background: #000;
+            border-bottom: 1px solid var(--primary-color);
+            padding: 8px 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .music-ticker {
+            display: inline-block;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding-left: 100%;
+            animation: music-scroll 20s linear infinite;
+        }
+        
+        @keyframes music-scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
         }
@@ -352,16 +375,8 @@
             z-index: 20;
         }
         .track-info {
-            padding: 16px 16px 8px;
+            padding: 8px 16px 8px;
             text-align: center;
-        }
-        .track-info h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
         .track-info p {
             font-size: 0.9rem;
@@ -767,7 +782,7 @@
     </div>
 
     <div class="app">
-        <!-- LETREIRO COM ÍCONES ANIMADOS -->
+        <!-- LETREIRO DO TOPO (ORIGINAL) -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
                 <span id="topTickerText">
@@ -776,6 +791,13 @@
                     <i class="fas fa-radio fa-fade"></i> - ATUALIZAÇÃO DIÁRIA 
                     <i class="fas fa-star fa-spin-pulse"></i> - CONTATO 12 98846-1978
                 </span>
+            </div>
+        </div>
+
+        <!-- NOVO LETREIRO PARA O NOME DA MÚSICA COM SAUDAÇÃO -->
+        <div class="music-ticker-container">
+            <div class="music-ticker" id="musicTicker">
+                <i class="fas fa-music"></i> Carregando música...
             </div>
         </div>
 
@@ -791,7 +813,7 @@
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             <div class="track-info">
-                <h2 id="trackTitle">Rádio Playlist</h2>
+                <!-- O nome da música agora está no letreiro acima, então removemos o h2 -->
                 <p id="trackArtist">Carregando...</p>
             </div>
             <div class="progress-area">
@@ -1057,7 +1079,6 @@
             const progressFill = document.getElementById('progressFill');
             const currentTimeEl = document.getElementById('currentTime');
             const totalTimeEl = document.getElementById('totalTime');
-            const trackTitle = document.getElementById('trackTitle');
             const trackArtist = document.getElementById('trackArtist');
             const volumeSlider = document.getElementById('volumeSlider');
             const volumePercent = document.getElementById('volumePercent');
@@ -1089,8 +1110,8 @@
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
 
-            // ========== VARIÁVEIS PARA O LETREIRO ==========
-            const topTickerSpan = document.querySelector('#topTickerText');
+            // NOVO: Elemento do letreiro de música
+            const musicTicker = document.getElementById('musicTicker');
 
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
@@ -1116,18 +1137,14 @@
                 }
             }
 
-            // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO ==========
-            function updateTickerText() {
-                if (!topTickerSpan) return;
+            // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO DA MÚSICA ==========
+            function updateMusicTicker() {
+                if (!musicTicker) return;
                 const saudacao = getSaudacao();
                 const musicaAtual = playlist[currentIndex];
-                // Remove os números do início do título (ex: "01 ", "02 " etc)
+                // Remove os números do início do título
                 let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
-                // Se o título começar com número sem espaço, tenta outro padrão
-                if (nomeMusica === musicaAtual?.title && musicaAtual?.title.match(/^\d/)) {
-                    nomeMusica = musicaAtual.title.substring(3).trim(); // Remove os primeiros 3 caracteres (ex: "01F" vira "F")
-                }
-                topTickerSpan.innerHTML = `<i class="fas fa-headphones-alt fa-spin"></i> ${saudacao}, você está ouvindo ${nomeMusica} <i class="fas fa-music fa-beat"></i> - continue aqui. <i class="fas fa-radio fa-fade"></i> - RÁDIO PLAYLIST`;
+                musicTicker.innerHTML = `<i class="fas fa-music"></i> ${saudacao}, você está ouvindo: ${nomeMusica} - continue aqui. <i class="fas fa-headphones-alt"></i>`;
             }
 
             // ========== FUNÇÕES PARA CONTROLAR O VÍDEO ÚNICO ==========
@@ -1297,13 +1314,12 @@
                 const track = playlist[currentIndex];
                 musicPlayer.src = track.src;
                 musicPlayer.load();
-                trackTitle.textContent = track.title;
                 trackArtist.textContent = track.artist;
                 totalTimeEl.textContent = track.duration;
                 progressFill.style.width = '0%';
                 currentTimeEl.textContent = '0:00';
                 renderPlaylist();
-                updateTickerText(); // Atualiza o letreiro quando carrega uma nova música
+                updateMusicTicker(); // Atualiza o letreiro da música
             }
 
             // ========== FUNÇÕES CORRIGIDAS DO PLAYER ==========
@@ -1658,7 +1674,7 @@
                 document.addEventListener('click', startPlayer, { once: true });
                 
                 updateAdTimer();
-                updateTickerText(); // Atualiza o ticker ao carregar a página
+                updateMusicTicker(); // Atualiza o letreiro da música
             });
         })();
     </script>
