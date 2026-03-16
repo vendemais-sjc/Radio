@@ -6,7 +6,7 @@
     <title>Rádio Playlist • Player Musical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (TODO O CSS PERMANECE IGUAL, APENAS AJUSTEI OS 2 EFEITOS) */
+        /* (TODO O CSS PERMANECE IGUAL, APENAS ADICIONO OS 2 EFEITOS) */
         * {
             margin: 0;
             padding: 0;
@@ -352,7 +352,7 @@
             z-index: 20;
         }
 
-        /* ========== 2 EFEITOS ========== */
+        /* ========== 2 EFEITOS PARA TESTE ========== */
         .track-info {
             padding: 16px 16px 8px;
             text-align: center;
@@ -362,7 +362,7 @@
             justify-content: center;
         }
 
-        /* EFEITO 1: LASER (MANTIDO) */
+        /* EFEITO 1: LASER */
         .effect-laser {
             font-size: 1.3rem;
             font-weight: 700;
@@ -404,8 +404,8 @@
             50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-light); }
         }
 
-        /* EFEITO 2: GLOW MELHORADO (SUBSTITUI O GLITCH) */
-        .effect-glow {
+        /* EFEITO 2: GLITCH (PARA TESTE) */
+        .effect-glitch {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-color);
@@ -415,57 +415,48 @@
             word-wrap: break-word;
             white-space: normal;
             position: relative;
-            animation: glow-pulse 1.8s ease-in-out infinite;
-            text-shadow: 
-                0 0 10px var(--primary-color),
-                0 0 20px var(--primary-color),
-                0 0 40px var(--primary-light),
-                0 0 80px var(--primary-light);
+            animation: glitch-skew 2s infinite;
         }
 
-        .effect-glow::before {
-            content: '';
+        .effect-glitch::before,
+        .effect-glitch::after {
+            content: attr(data-text);
             position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            background: var(--primary-color);
-            filter: blur(15px);
-            opacity: 0.3;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .effect-glitch::before {
+            color: #ff00ff;
             z-index: -1;
-            animation: glow-expand 2s ease-in-out infinite;
-            border-radius: 10px;
+            animation: glitch-offset 0.3s infinite linear alternate;
         }
 
-        @keyframes glow-pulse {
-            0%, 100% { 
-                opacity: 1;
-                text-shadow: 
-                    0 0 10px var(--primary-color),
-                    0 0 20px var(--primary-color),
-                    0 0 40px var(--primary-light),
-                    0 0 80px var(--primary-light);
-            }
-            50% { 
-                opacity: 0.9;
-                text-shadow: 
-                    0 0 20px var(--primary-color),
-                    0 0 40px var(--primary-color),
-                    0 0 60px var(--primary-light),
-                    0 0 100px var(--primary-light);
-            }
+        .effect-glitch::after {
+            color: #00ffff;
+            z-index: -2;
+            animation: glitch-offset2 0.2s infinite linear alternate;
         }
 
-        @keyframes glow-expand {
-            0%, 100% { 
-                opacity: 0.3;
-                filter: blur(15px);
-            }
-            50% { 
-                opacity: 0.5;
-                filter: blur(20px);
-            }
+        @keyframes glitch-offset {
+            from { transform: translateX(-3px); }
+            to { transform: translateX(3px); }
+        }
+
+        @keyframes glitch-offset2 {
+            from { transform: translateX(3px); }
+            to { transform: translateX(-3px); }
+        }
+
+        @keyframes glitch-skew {
+            0%, 100% { transform: skew(0deg); }
+            20% { transform: skew(1deg); }
+            40% { transform: skew(-1deg); }
+            60% { transform: skew(0.5deg); }
+            80% { transform: skew(-0.5deg); }
         }
 
         .track-info p {
@@ -673,7 +664,7 @@
             display: block;
         }
 
-        /* SELETOR DE EFEITOS (APENAS 2) */
+        /* SELETOR DE EFEITOS (APENAS 2 PARA TESTE) */
         .effect-selector {
             display: flex;
             flex-direction: column;
@@ -943,9 +934,9 @@
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             
-            <!-- LETREIRO COM EFEITOS (LASER E GLOW) -->
+            <!-- LETREIRO COM EFEITOS (APENAS 2 PARA TESTE) -->
             <div class="track-info">
-                <div class="effect-laser" id="musicTicker">
+                <div class="effect-laser" id="musicTicker" data-text="">
                     <i class="fas fa-music"></i> Carregando...
                 </div>
                 <p id="trackArtist">Carregando...</p>
@@ -998,13 +989,13 @@
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
 
-            <!-- SELETOR DE EFEITOS (LASER E GLOW) -->
+            <!-- SELETOR DE EFEITOS (APENAS 2) -->
             <div class="effect-selector">
                 <div class="effect-btn active" data-effect="laser">
                     <i class="fas fa-bolt"></i> Efeito Laser
                 </div>
-                <div class="effect-btn" data-effect="glow">
-                    <i class="fas fa-sun"></i> Efeito Glow
+                <div class="effect-btn" data-effect="glitch">
+                    <i class="fas fa-random"></i> Efeito Glitch
                 </div>
             </div>
 
@@ -1291,6 +1282,8 @@
                 // Remove os números do início do título
                 let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
                 musicTicker.innerHTML = `<i class="fas fa-music"></i> ${saudacao}, você está ouvindo: ${nomeMusica} - continue aqui. <i class="fas fa-headphones-alt"></i>`;
+                // Para o efeito glitch que precisa do atributo data-text
+                musicTicker.setAttribute('data-text', musicTicker.innerHTML);
             }
 
             // ========== FUNÇÃO PARA TROCAR O EFEITO ==========
@@ -1310,7 +1303,7 @@
                 
                 // Salva preferência
                 localStorage.setItem('tickerEffect', effectName);
-                showNotification(`🎨 Efeito alterado para ${effectName === 'laser' ? 'Laser' : 'Glow'}`);
+                showNotification(`🎨 Efeito alterado para ${effectName === 'laser' ? 'Laser' : 'Glitch'}`);
             }
 
             // ========== FUNÇÕES PARA CONTROLAR O VÍDEO ÚNICO ==========
