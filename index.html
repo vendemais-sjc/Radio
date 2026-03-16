@@ -232,42 +232,7 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* PLAYER CARD */
-        .player-card {
-            background: #000000;
-            border-bottom: 1px solid var(--primary-color);
-        }
-        .video-container {
-            aspect-ratio: 16 / 9;
-            background: #000;
-            position: relative;
-            border-bottom: 1px solid var(--primary-color);
-        }
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .video-menu-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        /* LETREIRO PRINCIPAL */
+        /* ========== EFEITOS DO LETREIRO ========== */
         .track-info {
             padding: 16px 16px 8px;
             text-align: center;
@@ -277,7 +242,8 @@
             justify-content: center;
         }
 
-        #musicTicker {
+        /* EFEITO LASER */
+        .effect-laser {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-color);
@@ -286,6 +252,100 @@
             line-height: 1.4;
             word-wrap: break-word;
             white-space: normal;
+            position: relative;
+            overflow: hidden;
+            animation: laser-pulse 2s ease-in-out infinite;
+        }
+
+        .effect-laser::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 70%
+            );
+            animation: laser-scan 2.5s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes laser-scan {
+            from { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            to { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes laser-pulse {
+            0%, 100% { text-shadow: 0 0 5px var(--primary-color); }
+            50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-light); }
+        }
+
+        /* EFEITO GLOW */
+        .effect-glow {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            width: 100%;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+            position: relative;
+            animation: glow-pulse 1.8s ease-in-out infinite;
+            text-shadow: 
+                0 0 10px var(--primary-color),
+                0 0 20px var(--primary-color),
+                0 0 40px var(--primary-light),
+                0 0 80px var(--primary-light);
+        }
+
+        .effect-glow::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: var(--primary-color);
+            filter: blur(15px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: glow-expand 2s ease-in-out infinite;
+            border-radius: 10px;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { 
+                opacity: 1;
+                text-shadow: 
+                    0 0 10px var(--primary-color),
+                    0 0 20px var(--primary-color),
+                    0 0 40px var(--primary-light),
+                    0 0 80px var(--primary-light);
+            }
+            50% { 
+                opacity: 0.9;
+                text-shadow: 
+                    0 0 20px var(--primary-color),
+                    0 0 40px var(--primary-color),
+                    0 0 60px var(--primary-light),
+                    0 0 100px var(--primary-light);
+            }
+        }
+
+        @keyframes glow-expand {
+            0%, 100% { 
+                opacity: 0.3;
+                filter: blur(15px);
+            }
+            50% { 
+                opacity: 0.5;
+                filter: blur(20px);
+            }
         }
 
         .track-info p {
@@ -491,6 +551,52 @@
         }
         .drawer-overlay.active {
             display: block;
+        }
+
+        /* SELETOR DE EFEITOS */
+        .effect-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #0a0a0a;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .effect-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .effect-btn i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        .effect-btn:hover {
+            background: #1a1a1a;
+        }
+
+        .effect-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .effect-btn.active i {
+            color: white;
         }
 
         /* SELETOR DE CORES */
@@ -717,9 +823,9 @@
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             
-            <!-- LETREIRO DA MÚSICA -->
+            <!-- LETREIRO COM EFEITOS -->
             <div class="track-info">
-                <div id="musicTicker">
+                <div class="effect-laser" id="musicTicker">
                     <i class="fas fa-music"></i> Carregando...
                 </div>
                 <p id="trackArtist">Carregando...</p>
@@ -772,6 +878,16 @@
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
 
+            <!-- SELETOR DE EFEITOS -->
+            <div class="effect-selector">
+                <div class="effect-btn active" data-effect="laser">
+                    <i class="fas fa-bolt"></i> Efeito Laser
+                </div>
+                <div class="effect-btn" data-effect="glow">
+                    <i class="fas fa-sun"></i> Efeito Glow
+                </div>
+            </div>
+
             <!-- SELETOR DE CORES -->
             <div class="color-picker">
                 <div class="color-option red active" data-theme="theme-red" title="Vermelho"></div>
@@ -790,7 +906,7 @@
             <!-- PAINEL DE ANÚNCIOS -->
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> Próximo anúncio de áudio</h4>
-                <div class="ad-timer" id="adTimer">30</div>
+                <div class="ad-timer" id="adTimer">20</div>
                 <div class="ad-status" id="adStatus"><i class="fas fa-compact-disc fa-spin"></i> Aguardando...</div>
                 <div class="ad-buttons">
                     <button class="ad-btn" id="toggleAdsBtn"><i class="fas fa-toggle-on"></i> Ativo</button>
@@ -818,9 +934,9 @@
 
     <script>
         (function() {
-            // ========== PLAYLIST SIMPLIFICADA PARA TESTE ==========
+            // ========== PLAYLIST COMPLETA ==========
             const musicas = [
-                { id: 1, title: "Flavio Venturini - Feat Jota Quest", artist: "Flavio Venturini", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "03:45" },
+                { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "03:45" },
                 { id: 2, title: "A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "04:12" },
                 { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "04:45" },
                 { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "03:58" },
@@ -1017,12 +1133,13 @@
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
             const musicTicker = document.getElementById('musicTicker');
+            const effectBtns = document.querySelectorAll('.effect-btn');
 
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
                 { src: 'coposze.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
-                { src: 'anjo.mp4', nome: 'Anjo Azul', link: 'https://www.anjoazul.com.br' },
-                { src: 'doc.mp4', nome: 'Ads', link: 'https://www.destaque.com.br' },
+                { src: 'sat.mp4', nome: 'Anjo Azul', link: 'https://www.anjoazul.com.br' },
+                { src: 'doc.mp4', nome: 'doc', link: 'https://www.destaque.com.br' },
             ];
 
             let videoIndex = 0;
@@ -1040,6 +1157,22 @@
                 } else {
                     return "Boa noite";
                 }
+            }
+
+            // ========== FUNÇÃO PARA TROCAR EFEITO ==========
+            function changeEffect(effectName) {
+                musicTicker.className = '';
+                musicTicker.classList.add(`effect-${effectName}`);
+                
+                effectBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.effect === effectName) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                localStorage.setItem('tickerEffect', effectName);
+                showNotification(`🎨 Efeito alterado para ${effectName === 'laser' ? 'Laser' : 'Glow'}`);
             }
 
             // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO ==========
@@ -1220,7 +1353,7 @@
                 progressFill.style.width = '0%';
                 currentTimeEl.textContent = '0:00';
                 renderPlaylist();
-                updateMusicTicker(); // ATUALIZA O LETREIRO
+                updateMusicTicker();
             }
 
             // ========== FUNÇÕES DO PLAYER ==========
@@ -1522,12 +1655,22 @@
                 showNotification('🚗 Modo carro ' + (document.body.classList.contains('car-mode') ? 'ativado' : 'desativado'));
             });
 
+            effectBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const effect = btn.dataset.effect;
+                    changeEffect(effect);
+                });
+            });
+
             toggleAdsBtn.addEventListener('click', toggleAds);
             testAdBtn.addEventListener('click', testAd);
             skipAdBtn.addEventListener('click', skipAd);
 
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             setTheme(savedTheme);
+            
+            const savedEffect = localStorage.getItem('tickerEffect') || 'laser';
+            changeEffect(savedEffect);
             
             colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
 
@@ -1576,7 +1719,7 @@
                 document.addEventListener('click', startPlayer, { once: true });
                 
                 updateAdTimer();
-                updateMusicTicker(); // ATUALIZA O LETREIRO NA INICIALIZAÇÃO
+                updateMusicTicker();
             });
         })();
     </script>
