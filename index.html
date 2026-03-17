@@ -46,7 +46,7 @@
             display: none !important;
         }
         body.car-mode .player-card {
-            border: 1px solid var(--primary-color); /* borda mais fina */
+            border: 1px solid var(--primary-color);
             margin: 0 10px;
             border-radius: 20px;
         }
@@ -82,10 +82,10 @@
         #tap-to-start i { margin-right: 5px; font-size: 0.8rem; opacity: 0.9; }
         #tap-to-start.hidden { opacity: 0; transform: translate(-50%, -40%); pointer-events: none; }
 
-        /* TOP BAR PRINCIPAL (TICKER GRANDE) - bordas mais finas */
+        /* TOP BAR PRINCIPAL (TICKER GRANDE) */
         .top-bar {
             background: #000;
-            border-top: 1px solid var(--primary-color); /* mais fino */
+            border-top: 1px solid var(--primary-color);
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
             border-bottom: 1px solid var(--primary-color);
@@ -111,42 +111,45 @@
         }
         @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* PLAYER CARD - bordas mais finas */
+        /* PLAYER CARD */
         .player-card { background: #000000; border-bottom: 1px solid var(--primary-color); }
         .video-container { aspect-ratio: 16 / 9; background: #000; position: relative; border-bottom: 1px solid var(--primary-color); }
         video { width: 100%; height: 100%; object-fit: cover; display: block; }
         .video-menu-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; }
 
-        /* LETREIRO DA MÚSICA (BEM MENOR) - abaixo do vídeo */
+        /* LETREIRO DA MÚSICA - NORMAL (MESMO SENTIDO DO PRINCIPAL) */
         .music-ticker {
             width: 100%;
             background: #0a0a0a;
-            border-bottom: 1px solid var(--primary-color);
             border-top: 1px solid var(--primary-color);
-            padding: 4px 0; /* reduzido */
+            /* border-bottom removido */
+            padding: 6px 0;
             overflow: hidden;
             white-space: nowrap;
             font-family: 'Courier New', monospace;
-            font-size: 0.7rem; /* bem menor */
+            font-size: 0.85rem;
             letter-spacing: 0.5px;
-            color: var(--primary-light);
+            color: #ffffff;
             text-transform: uppercase;
-            text-shadow: 0 0 3px var(--primary-color);
+            text-shadow: 0 0 3px rgba(255,255,255,0.3);
         }
         .music-ticker span {
             display: inline-block;
             padding-left: 100%;
-            animation: music-scroll 20s linear infinite;
+            animation: music-scroll-normal 20s linear infinite;
         }
-        @keyframes music-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        @keyframes music-scroll-normal {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
 
         /* Área de informações (artista e tempo) */
         .track-info {
-            padding: 12px 16px 6px; /* reduzido */
+            padding: 12px 16px 6px;
             text-align: center;
         }
         .track-info p {
-            font-size: 0.8rem; /* menor */
+            font-size: 0.8rem;
             color: var(--text-secondary);
             margin-top: 2px;
             white-space: nowrap;
@@ -154,32 +157,106 @@
             text-overflow: ellipsis;
         }
 
-        /* Progresso - mais fino */
+        /* Progresso */
         .progress-area { padding: 0 16px 6px; }
         .progress-time { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--text-secondary); margin-bottom: 2px; }
-        .progress-bar { height: 2px; background: var(--border-color); cursor: pointer; overflow: hidden; border-radius: 1px; } /* mais fino */
+        .progress-bar { height: 2px; background: var(--border-color); cursor: pointer; overflow: hidden; border-radius: 1px; }
         .progress-fill { height: 100%; background: var(--primary-color); width: 0%; }
 
-        /* Controles - ajuste fino */
-        .controls { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 4px 16px 12px; }
-        .control-btn { background: none; border: none; color: var(--text-primary); font-size: 1.6rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .play-btn { font-size: 2.2rem; color: var(--primary-color); }
-        .shuffle-player-btn.active { color: var(--primary-color); transform: scale(1.1); }
+        /* Controles - REVISADOS PARA MELHOR USABILIDADE NOTURNA */
+        .controls { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 20px; 
+            padding: 8px 16px 16px; 
+        }
+        .control-btn { 
+            background: none; 
+            border: none; 
+            color: var(--text-primary); 
+            font-size: 2rem; /* um pouco maior para melhor visibilidade */
+            width: 52px; 
+            height: 52px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 50%;
+            background-color: rgba(20, 20, 20, 0.5); /* fundo sutil para destacar à noite */
+            backdrop-filter: blur(2px);
+        }
+        .control-btn:active {
+            transform: scale(0.95);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .play-btn { 
+            font-size: 2.8rem; 
+            color: var(--primary-color);
+            background-color: rgba(230, 57, 70, 0.15); /* tom do tema com transparência */
+        }
+        .shuffle-player-btn.active { 
+            color: var(--primary-color); 
+            transform: scale(1.1);
+        }
 
-        /* Volume - mais fino */
-        .volume-area { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 16px 12px; }
-        .volume-icon { background: none; border: none; color: var(--text-primary); font-size: 1rem; width: 30px; height: 30px; cursor: pointer; }
-        .volume-slider { flex: 1; height: 2px; background: var(--border-color); -webkit-appearance: none; border-radius: 1px; }
-        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: white; border: 1px solid var(--primary-color); border-radius: 50%; cursor: pointer; }
-        .volume-percent { font-size: 0.7rem; width: 35px; text-align: right; color: var(--text-secondary); }
+        /* Volume - também revisado */
+        .volume-area { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            padding: 0 16px 16px; 
+        }
+        .volume-icon { 
+            background: rgba(20, 20, 20, 0.5); 
+            border: none; 
+            color: var(--text-primary); 
+            font-size: 1.2rem; 
+            width: 40px; 
+            height: 40px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer;
+            border-radius: 50%;
+            backdrop-filter: blur(2px);
+            transition: all 0.2s;
+        }
+        .volume-icon:active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .volume-slider { 
+            flex: 1; 
+            height: 4px; 
+            background: var(--border-color); 
+            -webkit-appearance: none; 
+            border-radius: 2px; 
+        }
+        .volume-slider::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            width: 14px; 
+            height: 14px; 
+            background: white; 
+            border: 2px solid var(--primary-color); 
+            border-radius: 50%; 
+            cursor: pointer; 
+        }
+        .volume-percent { 
+            font-size: 0.8rem; 
+            width: 40px; 
+            text-align: right; 
+            color: var(--text-secondary); 
+        }
 
-        /* VÍDEO EXTRA (ANÚNCIOS) - bordas mais finas */
+        /* VÍDEO EXTRA */
         .extra-video-container { flex: 1; background: #000; border-top: 1px solid var(--primary-color); cursor: pointer; position: relative; height: 120px; }
         .extra-video-container video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
         .extra-overlay { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); color: white; padding: 3px 10px; border-radius: 15px; border-left: 2px solid var(--primary-color); pointer-events: none; z-index: 10; font-size: 0.75rem; }
         .extra-timer { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; padding: 3px 10px; border-radius: 15px; border-left: 2px solid var(--primary-color); pointer-events: none; z-index: 10; font-size: 0.75rem; }
 
-        /* DRAWER (mantido, mas bordas mais finas) */
+        /* DRAWER */
         .drawer { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: #000000; box-shadow: 4px 0 20px rgba(0,0,0,0.8); transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 1px solid var(--border-color); }
         .drawer.open { transform: translateX(0); }
         .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 30px; }
@@ -257,7 +334,7 @@
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             
-            <!-- LETREIRO DA MÚSICA (BEM MENOR) - abaixo do vídeo -->
+            <!-- LETREIRO DA MÚSICA - NORMAL (MESMO SENTIDO DO PRINCIPAL) -->
             <div class="music-ticker" id="musicTicker">
                 <span id="musicTickerText">🎵 Rádio Playlist • Clique em Play</span>
             </div>
@@ -495,8 +572,8 @@
                 { id: 132, title: "132 Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
                 { id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
                 { id: 134, title: "134 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" } 
-                
-               ]; 
+            ];
+
             // ========== ESTADO GLOBAL ==========
             let playlist = musicas.map(m => ({ ...m, favorite: false }));
             let correntezaIndex = playlist.findIndex(m => m.id === 30);
@@ -838,13 +915,14 @@
                     carVideo.style.display = 'block';
                     mainVideo.pause();
                     carVideo.play().catch(e => console.log('Erro vídeo carro', e));
+                    showNotification('🚗 Modo carro ativado • Clique novamente para voltar');
                 } else {
                     mainVideo.style.display = 'block';
                     carVideo.style.display = 'none';
                     carVideo.pause();
                     mainVideo.play().catch(e => console.log('Erro vídeo principal', e));
+                    showNotification('🚗 Modo normal restaurado');
                 }
-                showNotification('🚗 Modo carro ' + (isCar ? 'ativado' : 'desativado'));
             });
 
             document.getElementById('shareDrawerBtn').addEventListener('click', () => {
