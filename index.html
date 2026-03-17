@@ -391,7 +391,7 @@
         <!-- LETREIRO PRINCIPAL (GRANDE) - EDITÁVEL -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar letreiro principal">
-                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - A MELHOR SELEÇÃO MUSICAL <i class="fas fa-music fa-beat"></i></span>
+                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - A melhor progamação musical - Sém vinhetas e sém blá, blá blá - Apenas um anúcio a cada hora.  <i class="fas fa-music fa-beat"></i></span>
             </div>
         </div>
 
@@ -752,9 +752,9 @@
         const hour = now.getHours();
         let saudacao = '';
         
-        if (hour >= 5 && hour < 12) saudacao = 'BOM DIA ☀️';
-        else if (hour >= 12 && hour < 18) saudacao = 'BOA TARDE ⛅';
-        else saudacao = 'BOA NOITE = VC ESTAR OUVINDO';
+        if (hour >= 5 && hour < 12) saudacao = 'BOM DIA ☀️ Você está ouvindo';
+        else if (hour >= 12 && hour < 18) saudacao = 'BOA TARDE ⛅Você está ouvindo';
+        else saudacao = 'BOA NOITE  Você está ouvindo';
         
         const texto = `${saudacao} •  ${track.title} • ${track.artist} • `;
         musicTickerText.innerText = texto;
