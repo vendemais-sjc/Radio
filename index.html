@@ -745,19 +745,50 @@
     }
 
     // ========== FUNÇÃO PARA ATUALIZAR LETREIRO DA MÚSICA ==========
+
     function updateMusicTicker() {
-        if (!playlist.length) return;
-        const track = playlist[currentIndex];
-        const now = new Date();
-        const hour = now.getHours();
-        let saudacao = '';
-        
-        if (hour >= 5 && hour < 12) saudacao = 'BOM DIA ☀️ Você está ouvindo';
-        else if (hour >= 12 && hour < 18) saudacao = 'BOA TARDE ⛅Você está ouvindo';
-        else saudacao = 'BOA NOITE  Você está ouvindo';
-        
-        const texto = `${saudacao} •  ${track.title} • ${track.artist} • `;
-        musicTickerText.innerText = texto;
+    if (!playlist.length) return;
+    const track = playlist[currentIndex];
+    const now = new Date();
+    const hour = now.getHours();
+    let saudacao = '';
+    let icone = '';
+    
+    if (hour >= 5 && hour < 12) {
+        saudacao = 'BOM DIA';
+        icone = '☀️';
+    } else if (hour >= 12 && hour < 18) {
+        saudacao = 'BOA TARDE';
+        icone = '⛅';
+    } else {
+        saudacao = 'BOA NOITE';
+        icone = '🌙✨';
+    }
+    
+    const texto = `${saudacao} ${icone} • ${track.title} • ${track.artist} • `;
+    musicTickerText.innerText = texto;
+} // <-- FIM CORRETO DA FUNÇÃO (linha ~741)
+
+// ========== FUNÇÕES AUXILIARES ==========
+function showNotification(msg) {
+    notificationText.textContent = msg;
+    notification.classList.add('show');
+    setTimeout(() => notification.classList.remove('show'), 2000);
+} // <-- APENAS UMA VEZ!
+
+function hideSplash() {
+    if (!splash) return;
+    splash.classList.add('hidden');
+    setTimeout(() => splash.classList.add('display-none'), 500);
+}
+   
+// ========== FUNÇÕES AUXILIARES ==========  <-- PRÓXIMA LINHA DEVE SER ESSA
+function showNotification(msg) {
+    notificationText.textContent = msg;
+    notification.classList.add('show');
+    setTimeout(() => notification.classList.remove('show'), 2000);
+}
+    
     }
 
     // ========== FUNÇÕES AUXILIARES ==========
