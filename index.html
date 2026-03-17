@@ -824,36 +824,6 @@ function prevTrack() {
                 } 
             }
 
-            function nextTrack() {
-                if (isAdPlaying) return;
-                if (shuffle && playlist.length > 1) { 
-                    let newIndex; 
-                    do { 
-                        newIndex = Math.floor(Math.random() * playlist.length); 
-                    } while (newIndex === currentIndex); 
-                    currentIndex = newIndex; 
-                } else { 
-                    currentIndex = (currentIndex + 1) % playlist.length; 
-                }
-                loadTrack(currentIndex); 
-                if (isPlaying) playMusic(); 
-                musicPlayedCount++; 
-                checkAdInterval();
-            }
-
-            function prevTrack() {
-                if (isAdPlaying) return;
-                if (shuffle && playlist.length > 1) { 
-                    let newIndex; 
-                    do { 
-                        newIndex = Math.floor(Math.random() * playlist.length); 
-                    } while (newIndex === currentIndex); 
-                    currentIndex = newIndex; 
-                } else { 
-                    currentIndex = (currentIndex - 1 + playlist.length) % playlist.length; 
-                }
-                loadTrack(currentIndex); 
-                if (isPlaying) playMusic();
             }
 
             function updateAdTimer() {
