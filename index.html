@@ -6,7 +6,7 @@
     <title>Rádio Playlist • Player Musical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (TODO O CSS PERMANECE IGUAL, APENAS AJUSTEI OS 2 EFEITOS) */
+        /* (TODO O CSS PERMANECE IGUAL, APENAS ADICIONO OS EFEITOS) */
         * {
             margin: 0;
             padding: 0;
@@ -352,7 +352,7 @@
             z-index: 20;
         }
 
-        /* ========== 2 EFEITOS ========== */
+        /* ========== EFEITOS PARA O LETREIRO ========== */
         .track-info {
             padding: 16px 16px 8px;
             text-align: center;
@@ -362,110 +362,199 @@
             justify-content: center;
         }
 
-        /* EFEITO 1: LASER (MANTIDO) */
-        .effect-laser {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-align: center;
-            width: 100%;
-            line-height: 1.4;
-            word-wrap: break-word;
-            white-space: normal;
-            position: relative;
-            overflow: hidden;
-            animation: laser-pulse 2s ease-in-out infinite;
-        }
-
-        .effect-laser::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent 30%,
-                rgba(255, 255, 255, 0.4) 50%,
-                transparent 70%
-            );
-            animation: laser-scan 2.5s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes laser-scan {
-            from { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            to { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        @keyframes laser-pulse {
-            0%, 100% { text-shadow: 0 0 5px var(--primary-color); }
-            50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-light); }
-        }
-
-        /* EFEITO 2: GLOW MELHORADO (SUBSTITUI O GLITCH) */
+        /* Efeito 1: Piscar com brilho (glow) */
         .effect-glow {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-color);
             text-align: center;
             width: 100%;
+            animation: glow-effect 1.5s ease-in-out infinite;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+            text-shadow: 0 0 5px var(--primary-color);
+        }
+
+        @keyframes glow-effect {
+            0% { opacity: 1; text-shadow: 0 0 5px var(--primary-color); }
+            50% { opacity: 0.8; text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-light); }
+            100% { opacity: 1; text-shadow: 0 0 5px var(--primary-color); }
+        }
+
+        /* Efeito 2: Neon pulsante */
+        .effect-neon {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            width: 100%;
+            animation: neon-effect 1.2s linear infinite;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        @keyframes neon-effect {
+            0% { opacity: 1; transform: scale(1); }
+            25% { opacity: 0.9; transform: scale(1.02); }
+            50% { opacity: 0.7; transform: scale(0.98); color: white; }
+            75% { opacity: 0.9; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Efeito 3: Retro/vintage com scanline */
+        .effect-retro {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            width: 100%;
+            animation: retro-effect 0.8s steps(2) infinite;
             line-height: 1.4;
             word-wrap: break-word;
             white-space: normal;
             position: relative;
-            animation: glow-pulse 1.8s ease-in-out infinite;
-            text-shadow: 
-                0 0 10px var(--primary-color),
-                0 0 20px var(--primary-color),
-                0 0 40px var(--primary-light),
-                0 0 80px var(--primary-light);
         }
 
-        .effect-glow::before {
+        .effect-retro::after {
             content: '';
             position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 50%, rgba(255, 255, 255, 0.1) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            animation: scanline 4s linear infinite;
+        }
+
+        @keyframes retro-effect {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 20px; }
+        }
+
+        /* Efeito 4: RGB/Chromatic aberration */
+        .effect-rgb {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            width: 100%;
+            animation: rgb-effect 0.3s infinite;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+            position: relative;
+        }
+
+        .effect-rgb::before,
+        .effect-rgb::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.7;
+        }
+
+        .effect-rgb::before {
+            color: #ff0000;
+            transform: translateX(-2px);
+            animation: rgb-shift-left 0.2s infinite;
+        }
+
+        .effect-rgb::after {
+            color: #0000ff;
+            transform: translateX(2px);
+            animation: rgb-shift-right 0.2s infinite;
+        }
+
+        @keyframes rgb-shift-left {
+            0% { transform: translateX(-2px); opacity: 0.7; }
+            50% { transform: translateX(-1px); opacity: 0.3; }
+            100% { transform: translateX(-2px); opacity: 0.7; }
+        }
+
+        @keyframes rgb-shift-right {
+            0% { transform: translateX(2px); opacity: 0.7; }
+            50% { transform: translateX(1px); opacity: 0.3; }
+            100% { transform: translateX(2px); opacity: 0.7; }
+        }
+
+        /* Efeito 5: Ondulação suave */
+        .effect-wave {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            width: 100%;
+            animation: wave-effect 2s ease-in-out infinite;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        @keyframes wave-effect {
+            0% { transform: translateY(0); opacity: 1; }
+            25% { transform: translateY(-2px); opacity: 0.9; }
+            50% { transform: translateY(2px); opacity: 0.8; }
+            75% { transform: translateY(-1px); opacity: 0.9; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Seletor de efeitos no drawer */
+        .effect-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #0a0a0a;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .effect-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .effect-btn i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        .effect-btn:hover {
+            background: #1a1a1a;
+        }
+
+        .effect-btn.active {
             background: var(--primary-color);
-            filter: blur(15px);
-            opacity: 0.3;
-            z-index: -1;
-            animation: glow-expand 2s ease-in-out infinite;
-            border-radius: 10px;
+            border-color: var(--primary-color);
+            color: white;
         }
 
-        @keyframes glow-pulse {
-            0%, 100% { 
-                opacity: 1;
-                text-shadow: 
-                    0 0 10px var(--primary-color),
-                    0 0 20px var(--primary-color),
-                    0 0 40px var(--primary-light),
-                    0 0 80px var(--primary-light);
-            }
-            50% { 
-                opacity: 0.9;
-                text-shadow: 
-                    0 0 20px var(--primary-color),
-                    0 0 40px var(--primary-color),
-                    0 0 60px var(--primary-light),
-                    0 0 100px var(--primary-light);
-            }
-        }
-
-        @keyframes glow-expand {
-            0%, 100% { 
-                opacity: 0.3;
-                filter: blur(15px);
-            }
-            50% { 
-                opacity: 0.5;
-                filter: blur(20px);
-            }
+        .effect-btn.active i {
+            color: white;
         }
 
         .track-info p {
@@ -671,52 +760,6 @@
         }
         .drawer-overlay.active {
             display: block;
-        }
-
-        /* SELETOR DE EFEITOS (APENAS 2) */
-        .effect-selector {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 15px 0;
-            padding: 10px;
-            background: #0a0a0a;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .effect-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .effect-btn i {
-            width: 20px;
-            color: var(--primary-color);
-        }
-
-        .effect-btn:hover {
-            background: #1a1a1a;
-        }
-
-        .effect-btn.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-
-        .effect-btn.active i {
-            color: white;
         }
 
         /* SELETOR DE CORES */
@@ -943,9 +986,9 @@
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             
-            <!-- LETREIRO COM EFEITOS (LASER E GLOW) -->
+            <!-- LETREIRO COM EFEITOS -->
             <div class="track-info">
-                <div class="effect-laser" id="musicTicker">
+                <div class="effect-glow" id="musicTicker" data-text="">
                     <i class="fas fa-music"></i> Carregando...
                 </div>
                 <p id="trackArtist">Carregando...</p>
@@ -998,13 +1041,22 @@
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
 
-            <!-- SELETOR DE EFEITOS (LASER E GLOW) -->
+            <!-- SELETOR DE EFEITOS -->
             <div class="effect-selector">
-                <div class="effect-btn active" data-effect="laser">
-                    <i class="fas fa-bolt"></i> Efeito Laser
+                <div class="effect-btn active" data-effect="glow">
+                    <i class="fas fa-lightbulb"></i> Efeito Brilho (Glow)
                 </div>
-                <div class="effect-btn" data-effect="glow">
-                    <i class="fas fa-sun"></i> Efeito Glow
+                <div class="effect-btn" data-effect="neon">
+                    <i class="fas fa-bolt"></i> Efeito Neon Pulsante
+                </div>
+                <div class="effect-btn" data-effect="retro">
+                    <i class="fas fa-tv"></i> Efeito Retro/Vintage
+                </div>
+                <div class="effect-btn" data-effect="rgb">
+                    <i class="fas fa-adjust"></i> Efeito RGB/Chromatic
+                </div>
+                <div class="effect-btn" data-effect="wave">
+                    <i class="fas fa-water"></i> Efeito Ondulação
                 </div>
             </div>
 
@@ -1291,6 +1343,8 @@
                 // Remove os números do início do título
                 let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
                 musicTicker.innerHTML = `<i class="fas fa-music"></i> ${saudacao}, você está ouvindo: ${nomeMusica} - continue aqui. <i class="fas fa-headphones-alt"></i>`;
+                // Para o efeito RGB que precisa do atributo data-text
+                musicTicker.setAttribute('data-text', musicTicker.innerHTML);
             }
 
             // ========== FUNÇÃO PARA TROCAR O EFEITO ==========
@@ -1310,7 +1364,7 @@
                 
                 // Salva preferência
                 localStorage.setItem('tickerEffect', effectName);
-                showNotification(`🎨 Efeito alterado para ${effectName === 'laser' ? 'Laser' : 'Glow'}`);
+                showNotification(`🎨 Efeito alterado para ${effectName}`);
             }
 
             // ========== FUNÇÕES PARA CONTROLAR O VÍDEO ÚNICO ==========
@@ -1800,7 +1854,7 @@
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             setTheme(savedTheme);
             
-            const savedEffect = localStorage.getItem('tickerEffect') || 'laser';
+            const savedEffect = localStorage.getItem('tickerEffect') || 'glow';
             changeEffect(savedEffect);
             
             colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
