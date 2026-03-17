@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rádio Playlist • Player Musical</title>
+    <title>Rádio Playlist • Anúncios em Vídeo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (TODO O CSS PERMANECE IGUAL, APENAS ADICIONO OS EFEITOS) */
+        /* ========== RESET E VARIÁVEIS ========== */
         * {
             margin: 0;
             padding: 0;
@@ -250,7 +250,7 @@
             100% { opacity: 0.6; transform: scale(1); }
         }
 
-        /* MENSAGEM PARA TOQUE INICIAL */
+        /* MENSAGEM PARA TOQUE INICIAL - MENOR E TRANSPARENTE */
         #tap-to-start {
             position: fixed;
             top: 50%;
@@ -282,7 +282,7 @@
             pointer-events: none;
         }
 
-        /* TOP BAR E TICKER (ORIGINAL) */
+        /* TOP BAR E TICKER */
         .top-bar {
             background: #000;
             border-top: 3px solid var(--primary-color);
@@ -351,221 +351,26 @@
             cursor: pointer;
             z-index: 20;
         }
-
-        /* ========== EFEITOS PARA O LETREIRO ========== */
         .track-info {
             padding: 16px 16px 8px;
             text-align: center;
-            min-height: 70px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
-
-        /* Efeito 1: Piscar com brilho (glow) */
-        .effect-glow {
+        .track-info h2 {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-color);
-            text-align: center;
-            width: 100%;
-            animation: glow-effect 1.5s ease-in-out infinite;
-            line-height: 1.4;
-            word-wrap: break-word;
-            white-space: normal;
-            text-shadow: 0 0 5px var(--primary-color);
-        }
-
-        @keyframes glow-effect {
-            0% { opacity: 1; text-shadow: 0 0 5px var(--primary-color); }
-            50% { opacity: 0.8; text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-light); }
-            100% { opacity: 1; text-shadow: 0 0 5px var(--primary-color); }
-        }
-
-        /* Efeito 2: Neon pulsante */
-        .effect-neon {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-align: center;
-            width: 100%;
-            animation: neon-effect 1.2s linear infinite;
-            line-height: 1.4;
-            word-wrap: break-word;
-            white-space: normal;
-        }
-
-        @keyframes neon-effect {
-            0% { opacity: 1; transform: scale(1); }
-            25% { opacity: 0.9; transform: scale(1.02); }
-            50% { opacity: 0.7; transform: scale(0.98); color: white; }
-            75% { opacity: 0.9; transform: scale(1.02); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        /* Efeito 3: Retro/vintage com scanline */
-        .effect-retro {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-align: center;
-            width: 100%;
-            animation: retro-effect 0.8s steps(2) infinite;
-            line-height: 1.4;
-            word-wrap: break-word;
-            white-space: normal;
-            position: relative;
-        }
-
-        .effect-retro::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(transparent 50%, rgba(255, 255, 255, 0.1) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            animation: scanline 4s linear infinite;
-        }
-
-        @keyframes retro-effect {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes scanline {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 20px; }
-        }
-
-        /* Efeito 4: RGB/Chromatic aberration */
-        .effect-rgb {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-align: center;
-            width: 100%;
-            animation: rgb-effect 0.3s infinite;
-            line-height: 1.4;
-            word-wrap: break-word;
-            white-space: normal;
-            position: relative;
-        }
-
-        .effect-rgb::before,
-        .effect-rgb::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.7;
-        }
-
-        .effect-rgb::before {
-            color: #ff0000;
-            transform: translateX(-2px);
-            animation: rgb-shift-left 0.2s infinite;
-        }
-
-        .effect-rgb::after {
-            color: #0000ff;
-            transform: translateX(2px);
-            animation: rgb-shift-right 0.2s infinite;
-        }
-
-        @keyframes rgb-shift-left {
-            0% { transform: translateX(-2px); opacity: 0.7; }
-            50% { transform: translateX(-1px); opacity: 0.3; }
-            100% { transform: translateX(-2px); opacity: 0.7; }
-        }
-
-        @keyframes rgb-shift-right {
-            0% { transform: translateX(2px); opacity: 0.7; }
-            50% { transform: translateX(1px); opacity: 0.3; }
-            100% { transform: translateX(2px); opacity: 0.7; }
-        }
-
-        /* Efeito 5: Ondulação suave */
-        .effect-wave {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-align: center;
-            width: 100%;
-            animation: wave-effect 2s ease-in-out infinite;
-            line-height: 1.4;
-            word-wrap: break-word;
-            white-space: normal;
-        }
-
-        @keyframes wave-effect {
-            0% { transform: translateY(0); opacity: 1; }
-            25% { transform: translateY(-2px); opacity: 0.9; }
-            50% { transform: translateY(2px); opacity: 0.8; }
-            75% { transform: translateY(-1px); opacity: 0.9; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Seletor de efeitos no drawer */
-        .effect-selector {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 15px 0;
-            padding: 10px;
-            background: #0a0a0a;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .effect-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .effect-btn i {
-            width: 20px;
-            color: var(--primary-color);
-        }
-
-        .effect-btn:hover {
-            background: #1a1a1a;
-        }
-
-        .effect-btn.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-
-        .effect-btn.active i {
-            color: white;
-        }
-
-        .track-info p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
+        .track-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         .progress-area {
             padding: 0 16px 8px;
         }
@@ -956,20 +761,20 @@
         </div>
     </div>
 
-    <!-- MENSAGEM PARA TOQUE INICIAL -->
+    <!-- MENSAGEM PARA TOQUE INICIAL - MENOR E TRANSPARENTE -->
     <div id="tap-to-start" class="">
         <i class="fas fa-hand-point-up"></i> toque para iniciar
     </div>
 
     <div class="app">
-        <!-- LETREIRO DO TOPO (ORIGINAL) -->
+        <!-- LETREIRO COM ÍCONES ANIMADOS -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
                 <span id="topTickerText">
-                    <i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - A Melhor Seleção Musical 
-                    <i class="fas fa-music fa-beat"></i> - Um Anúncio Por Hora - Sem Vinheta, Sem Blá, Blá, Blá
-                    <i class="fas fa-radio fa-fade"></i> - Atulizada Com os Melhore Hits -
-                    <i class="fas fa-star fa-spin-pulse"></i> - Contato 12 98846-1978
+                    <i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - A MELHOR SELEÇÃO MUSICAL 
+                    <i class="fas fa-music fa-beat"></i> - SEM ANÚNCIOS 
+                    <i class="fas fa-radio fa-fade"></i> - ATUALIZAÇÃO DIÁRIA 
+                    <i class="fas fa-star fa-spin-pulse"></i> - CONTATO 12 98846-1978
                 </span>
             </div>
         </div>
@@ -981,19 +786,14 @@
                     <source src="macaco.mp4" type="video/mp4">
                 </video>
                 <video autoplay loop muted playsinline id="carVideo" style="display:none;">
-                    <source src="abb.mp4" type="video/mp4">
+                    <source src="macaco.mp4" type="video/mp4">
                 </video>
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
-            
-            <!-- LETREIRO COM EFEITOS -->
             <div class="track-info">
-                <div class="effect-glow" id="musicTicker" data-text="">
-                    <i class="fas fa-music"></i> Carregando...
-                </div>
-                <p id="trackArtist">Carregando...</p>
+                <h2 id="trackTitle">Rádio Playlist</h2>
+                <p id="trackArtist">Clica em PLay...</p>
             </div>
-
             <div class="progress-area">
                 <div class="progress-time">
                     <span id="currentTime">0:00</span>
@@ -1022,7 +822,7 @@
                 <source src="coposze.mp4" type="video/mp4">
             </video>
             <div class="extra-overlay" id="extraOverlay">
-                <i class="fas fa-ad"></i> Alugue Copos
+                <i class="fas fa-ad"></i> AlugueCopos
             </div>
             <div class="extra-timer" id="extraTimer">1:00</div>
         </div>
@@ -1040,25 +840,6 @@
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
-
-            <!-- SELETOR DE EFEITOS -->
-            <div class="effect-selector">
-                <div class="effect-btn active" data-effect="glow">
-                    <i class="fas fa-lightbulb"></i> Efeito Brilho (Glow)
-                </div>
-                <div class="effect-btn" data-effect="neon">
-                    <i class="fas fa-bolt"></i> Efeito Neon Pulsante
-                </div>
-                <div class="effect-btn" data-effect="retro">
-                    <i class="fas fa-tv"></i> Efeito Retro/Vintage
-                </div>
-                <div class="effect-btn" data-effect="rgb">
-                    <i class="fas fa-adjust"></i> Efeito RGB/Chromatic
-                </div>
-                <div class="effect-btn" data-effect="wave">
-                    <i class="fas fa-water"></i> Efeito Ondulação
-                </div>
-            </div>
 
             <!-- SELETOR DE CORES -->
             <div class="color-picker">
@@ -1108,18 +889,19 @@
         (function() {
             // ========== CONFIGURAÇÕES ==========
             const CONFIG = {
-                adsInterval: 20,
+                adsInterval: 20, // Anúncio de áudio a cada 20 músicas
                 defaultVolume: 80,
                 adsList: [
-                    { src: 'zzcv.mp3', title: 'Oferta relâmpago' },
-                    { src: 'zzcv.mp3', title: 'Promoção especial' },
-                    { src: 'zzcv.mp3', title: 'Novidade na loja' }
+                    { src: 'zzcv (1).mp3', title: 'Oferta relâmpago' },
+                    { src: 'zzcv (1).mp3', title: 'Promoção especial' },
+                    { src: 'zzcv (1).mp3', title: 'Novidade na loja' }
                 ]
             };
 
             // ========== PLAYLIST PRINCIPAL ==========
             const musicas = [
-                { id: 1, title: "01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
+            
+             { id: 1, title: "01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
                 { id: 2, title: "02 A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
                 { id: 3, title: "03 Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01" },
                 { id: 4, title: "04 Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01" },
@@ -1253,7 +1035,8 @@
                 { id: 132, title: "132 Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
                 { id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
                 { id: 134, title: "134 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" }
-            ];
+            ];  
+            
 
             // ========== ESTADO GLOBAL ==========
             let playlist = musicas.map(m => ({ ...m, favorite: false }));
@@ -1276,6 +1059,7 @@
             const progressFill = document.getElementById('progressFill');
             const currentTimeEl = document.getElementById('currentTime');
             const totalTimeEl = document.getElementById('totalTime');
+            const trackTitle = document.getElementById('trackTitle');
             const trackArtist = document.getElementById('trackArtist');
             const volumeSlider = document.getElementById('volumeSlider');
             const volumePercent = document.getElementById('volumePercent');
@@ -1307,76 +1091,27 @@
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
 
-            // Elementos do letreiro e seletor de efeitos
-            const musicTicker = document.getElementById('musicTicker');
-            const effectBtns = document.querySelectorAll('.effect-btn');
-
-            // ========== LISTA DE VÍDEOS EXTRA ==========
+            // ========== LISTA DE VÍDEOS EXTRA (ÚNICO) ==========
             const videosExtra = [
                 { src: 'coposze.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
-                { src: 'anjo.mp4', nome: ' Anjo Azul', link: 'https://www.anjoazul.com.br' },
-                { src: 'doc.mp4', nome: 'doc', link: 'https://www.destaque.com.br' },
+                { src: 'gestao.mp4', nome: 'Anjo Azul', link: 'https://www.anjoazul.com.br' },
+                
             ];
 
             let videoIndex = 0;
             let tempoRestante = 60;
-            let timerInterval = null;
-            let videoInterval = null;
-
-            // ========== FUNÇÃO PARA OBTER SAUDAÇÃO BASEADA NA HORA ==========
-            function getSaudacao() {
-                const hora = new Date().getHours();
-                if (hora >= 5 && hora < 12) {
-                    return "Bom dia";
-                } else if (hora >= 12 && hora < 18) {
-                    return "Boa tarde";
-                } else {
-                    return "Boa noite";
-                }
-            }
-
-            // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO ==========
-            function updateMusicTicker() {
-                if (!musicTicker) return;
-                const saudacao = getSaudacao();
-                const musicaAtual = playlist[currentIndex];
-                // Remove os números do início do título
-                let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
-                musicTicker.innerHTML = `<i class="fas fa-music"></i> ${saudacao}, você está ouvindo: ${nomeMusica} - continue aqui. <i class="fas fa-headphones-alt"></i>`;
-                // Para o efeito RGB que precisa do atributo data-text
-                musicTicker.setAttribute('data-text', musicTicker.innerHTML);
-            }
-
-            // ========== FUNÇÃO PARA TROCAR O EFEITO ==========
-            function changeEffect(effectName) {
-                // Remove todas as classes de efeito
-                musicTicker.className = ''; // Remove todas as classes
-                // Adiciona a nova classe de efeito
-                musicTicker.classList.add(`effect-${effectName}`);
-                
-                // Atualiza botões ativos
-                effectBtns.forEach(btn => {
-                    btn.classList.remove('active');
-                    if (btn.dataset.effect === effectName) {
-                        btn.classList.add('active');
-                    }
-                });
-                
-                // Salva preferência
-                localStorage.setItem('tickerEffect', effectName);
-                showNotification(`🎨 Efeito alterado para ${effectName}`);
-            }
 
             // ========== FUNÇÕES PARA CONTROLAR O VÍDEO ÚNICO ==========
             function iniciarVideoUnico() {
+                // Inicia o primeiro vídeo
                 const primeiroVideo = videosExtra[0];
                 extraVideo.src = primeiroVideo.src;
                 extraVideo.load();
                 extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo:', e));
                 extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
                 
-                if (timerInterval) clearInterval(timerInterval);
-                timerInterval = setInterval(() => {
+                // Timer
+                setInterval(() => {
                     if (tempoRestante > 0) {
                         tempoRestante--;
                         const minutos = Math.floor(tempoRestante / 60);
@@ -1385,8 +1120,8 @@
                     }
                 }, 1000);
                 
-                if (videoInterval) clearInterval(videoInterval);
-                videoInterval = setInterval(() => {
+                // Troca vídeo a cada 60 segundos
+                setInterval(() => {
                     videoIndex = (videoIndex + 1) % videosExtra.length;
                     const novoVideo = videosExtra[videoIndex];
                     extraVideo.src = novoVideo.src;
@@ -1401,10 +1136,8 @@
             if (extraContainer) {
                 extraContainer.addEventListener('click', function() {
                     const videoAtual = videosExtra[videoIndex];
-                    if (videoAtual && videoAtual.link) {
-                        window.open(videoAtual.link, '_blank');
-                        showNotification(`🔗 Redirecionando para: ${videoAtual.nome}`);
-                    }
+                    window.open(videoAtual.link, '_blank');
+                    showNotification(`🔗 Redirecionando para: ${videoAtual.nome}`);
                 });
             }
 
@@ -1426,6 +1159,16 @@
                             nextTrack();
                         }
                     }
+                }
+            });
+
+            musicPlayer.addEventListener('pause', function() {
+                if (document.hidden && isPlaying && !isAdPlaying && !musicPlayer.ended) {
+                    setTimeout(() => {
+                        if (document.hidden && isPlaying && musicPlayer.paused) {
+                            musicPlayer.play().catch(e => console.log('Não foi possível retomar em background', e));
+                        }
+                    }, 100);
                 }
             });
 
@@ -1460,23 +1203,15 @@
             }
 
             function loadFavorites() {
-                try {
-                    const favs = JSON.parse(localStorage.getItem('radioFavorites')) || [];
-                    playlist.forEach(m => {
-                        m.favorite = favs.includes(m.id);
-                    });
-                } catch (e) {
-                    console.warn('Erro ao carregar favoritos:', e);
-                }
+                const favs = JSON.parse(localStorage.getItem('radioFavorites')) || [];
+                playlist.forEach(m => {
+                    m.favorite = favs.includes(m.id);
+                });
             }
 
             function saveFavorites() {
-                try {
-                    const favs = playlist.filter(m => m.favorite).map(m => m.id);
-                    localStorage.setItem('radioFavorites', JSON.stringify(favs));
-                } catch (e) {
-                    console.warn('Erro ao salvar favoritos:', e);
-                }
+                const favs = playlist.filter(m => m.favorite).map(m => m.id);
+                localStorage.setItem('radioFavorites', JSON.stringify(favs));
             }
 
             window.toggleFavorite = function(id) {
@@ -1493,7 +1228,7 @@
                 let lista = showingFavorites ? playlist.filter(m => m.favorite) : playlist;
                 let html = '';
                 lista.forEach((musica) => {
-                    const isPlaying = (musica.id === playlist[currentIndex]?.id && !isAdPlaying);
+                    const isPlaying = (musica.id === playlist[currentIndex].id && !isAdPlaying);
                     html += `
                         <div class="playlist-item ${isPlaying ? 'playing' : ''}" onclick="selectSong(${musica.id})">
                             <div class="playlist-info">
@@ -1531,34 +1266,27 @@
                 const track = playlist[currentIndex];
                 musicPlayer.src = track.src;
                 musicPlayer.load();
+                trackTitle.textContent = track.title;
                 trackArtist.textContent = track.artist;
                 totalTimeEl.textContent = track.duration;
                 progressFill.style.width = '0%';
                 currentTimeEl.textContent = '0:00';
                 renderPlaylist();
-                updateMusicTicker();
             }
 
-            // ========== FUNÇÕES DO PLAYER ==========
             function playMusic() {
                 if (isAdPlaying) return;
-                
-                const playPromise = musicPlayer.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise
-                        .then(() => {
-                            isPlaying = true;
-                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                            hideSplash();
-                            tapToStart.classList.add('hidden');
-                        })
-                        .catch(error => {
-                            console.warn('Erro ao reproduzir:', error);
-                            isPlaying = false;
-                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        });
-                }
+                musicPlayer.play()
+                    .then(() => {
+                        isPlaying = true;
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        hideSplash();
+                        tapToStart.classList.add('hidden');
+                    })
+                    .catch(e => {
+                        console.warn('Autoplay bloqueado:', e);
+                        tapToStart.classList.remove('hidden');
+                    });
             }
 
             function pauseMusic() {
@@ -1569,62 +1297,42 @@
 
             function togglePlayPause() {
                 if (isAdPlaying) {
-                    if (adPlayer.paused) {
-                        adPlayer.play().catch(e => console.log('Erro ao reproduzir anúncio:', e));
-                    } else {
-                        adPlayer.pause();
-                    }
+                    adPlayer.paused ? adPlayer.play() : adPlayer.pause();
                 } else {
-                    if (isPlaying) {
-                        pauseMusic();
-                    } else {
-                        playMusic();
-                    }
+                    isPlaying ? pauseMusic() : playMusic();
                 }
             }
 
             function nextTrack() {
-                if (isAdPlaying) {
-                    showNotification('⏸️ Aguarde o anúncio terminar');
-                    return;
-                }
-                
+                if (isAdPlaying) return;
                 if (shuffle && playlist.length > 1) {
                     let newIndex;
                     do {
                         newIndex = Math.floor(Math.random() * playlist.length);
-                    } while (newIndex === currentIndex && playlist.length > 1);
+                    } while (newIndex === currentIndex);
                     currentIndex = newIndex;
                 } else {
                     currentIndex = (currentIndex + 1) % playlist.length;
                 }
                 loadTrack(currentIndex);
-                if (isPlaying) {
-                    playMusic();
-                }
+                if (isPlaying) playMusic();
                 musicPlayedCount++;
                 checkAdInterval();
             }
 
             function prevTrack() {
-                if (isAdPlaying) {
-                    showNotification('⏸️ Aguarde o anúncio terminar');
-                    return;
-                }
-                
+                if (isAdPlaying) return;
                 if (shuffle && playlist.length > 1) {
                     let newIndex;
                     do {
                         newIndex = Math.floor(Math.random() * playlist.length);
-                    } while (newIndex === currentIndex && playlist.length > 1);
+                    } while (newIndex === currentIndex);
                     currentIndex = newIndex;
                 } else {
                     currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
                 }
                 loadTrack(currentIndex);
-                if (isPlaying) {
-                    playMusic();
-                }
+                if (isPlaying) playMusic();
             }
 
             function updateAdTimer() {
@@ -1640,18 +1348,13 @@
                 if (!adsEnabled || isAdPlaying) return;
                 const ad = CONFIG.adsList[currentAdIndex];
                 if (!ad) return;
-                
-                if (isPlaying) {
-                    musicPlayer.pause();
-                }
-                
+                if (isPlaying) musicPlayer.pause();
                 adPlayer.src = ad.src;
                 adPlayer.load();
                 isAdPlaying = true;
                 adStatus.innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.title}`;
                 skipAdBtn.style.display = 'inline-block';
                 showNotification(`📢 Anúncio de áudio: ${ad.title}`);
-                
                 adPlayer.play().catch(() => finishAd());
                 adPlayer.onended = finishAd;
                 adPlayer.onerror = finishAd;
@@ -1661,19 +1364,13 @@
                 isAdPlaying = false;
                 adStatus.innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
                 skipAdBtn.style.display = 'none';
-                
-                if (isPlaying) {
-                    musicPlayer.play().catch(e => console.log('Erro ao retomar música:', e));
-                }
-                
+                if (isPlaying) musicPlayer.play();
                 currentAdIndex = (currentAdIndex + 1) % CONFIG.adsList.length;
             }
 
             function checkAdInterval() {
                 if (!adsEnabled) return;
-                if (musicPlayedCount > 0 && musicPlayedCount % CONFIG.adsInterval === 0) {
-                    playAd();
-                }
+                if (musicPlayedCount > 0 && musicPlayedCount % CONFIG.adsInterval === 0) playAd();
                 updateAdTimer();
             }
 
@@ -1687,9 +1384,7 @@
                 updateAdTimer();
             }
 
-            function testAd() { 
-                playAd(); 
-            }
+            function testAd() { playAd(); }
 
             function skipAd() {
                 if (isAdPlaying) {
@@ -1718,10 +1413,7 @@
             });
 
             musicPlayer.addEventListener('ended', () => {
-                if (!isAdPlaying) {
-                    musicPlayedCount++;
-                    nextTrack();
-                }
+                if (!isAdPlaying) nextTrack();
             });
 
             musicPlayer.addEventListener('error', (e) => {
@@ -1730,17 +1422,6 @@
                 setTimeout(nextTrack, 1000);
             });
 
-            musicPlayer.addEventListener('pause', function() {
-                if (document.hidden && isPlaying && !isAdPlaying && !musicPlayer.ended) {
-                    setTimeout(() => {
-                        if (document.hidden && isPlaying && musicPlayer.paused) {
-                            musicPlayer.play().catch(e => console.log('Não foi possível retomar em background', e));
-                        }
-                    }, 100);
-                }
-            });
-
-            // Event listeners dos botões
             prevBtn.addEventListener('click', prevTrack);
             nextBtn.addEventListener('click', nextTrack);
             playBtn.addEventListener('click', togglePlayPause);
@@ -1786,12 +1467,10 @@
                 drawerOverlay.classList.add('active');
                 renderPlaylist();
             }
-            
             function closeDrawerFunc() {
                 drawer.classList.remove('open');
                 drawerOverlay.classList.remove('active');
             }
-            
             document.getElementById('videoMenuBtn').addEventListener('click', openDrawer);
             closeDrawer.addEventListener('click', closeDrawerFunc);
             drawerOverlay.addEventListener('click', closeDrawerFunc);
@@ -1803,7 +1482,6 @@
                 showFavBtn.classList.remove('active');
                 renderPlaylist();
             });
-            
             showFavBtn.addEventListener('click', () => {
                 showingFavorites = true;
                 showFavBtn.classList.add('active');
@@ -1813,19 +1491,13 @@
 
             // ========== OUTRAS OPÇÕES DO DRAWER ==========
             document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen();
-                } else {
-                    document.exitFullscreen();
-                }
+                if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+                else document.exitFullscreen();
             });
 
             document.getElementById('shareDrawerBtn').addEventListener('click', () => {
                 if (navigator.share) {
-                    navigator.share({ 
-                        title: 'Rádio Playlist', 
-                        url: location.href 
-                    }).catch(() => {});
+                    navigator.share({ title: 'Rádio Playlist', url: location.href }).catch(() => {});
                 } else {
                     navigator.clipboard.writeText(location.href);
                     showNotification('📋 Link copiado!');
@@ -1838,32 +1510,13 @@
                 showNotification('🚗 Modo carro ' + (document.body.classList.contains('car-mode') ? 'ativado' : 'desativado'));
             });
 
-            // Event listeners para os botões de efeito
-            effectBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const effect = btn.dataset.effect;
-                    changeEffect(effect);
-                });
-            });
-
             toggleAdsBtn.addEventListener('click', toggleAds);
             testAdBtn.addEventListener('click', testAd);
             skipAdBtn.addEventListener('click', skipAd);
 
-            // ========== CARREGAR TEMA E EFEITO SALVO ==========
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             setTheme(savedTheme);
-            
-            const savedEffect = localStorage.getItem('tickerEffect') || 'glow';
-            changeEffect(savedEffect);
-            
             colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
-
-            // ========== LIMPEZA AO SAIR ==========
-            window.addEventListener('beforeunload', () => {
-                if (timerInterval) clearInterval(timerInterval);
-                if (videoInterval) clearInterval(videoInterval);
-            });
 
             // ========== INICIALIZAÇÃO ==========
             window.addEventListener('load', () => {
@@ -1878,6 +1531,7 @@
                 carVideo.style.display = 'none';
                 mainVideo.play().catch(e => console.log('Autoplay bloqueado:', e));
                 
+                // Inicia o vídeo único
                 iniciarVideoUnico();
                 
                 const attemptPlay = () => {
@@ -1886,11 +1540,11 @@
                         playMusic();
                     }
                 };
-                
                 attemptPlay();
                 setTimeout(hideSplash, 3000);
                 
-                const startPlayer = () => {
+                // Eventos para esconder o botão de toque inicial
+                document.addEventListener('touchstart', () => {
                     if (!isPlaying && musicPlayer.paused && !autoPlayAttempted) {
                         autoPlayAttempted = true;
                         playMusic();
@@ -1898,15 +1552,30 @@
                         playMusic();
                     }
                     tapToStart.classList.add('hidden');
-                };
+                }, { once: false });
                 
-                document.addEventListener('touchstart', startPlayer, { once: true });
-                document.addEventListener('click', startPlayer, { once: true });
+                document.addEventListener('click', () => {
+                    if (!isPlaying && musicPlayer.paused && !autoPlayAttempted) {
+                        autoPlayAttempted = true;
+                        playMusic();
+                    } else if (!isPlaying && musicPlayer.paused) {
+                        playMusic();
+                    }
+                    tapToStart.classList.add('hidden');
+                }, { once: false });
                 
                 updateAdTimer();
-                updateMusicTicker();
             });
         })();
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
