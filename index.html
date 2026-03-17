@@ -6,7 +6,7 @@
     <title>Rádio Playlist • Player Musical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (mantido o mesmo CSS anterior) */
+        /* (TODO O CSS PERMANECE IGUAL, APENAS AJUSTEI OS 2 EFEITOS) */
         * {
             margin: 0;
             padding: 0;
@@ -282,7 +282,7 @@
             pointer-events: none;
         }
 
-        /* TOP BAR E TICKER */
+        /* TOP BAR E TICKER (ORIGINAL) */
         .top-bar {
             background: #000;
             border-top: 3px solid var(--primary-color);
@@ -351,26 +351,132 @@
             cursor: pointer;
             z-index: 20;
         }
+
+        /* ========== 2 EFEITOS ========== */
         .track-info {
             padding: 16px 16px 8px;
             text-align: center;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .track-info h2 {
+
+        /* EFEITO 1: LASER (MANTIDO) */
+        .effect-laser {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-color);
-            white-space: nowrap;
+            text-align: center;
+            width: 100%;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+            position: relative;
             overflow: hidden;
-            text-overflow: ellipsis;
+            animation: laser-pulse 2s ease-in-out infinite;
         }
+
+        .effect-laser::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 70%
+            );
+            animation: laser-scan 2.5s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes laser-scan {
+            from { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            to { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes laser-pulse {
+            0%, 100% { text-shadow: 0 0 5px var(--primary-color); }
+            50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-light); }
+        }
+
+        /* EFEITO 2: GLOW MELHORADO (SUBSTITUI O GLITCH) */
+        .effect-glow {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            width: 100%;
+            line-height: 1.4;
+            word-wrap: break-word;
+            white-space: normal;
+            position: relative;
+            animation: glow-pulse 1.8s ease-in-out infinite;
+            text-shadow: 
+                0 0 10px var(--primary-color),
+                0 0 20px var(--primary-color),
+                0 0 40px var(--primary-light),
+                0 0 80px var(--primary-light);
+        }
+
+        .effect-glow::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: var(--primary-color);
+            filter: blur(15px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: glow-expand 2s ease-in-out infinite;
+            border-radius: 10px;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { 
+                opacity: 1;
+                text-shadow: 
+                    0 0 10px var(--primary-color),
+                    0 0 20px var(--primary-color),
+                    0 0 40px var(--primary-light),
+                    0 0 80px var(--primary-light);
+            }
+            50% { 
+                opacity: 0.9;
+                text-shadow: 
+                    0 0 20px var(--primary-color),
+                    0 0 40px var(--primary-color),
+                    0 0 60px var(--primary-light),
+                    0 0 100px var(--primary-light);
+            }
+        }
+
+        @keyframes glow-expand {
+            0%, 100% { 
+                opacity: 0.3;
+                filter: blur(15px);
+            }
+            50% { 
+                opacity: 0.5;
+                filter: blur(20px);
+            }
+        }
+
         .track-info p {
             font-size: 0.9rem;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .progress-area {
             padding: 0 16px 8px;
         }
@@ -565,6 +671,52 @@
         }
         .drawer-overlay.active {
             display: block;
+        }
+
+        /* SELETOR DE EFEITOS (APENAS 2) */
+        .effect-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #0a0a0a;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .effect-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .effect-btn i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        .effect-btn:hover {
+            background: #1a1a1a;
+        }
+
+        .effect-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .effect-btn.active i {
+            color: white;
         }
 
         /* SELETOR DE CORES */
@@ -767,7 +919,7 @@
     </div>
 
     <div class="app">
-        <!-- LETREIRO COM ÍCONES ANIMADOS E SAUDAÇÃO PERSONALIZADA -->
+        <!-- LETREIRO DO TOPO (ORIGINAL) -->
         <div class="top-bar">
             <div class="top-ticker" id="topTicker" title="Clique para editar">
                 <span id="topTickerText">
@@ -790,10 +942,15 @@
                 </video>
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
+            
+            <!-- LETREIRO COM EFEITOS (LASER E GLOW) -->
             <div class="track-info">
-                <h2 id="trackTitle">Rádio Playlist</h2>
+                <div class="effect-laser" id="musicTicker">
+                    <i class="fas fa-music"></i> Carregando...
+                </div>
                 <p id="trackArtist">Carregando...</p>
             </div>
+
             <div class="progress-area">
                 <div class="progress-time">
                     <span id="currentTime">0:00</span>
@@ -840,6 +997,16 @@
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
+
+            <!-- SELETOR DE EFEITOS (LASER E GLOW) -->
+            <div class="effect-selector">
+                <div class="effect-btn active" data-effect="laser">
+                    <i class="fas fa-bolt"></i> Efeito Laser
+                </div>
+                <div class="effect-btn" data-effect="glow">
+                    <i class="fas fa-sun"></i> Efeito Glow
+                </div>
+            </div>
 
             <!-- SELETOR DE CORES -->
             <div class="color-picker">
@@ -1057,7 +1224,6 @@
             const progressFill = document.getElementById('progressFill');
             const currentTimeEl = document.getElementById('currentTime');
             const totalTimeEl = document.getElementById('totalTime');
-            const trackTitle = document.getElementById('trackTitle');
             const trackArtist = document.getElementById('trackArtist');
             const volumeSlider = document.getElementById('volumeSlider');
             const volumePercent = document.getElementById('volumePercent');
@@ -1089,8 +1255,9 @@
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
 
-            // Elemento do ticker (letreiro) e texto do título
-            const topTickerSpan = document.querySelector('#topTickerText span');
+            // Elementos do letreiro e seletor de efeitos
+            const musicTicker = document.getElementById('musicTicker');
+            const effectBtns = document.querySelectorAll('.effect-btn');
 
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
@@ -1117,24 +1284,43 @@
             }
 
             // ========== FUNÇÃO PARA ATUALIZAR O LETREIRO ==========
-            function updateTickerText() {
-                if (!topTickerSpan) return;
+            function updateMusicTicker() {
+                if (!musicTicker) return;
                 const saudacao = getSaudacao();
                 const musicaAtual = playlist[currentIndex];
-                const nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist'; // Remove números do início se houver
-                topTickerSpan.innerHTML = `<i class="fas fa-headphones-alt fa-spin"></i> ${saudacao}, você está ouvindo ${nomeMusica} <i class="fas fa-music fa-beat"></i> - continue aqui. <i class="fas fa-radio fa-fade"></i> - RÁDIO PLAYLIST`;
+                // Remove os números do início do título
+                let nomeMusica = musicaAtual ? musicaAtual.title.replace(/^\d+\s*/, '').trim() : 'Rádio Playlist';
+                musicTicker.innerHTML = `<i class="fas fa-music"></i> ${saudacao}, você está ouvindo: ${nomeMusica} - continue aqui. <i class="fas fa-headphones-alt"></i>`;
+            }
+
+            // ========== FUNÇÃO PARA TROCAR O EFEITO ==========
+            function changeEffect(effectName) {
+                // Remove todas as classes de efeito
+                musicTicker.className = ''; // Remove todas as classes
+                // Adiciona a nova classe de efeito
+                musicTicker.classList.add(`effect-${effectName}`);
+                
+                // Atualiza botões ativos
+                effectBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.effect === effectName) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Salva preferência
+                localStorage.setItem('tickerEffect', effectName);
+                showNotification(`🎨 Efeito alterado para ${effectName === 'laser' ? 'Laser' : 'Glow'}`);
             }
 
             // ========== FUNÇÕES PARA CONTROLAR O VÍDEO ÚNICO ==========
             function iniciarVideoUnico() {
-                // Inicia o primeiro vídeo
                 const primeiroVideo = videosExtra[0];
                 extraVideo.src = primeiroVideo.src;
                 extraVideo.load();
                 extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo:', e));
                 extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
                 
-                // Timer
                 if (timerInterval) clearInterval(timerInterval);
                 timerInterval = setInterval(() => {
                     if (tempoRestante > 0) {
@@ -1145,7 +1331,6 @@
                     }
                 }, 1000);
                 
-                // Troca vídeo a cada 60 segundos
                 if (videoInterval) clearInterval(videoInterval);
                 videoInterval = setInterval(() => {
                     videoIndex = (videoIndex + 1) % videosExtra.length;
@@ -1292,16 +1477,15 @@
                 const track = playlist[currentIndex];
                 musicPlayer.src = track.src;
                 musicPlayer.load();
-                trackTitle.textContent = track.title;
                 trackArtist.textContent = track.artist;
                 totalTimeEl.textContent = track.duration;
                 progressFill.style.width = '0%';
                 currentTimeEl.textContent = '0:00';
                 renderPlaylist();
-                updateTickerText(); // Atualiza o letreiro quando carrega uma nova música
+                updateMusicTicker();
             }
 
-            // ========== FUNÇÕES CORRIGIDAS DO PLAYER ==========
+            // ========== FUNÇÕES DO PLAYER ==========
             function playMusic() {
                 if (isAdPlaying) return;
                 
@@ -1600,12 +1784,25 @@
                 showNotification('🚗 Modo carro ' + (document.body.classList.contains('car-mode') ? 'ativado' : 'desativado'));
             });
 
+            // Event listeners para os botões de efeito
+            effectBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const effect = btn.dataset.effect;
+                    changeEffect(effect);
+                });
+            });
+
             toggleAdsBtn.addEventListener('click', toggleAds);
             testAdBtn.addEventListener('click', testAd);
             skipAdBtn.addEventListener('click', skipAd);
 
+            // ========== CARREGAR TEMA E EFEITO SALVO ==========
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             setTheme(savedTheme);
+            
+            const savedEffect = localStorage.getItem('tickerEffect') || 'laser';
+            changeEffect(savedEffect);
+            
             colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
 
             // ========== LIMPEZA AO SAIR ==========
@@ -1649,12 +1846,11 @@
                     tapToStart.classList.add('hidden');
                 };
                 
-                // CORREÇÃO: listeners executam apenas uma vez
                 document.addEventListener('touchstart', startPlayer, { once: true });
                 document.addEventListener('click', startPlayer, { once: true });
                 
                 updateAdTimer();
-                updateTickerText(); // Atualiza o ticker ao carregar a página
+                updateMusicTicker();
             });
         })();
     </script>
