@@ -633,187 +633,194 @@
                 { id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
                 { id: 134, title: "134 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" } 
             ];
+             // ========== ESTADO GLOBAL ==========
+let playlist = musicas.map(m => ({ ...m, favorite: false }));
+let correntezaIndex = playlist.findIndex(m => m.id === 30);
+let currentIndex = correntezaIndex !== -1 ? correntezaIndex : 0;
+let isPlaying = false;
+let isAdPlaying = false;
+let adsEnabled = true;
+let musicPlayedCount = 0;
+let currentAdIndex = 0;
+let shuffle = false;
+let autoPlayAttempted = false;
 
-            // ========== ESTADO GLOBAL ==========
-            let playlist = musicas.map(m => ({ ...m, favorite: false }));
-            let correntezaIndex = playlist.findIndex(m => m.id === 30);
-            let currentIndex = correntezaIndex !== -1 ? correntezaIndex : 0;
-            let isPlaying = false;
-            let isAdPlaying = false;
-            let adsEnabled = true;
-            let musicPlayedCount = 0;
-            let currentAdIndex = 0;
-            let shuffle = false;
-            let autoPlayAttempted = false;
+// ========== ELEMENTOS DOM ==========
+const musicPlayer = document.getElementById('musicPlayer');
+const adPlayer = document.getElementById('adPlayer');
+const playBtn = document.getElementById('playPauseBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const progressFill = document.getElementById('progressFill');
+const currentTimeEl = document.getElementById('currentTime');
+const totalTimeEl = document.getElementById('totalTime');
+const trackArtist = document.getElementById('trackArtist');
+const volumeSlider = document.getElementById('volumeSlider');
+const volumePercent = document.getElementById('volumePercent');
+const volumeIcon = document.getElementById('volumeIconBtn');
+const notification = document.getElementById('notification');
+const notificationText = document.getElementById('notificationText');
+const splash = document.getElementById('splash');
+const tapToStart = document.getElementById('tap-to-start');
+const drawer = document.getElementById('drawer');
+const drawerOverlay = document.getElementById('drawerOverlay');
+const closeDrawer = document.getElementById('closeDrawer');
+const adTimerEl = document.getElementById('adTimer');
+const adStatus = document.getElementById('adStatus');
+const toggleAdsBtn = document.getElementById('toggleAdsBtn');
+const testAdBtn = document.getElementById('testAdBtn');
+const skipAdBtn = document.getElementById('skipAdBtn');
+const shuffleBtn = document.getElementById('shufflePlayerBtn');
+const colorOptions = document.querySelectorAll('.color-option');
+const body = document.body;
+const mainVideo = document.getElementById('mainVideo');
+const carVideo = document.getElementById('carVideo');
+const topTicker = document.getElementById('topTicker');
+const topTickerText = document.getElementById('topTickerText');
+const musicTickerText = document.getElementById('musicTickerText');
+const exitCarModeBtn = document.getElementById('exitCarModeBtn');
 
-            // ========== ELEMENTOS DOM ==========
-            const musicPlayer = document.getElementById('musicPlayer');
-            const adPlayer = document.getElementById('adPlayer');
-            const playBtn = document.getElementById('playPauseBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const progressFill = document.getElementById('progressFill');
-            const currentTimeEl = document.getElementById('currentTime');
-            const totalTimeEl = document.getElementById('totalTime');
-            const trackArtist = document.getElementById('trackArtist');
-            const volumeSlider = document.getElementById('volumeSlider');
-            const volumePercent = document.getElementById('volumePercent');
-            const volumeIcon = document.getElementById('volumeIconBtn');
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notificationText');
-            const splash = document.getElementById('splash');
-            const tapToStart = document.getElementById('tap-to-start');
-            const drawer = document.getElementById('drawer');
-            const drawerOverlay = document.getElementById('drawerOverlay');
-            const closeDrawer = document.getElementById('closeDrawer');
-            const adTimerEl = document.getElementById('adTimer');
-            const adStatus = document.getElementById('adStatus');
-            const toggleAdsBtn = document.getElementById('toggleAdsBtn');
-            const testAdBtn = document.getElementById('testAdBtn');
-            const skipAdBtn = document.getElementById('skipAdBtn');
-            const shuffleBtn = document.getElementById('shufflePlayerBtn');
-            const colorOptions = document.querySelectorAll('.color-option');
-            const body = document.body;
-            const mainVideo = document.getElementById('mainVideo');
-            const carVideo = document.getElementById('carVideo');
-            const topTicker = document.getElementById('topTicker');
-            const topTickerText = document.getElementById('topTickerText');
-            const musicTickerText = document.getElementById('musicTickerText');
-            const exitCarModeBtn = document.getElementById('exitCarModeBtn');
+// Elementos do vídeo extra
+const extraVideo = document.getElementById('extraVideo');
+const extraOverlay = document.getElementById('extraOverlay');
+const extraTimer = document.getElementById('extraTimer');
+const extraContainer = document.getElementById('extraVideoContainer');
+
+// ========== FUNÇÕES DO PLAYER ==========
+function loadTrack(index) {
+    if (!playlist.length) return;
+    if (index >= playlist.length) index = 0;
+    if (index < 0) index = playlist.length - 1;
+    currentIndex = index;
+    const track = playlist[currentIndex];
+    musicPlayer.src = track.src;
+    musicPlayer.load();
+    trackArtist.textContent = track.artist;
+    totalTimeEl.textContent = track.duration;
+    progressFill.style.width = '0%';
+    currentTimeEl.textContent = '0:00';
+    updateMusicTicker();
+}
+
+function playMusic() {
+    if (isAdPlaying) {
+        showNotification('⏸️ Anúncio em andamento');
+        return;
+    }
+    
+    musicPlayer.play()
+        .then(() => {
+            isPlaying = true;
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            console.log('Música tocando');
+            hideSplash();
+            tapToStart.classList.add('hidden');
+        })
+        .catch(e => { 
+            console.warn('Erro ao dar play:', e); 
+            tapToStart.classList.remove('hidden');
+            showNotification('⚠️ Clique na tela para iniciar');
+        });
+}
+
+function pauseMusic() { 
+    musicPlayer.pause(); 
+    isPlaying = false; 
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    console.log('Música pausada');
+}
+
+function togglePlayPause() { 
+    console.log('Toggle clicado - isPlaying:', isPlaying, 'isAdPlaying:', isAdPlaying);
+    
+    if (isAdPlaying) { 
+        // Se anúncio estiver tocando
+        if (adPlayer.paused) {
+            adPlayer.play();
+            console.log('Anúncio play');
+        } else {
+            adPlayer.pause();
+            console.log('Anúncio pause');
+        }
+    } else { 
+        // Se música estiver tocando/pausada
+        if (isPlaying) {
+            pauseMusic();
+        } else {
+            playMusic();
+        }
+    } 
+}
+
+// Monitorar eventos do áudio para garantir sincronia
+musicPlayer.addEventListener('play', () => {
+    isPlaying = true;
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    console.log('Evento play disparado');
+});
+
+musicPlayer.addEventListener('pause', () => {
+    isPlaying = false;
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    console.log('Evento pause disparado');
+});
+
+musicPlayer.addEventListener('playing', () => {
+    isPlaying = true;
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    console.log('Evento playing disparado');
+});
+
+// Vincular evento de clique diretamente
+playBtn.onclick = function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Botão play clicado');
+    togglePlayPause();
+};
+
+// Remover qualquer evento anterior e adicionar novamente
+playBtn.removeEventListener('click', togglePlayPause);
+playBtn.addEventListener('click', togglePlayPause);
+
+function nextTrack() {
+    if (isAdPlaying) {
+        showNotification('⏸️ Aguarde o anúncio terminar');
+        return;
+    }
+    if (shuffle && playlist.length > 1) { 
+        let newIndex; 
+        do { 
+            newIndex = Math.floor(Math.random() * playlist.length); 
+        } while (newIndex === currentIndex); 
+        currentIndex = newIndex; 
+    } else { 
+        currentIndex = (currentIndex + 1) % playlist.length; 
+    }
+    loadTrack(currentIndex); 
+    if (isPlaying) playMusic(); 
+    musicPlayedCount++; 
+    checkAdInterval();
+}
+
+function prevTrack() {
+    if (isAdPlaying) {
+        showNotification('⏸️ Aguarde o anúncio terminar');
+        return;
+    }
+    if (shuffle && playlist.length > 1) { 
+        let newIndex; 
+        do { 
+            newIndex = Math.floor(Math.random() * playlist.length); 
+        } while (newIndex === currentIndex); 
+        currentIndex = newIndex; 
+    } else { 
+        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length; 
+    }
+    loadTrack(currentIndex); 
+    if (isPlaying) playMusic();
+}
             
-            // Elementos do vídeo extra
-            const extraVideo = document.getElementById('extraVideo');
-            const extraOverlay = document.getElementById('extraOverlay');
-            const extraTimer = document.getElementById('extraTimer');
-            const extraContainer = document.getElementById('extraVideoContainer');
-
-            // ========== LISTA DE VÍDEOS EXTRA ==========
-            const videosExtra = [
-                { src: 'coposze.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
-                { src: 'gestao.mp4', nome: 'Anjo Azul', link: 'https://www.anjoazul.com.br' },
-            ];
-            let videoIndex = 0;
-            let tempoRestante = 60;
-
-            function iniciarVideoUnico() {
-                const primeiroVideo = videosExtra[0];
-                extraVideo.src = primeiroVideo.src;
-                extraVideo.load();
-                extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo:', e));
-                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
-                setInterval(() => {
-                    if (tempoRestante > 0) {
-                        tempoRestante--;
-                        const minutos = Math.floor(tempoRestante / 60);
-                        const segundos = tempoRestante % 60;
-                        extraTimer.textContent = `${minutos}:${segundos < 10 ? '0' + segundos : segundos}`;
-                    }
-                }, 1000);
-                setInterval(() => {
-                    videoIndex = (videoIndex + 1) % videosExtra.length;
-                    const novoVideo = videosExtra[videoIndex];
-                    extraVideo.src = novoVideo.src;
-                    extraVideo.load();
-                    extraVideo.play().catch(e => console.log('Erro ao trocar vídeo:', e));
-                    extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novoVideo.nome}`;
-                    tempoRestante = 60;
-                }, 60000);
-            }
-
-            if (extraContainer) {
-                extraContainer.addEventListener('click', function() {
-                    const videoAtual = videosExtra[videoIndex];
-                    window.open(videoAtual.link, '_blank');
-                    showNotification(`🔗 Redirecionando para: ${videoAtual.nome}`);
-                });
-            }
-
-            // ========== FUNÇÃO PARA EDITAR LETREIRO PRINCIPAL ==========
-            if (topTicker) {
-                topTicker.addEventListener('click', function() {
-                    const novoTexto = prompt('Editar letreiro principal:', topTickerText.innerText.replace(/<[^>]*>/g, ''));
-                    if (novoTexto !== null && novoTexto.trim() !== '') {
-                        topTickerText.innerHTML = novoTexto;
-                        showNotification('✅ Letreiro principal atualizado!');
-                    }
-                });
-            }
-
-            // ========== FUNÇÃO PARA ATUALIZAR LETREIRO DA MÚSICA ==========
-            function updateMusicTicker() {
-                if (!playlist.length) return;
-                const track = playlist[currentIndex];
-                const now = new Date();
-                const hour = now.getHours();
-                let saudacao = '';
-                if (hour >= 5 && hour < 12) saudacao = 'BOM DIA ☀️';
-                else if (hour >= 12 && hour < 18) saudacao = 'BOA TARDE ⛅';
-                else saudacao = 'BOA NOITE = VC ESTAR OUVINDO';
-                
-                const texto = `${saudacao} •  ${track.title} • ${track.artist} • `;
-                musicTickerText.innerText = texto;
-            }
-
-            // ========== FUNÇÕES AUXILIARES ==========
-            function showNotification(msg) {
-                notificationText.textContent = msg;
-                notification.classList.add('show');
-                setTimeout(() => notification.classList.remove('show'), 2000);
-            }
-
-            function hideSplash() {
-                if (!splash) return;
-                splash.classList.add('hidden');
-                setTimeout(() => splash.classList.add('display-none'), 500);
-            }
-
-            function loadTrack(index) {
-                if (!playlist.length) return;
-                if (index >= playlist.length) index = 0;
-                if (index < 0) index = playlist.length - 1;
-                currentIndex = index;
-                const track = playlist[currentIndex];
-                musicPlayer.src = track.src;
-                musicPlayer.load();
-                trackArtist.textContent = track.artist;
-                totalTimeEl.textContent = track.duration;
-                progressFill.style.width = '0%';
-                currentTimeEl.textContent = '0:00';
-                updateMusicTicker();
-            }
-
-            function playMusic() {
-                if (isAdPlaying) return;
-                musicPlayer.play().then(() => {
-                    isPlaying = true;
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    hideSplash();
-                    tapToStart.classList.add('hidden');
-                }).catch(e => { 
-                    console.warn('Autoplay bloqueado:', e); 
-                    tapToStart.classList.remove('hidden');
-                });
-            }
-
-            function pauseMusic() { 
-                musicPlayer.pause(); 
-                isPlaying = false; 
-                playBtn.innerHTML = '<i class="fas fa-play"></i>'; 
-            }
-
-            function togglePlayPause() { 
-                if (isAdPlaying) { 
-                    if (adPlayer.paused) {
-                        adPlayer.play();
-                    } else {
-                        adPlayer.pause();
-                    }
-                } else { 
-                    if (isPlaying) {
-                        pauseMusic();
-                    } else {
-                        playMusic();
-                    }
                 } 
             }
 
