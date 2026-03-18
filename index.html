@@ -1130,32 +1130,43 @@
             let gifSrc = '';
             
             // ========== ESCOLHA DO GIF CONFORME O HORÁRIO ==========
-            if (hour >= 5 && hour < 12) {
-                saudacao = 'BOM DIA';
-                gifSrc = 'bom-dia.gif';  // <== COLOQUE AQUI O NOME DO SEU GIF DE BOM DIA
-            } else if (hour >= 12 && hour < 18) {
-                saudacao = 'BOA TARDE';
-                gifSrc = 'boa-tarde.gif';  // <== COLOQUE AQUI O NOME DO SEU GIF DE BOA TARDE
-            } else {
-                saudacao = 'BOA NOITE';
-                gifSrc = 'tesnoite.gif';  // <== COLOQUE AQUI O NOME DO SEU GIF DE BOA NOITE
-            }
+           // ========== FUNÇÃO PARA ATUALIZAR LETREIRO DA MÚSICA COM GIF (GIF DEPOIS DE BOA NOITE) ==========
+function updateMusicTicker() {
+    if (!playlist.length) return;
+    const track = playlist[currentIndex];
+    const now = new Date();
+    const hour = now.getHours();
+    let saudacao = '';
+    let gifSrc = '';
+    
+    // ========== ESCOLHA DO GIF CONFORME O HORÁRIO ==========
+    if (hour >= 5 && hour < 12) {
+        saudacao = 'BOM DIA';
+        gifSrc = 'bom-dia.gif';  // <== COLOQUE AQUI O NOME DO SEU GIF DE BOM DIA
+    } else if (hour >= 12 && hour < 18) {
+        saudacao = 'BOA TARDE';
+        gifSrc = 'boa-tarde.gif';  // <== COLOQUE AQUI O NOME DO SEU GIF DE BOA TARDE
+    } else {
+        saudacao = 'BOA NOITE';
+        gifSrc = 'tesnoite.gif';  // <== COLOQUE AQUI O NOME DO SEU GIF DE BOA NOITE
+    }
+    
+    // Monta o HTML com o GIF DEPOIS de BOA NOITE
+    const texto = `
+        ${saudacao} <img src="${gifSrc}" class="saudacao-gif" alt="${saudacao}"> Você está ouvindo • ${track.title} • ${track.artist} •
+    `;
+    
+    musicTickerText.innerHTML = texto;
+    
+    // ========== ATUALIZA AS INFORMAÇÕES ADICIONAIS ==========
+    if (track.info) {
+        trackInfoExtra.innerHTML = `📌 ${track.info}`;
+    } else {
+        trackInfoExtra.innerHTML = '';
+    }
+}
             
-            // Monta o HTML com o texto PRIMEIRO e o GIF DEPOIS
-            const texto = `
-                ${saudacao} • ${track.title} • ${track.artist} •
-                <img src="${gifSrc}" class="saudacao-gif" alt="${saudacao}">
-            `;
-            
-            musicTickerText.innerHTML = texto;
-            
-            // ========== ATUALIZA AS INFORMAÇÕES ADICIONAIS ==========
-            if (track.info) {
-                trackInfoExtra.innerHTML = `📌 ${track.info}`;
-            } else {
-                trackInfoExtra.innerHTML = '';
-            }
-        }
+         
 
         // ========== FUNÇÕES AUXILIARES ==========
         function showNotification(msg) {
