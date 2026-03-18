@@ -38,7 +38,7 @@
         body.theme-white { --bg-primary: #000000; --bg-secondary: #0a0a0a; --bg-drawer: #050505; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; --primary-color: #ffffff; --primary-light: #eeeeee; --primary-dark: #cccccc; }
         body { --bg-primary: #000000; --bg-secondary: #0a0a0a; --bg-drawer: #050505; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; --primary-color: #e63946; --primary-light: #ff6b7a; --primary-dark: #b71c1c; }
 
-        /* Modo carro - CORRIGIDO: .video-container -> .saudacao-video-container */
+        /* Modo carro */
         body.car-mode .app { background: #000; justify-content: center; }
         body.car-mode .top-bar,
         body.car-mode .extra-video-container,
@@ -181,59 +181,18 @@
         /* PLAYER CARD */
         .player-card { background: #000000; }
         
-        /* ========== VÍDEO DE SAUDAÇÃO ========== */
-        .saudacao-video-container {
-            aspect-ratio: 16 / 9;
-            background: #000;
-            position: relative;
+        /* ========== VÍDEO DE SAUDAÇÃO (agora dentro do letreiro) ========== */
+        .saudacao-video-ticker {
+            width: auto;
+            height: 2.5rem; /* Ajuste conforme necessário */
+            border-radius: 8px;
+            margin-right: 10px;
+            vertical-align: middle;
             border: 2px solid var(--primary-color);
-            border-radius: 12px;
-            margin: 5px;
-            overflow: hidden;
-        }
-        .saudacao-video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .video-fallback {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--primary-color), #000);
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            text-align: center;
-            padding: 10px;
-        }
-        
-        .video-menu-btn { 
-            position: absolute; 
-            top: 10px; 
-            right: 10px; 
-            background: rgba(0,0,0,0.8); 
-            color: white; 
-            border: 2px solid var(--primary-color);
-            border-radius: 50%; 
-            width: 44px; 
-            height: 44px; 
-            font-size: 1.5rem; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            z-index: 20; 
+            box-shadow: 0 0 10px var(--primary-color);
         }
 
-        /* ========== LETREIRO DA MÚSICA - COM ROLAGEM ========== */
+        /* ========== LETREIRO DA MÚSICA - COM ROLAGEM E VÍDEO ========== */
         .music-ticker {
             width: 100%;
             background: #0a0a0a;
@@ -253,7 +212,8 @@
         }
 
         .music-ticker span {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             padding-left: 100%;
             animation: music-scroll 25s linear infinite;
             
@@ -274,6 +234,9 @@
         @media (max-width: 600px) {
             .music-ticker {
                 font-size: 2.2rem !important;
+            }
+            .saudacao-video-ticker {
+                height: 2rem;
             }
         }
 
@@ -726,18 +689,16 @@
 
         <!-- PLAYER PRINCIPAL -->
         <div class="player-card">
-            <!-- VÍDEO DE SAUDAÇÃO -->
-            <div class="saudacao-video-container">
-                <video id="saudacaoVideo" autoplay loop muted playsinline>
-                    <source src="" type="video/mp4">
-                </video>
-                <div id="videoFallback" class="video-fallback"></div>
-                <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
-            </div>
+            <!-- VÍDEO DE SAUDAÇÃO (agora está dentro do letreiro, removido daqui) -->
             
-            <!-- LETREIRO DA MÚSICA (COM ROLAGEM) -->
+            <!-- LETREIRO DA MÚSICA COM VÍDEO DE SAUDAÇÃO INTEGRADO -->
             <div class="music-ticker" id="musicTicker">
-                <span id="musicTickerText">Carregando...</span>
+                <span id="musicTickerContent">
+                    <video id="saudacaoVideoTicker" class="saudacao-video-ticker" autoplay loop muted playsinline>
+                        <source src="" type="video/mp4">
+                    </video>
+                    <span id="musicText">Carregando...</span>
+                </span>
             </div>
 
             <div class="track-info">
@@ -1056,15 +1017,15 @@
         const body = document.body;
         const topTicker = document.getElementById('topTicker');
         const topTickerText = document.getElementById('topTickerText');
-        const musicTickerText = document.getElementById('musicTickerText');
+        const musicTickerContent = document.getElementById('musicTickerContent');
+        const musicText = document.getElementById('musicText');
         const exitCarModeBtn = document.getElementById('exitCarModeBtn');
         const playlistContainer = document.getElementById('playlistContainer');
         const trackInfoExtra = document.getElementById('trackInfoExtra');
 
-        // Elementos do vídeo de saudação
-        const saudacaoVideo = document.getElementById('saudacaoVideo');
-        const videoFallback = document.getElementById('videoFallback');
-        const sourceEl = saudacaoVideo.querySelector('source');
+        // Elementos do vídeo de saudação dentro do letreiro
+        const saudacaoVideoTicker = document.getElementById('saudacaoVideoTicker');
+        const sourceTicker = saudacaoVideoTicker.querySelector('source');
 
         // Elementos do vídeo extra
         const extraVideo = document.getElementById('extraVideo');
@@ -1105,42 +1066,23 @@
                 videoSrc = 'boanoite.mp4';
             }
 
-            // Atualiza o vídeo se necessário (comparando apenas o nome do arquivo)
-            const currentVideo = sourceEl.src ? sourceEl.src.split('/').pop() : '';
+            // Atualiza o vídeo de saudação no letreiro (comparando apenas o nome do arquivo)
+            const currentVideo = sourceTicker.src ? sourceTicker.src.split('/').pop() : '';
             if (currentVideo !== videoSrc) {
-                sourceEl.src = videoSrc;
-                saudacaoVideo.load();
-                saudacaoVideo.play().catch(e => {
-                    console.warn('Autoplay bloqueado:', e);
-                    mostrarFallbackVideo(saudacao);
-                });
-
-                saudacaoVideo.oncanplay = () => {
-                    saudacaoVideo.style.display = 'block';
-                    videoFallback.style.display = 'none';
-                };
-
-                saudacaoVideo.onerror = () => {
-                    mostrarFallbackVideo(saudacao);
-                };
+                sourceTicker.src = videoSrc;
+                saudacaoVideoTicker.load();
+                saudacaoVideoTicker.play().catch(e => console.warn('Autoplay bloqueado no ticker:', e));
             }
 
-            // Atualiza o letreiro da música (TEXTO GRANDE COM ROLAGEM)
+            // Atualiza o texto da música
             const titulo = track.title || '?';
             const artista = track.artist || '?';
-            // Repetimos o texto para garantir rolagem contínua
             const textoBase = `${titulo} • ${artista} • `;
-            musicTickerText.innerHTML = textoBase + textoBase + textoBase;
+            musicText.innerText = textoBase + textoBase + textoBase; // repetido para rolagem
 
-            // Informações adicionais (se houver campo 'info')
+            // Informações adicionais
             trackInfoExtra.innerHTML = track.info ? `📌 ${track.info}` : '';
             trackArtist.textContent = artista;
-        }
-
-        function mostrarFallbackVideo(texto) {
-            saudacaoVideo.style.display = 'none';
-            videoFallback.style.display = 'flex';
-            videoFallback.innerText = `✨ ${texto} ✨`;
         }
 
         // ========== FUNÇÕES AUXILIARES ==========
