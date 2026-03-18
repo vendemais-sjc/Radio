@@ -125,9 +125,33 @@
 
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
 
-        #tap-to-start { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.5); color: white; padding: 8px 16px; border-radius: 30px; font-weight: 400; font-size: 0.9rem; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); transition: opacity 0.5s, transform 0.3s; pointer-events: none; border: 1px solid rgba(255, 255, 255, 0.3); text-align: center; backdrop-filter: blur(2px); letter-spacing: 0.5px; }
+        #tap-to-start { 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: rgba(0, 0, 0, 0.5); 
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 30px; 
+            font-weight: 400; 
+            font-size: 0.9rem; 
+            z-index: 10000; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
+            transition: opacity 0.3s ease, transform 0.3s ease; 
+            pointer-events: none; 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            text-align: center; 
+            backdrop-filter: blur(2px); 
+            letter-spacing: 0.5px; 
+        }
         #tap-to-start i { margin-right: 5px; font-size: 0.8rem; opacity: 0.9; }
-        #tap-to-start.hidden { opacity: 0; transform: translate(-50%, -40%); pointer-events: none; }
+        #tap-to-start.hidden { 
+            opacity: 0; 
+            transform: translate(-50%, -40%); 
+            pointer-events: none;
+            display: none !important; /* Garante que some completamente */
+        }
 
         /* TOP BAR PRINCIPAL (TICKER GRANDE) */
         .top-bar {
@@ -920,8 +944,12 @@
 
             // ========== ESTADO GLOBAL ==========
             let playlist = musicas.map(m => ({ ...m, favorite: false }));
-            let correntezaIndex = playlist.findIndex(m => m.id === 30);
-            let currentIndex = correntezaIndex !== -1 ? correntezaIndex : 0;
+            
+            // ========== SELECIONA MÚSICA ALEATÓRIA SEMPRE ==========
+            // Gera um índice aleatório entre 0 e o tamanho da playlist
+            let randomIndex = Math.floor(Math.random() * playlist.length);
+            let currentIndex = randomIndex; // Sempre começa com música aleatória
+            
             let isPlaying = false;
             let isAdPlaying = false;
             let adsEnabled = true;
@@ -1149,12 +1177,21 @@
                         isPlaying = true;
                         playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                         hideSplash();
-                        tapToStart.classList.add('hidden');
+                        
+                        // ========== CORREÇÃO: Esconder tap-to-start permanentemente ==========
+                        if (tapToStart) {
+                            tapToStart.classList.add('hidden');
+                            tapToStart.style.display = 'none';
+                        }
+                        
                         renderPlaylist();
                     })
                     .catch(e => { 
                         console.warn('Erro ao dar play:', e); 
-                        tapToStart.classList.remove('hidden');
+                        if (tapToStart) {
+                            tapToStart.classList.remove('hidden');
+                            tapToStart.style.display = 'block';
+                        }
                     });
             }
 
@@ -1542,6 +1579,7 @@
                 volumeSlider.value = CONFIG.defaultVolume;
                 volumePercent.textContent = CONFIG.defaultVolume + '%';
                 
+                // Carrega música aleatória
                 loadTrack(currentIndex);
                 renderPlaylist();
                 
@@ -1560,17 +1598,50 @@
                             .then(() => {
                                 isPlaying = true;
                                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                                
+                                // ========== CORREÇÃO: Esconder tap-to-start ==========
+                                if (tapToStart) {
+                                    tapToStart.classList.add('hidden');
+                                    tapToStart.style.display = 'none';
+                                }
+                                
                                 renderPlaylist();
                             })
-                            .catch(() => {});
+                            .catch(() => {
+                                // Se não conseguir dar play automático, mostra o tap-to-start
+                                if (tapToStart) {
+                                    tapToStart.classList.remove('hidden');
+                                    tapToStart.style.display = 'block';
+                                }
+                            });
                     } 
                 };
                 
                 attemptPlay();
                 setTimeout(hideSplash, 3000);
                 
-                document.addEventListener('touchstart', attemptPlay, { once: true });
-                document.addEventListener('click', attemptPlay, { once: true });
+                // ========== CORREÇÃO: Garantir que tap-to-start suma em qualquer toque ==========
+                document.addEventListener('touchstart', function() {
+                    if (tapToStart && !isPlaying) {
+                        tapToStart.classList.add('hidden');
+                        tapToStart.style.display = 'none';
+                    }
+                }, { once: true });
+                
+                document.addEventListener('click', function() {
+                    if (tapToStart && !isPlaying) {
+                        tapToStart.classList.add('hidden');
+                        tapToStart.style.display = 'none';
+                    }
+                }, { once: true });
+                
+                // ========== CORREÇÃO: Se a música começar a tocar, esconder tap-to-start ==========
+                musicPlayer.addEventListener('play', function() {
+                    if (tapToStart) {
+                        tapToStart.classList.add('hidden');
+                        tapToStart.style.display = 'none';
+                    }
+                });
                 
                 updateAdTimer();
             });
