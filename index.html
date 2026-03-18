@@ -209,27 +209,31 @@
             z-index: 20; 
         }
 
-        /* ========== LETREIRO DA MÚSICA COM GIF ========== */
+        /* ========== LETREIRO DA MÚSICA IGUAL AO PRIMEIRO ========== */
         .music-ticker {
             width: 100%;
             background: #0a0a0a;
             border-top: 2px solid var(--primary-color);
             border-bottom: 2px solid var(--primary-color);
-            padding: 8px 0;
+            padding: 12px 0;
             overflow: hidden;
             white-space: nowrap;
-            font-family: 'Courier New', monospace;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
+            
+            /* FONTE IGUAL AO PRIMEIRO LETREIRO */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
             color: #ffffff;
-            text-transform: uppercase;
-            text-shadow: 0 0 5px rgba(230, 57, 70, 0.5);
+            text-transform: none;
+            letter-spacing: normal;
+            text-shadow: none;
+            
             margin: 5px 0;
         }
         .music-ticker span {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             padding-left: 100%;
             animation: music-scroll-normal 20s linear infinite;
         }
@@ -246,7 +250,7 @@
             object-fit: cover;
             border: 2px solid var(--primary-color);
             box-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
-            margin: 0 5px;
+            margin-left: 8px;
             vertical-align: middle;
             animation: pulse-gif 2s infinite;
         }
@@ -257,7 +261,7 @@
             100% { box-shadow: 0 0 5px var(--primary-color); }
         }
 
-        /* Área de informações */
+        /* ========== ESTILO PARA INFORMAÇÕES ADICIONAIS DAS MÚSICAS ========== */
         .track-info {
             padding: 8px 16px 2px;
             text-align: center;
@@ -268,6 +272,15 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        
+        .track-info-extra {
+            font-size: 0.7rem;
+            color: var(--primary-color);
+            text-align: center;
+            padding: 0 16px 5px;
+            font-style: italic;
+            opacity: 0.9;
         }
 
         /* Progresso */
@@ -708,7 +721,7 @@
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             
-            <!-- ========== LETREIRO DA MÚSICA COM GIF ========== -->
+            <!-- ========== LETREIRO DA MÚSICA IGUAL AO PRIMEIRO ========== -->
             <div class="music-ticker" id="musicTicker">
                 <span id="musicTickerText">
                     <!-- Os GIFs serão inseridos aqui pelo JavaScript -->
@@ -717,6 +730,11 @@
 
             <div class="track-info">
                 <p id="trackArtist">Artista</p>
+            </div>
+            
+            <!-- ========== INFORMAÇÕES ADICIONAIS DA MÚSICA ========== -->
+            <div class="track-info-extra" id="trackInfoExtra">
+                <!-- Será preenchido pelo JavaScript -->
             </div>
 
             <div class="progress-area">
@@ -838,142 +856,142 @@
             ]
         };
 
-        // ========== PLAYLIST PRINCIPAL ==========
+        // ========== PLAYLIST PRINCIPAL COM INFORMAÇÕES ADICIONAIS ==========
         const musicas = [
-            { id: 1, title: "01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
-            { id: 2, title: "02 A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
-            { id: 3, title: "03 Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01" },
-            { id: 4, title: "04 Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01" },
-            { id: 5, title: "05 I_Love_You", artist: "Jim_Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "00:01" },
-            { id: 6, title: "06 Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "00:01" },
-            { id: 7, title: "07 Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "00:01" },
-            { id: 8, title: "08 What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "00:01" },
-            { id: 9, title: "09 More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "00:01" },
-            { id: 10, title: "10 Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", duration: "00:01" },
-            { id: 11, title: "11 FaJura_Secreta_Revelação", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
-            { id: 12, title: "12 Noite do Prazer", artist: "Brylho", src: "Brylho_Noite_do_Prazer_muzzik.m4a", duration: "00:01" },
-            { id: 13, title: "13 Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", duration: "00:01" },
-            { id: 14, title: "14 Codinome Beija-Flor", artist: "Cazuza", src: "Cazuza_Codinome_Beija_Flor.m4a", duration: "00:01" },
-            { id: 15, title: "15 Só os Loucos Sabem", artist: "Charlie Brown Jr.", src: "Charlie_Brown_Jr_S_os_loucos_sabem_muzzik.m4a", duration: "00:01" },
-            { id: 16, title: "16 Charme do Mundo", artist: "Marina Lima", src: "Charme_do_Charme_do_Mundo_muzzik.m4a", duration: "00:01" },
-            { id: 17, title: "17 Cheia de Charme", artist: "Guilherme Arantes", src: "Cheia_de_Cheia_de_Charme_muzzik.m4a", duration: "00:01" },
-            { id: 18, title: "18 Sailing", artist: "Christopher Cross", src: "Christopher_Cross_Sailing_muzzik.m4a", duration: "00:01" },
-            { id: 19, title: "19 Poeira No Vento", artist: "Chrystian & Ralf", src: "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", duration: "00:01" },
-            { id: 20, title: "20 Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", duration: "00:01" },
-            { id: 21, title: "21 Ném Pensar", artist: "KLEITON_KLEDIR", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "00:01" },
-            { id: 22, title: "22 Corre Pro Meu Mar", artist: "Maneva", src: "Corre_Pro_Corre_Pro_Meu_Mar_Radio_Edit__muzzik.m4a", duration: "00:01" },
-            { id: 23, title: "23 Time After Time", artist: "Cyndi Lauper", src: "Cyndi_Lauper_Time_after_time_muzzik.m4a", duration: "00:01" },
-            { id: 24, title: "24 Você Sempre Será", artist: "DINO & Banda Malta", src: "DINO_Feat_Banda_Malta_Voc_Sempre_Ser_DVD_Barzim_de_Rock.m4a", duration: "00:01" },
-            { id: 25, title: "25 Casinha Branca", artist: "DINO & Renato Vianna", src: "DINO_feat_Renato_Vianna_Casinha_Branca_DVD_Barzim_de_Rock_muzzik (1).m4a", duration: "00:01" },
-            { id: 26, title: "26 Send It Back", artist: "Don West", src: "DON_WEST_Send_It_Back_muzzik.m4a", duration: "00:01" },
-            { id: 27, title: "27 Thank You", artist: "Dido", src: "Dido_Thank_You_muzzik.m4a", duration: "00:01" },
-            { id: 28, title: "28 Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", duration: "00:01" },
-            { id: 29, title: "29 Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", duration: "00:01" },
-            { id: 30, title: "30 Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", duration: "00:01" },
-            { id: 31, title: "31 Pensando Nela", artist: "Dom Beto", src: "Dom_Beto_Pensando_Nela_2.m4a", duration: "00:01" },
-            { id: 32, title: "32 Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", duration: "00:01" },
-            { id: 33, title: "33 Sailing", artist: "Emmerson Nogueira", src: "Emmerson_Nogueira_Sailing_13.m4a", duration: "00:01" },
-            { id: 34, title: "34 Encostar na Tua", artist: "Anavitória", src: "Encostar_na_Encostar_na_Tua.m4a", duration: "00:01" },
-            { id: 35, title: "35 Somos Quem Podemos Ser", artist: "Engenheiros Do Hawaii", src: "Engenheiros_Do_Hawaii_Somos_Quem_Podemos_Ser_muzzik.m4a", duration: "00:01" },
-            { id: 36, title: "36 Entre o Céu e o Mar", artist: "Elba Ramalho", src: "Entre_O_Entre o Ceu e o Mar.m4a", duration: "00:01" },
-            { id: 37, title: "37 Epitáfio", artist: "Titãs", src: "Epit_fio_Epit_fio_muzzik.m4a", duration: "00:01" },
-            { id: 38, title: "38 Espumas ao Vento", artist: "Fagner", src: "Espumas_ao_Espumas_ao_Vento.m4a", duration: "00:01" },
-            { id: 39, title: "39 Esquece e Vem", artist: "Nico Rezende", src: "Esquece_e_Esquece_e_vem_Nico_5.m4a", duration: "00:01" },
-            { id: 40, title: "40 Só pro seu prazer", artist: "Hérois-da-Resistencia", src: "so proseu pazer.m4a", duration: "00:01" },
-            { id: 41, title: "41 kyline_Pigeon", artist: "Elton_John", src: "Elton_John_Skyline_Pigeon_muzzik.m4a", duration: "00:01" },
-            { id: 42, title: "42 Clube da Esquina", artist: "Flávio Venturini", src: "Fl_vio_Venturini_Clube_da_esquina.m4a", duration: "00:01" },
-            { id: 43, title: "43 Noites com Sol", artist: "Flávio Venturini & Vanessa da Mata", src: "Flavio venturininoitescom sol.m4a", duration: "00:01" },
-            { id: 44, title: "44 I_Like_Chopin", artist: "Gazebo", src: "Gazebo_I_Like_Chopin_muzzik.m4a", duration: "00:01" },
-            { id: 45, title: "45 I Was Born To Love You", artist: "Freddie Mercury", src: "Freddie_Mercury_I_Was_Born_To_Love_You_muzzik.m4a", duration: "00:01" },
-            { id: 46, title: "46 Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", duration: "00:01" },
-            { id: 47, title: "47 Careless Whisper", artist: "George Michael", src: "George_Michael_Careless_Whisper_muzzik.m4a", duration: "00:01" },
-            { id: 48, title: "48 Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01" },
-            { id: 49, title: "49 Dona Da Minha Cabeça", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dona_da_Minha_Cabe_a_muzzik.m4a", duration: "00:01" },
-            { id: 50, title: "50 A Noite", artist: "Gusttavo Lima", src: "Gusttavo_Lima_A_Noite_67k.m4a", duration: "00:01" },
-            { id: 51, title: "51 I Don't Want To", artist: "Unknown", src: "I_Don_t_I_Don_t_Want_To_muzzik.m4a", duration: "00:01" },
-            { id: 52, title: "52 Ai, Ai, Ai, Ai", artist: "Ivan Lins", src: "Ivan_Lins_Ai_Ai_Ai_Ai_Ai.m4a", duration: "00:01" },
-            { id: 53, title: "53 Vitoriosa", artist: "Ivan Lins", src: "Ivan_Lins_Vitoriosa_muzzik.m4a", duration: "00:01" },
-            { id: 54, title: "54 Ah Como Eu Amei", artist: "Ivete Sangalo", src: "Ivete Sangalo - Ah_ Como Eu Amei (Benito di Paula)(MP3_160K).mp3", duration: "00:01" },
-            { id: 55, title: "55 I'm Yours", artist: "Jason Mraz", src: "Jason_Mraz_I_m_Yours_muzzik.m4a", duration: "00:01" },
-            { id: 56, title: "56 Million Miles", artist: "Jason Mraz", src: "Jason_Mraz_Million_Miles_muzzik.m4a", duration: "00:01" },
-            { id: 57, title: "57 Papel Machê", artist: "João Bosco", src: "Jo_o_Bosco_Papel_Machê.m4a", duration: "00:01" },
-            { id: 58, title: "58 P.D.A.", artist: "John Legend", src: "John_Legend_P_D_A_muzzik.m4a", duration: "00:01" },
-            { id: 59, title: "59 Gostosa", artist: "Jorge Ben Jor", src: "Jorge_Ben_Jor_Gostosa_muzzik.m4a", duration: "00:01" },
-            { id: 60, title: "60 Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", duration: "00:01" },
-            { id: 61, title: "61 Dentro de um Abraço", artist: "Jota Quest", src: "Jota_Quest_Dentro_de_um_Abra_o_muzzik.m4a", duration: "00:01" },
-            { id: 62, title: "62 Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "00:01" },
-            { id: 63, title: "63 Everybody's Changing", artist: "Keane", src: "Keane_Everybody_s_Changing_muzzik.m4a", duration: "00:01" },
-            { id: 64, title: "64 Born Again", artist: "Lisa", src: "LISA_Born_Again_feat_Doja_Cat_RAYE_muzzik.m4a", duration: "00:01" },
-            { id: 65, title: "65 Die With A Smile", artist: "Lady Gaga & Bruno Mars", src: "Lady_Gaga_Bruno_Mars_Die_With_A_Smile_muzzik.m4a", duration: "00:01" },
-            { id: 66, title: "66 Lanterna dos Afogados", artist: "Paralamas", src: "Lanterna_Dos_Lanterna_Dos_Afogados_muzzik.m4a", duration: "00:01" },
-            { id: 67, title: "67 Let It Be Music", artist: "Travel Love Friends", src: "Let_It_Be_Music_Travel_Love_Friends_20.m4a", duration: "00:01" },
-            { id: 68, title: "68 Muito Estranho", artist: "Liga Joe", src: "Liga_Joe_Muito_Estranho_Flashbacks_ (1).m4a", duration: "00:01" },
-            { id: 69, title: "69 Mordida de Amor", artist: "Yahoo ", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", duration: "00:01" },
-            { id: 70, title: "70 Toda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", duration: "00:01" },
-            { id: 71, title: "71 For_Your_Babies ", artist: "Simply_Red", src: "Simply_Red_For_Your_Babies_muzzik.m4a", duration: "00:01" },
-            { id: 72, title: "72 Reluz", artist: "Marcos Sabino", src: "MARCOS_SABINO_MARCOS_SABINO_reluz_muzzik.m4a", duration: "00:01" },
-            { id: 73, title: "73 Meu Mundo e Nada Mais", artist: "Guilherme Arantes", src: "MEU_MUNDO_E_NADA_MAIS_Guilherme_Arantes_muzzik.m4a", duration: "00:01" },
-            { id: 74, title: "74 Balada de Gisberta", artist: "Maria Bethânia", src: "Maria_Beth_nia_Balada_de_Gisberta_ (1).m4a", duration: "00:01" },
-            { id: 75, title: "75 Pra Rua me Levar", artist: "Maria Bethânia & Ana Carolina", src: "Maria_Maria_Beth_nia_Pra_Rua_Me_Levar_muzzik (1).m4a", duration: "00:01" },
-            { id: 76, title: "76 Just Another Day", artist: "Maurício Manieri feat. Jon Secada", src: "Maur_cio_Manieri_feat_Jon_Secada_Just_Another_Day_14.m4a", duration: "00:01" },
-            { id: 77, title: "77 I've Had The Time Of My Life", artist: "Mauricio Manieri", src: "Mauricio_Manieri_I_ve_Had_The_Time_Of_My_Life_muzzik.m4a", duration: "00:01" },
-            { id: 78, title: "78 Billie Jean", artist: "Michael Jackson", src: "Michael_Jackson_Billie_Jean_muzzik.m4a", duration: "00:01" },
-            { id: 79, title: "79 The Girl Is Mine", artist: "Michael Jackson", src: "Michael_Jackson_The_Girl_Is_Mine_muzzik.m4a", duration: "00:01" },
-            { id: 80, title: "80 Epitfio", artist: "Nando Reis", src: "Epit_fio_Epit_fio_muzzik.m4a", duration: "00:01" },
-            { id: 81, title: "81 Mina do Condomínio", artist: "Seu Jorge", src: "Mina_do_Mina_do_Condom_nio_muzzik.m4a", duration: "00:01" },
-            { id: 82, title: "82 My Sweet Lord", artist: "George Harrison", src: "My_Sweet_My_Sweet_Lord_GEORGE_HARRISON_The_HSCC_muzzik.m4a", duration: "00:01" },
-            { id: 83, title: "83 Sorri Sou Rei", artist: "Natiruts", src: "Natiruts_Sorri_Sou_Rei_muzzik.m4a", duration: "00:01" },
-            { id: 84, title: "84 Lotta Love", artist: "Nicolette Larson", src: "Nicolette_Larson_Lotta_Love_muzzik.m4a", duration: "00:01" },
-            { id: 85, title: "85 O Barquinho", artist: "Roberto Menescal", src: "O_Barquinho_O_Barquinho.m4a", duration: "00:01" },
-            { id: 86, title: "86 Paisagem da Janela", artist: "Lô Borges", src: "PAISAGEM_DA_JANELA_L_BORGES_muzzik.m4a", duration: "00:01" },
-            { id: 87, title: "87 Palco", artist: "Gilberto Gil", src: "PALCO_PALCO_muzzik.m4a", duration: "00:01" },
-            { id: 88, title: "88 Palavras", artist: "Cassia Eller", src: "Palavras_Ao_Palavras_Ao_Vento.m4a", duration: "00:01" },
-            { id: 89, title: "89 Palpite", artist: "Vanessa Rangel", src: "Palpite_Palpite_muzzik.m4a", duration: "00:01" },
-            { id: 90, title: "90 Let Her Go", artist: "Passenger", src: "Passenger_Passenger_Let_Her_Go_Official_Video__18.m4a", duration: "00:01" },
-            { id: 91, title: "91 Mil e Uma Noites de Amor", artist: "Pepeu Gomes", src: "Pepeu_Gomes_Mil_e_uma_noites_de_amor_muzzik.m4a", duration: "00:01" },
-            { id: 92, title: "92 Baby Come Back", artist: "Player", src: "Player_Baby_Come_Back_7.m4a", duration: "00:01" },
-            { id: 93, title: "93 Lady_Lady_Lady ", artist: "Joe_Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", duration: "00:01" },
-            { id: 94, title: "94 Primavera", artist: "Primavera", src: "Primavera_Album_Primavera_Album_Version__muzzik.m4a", duration: "00:01" },
-            { id: 95, title: "95 Jura_Secreta_Revela", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
-            { id: 96, title: "96 Calm Down", artist: "Rema & Selena Gomez", src: "Rema_Selena_Gomez_Calm_Down_muzzik.m4a", duration: "00:01" },
-            { id: 97, title: "97 Coração Pirata", artist: "Ricky Vallen", src: "Ricky_Vallen_Cora_o_pirata_muzzik (1).m4a", duration: "00:01" },
-            { id: 98, title: "98 Casinha Branca", artist: "Roberta Campos", src: "Roberta_Campos_Casinha_Branca.m4a", duration: "00:01" },
-            { id: 99, title: "99 Furdúncio", artist: "Roberto Carlos", src: "Roberto_Carlos Furduncio.m4a", duration: "00:01" },
-            { id: 100, title: "100 Everytime_You_Go_Away", artist: "Paul_Young", src: "Paul_Young_Everytime_You_Go_Away_muzzik.m4a", duration: "00:01" },
-            { id: 101, title: "101 Róberta Sá", artist: "Róberta Sá", src: "Róberta Sá, _muzzik.m4a", duration: "00:01" },
-            { id: 102, title: "102 Sábado à Noite", artist: "Seu Jorge", src: "S_bado_Noite_Seu_Jorge_4.m4a", duration: "00:01" },
-            { id: 103, title: "103 Samba de Verão", artist: "Marcos Valle", src: "Samba_De_Samba_De_Ver_o.m4a", duration: "00:01" },
-            { id: 104, title: "104 Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "00:01" },
-            { id: 105, title: "105 Shake You Down", artist: "Unknown", src: "Shake_You_Shake_You_Down.m4a", duration: "00:01" },
-            { id: 106, title: "106 Simples Desejo", artist: "Marina Lima", src: "Simples_Desejo_Simples_Desejo_muzzik.m4a", duration: "00:01" },
-            { id: 107, title: "107 Holding Back The Years", artist: "Simply Red", src: "Simply_Red_Holding_Back_The_Years_15.m4a", duration: "00:01" },
-            { id: 108, title: "108 Stars", artist: "Simply Red", src: "Simply_Red_Stars_muzzik.m4a", duration: "00:01" },
-            { id: 109, title: "109 Sunrise", artist: "Simply Red", src: "Simply_Red_Sunrise_muzzik.m4a", duration: "00:01" },
-            { id: 110, title: "110 Queixa", artist: "Caetano Veloso", src: "Queixa_Queixa_muzzik.m4a", duration: "00:01" },
-            { id: 111, title: "111 Garota Nacional", artist: "Skank", src: "Skank_Garota_Nacional_muzzik.m4a", duration: "00:01" },
-            { id: 112, title: "112 Resposta", artist: "Skank", src: "Skank_Resposta.m4a", duration: "00:01" },
-            { id: 113, title: "113 Vamos Fugir", artist: "Skank", src: "Skank_Vamos_Fugir_muzzik.m4a", duration: "00:01" },
-            { id: 114, title: "114 Sorte", artist: "Caetano Veloso & Gal Costa", src: "Sorte_Caetano_Veloso_Gal_Costa_.m4a", duration: "00:01" },
-            { id: 115, title: "115 Stand by Me", artist: "Ben E. King", src: "Stand_by_Stand_by_Me_muzzik.m4a", duration: "00:01" },
-            { id: 116, title: "116 Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", duration: "00:01" },
-            { id: 117, title: "117 Sultans of Swing", artist: "Dire Straits", src: "Sultans_of_Sultans_of_Swing_Backing_roger.m4a", duration: "00:01" },
-            { id: 118, title: "118 The_Time_KorgStyle_Life ", artist: "A_cha_Remember", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", duration: "00:01" },
-            { id: 119, title: "119 Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", duration: "00:01" },
-            { id: 120, title: "120 Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", duration: "00:01" },
-            { id: 121, title: "121 Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", duration: "00:01" },
-            { id: 122, title: "122 Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", duration: "00:01" },
-            { id: 123, title: "123 Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", duration: "00:01" },
-            { id: 124, title: "124 Oração ao Tempo", artist: "Maria Gad", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4a", duration: "00:01" },
-            { id: 125, title: "125 Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01" },
-            { id: 126, title: "126 Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", duration: "00:01" },
-            { id: 127, title: "127 Samba de Verão", artist: "Marcos Valle", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01" },
-            { id: 128, title: "128 Não Vá Embora", artist: "Marisa Monte", src: "Marisa-Montes-não vá embora.m4a", duration: "00:01" },
-            { id: 129, title: "129 My_Love_My_Love", artist: "My_Love_My_Love", src: "My_Love_My_Love_muzzik.m4a", duration: "00:01" },
-            { id: 130, title: "130 Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", duration: "00:01" },
-            { id: 131, title: "131 Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "00:01" },
-            { id: 132, title: "132 Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
-            { id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
-            { id: 134, title: "134 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" } 
+            { id: 1, title: "01 Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", info: "🎸 Clássico da MPB • 2005" },
+            { id: 2, title: "02 A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01", info: "🌟 Sucesso internacional • 2020" },
+            { id: 3, title: "03 Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01", info: "🏆 Grammy 2012 • Álbum 21" },
+            { id: 4, title: "04 Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01", info: "🎵 Um dos maiores hits • 1992" },
+            { id: 5, title: "05 I_Love_You", artist: "Jim_Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "00:01", info: "💕 Trilha sonora de novelas • 1990" },
+            { id: 6, title: "06 Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "00:01", info: "🎤 Clássico dos anos 80 • 1984" },
+            { id: 7, title: "07 Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "00:01", info: "🎹 Prêmio Multishow • 2015" },
+            { id: 8, title: "08 What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "00:01", info: "🎸 Hino dos anos 90 • 1993" },
+            { id: 9, title: "09 More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "00:01", info: "🕺 Trilha de Embalos de Sábado à Noite • 1977" },
+            { id: 10, title: "10 Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", duration: "00:01", info: "🎸 Rock brasileiro • 1990" },
+            { id: 11, title: "11 FaJura_Secreta_Revelação", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01", info: "🎵 Parceria nordestina • 1980" },
+            { id: 12, title: "12 Noite do Prazer", artist: "Brylho", src: "Brylho_Noite_do_Prazer_muzzik.m4a", duration: "00:01", info: "💃 Sucesso nos anos 80 • 1985" },
+            { id: 13, title: "13 Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", duration: "00:01", info: "🌟 Irmãos baianos • Álbum Ao Vivo 2005" },
+            { id: 14, title: "14 Codinome Beija-Flor", artist: "Cazuza", src: "Cazuza_Codinome_Beija_Flor.m4a", duration: "00:01", info: "🎤 Um dos maiores da MPB • 1985" },
+            { id: 15, title: "15 Só os Loucos Sabem", artist: "Charlie Brown Jr.", src: "Charlie_Brown_Jr_S_os_loucos_sabem_muzzik.m4a", duration: "00:01", info: "🎸 Rock nacional • Álbum 2007" },
+            { id: 16, title: "16 Charme do Mundo", artist: "Marina Lima", src: "Charme_do_Charme_do_Mundo_muzzik.m4a", duration: "00:01", info: "🎵 Pop rock • 1990" },
+            { id: 17, title: "17 Cheia de Charme", artist: "Guilherme Arantes", src: "Cheia_de_Cheia_de_Charme_muzzik.m4a", duration: "00:01", info: "🎹 Clássico da MPB • 1978" },
+            { id: 18, title: "18 Sailing", artist: "Christopher Cross", src: "Christopher_Cross_Sailing_muzzik.m4a", duration: "00:01", info: "🏆 Grammy 1981 • Soft rock" },
+            { id: 19, title: "19 Poeira No Vento", artist: "Chrystian & Ralf", src: "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", duration: "00:01", info: "🎸 Sucesso sertanejo • 1990" },
+            { id: 20, title: "20 Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", duration: "00:01", info: "🎤 Funk/soul • 1977" },
+            { id: 21, title: "21 Ném Pensar", artist: "KLEITON_KLEDIR", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "00:01", info: "🎸 Rock gaúcho • 1987" },
+            { id: 22, title: "22 Corre Pro Meu Mar", artist: "Maneva", src: "Corre_Pro_Corre_Pro_Meu_Mar_Radio_Edit__muzzik.m4a", duration: "00:01", info: "🌊 Reggae brasileiro • 2015" },
+            { id: 23, title: "23 Time After Time", artist: "Cyndi Lauper", src: "Cyndi_Lauper_Time_after_time_muzzik.m4a", duration: "00:01", info: "🎤 Clássico dos anos 80 • 1984" },
+            { id: 24, title: "24 Você Sempre Será", artist: "DINO & Banda Malta", src: "DINO_Feat_Banda_Malta_Voc_Sempre_Ser_DVD_Barzim_de_Rock.m4a", duration: "00:01", info: "🎸 Rock nacional • 2010" },
+            { id: 25, title: "25 Casinha Branca", artist: "DINO & Renato Vianna", src: "DINO_feat_Renato_Vianna_Casinha_Branca_DVD_Barzim_de_Rock_muzzik (1).m4a", duration: "00:01", info: "🎵 Versão rock • 2012" },
+            { id: 26, title: "26 Send It Back", artist: "Don West", src: "DON_WEST_Send_It_Back_muzzik.m4a", duration: "00:01", info: "🎸 Country rock • 2018" },
+            { id: 27, title: "27 Thank You", artist: "Dido", src: "Dido_Thank_You_muzzik.m4a", duration: "00:01", info: "🎤 Trip-hop • Álbum 1999" },
+            { id: 28, title: "28 Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", duration: "00:01", info: "💕 Pagode romântico • 2000" },
+            { id: 29, title: "29 Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", duration: "00:01", info: "🎸 Versão acústica • 2015" },
+            { id: 30, title: "30 Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", duration: "00:01", info: "🏆 Grammy Latino 2009 • Álbum Matizes" },
+            { id: 31, title: "31 Pensando Nela", artist: "Dom Beto", src: "Dom_Beto_Pensando_Nela_2.m4a", duration: "00:01", info: "🎵 Forró universitário • 2012" },
+            { id: 32, title: "32 Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", duration: "00:01", info: "🏆 Grammy 1977 • Clássico do rock" },
+            { id: 33, title: "33 Sailing", artist: "Emmerson Nogueira", src: "Emmerson_Nogueira_Sailing_13.m4a", duration: "00:01", info: "🎸 Versão acústica • 2003" },
+            { id: 34, title: "34 Encostar na Tua", artist: "Anavitória", src: "Encostar_na_Encostar_na_Tua.m4a", duration: "00:01", info: "🌟 Dupla revelação • 2016" },
+            { id: 35, title: "35 Somos Quem Podemos Ser", artist: "Engenheiros Do Hawaii", src: "Engenheiros_Do_Hawaii_Somos_Quem_Podemos_Ser_muzzik.m4a", duration: "00:01", info: "🎸 Rock gaúcho • 1989" },
+            { id: 36, title: "36 Entre o Céu e o Mar", artist: "Elba Ramalho", src: "Entre_O_Entre o Ceu e o Mar.m4a", duration: "00:01", info: "🎵 Forró • 1990" },
+            { id: 37, title: "37 Epitáfio", artist: "Titãs", src: "Epit_fio_Epit_fio_muzzik.m4a", duration: "00:01", info: "🎸 Rock nacional • Álbum 2001" },
+            { id: 38, title: "38 Espumas ao Vento", artist: "Fagner", src: "Espumas_ao_Espumas_ao_Vento.m4a", duration: "00:01", info: "🎹 Clássico da MPB • 1975" },
+            { id: 39, title: "39 Esquece e Vem", artist: "Nico Rezende", src: "Esquece_e_Esquece_e_vem_Nico_5.m4a", duration: "00:01", info: "🎵 Pop rock • 1985" },
+            { id: 40, title: "40 Só pro seu prazer", artist: "Hérois-da-Resistencia", src: "so proseu pazer.m4a", duration: "00:01", info: "🎸 Rock nacional • 1987" },
+            { id: 41, title: "41 kyline_Pigeon", artist: "Elton_John", src: "Elton_John_Skyline_Pigeon_muzzik.m4a", duration: "00:01", info: "🎹 Clássico • 1973" },
+            { id: 42, title: "42 Clube da Esquina", artist: "Flávio Venturini", src: "Fl_vio_Venturini_Clube_da_esquina.m4a", duration: "00:01", info: "🌟 Clube da Esquina • 1972" },
+            { id: 43, title: "43 Noites com Sol", artist: "Flávio Venturini & Vanessa da Mata", src: "Flavio venturininoitescom sol.m4a", duration: "00:01", info: "🎵 Dueto especial • 2007" },
+            { id: 44, title: "44 I_Like_Chopin", artist: "Gazebo", src: "Gazebo_I_Like_Chopin_muzzik.m4a", duration: "00:01", info: "🎹 Italo disco • 1983" },
+            { id: 45, title: "45 I Was Born To Love You", artist: "Freddie Mercury", src: "Freddie_Mercury_I_Was_Born_To_Love_You_muzzik.m4a", duration: "00:01", info: "🎤 Solo • 1985" },
+            { id: 46, title: "46 Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", duration: "00:01", info: "🎵 MPB contemporânea • 2022" },
+            { id: 47, title: "47 Careless Whisper", artist: "George Michael", src: "George_Michael_Careless_Whisper_muzzik.m4a", duration: "00:01", info: "🎤 Clássico dos anos 80 • 1984" },
+            { id: 48, title: "48 Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01", info: "🎸 Clássico da MPB • 1977" },
+            { id: 49, title: "49 Dona Da Minha Cabeça", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dona_da_Minha_Cabe_a_muzzik.m4a", duration: "00:01", info: "🎵 Forró • 1990" },
+            { id: 50, title: "50 A Noite", artist: "Gusttavo Lima", src: "Gusttavo_Lima_A_Noite_67k.m4a", duration: "00:01", info: "🎸 Sertanejo • 2009" },
+            { id: 51, title: "51 I Don't Want To", artist: "Unknown", src: "I_Don_t_I_Don_t_Want_To_muzzik.m4a", duration: "00:01", info: "🎵 Independente • 2020" },
+            { id: 52, title: "52 Ai, Ai, Ai, Ai", artist: "Ivan Lins", src: "Ivan_Lins_Ai_Ai_Ai_Ai_Ai.m4a", duration: "00:01", info: "🏆 Grammy Latino • 2005" },
+            { id: 53, title: "53 Vitoriosa", artist: "Ivan Lins", src: "Ivan_Lins_Vitoriosa_muzzik.m4a", duration: "00:01", info: "🎹 MPB • 1980" },
+            { id: 54, title: "54 Ah Como Eu Amei", artist: "Ivete Sangalo", src: "Ivete Sangalo - Ah_ Como Eu Amei (Benito di Paula)(MP3_160K).mp3", duration: "00:01", info: "🎤 Axé • 2005" },
+            { id: 55, title: "55 I'm Yours", artist: "Jason Mraz", src: "Jason_Mraz_I_m_Yours_muzzik.m4a", duration: "00:01", info: "🎸 Grammy • 2008" },
+            { id: 56, title: "56 Million Miles", artist: "Jason Mraz", src: "Jason_Mraz_Million_Miles_muzzik.m4a", duration: "00:01", info: "🎵 Acústico • 2010" },
+            { id: 57, title: "57 Papel Machê", artist: "João Bosco", src: "Jo_o_Bosco_Papel_Machê.m4a", duration: "00:01", info: "🎸 MPB • 1975" },
+            { id: 58, title: "58 P.D.A.", artist: "John Legend", src: "John_Legend_P_D_A_muzzik.m4a", duration: "00:01", info: "🏆 Grammy • 2004" },
+            { id: 59, title: "59 Gostosa", artist: "Jorge Ben Jor", src: "Jorge_Ben_Jor_Gostosa_muzzik.m4a", duration: "00:01", info: "🎵 Samba rock • 1980" },
+            { id: 60, title: "60 Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", duration: "00:01", info: "🎸 MPB • 2001" },
+            { id: 61, title: "61 Dentro de um Abraço", artist: "Jota Quest", src: "Jota_Quest_Dentro_de_um_Abra_o_muzzik.m4a", duration: "00:01", info: "🎤 Pop rock • 2005" },
+            { id: 62, title: "62 Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "00:01", info: "🎸 MPB • 1985" },
+            { id: 63, title: "63 Everybody's Changing", artist: "Keane", src: "Keane_Everybody_s_Changing_muzzik.m4a", duration: "00:01", info: "🎹 Rock alternativo • 2004" },
+            { id: 64, title: "64 Born Again", artist: "Lisa", src: "LISA_Born_Again_feat_Doja_Cat_RAYE_muzzik.m4a", duration: "00:01", info: "🌟 K-pop • 2023" },
+            { id: 65, title: "65 Die With A Smile", artist: "Lady Gaga & Bruno Mars", src: "Lady_Gaga_Bruno_Mars_Die_With_A_Smile_muzzik.m4a", duration: "00:01", info: "🏆 Grammy 2024" },
+            { id: 66, title: "66 Lanterna dos Afogados", artist: "Paralamas", src: "Lanterna_Dos_Lanterna_Dos_Afogados_muzzik.m4a", duration: "00:01", info: "🎸 Rock nacional • 1990" },
+            { id: 67, title: "67 Let It Be Music", artist: "Travel Love Friends", src: "Let_It_Be_Music_Travel_Love_Friends_20.m4a", duration: "00:01", info: "🎵 Reggae • 2018" },
+            { id: 68, title: "68 Muito Estranho", artist: "Liga Joe", src: "Liga_Joe_Muito_Estranho_Flashbacks_ (1).m4a", duration: "00:01", info: "🎸 Rock • 2010" },
+            { id: 69, title: "69 Mordida de Amor", artist: "Yahoo ", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", duration: "00:01", info: "🎤 Pop rock • 1995" },
+            { id: 70, title: "70 Toda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", duration: "00:01", info: "🎸 Clássico do rock brasileiro • 1988" },
+            { id: 71, title: "71 For_Your_Babies ", artist: "Simply_Red", src: "Simply_Red_For_Your_Babies_muzzik.m4a", duration: "00:01", info: "🎤 Soul • 1991" },
+            { id: 72, title: "72 Reluz", artist: "Marcos Sabino", src: "MARCOS_SABINO_MARCOS_SABINO_reluz_muzzik.m4a", duration: "00:01", info: "🎹 MPB • 2020" },
+            { id: 73, title: "73 Meu Mundo e Nada Mais", artist: "Guilherme Arantes", src: "MEU_MUNDO_E_NADA_MAIS_Guilherme_Arantes_muzzik.m4a", duration: "00:01", info: "🎹 Clássico da MPB • 1976" },
+            { id: 74, title: "74 Balada de Gisberta", artist: "Maria Bethânia", src: "Maria_Beth_nia_Balada_de_Gisberta_ (1).m4a", duration: "00:01", info: "🎤 Homenagem • 2009" },
+            { id: 75, title: "75 Pra Rua me Levar", artist: "Maria Bethânia & Ana Carolina", src: "Maria_Maria_Beth_nia_Pra_Rua_Me_Levar_muzzik (1).m4a", duration: "00:01", info: "🎵 Dueto • 2007" },
+            { id: 76, title: "76 Just Another Day", artist: "Maurício Manieri feat. Jon Secada", src: "Maur_cio_Manieri_feat_Jon_Secada_Just_Another_Day_14.m4a", duration: "00:01", info: "🎤 R&B • 2000" },
+            { id: 77, title: "77 I've Had The Time Of My Life", artist: "Mauricio Manieri", src: "Mauricio_Manieri_I_ve_Had_The_Time_Of_My_Life_muzzik.m4a", duration: "00:01", info: "💃 Versão brasileira • 2005" },
+            { id: 78, title: "78 Billie Jean", artist: "Michael Jackson", src: "Michael_Jackson_Billie_Jean_muzzik.m4a", duration: "00:01", info: "🏆 Grammy • 1983" },
+            { id: 79, title: "79 The Girl Is Mine", artist: "Michael Jackson", src: "Michael_Jackson_The_Girl_Is_Mine_muzzik.m4a", duration: "00:01", info: "🎤 Dueto com Paul McCartney • 1982" },
+            { id: 80, title: "80 Epitfio", artist: "Nando Reis", src: "Epit_fio_Epit_fio_muzzik.m4a", duration: "00:01", info: "🎸 Versão acústica • 2003" },
+            { id: 81, title: "81 Mina do Condomínio", artist: "Seu Jorge", src: "Mina_do_Mina_do_Condom_nio_muzzik.m4a", duration: "00:01", info: "🎵 Samba rock • 2004" },
+            { id: 82, title: "82 My Sweet Lord", artist: "George Harrison", src: "My_Sweet_My_Sweet_Lord_GEORGE_HARRISON_The_HSCC_muzzik.m4a", duration: "00:01", info: "🎸 Clássico • 1970" },
+            { id: 83, title: "83 Sorri Sou Rei", artist: "Natiruts", src: "Natiruts_Sorri_Sou_Rei_muzzik.m4a", duration: "00:01", info: "🌿 Reggae brasileiro • 2002" },
+            { id: 84, title: "84 Lotta Love", artist: "Nicolette Larson", src: "Nicolette_Larson_Lotta_Love_muzzik.m4a", duration: "00:01", info: "🎤 Soft rock • 1978" },
+            { id: 85, title: "85 O Barquinho", artist: "Roberto Menescal", src: "O_Barquinho_O_Barquinho.m4a", duration: "00:01", info: "🎵 Bossa nova • 1961" },
+            { id: 86, title: "86 Paisagem da Janela", artist: "Lô Borges", src: "PAISAGEM_DA_JANELA_L_BORGES_muzzik.m4a", duration: "00:01", info: "🎸 Clube da Esquina • 1972" },
+            { id: 87, title: "87 Palco", artist: "Gilberto Gil", src: "PALCO_PALCO_muzzik.m4a", duration: "00:01", info: "🎤 MPB • 1981" },
+            { id: 88, title: "88 Palavras", artist: "Cassia Eller", src: "Palavras_Ao_Palavras_Ao_Vento.m4a", duration: "00:01", info: "🎸 Versão inesquecível • 2001" },
+            { id: 89, title: "89 Palpite", artist: "Vanessa Rangel", src: "Palpite_Palpite_muzzik.m4a", duration: "00:01", info: "🎵 MPB • 1997" },
+            { id: 90, title: "90 Let Her Go", artist: "Passenger", src: "Passenger_Passenger_Let_Her_Go_Official_Video__18.m4a", duration: "00:01", info: "🎸 Folk • 2012" },
+            { id: 91, title: "91 Mil e Uma Noites de Amor", artist: "Pepeu Gomes", src: "Pepeu_Gomes_Mil_e_uma_noites_de_amor_muzzik.m4a", duration: "00:01", info: "🎸 Rock instrumental • 1980" },
+            { id: 92, title: "92 Baby Come Back", artist: "Player", src: "Player_Baby_Come_Back_7.m4a", duration: "00:01", info: "🎤 Soft rock • 1977" },
+            { id: 93, title: "93 Lady_Lady_Lady ", artist: "Joe_Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", duration: "00:01", info: "🎵 Trilha de Flasdance • 1983" },
+            { id: 94, title: "94 Primavera", artist: "Primavera", src: "Primavera_Album_Primavera_Album_Version__muzzik.m4a", duration: "00:01", info: "🎵 Pop • 2020" },
+            { id: 95, title: "95 Jura_Secreta_Revela", artist: "Fagner_Zé_Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01", info: "🎸 Parceria nordestina • 1980" },
+            { id: 96, title: "96 Calm Down", artist: "Rema & Selena Gomez", src: "Rema_Selena_Gomez_Calm_Down_muzzik.m4a", duration: "00:01", info: "🌟 Hit mundial • 2022" },
+            { id: 97, title: "97 Coração Pirata", artist: "Ricky Vallen", src: "Ricky_Vallen_Cora_o_pirata_muzzik (1).m4a", duration: "00:01", info: "🎸 Pop rock • 2008" },
+            { id: 98, title: "98 Casinha Branca", artist: "Roberta Campos", src: "Roberta_Campos_Casinha_Branca.m4a", duration: "00:01", info: "🎵 MPB • 2009" },
+            { id: 99, title: "99 Furdúncio", artist: "Roberto Carlos", src: "Roberto_Carlos Furduncio.m4a", duration: "00:01", info: "🎤 Clássico • 1965" },
+            { id: 100, title: "100 Everytime_You_Go_Away", artist: "Paul_Young", src: "Paul_Young_Everytime_You_Go_Away_muzzik.m4a", duration: "00:01", info: "🎤 Versão famosa • 1985" },
+            { id: 101, title: "101 Róberta Sá", artist: "Róberta Sá", src: "Róberta Sá, _muzzik.m4a", duration: "00:01", info: "🎵 MPB • 2020" },
+            { id: 102, title: "102 Sábado à Noite", artist: "Seu Jorge", src: "S_bado_Noite_Seu_Jorge_4.m4a", duration: "00:01", info: "🎵 Samba • 2001" },
+            { id: 103, title: "103 Samba de Verão", artist: "Marcos Valle", src: "Samba_De_Samba_De_Ver_o.m4a", duration: "00:01", info: "🎵 Bossa nova • 1964" },
+            { id: 104, title: "104 Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "00:01", info: "🏆 Grammy • 1982" },
+            { id: 105, title: "105 Shake You Down", artist: "Unknown", src: "Shake_You_Shake_You_Down.m4a", duration: "00:01", info: "🎵 R&B • 1986" },
+            { id: 106, title: "106 Simples Desejo", artist: "Marina Lima", src: "Simples_Desejo_Simples_Desejo_muzzik.m4a", duration: "00:01", info: "🎸 Pop rock • 1996" },
+            { id: 107, title: "107 Holding Back The Years", artist: "Simply Red", src: "Simply_Red_Holding_Back_The_Years_15.m4a", duration: "00:01", info: "🎤 Soul • 1985" },
+            { id: 108, title: "108 Stars", artist: "Simply Red", src: "Simply_Red_Stars_muzzik.m4a", duration: "00:01", info: "🎵 Pop • 1991" },
+            { id: 109, title: "109 Sunrise", artist: "Simply Red", src: "Simply_Red_Sunrise_muzzik.m4a", duration: "00:01", info: "🎤 Soul • 2003" },
+            { id: 110, title: "110 Queixa", artist: "Caetano Veloso", src: "Queixa_Queixa_muzzik.m4a", duration: "00:01", info: "🎸 MPB • 2000" },
+            { id: 111, title: "111 Garota Nacional", artist: "Skank", src: "Skank_Garota_Nacional_muzzik.m4a", duration: "00:01", info: "🎸 Rock • 1996" },
+            { id: 112, title: "112 Resposta", artist: "Skank", src: "Skank_Resposta.m4a", duration: "00:01", info: "🎵 Pop • 2001" },
+            { id: 113, title: "113 Vamos Fugir", artist: "Skank", src: "Skank_Vamos_Fugir_muzzik.m4a", duration: "00:01", info: "🎸 Versão • 1994" },
+            { id: 114, title: "114 Sorte", artist: "Caetano Veloso & Gal Costa", src: "Sorte_Caetano_Veloso_Gal_Costa_.m4a", duration: "00:01", info: "🎤 Dueto • 1980" },
+            { id: 115, title: "115 Stand by Me", artist: "Ben E. King", src: "Stand_by_Stand_by_Me_muzzik.m4a", duration: "00:01", info: "🎤 Clássico • 1961" },
+            { id: 116, title: "116 Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", duration: "00:01", info: "🎸 Pop • 1993" },
+            { id: 117, title: "117 Sultans of Swing", artist: "Dire Straits", src: "Sultans_of_Sultans_of_Swing_Backing_roger.m4a", duration: "00:01", info: "🎸 Rock • 1978" },
+            { id: 118, title: "118 The_Time_KorgStyle_Life ", artist: "A_cha_Remember", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", duration: "00:01", info: "🎵 Independente • 2020" },
+            { id: 119, title: "119 Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", duration: "00:01", info: "🎸 Clássico • 1975" },
+            { id: 120, title: "120 Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", duration: "00:01", info: "🎤 Trilha de Don Juan • 1995" },
+            { id: 121, title: "121 Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", duration: "00:01", info: "🏆 Grammy • 2013" },
+            { id: 122, title: "122 Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", duration: "00:01", info: "🎵 Nova MPB • 2019" },
+            { id: 123, title: "123 Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", duration: "00:01", info: "🌿 Versão reggae • 2017" },
+            { id: 124, title: "124 Oração ao Tempo", artist: "Maria Gad", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4a", duration: "00:01", info: "🎵 MPB • 2010" },
+            { id: 125, title: "125 Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01", info: "🎸 Soft rock • 1982" },
+            { id: 126, title: "126 Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", duration: "00:01", info: "🎤 Clipe icônico • 1985" },
+            { id: 127, title: "127 Samba de Verão", artist: "Marcos Valle", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01", info: "🎵 Bossa nova • 1964" },
+            { id: 128, title: "128 Não Vá Embora", artist: "Marisa Monte", src: "Marisa-Montes-não vá embora.m4a", duration: "00:01", info: "🎤 MPB • 2006" },
+            { id: 129, title: "129 My_Love_My_Love", artist: "My_Love_My_Love", src: "My_Love_My_Love_muzzik.m4a", duration: "00:01", info: "🎵 Independente • 2022" },
+            { id: 130, title: "130 Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", duration: "00:01", info: "🏆 Grammy Latino • 2010" },
+            { id: 131, title: "131 Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "00:01", info: "🎸 Rock • 2008" },
+            { id: 132, title: "132 Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01", info: "🎵 Pop • 2018" },
+            { id: 133, title: "133 Na Estrada", artist: "Na Estrada", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01", info: "🎸 Rock • 2005" },
+            { id: 134, title: "134 Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01", info: "🎵 MPB • 1979" } 
         ];
 
         // ========== LISTA DE VÍDEOS EXTRA ==========
@@ -1033,6 +1051,7 @@
         const musicTickerText = document.getElementById('musicTickerText');
         const exitCarModeBtn = document.getElementById('exitCarModeBtn');
         const playlistContainer = document.getElementById('playlistContainer');
+        const trackInfoExtra = document.getElementById('trackInfoExtra');
 
         // Elementos do vídeo extra
         const extraVideo = document.getElementById('extraVideo');
@@ -1101,7 +1120,7 @@
             });
         }
 
-        // ========== FUNÇÃO PARA ATUALIZAR LETREIRO DA MÚSICA COM GIF ==========
+        // ========== FUNÇÃO PARA ATUALIZAR LETREIRO DA MÚSICA COM GIF (GIF DEPOIS DO TEXTO) ==========
         function updateMusicTicker() {
             if (!playlist.length) return;
             const track = playlist[currentIndex];
@@ -1118,18 +1137,24 @@
                 saudacao = 'BOA TARDE';
                 gifSrc = 'boa-tarde.gif';  // <== COLOQUE AQUI O NOME DO SEU GIF DE BOA TARDE
             } else {
-                saudacao = 'BOA NOITE - Você está ouvindo';
+                saudacao = 'BOA NOITE';
                 gifSrc = 'tesnoite.gif';  // <== COLOQUE AQUI O NOME DO SEU GIF DE BOA NOITE
             }
             
-            // Monta o HTML com o GIF e o texto
+            // Monta o HTML com o texto PRIMEIRO e o GIF DEPOIS
             const texto = `
-                <img src="${gifSrc}" class="saudacao-gif" alt="${saudacao}">
                 ${saudacao} • ${track.title} • ${track.artist} •
                 <img src="${gifSrc}" class="saudacao-gif" alt="${saudacao}">
             `;
             
             musicTickerText.innerHTML = texto;
+            
+            // ========== ATUALIZA AS INFORMAÇÕES ADICIONAIS ==========
+            if (track.info) {
+                trackInfoExtra.innerHTML = `📌 ${track.info}`;
+            } else {
+                trackInfoExtra.innerHTML = '';
+            }
         }
 
         // ========== FUNÇÕES AUXILIARES ==========
