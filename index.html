@@ -46,7 +46,9 @@
         body.car-mode .track-info,
         body.car-mode .progress-area,
         body.car-mode .volume-area,
-        body.car-mode .video-menu-btn {
+        body.car-mode .video-menu-btn,
+        body.car-mode .feedback-btn,
+        body.car-mode .feedback-modal {
             display: none !important;
         }
         body.car-mode .player-card {
@@ -482,12 +484,12 @@
             background: rgba(40, 40, 40, 0.9);
         }
         
-        /* MODAL DE FEEDBACK */
+        /* MODAL DE FEEDBACK - MAIS CURTO E DIRETO */
         .feedback-modal {
             position: fixed;
             bottom: 70px;
             right: 20px;
-            width: 280px;
+            width: 260px;
             background: #1a1a1a;
             border: 2px solid var(--primary-color);
             border-radius: 15px;
@@ -516,41 +518,35 @@
         
         .feedback-modal h3 {
             color: var(--primary-color);
-            font-size: 1rem;
-            margin-bottom: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
         }
         
-        .feedback-modal textarea {
-            width: 100%;
-            height: 80px;
-            background: #0a0a0a;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+        .feedback-modal .frase-curta {
+            color: #fff;
+            font-size: 0.8rem;
+            text-align: center;
+            margin: 5px 0 10px;
             padding: 8px;
-            color: white;
-            font-size: 0.9rem;
-            resize: none;
-            margin-bottom: 10px;
-        }
-        
-        .feedback-modal textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
+            background: #0a0a0a;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-style: italic;
         }
         
         .feedback-modal .rating {
             display: flex;
-            gap: 8px;
+            gap: 5px;
             margin-bottom: 10px;
             justify-content: center;
         }
         
         .feedback-modal .star {
             color: #555;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -560,6 +556,24 @@
             transform: scale(1.1);
         }
         
+        .feedback-modal textarea {
+            width: 100%;
+            height: 60px;
+            background: #0a0a0a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px;
+            color: white;
+            font-size: 0.8rem;
+            resize: none;
+            margin-bottom: 10px;
+        }
+        
+        .feedback-modal textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
         .feedback-modal .modal-buttons {
             display: flex;
             gap: 8px;
@@ -567,11 +581,11 @@
         
         .feedback-modal .modal-btn {
             flex: 1;
-            padding: 8px;
+            padding: 6px;
             border: none;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             transition: all 0.2s;
             background: #2a2a2a;
             color: white;
@@ -579,10 +593,14 @@
         }
         
         .feedback-modal .modal-btn.send {
-            background: var(--primary-color);
+            background: #25D366;
             color: #000;
             font-weight: bold;
             border: none;
+        }
+        
+        .feedback-modal .modal-btn.send i {
+            margin-right: 3px;
         }
         
         .feedback-modal .modal-btn.send:hover {
@@ -594,10 +612,10 @@
             background: #3a3a3a;
         }
         
-        /* Responsividade para feedback modal */
+        /* Responsividade */
         @media (max-width: 480px) {
             .feedback-modal {
-                width: 240px;
+                width: 230px;
                 right: 10px;
                 bottom: 60px;
             }
@@ -606,12 +624,6 @@
                 right: 10px;
                 bottom: 10px;
             }
-        }
-        
-        /* Ajuste para modo carro */
-        body.car-mode .feedback-btn,
-        body.car-mode .feedback-modal {
-            display: none !important;
         }
     </style>
 </head>
@@ -724,13 +736,19 @@
     <audio id="adPlayer" preload="auto"></audio>
     <div class="notification" id="notification"><span id="notificationText"></span></div>
 
-    <!-- ========== BOTÃO E MODAL DE FEEDBACK ========== -->
+    <!-- ========== BOTÃO E MODAL DE FEEDBACK SIMPLES ========== -->
     <div class="feedback-btn" id="feedbackBtn">
         <i class="fas fa-comment"></i>
     </div>
     
     <div class="feedback-modal" id="feedbackModal">
-        <h3><i class="fas fa-heart" style="color: var(--primary-color);"></i> Seu feedback</h3>
+        <h3><i class="fas fa-heart" style="color: var(--primary-color);"></i> Sua opinião</h3>
+        
+        <!-- Frase curta que aparece no balão -->
+        <div class="frase-curta">
+            <i class="fas fa-music"></i> O que você achou? <i class="fas fa-music"></i>
+        </div>
+        
         <div class="rating" id="ratingStars">
             <i class="far fa-star star" data-rating="1"></i>
             <i class="far fa-star star" data-rating="2"></i>
@@ -738,10 +756,14 @@
             <i class="far fa-star star" data-rating="4"></i>
             <i class="far fa-star star" data-rating="5"></i>
         </div>
-        <textarea id="feedbackText" placeholder="Digite sua sugestão, crítica ou elogio..." maxlength="200"></textarea>
+        
+        <textarea id="feedbackText" placeholder="Sugestão rápida... (opcional)" maxlength="100"></textarea>
+        
         <div class="modal-buttons">
             <button class="modal-btn cancel" id="cancelFeedback">Cancelar</button>
-            <button class="modal-btn send" id="sendFeedback">Enviar</button>
+            <button class="modal-btn send" id="sendFeedback">
+                <i class="fab fa-whatsapp"></i> Enviar
+            </button>
         </div>
     </div>
 
@@ -960,6 +982,9 @@
             const feedbackText = document.getElementById('feedbackText');
             const stars = document.querySelectorAll('.star');
             let currentRating = 0;
+
+            // ========== SEU NÚMERO DO WHATSAPP ==========
+            const SEU_NUMERO_WHATSAPP = '5512988461978'; // Seu número: 12 98846-1978
 
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
@@ -1453,29 +1478,31 @@
                 });
             });
             
-            // Enviar feedback
+            // Enviar feedback via WhatsApp
             sendFeedback.addEventListener('click', () => {
                 const mensagem = feedbackText.value.trim();
                 const estrelas = currentRating;
                 
-                if (!mensagem && estrelas === 0) {
-                    showNotification('⚠️ Por favor, escreva algo ou dê uma nota');
+                if (estrelas === 0) {
+                    showNotification('⭐ Por favor, dê uma nota de 1 a 5 estrelas');
                     return;
                 }
                 
-                // Aqui você pode enviar para um servidor ou API
-                // Por enquanto, vamos apenas mostrar uma notificação
-                let feedbackMsg = '✅ Feedback enviado!';
-                if (estrelas > 0) {
-                    feedbackMsg += ` Nota: ${estrelas} estrela${estrelas > 1 ? 's' : ''}`;
-                }
+                // Monta mensagem curta e direta
+                let textoWhats = `🎵 *Rádio Playlist - Feedback*\n\n`;
+                textoWhats += `⭐ *Nota:* ${'★'.repeat(estrelas)}${'☆'.repeat(5-estrelas)}\n`;
+                
                 if (mensagem) {
-                    feedbackMsg += ` - "${mensagem.substring(0, 30)}${mensagem.length > 30 ? '...' : ''}"`;
+                    textoWhats += `💬 *Mensagem:* ${mensagem}\n`;
                 }
                 
-                showNotification(feedbackMsg);
+                textoWhats += `\n📱 Enviado pelo app`;
                 
-                // Salvar no localStorage para exemplo
+                // Abre WhatsApp com a mensagem pronta
+                const linkWhatsApp = `https://wa.me/${SEU_NUMERO_WHATSAPP}?text=${encodeURIComponent(textoWhats)}`;
+                window.open(linkWhatsApp, '_blank');
+                
+                // Salva backup local
                 const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
                 feedbacks.push({
                     rating: estrelas,
@@ -1484,6 +1511,7 @@
                 });
                 localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
                 
+                showNotification('✅ WhatsApp aberto! É só enviar');
                 resetFeedback();
                 toggleFeedbackModal();
             });
@@ -1497,7 +1525,7 @@
             // Abrir modal ao clicar no botão
             feedbackBtn.addEventListener('click', toggleFeedbackModal);
             
-            // Fechar modal ao clicar fora (opcional)
+            // Fechar modal ao clicar fora
             document.addEventListener('click', (e) => {
                 if (feedbackModal.classList.contains('open') && 
                     !feedbackModal.contains(e.target) && 
