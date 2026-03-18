@@ -454,6 +454,165 @@
         .notification.show { transform: translateY(0); }
 
         .footer { text-align: center; padding: 10px 5px; font-size: 0.7rem; color: var(--text-secondary); background: #000000; border-top: 2px solid var(--primary-color); margin-top: 5px; }
+
+        /* ========== BOTÃO DE FEEDBACK DISCRETO ========== */
+        .feedback-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2000;
+            font-size: 1.2rem;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .feedback-btn:hover {
+            transform: scale(1.1);
+            background: rgba(40, 40, 40, 0.9);
+        }
+        
+        /* MODAL DE FEEDBACK */
+        .feedback-modal {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 280px;
+            background: #1a1a1a;
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 15px;
+            z-index: 2001;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        .feedback-modal.open {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .feedback-modal h3 {
+            color: var(--primary-color);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feedback-modal textarea {
+            width: 100%;
+            height: 80px;
+            background: #0a0a0a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+            color: white;
+            font-size: 0.9rem;
+            resize: none;
+            margin-bottom: 10px;
+        }
+        
+        .feedback-modal textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .feedback-modal .rating {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            justify-content: center;
+        }
+        
+        .feedback-modal .star {
+            color: #555;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .feedback-modal .star.active {
+            color: #ffd700;
+            transform: scale(1.1);
+        }
+        
+        .feedback-modal .modal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .feedback-modal .modal-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            background: #2a2a2a;
+            color: white;
+            border: 1px solid var(--border-color);
+        }
+        
+        .feedback-modal .modal-btn.send {
+            background: var(--primary-color);
+            color: #000;
+            font-weight: bold;
+            border: none;
+        }
+        
+        .feedback-modal .modal-btn.send:hover {
+            opacity: 0.9;
+            transform: scale(0.98);
+        }
+        
+        .feedback-modal .modal-btn.cancel:hover {
+            background: #3a3a3a;
+        }
+        
+        /* Responsividade para feedback modal */
+        @media (max-width: 480px) {
+            .feedback-modal {
+                width: 240px;
+                right: 10px;
+                bottom: 60px;
+            }
+            
+            .feedback-btn {
+                right: 10px;
+                bottom: 10px;
+            }
+        }
+        
+        /* Ajuste para modo carro */
+        body.car-mode .feedback-btn,
+        body.car-mode .feedback-modal {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="theme-red">
@@ -564,6 +723,27 @@
     <audio id="musicPlayer" preload="auto"></audio>
     <audio id="adPlayer" preload="auto"></audio>
     <div class="notification" id="notification"><span id="notificationText"></span></div>
+
+    <!-- ========== BOTÃO E MODAL DE FEEDBACK ========== -->
+    <div class="feedback-btn" id="feedbackBtn">
+        <i class="fas fa-comment"></i>
+    </div>
+    
+    <div class="feedback-modal" id="feedbackModal">
+        <h3><i class="fas fa-heart" style="color: var(--primary-color);"></i> Seu feedback</h3>
+        <div class="rating" id="ratingStars">
+            <i class="far fa-star star" data-rating="1"></i>
+            <i class="far fa-star star" data-rating="2"></i>
+            <i class="far fa-star star" data-rating="3"></i>
+            <i class="far fa-star star" data-rating="4"></i>
+            <i class="far fa-star star" data-rating="5"></i>
+        </div>
+        <textarea id="feedbackText" placeholder="Digite sua sugestão, crítica ou elogio..." maxlength="200"></textarea>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" id="cancelFeedback">Cancelar</button>
+            <button class="modal-btn send" id="sendFeedback">Enviar</button>
+        </div>
+    </div>
 
     <script>
         (function() {
@@ -771,6 +951,15 @@
             const extraOverlay = document.getElementById('extraOverlay');
             const extraTimer = document.getElementById('extraTimer');
             const extraContainer = document.getElementById('extraVideoContainer');
+
+            // ========== ELEMENTOS DE FEEDBACK ==========
+            const feedbackBtn = document.getElementById('feedbackBtn');
+            const feedbackModal = document.getElementById('feedbackModal');
+            const cancelFeedback = document.getElementById('cancelFeedback');
+            const sendFeedback = document.getElementById('sendFeedback');
+            const feedbackText = document.getElementById('feedbackText');
+            const stars = document.querySelectorAll('.star');
+            let currentRating = 0;
 
             // ========== LISTA DE VÍDEOS EXTRA ==========
             const videosExtra = [
@@ -1205,6 +1394,118 @@
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             setTheme(savedTheme);
             colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
+
+            // ========== FUNÇÕES DE FEEDBACK ==========
+            function toggleFeedbackModal() {
+                feedbackModal.classList.toggle('open');
+                if (feedbackModal.classList.contains('open')) {
+                    feedbackText.focus();
+                }
+            }
+            
+            function resetFeedback() {
+                feedbackText.value = '';
+                stars.forEach(star => {
+                    star.classList.remove('active', 'fas');
+                    star.classList.add('far');
+                });
+                currentRating = 0;
+            }
+            
+            // Event listeners para estrelas
+            stars.forEach(star => {
+                star.addEventListener('mouseenter', () => {
+                    const rating = parseInt(star.dataset.rating);
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.remove('far');
+                            s.classList.add('fas');
+                        } else {
+                            s.classList.remove('fas');
+                            s.classList.add('far');
+                        }
+                    });
+                });
+                
+                star.addEventListener('mouseleave', () => {
+                    stars.forEach((s, index) => {
+                        if (index < currentRating) {
+                            s.classList.remove('far');
+                            s.classList.add('fas');
+                        } else {
+                            s.classList.remove('fas');
+                            s.classList.add('far');
+                        }
+                    });
+                });
+                
+                star.addEventListener('click', () => {
+                    currentRating = parseInt(star.dataset.rating);
+                    stars.forEach((s, index) => {
+                        if (index < currentRating) {
+                            s.classList.remove('far');
+                            s.classList.add('fas', 'active');
+                        } else {
+                            s.classList.remove('fas', 'active');
+                            s.classList.add('far');
+                        }
+                    });
+                });
+            });
+            
+            // Enviar feedback
+            sendFeedback.addEventListener('click', () => {
+                const mensagem = feedbackText.value.trim();
+                const estrelas = currentRating;
+                
+                if (!mensagem && estrelas === 0) {
+                    showNotification('⚠️ Por favor, escreva algo ou dê uma nota');
+                    return;
+                }
+                
+                // Aqui você pode enviar para um servidor ou API
+                // Por enquanto, vamos apenas mostrar uma notificação
+                let feedbackMsg = '✅ Feedback enviado!';
+                if (estrelas > 0) {
+                    feedbackMsg += ` Nota: ${estrelas} estrela${estrelas > 1 ? 's' : ''}`;
+                }
+                if (mensagem) {
+                    feedbackMsg += ` - "${mensagem.substring(0, 30)}${mensagem.length > 30 ? '...' : ''}"`;
+                }
+                
+                showNotification(feedbackMsg);
+                
+                // Salvar no localStorage para exemplo
+                const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+                feedbacks.push({
+                    rating: estrelas,
+                    message: mensagem,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+                
+                resetFeedback();
+                toggleFeedbackModal();
+            });
+            
+            // Cancelar feedback
+            cancelFeedback.addEventListener('click', () => {
+                resetFeedback();
+                toggleFeedbackModal();
+            });
+            
+            // Abrir modal ao clicar no botão
+            feedbackBtn.addEventListener('click', toggleFeedbackModal);
+            
+            // Fechar modal ao clicar fora (opcional)
+            document.addEventListener('click', (e) => {
+                if (feedbackModal.classList.contains('open') && 
+                    !feedbackModal.contains(e.target) && 
+                    !feedbackBtn.contains(e.target)) {
+                    resetFeedback();
+                    toggleFeedbackModal();
+                }
+            });
 
             // ========== INICIALIZAÇÃO ==========
             window.addEventListener('load', () => {
