@@ -23,13 +23,21 @@
             color: #fff;
         }
 
-        /* Tema vermelho padrão */
+        /* Temas - cores primárias */
         :root {
-            --primary-color: #e63946;
+            --primary-color: #e63946; /* vermelho padrão */
             --bg-secondary: #0a0a0a;
             --text-secondary: #ccc;
             --border-color: #333;
         }
+
+        /* Tema vermelho (padrão) */
+        body.theme-red { --primary-color: #e63946; }
+        body.theme-blue { --primary-color: #1e90ff; }
+        body.theme-green { --primary-color: #2ecc71; }
+        body.theme-purple { --primary-color: #9b59b6; }
+        body.theme-orange { --primary-color: #e67e22; }
+        body.theme-pink { --primary-color: #ff1493; }
 
         /* Modo carro simplificado */
         body.car-mode .top-bar,
@@ -55,7 +63,7 @@
             background: rgba(0,0,0,0.8);
             color: white;
             border: 2px solid var(--primary-color);
-            border-radius: 50px;
+            border-radius: 0; /* sem círculo */
             width: 50px;
             height: 50px;
             display: none;
@@ -115,7 +123,7 @@
             background: rgba(0,0,0,0.5);
             color: white;
             padding: 8px 16px;
-            border-radius: 30px;
+            border-radius: 0; /* sem círculo */
             border: 1px solid rgba(255,255,255,0.3);
             backdrop-filter: blur(2px);
             transition: opacity 0.3s;
@@ -126,31 +134,30 @@
             display: none !important;
         }
 
-        /* Top ticker com tamanho normal */
+        /* Top bar - mensagem "Rádio Playlist" descentralizada com ícone de fone */
         .top-bar {
             background: #000;
             border-top: 2px solid var(--primary-color);
             border-bottom: 2px solid var(--primary-color);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .top-ticker {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            background: #000;
-            color: #fff;
+        .top-icon {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+        .top-message {
+            font-size: 1.2rem;
             font-weight: 400;
-            font-size: 1rem; /* reduzido */
-            padding: 10px 16px;
-            cursor: pointer;
+            color: #fff;
+            letter-spacing: 1px;
         }
-        .top-ticker span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker-scroll 25s linear infinite;
-        }
-        @keyframes ticker-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
+        .top-message span {
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
         /* Player card */
@@ -181,7 +188,7 @@
             background: rgba(0,0,0,0.8);
             color: white;
             border: 2px solid var(--primary-color);
-            border-radius: 50%;
+            border-radius: 0; /* sem círculo */
             width: 44px;
             height: 44px;
             font-size: 1.5rem;
@@ -198,7 +205,7 @@
             padding: 10px 10px 5px;
         }
         .track-title {
-            font-size: 1.2rem;   /* tamanho normal */
+            font-size: 1.2rem;
             font-weight: 400;
             color: #fff;
             line-height: 1.3;
@@ -206,7 +213,7 @@
             word-break: break-word;
         }
         .track-artist {
-            font-size: 1rem;      /* tamanho normal */
+            font-size: 1rem;
             color: var(--text-secondary);
             font-weight: 400;
             margin-bottom: 5px;
@@ -241,7 +248,7 @@
             width: 0%;
         }
 
-        /* Controles */
+        /* Controles - sem círculos */
         .controls {
             display: flex;
             align-items: center;
@@ -256,7 +263,7 @@
             font-size: 1.8rem;
             width: 45px;
             height: 45px;
-            border-radius: 50%;
+            border-radius: 0; /* sem círculo */
             cursor: pointer;
             backdrop-filter: blur(2px);
             transition: 0.2s;
@@ -271,13 +278,14 @@
             color: var(--primary-color);
             background-color: rgba(230,57,70,0.15);
             border: 2px solid var(--primary-color);
+            border-radius: 0; /* sem círculo */
         }
         .shuffle-player-btn.active {
             color: var(--primary-color);
             transform: scale(1.1);
         }
 
-        /* Volume */
+        /* Volume - sem círculos */
         .volume-area {
             display: flex;
             align-items: center;
@@ -291,7 +299,7 @@
             color: #fff;
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: 0; /* sem círculo */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -310,7 +318,7 @@
             height: 16px;
             background: white;
             border: 2px solid var(--primary-color);
-            border-radius: 50%;
+            border-radius: 0; /* sem círculo */
             cursor: pointer;
         }
         .volume-percent {
@@ -343,7 +351,7 @@
             background: rgba(0,0,0,0.8);
             color: white;
             padding: 4px 12px;
-            border-radius: 20px;
+            border-radius: 0; /* sem círculo */
             border: 1px solid var(--primary-color);
             pointer-events: none;
             font-size: 0.8rem;
@@ -400,6 +408,12 @@
             color: #fff;
             font-size: 1.8rem;
             cursor: pointer;
+            border-radius: 0; /* sem círculo */
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .drawer-item {
             background: none;
@@ -413,12 +427,37 @@
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 0; /* sem círculo */
         }
         .drawer-item i {
             width: 22px;
             color: var(--primary-color);
         }
+
+        /* Seletor de temas */
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+        .theme-option {
+            width: 100%;
+            height: 40px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+            border-radius: 0; /* sem círculo */
+        }
+        .theme-option:hover {
+            transform: scale(1.05);
+        }
+        .theme-option.red { background-color: #e63946; }
+        .theme-option.blue { background-color: #1e90ff; }
+        .theme-option.green { background-color: #2ecc71; }
+        .theme-option.purple { background-color: #9b59b6; }
+        .theme-option.orange { background-color: #e67e22; }
+        .theme-option.pink { background-color: #ff1493; }
 
         /* Playlist */
         .playlist-container {
@@ -432,7 +471,7 @@
             gap: 10px;
             padding: 8px;
             border: 1px solid var(--border-color);
-            border-radius: 30px;
+            border-radius: 0; /* sem círculo */
             margin-bottom: 8px;
             cursor: pointer;
             background: #0a0a0a;
@@ -445,7 +484,7 @@
         .music-number {
             width: 36px;
             height: 36px;
-            border-radius: 50%;
+            border-radius: 0; /* sem círculo */
             background: var(--primary-color);
             color: #000;
             font-weight: bold;
@@ -474,7 +513,7 @@
             color: var(--primary-color);
             padding: 2px 6px;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 0; /* sem círculo */
         }
 
         /* Notificação */
@@ -487,7 +526,7 @@
             color: #fff;
             padding: 10px 16px;
             border-left: 3px solid var(--primary-color);
-            border-radius: 10px;
+            border-radius: 0; /* sem círculo */
             max-width: 380px;
             margin: 0 auto;
             transform: translateY(100px);
@@ -505,7 +544,7 @@
             right: 20px;
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: 0; /* sem círculo */
             background: rgba(20,20,20,0.8);
             border: 1px solid var(--primary-color);
             color: var(--primary-color);
@@ -522,7 +561,7 @@
             width: 260px;
             background: #1a1a1a;
             border: 2px solid var(--primary-color);
-            border-radius: 15px;
+            border-radius: 0; /* sem círculo */
             padding: 15px;
             z-index: 2001;
             display: none;
@@ -554,7 +593,7 @@
             height: 60px;
             background: #0a0a0a;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 0; /* sem círculo */
             padding: 6px;
             color: white;
             resize: none;
@@ -568,7 +607,7 @@
             flex: 1;
             padding: 6px;
             border: none;
-            border-radius: 20px;
+            border-radius: 0; /* sem círculo */
             cursor: pointer;
             background: #2a2a2a;
             color: white;
@@ -593,15 +632,10 @@
     <div id="tap-to-start"><i class="fas fa-hand-point-up"></i> toque para iniciar</div>
 
     <div class="app">
-        <!-- Top ticker com tamanho normal -->
+        <!-- Top bar com mensagem "Rádio Playlist" descentralizada e ícone de fone -->
         <div class="top-bar">
-            <div class="top-ticker" id="topTicker">
-                <span id="topTickerText">
-                    <i class="fas fa-headphones-alt fa-spin"></i> 
-                    RÁDIO PLAYLIST - A melhor programação musical
-                    <i class="fas fa-music fa-beat"></i>
-                </span>
-            </div>
+            <div class="top-icon"><i class="fas fa-headphones-alt fa-beat"></i></div>
+            <div class="top-message"><span>Rádio Playlist</span> • a melhor programação</div>
         </div>
 
         <!-- Player principal -->
@@ -672,8 +706,21 @@
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
 
+            <!-- Seletor de temas -->
+            <div style="margin: 15px 0;">
+                <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-palette"></i> Temas</h4>
+                <div class="theme-selector">
+                    <div class="theme-option red" onclick="window.changeTheme('red')" title="Vermelho"></div>
+                    <div class="theme-option blue" onclick="window.changeTheme('blue')" title="Azul"></div>
+                    <div class="theme-option green" onclick="window.changeTheme('green')" title="Verde"></div>
+                    <div class="theme-option purple" onclick="window.changeTheme('purple')" title="Roxo"></div>
+                    <div class="theme-option orange" onclick="window.changeTheme('orange')" title="Laranja"></div>
+                    <div class="theme-option pink" onclick="window.changeTheme('pink')" title="Rosa"></div>
+                </div>
+            </div>
+
             <!-- Painel de anúncios (simplificado) -->
-            <div class="ad-panel" style="background:#0a0a0a; border-radius:8px; padding:10px; margin:15px 0; border:1px solid var(--border-color);">
+            <div class="ad-panel" style="background:#0a0a0a; border-radius:0; padding:10px; margin:15px 0; border:1px solid var(--border-color);">
                 <h4 style="color:var(--primary-color);"><i class="fas fa-microphone-alt"></i> Próximo anúncio</h4>
                 <div class="ad-timer" id="adTimer" style="font-size:1.8rem; text-align:center; color:var(--primary-color);">20</div>
                 <div class="ad-status" id="adStatus" style="font-size:0.7rem; text-align:center;"><i class="fas fa-compact-disc fa-spin"></i> Aguardando...</div>
@@ -717,7 +764,7 @@
         (function() {
             // ========== CONFIGURAÇÕES ==========
             const CONFIG = {
-                adsInterval: 20,          // a cada quantas músicas toca um anúncio
+                adsInterval: 20,
                 defaultVolume: 80,
                 adsList: [
                     { src: 'zzcv.mp3', title: 'Oferta relâmpago' },
@@ -726,7 +773,7 @@
                 ]
             };
 
-            // ========== PLAYLIST (exemplo com algumas músicas; coloque a completa depois) ==========
+            // ========== PLAYLIST ==========
             const musicas = [
               { id: 1, title: " Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
                 { id: 2, title: " A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
@@ -861,10 +908,9 @@
                 { id: 131, title: " Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "00:01" },
                 { id: 132, title: " Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
                 { id: 133, title: " Na Estrada", artist: "Marisa Montes", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
-                { id: 134, title: " Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" } 
-            ]; 
-                // ... (adicione todas as 134 músicas aqui ou mantenha como está)
-            
+                { id: 134, title: " Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" }  
+                // ... (demais músicas - mantive apenas duas para exemplo, mas no código completo estão todas)
+            ];
 
             // ========== VÍDEOS EXTRA ==========
             const videosExtra = [
@@ -888,7 +934,7 @@
 
             // Controle do vídeo alternado
             let videoTimer = null;
-            let showingSaudacao = false; // false = vídeo normal, true = vídeo de saudação
+            let showingSaudacao = false;
             const VIDEO_INTERVAL = 15000; // 15 segundos
 
             // ========== ELEMENTOS DOM ==========
@@ -919,8 +965,6 @@
             const skipAdBtn = document.getElementById('skipAdBtn');
             const shuffleBtn = document.getElementById('shufflePlayerBtn');
             const body = document.body;
-            const topTicker = document.getElementById('topTicker');
-            const topTickerText = document.getElementById('topTickerText');
             const exitCarModeBtn = document.getElementById('exitCarModeBtn');
             const playlistContainer = document.getElementById('playlistContainer');
             const trackInfoExtra = document.getElementById('trackInfoExtra');
@@ -967,21 +1011,26 @@
                 return `${m}:${s < 10 ? '0' : ''}${s}`;
             }
 
+            // ========== FUNÇÃO PARA MUDAR TEMA ==========
+            window.changeTheme = function(theme) {
+                body.className = body.className.replace(/theme-\w+/, '');
+                body.classList.add(`theme-${theme}`);
+                showNotification(`🎨 Tema ${theme}`);
+            };
+
             // ========== LÓGICA DO VÍDEO ALTERNADO ==========
             function getSaudacaoVideoSrc() {
                 const hour = new Date().getHours();
                 if (hour >= 5 && hour < 12) return 'bomdia.mp4';
                 if (hour >= 12 && hour < 18) return 'boatarde.mp4';
-                return 'boanoite.mp4'; // das 18h às 5h
+                return 'boanoite.mp4';
             }
 
             function alternarVideo() {
                 if (!mainVideo || !mainVideoSource) return;
                 if (showingSaudacao) {
-                    // Volta para o vídeo normal
                     mainVideoSource.src = 'normal.mp4';
                 } else {
-                    // Troca para o vídeo de saudação do horário
                     mainVideoSource.src = getSaudacaoVideoSrc();
                 }
                 mainVideo.load();
@@ -991,12 +1040,10 @@
 
             function iniciarAlternanciaVideo() {
                 if (videoTimer) clearInterval(videoTimer);
-                // Inicia mostrando o vídeo normal (já configurado no HTML)
                 showingSaudacao = false;
                 videoTimer = setInterval(alternarVideo, VIDEO_INTERVAL);
             }
 
-            // ========== FUNÇÃO PARA ATUALIZAR INFO DA MÚSICA ==========
             function updateMusicInfo() {
                 if (!playlist.length) return;
                 const track = playlist[currentIndex];
@@ -1005,7 +1052,6 @@
                 if (trackInfoExtra) trackInfoExtra.innerHTML = track.info ? `📌 ${track.info}` : '';
             }
 
-            // ========== CARREGAR MÚSICA ==========
             function loadTrack(index) {
                 if (!playlist.length) return;
                 if (index >= playlist.length) index = 0;
@@ -1023,7 +1069,6 @@
                 renderPlaylist();
             }
 
-            // ========== PLAY/PAUSE ==========
             function playMusic() {
                 if (isAdPlaying) {
                     shouldResumeMusic = true;
@@ -1056,7 +1101,6 @@
                 }
             }
 
-            // ========== PRÓXIMA/ANTERIOR ==========
             function changeTrack(direction) {
                 if (isAdPlaying) {
                     showNotification('⏸️ Aguarde o anúncio');
@@ -1079,7 +1123,6 @@
             function nextTrack() { changeTrack('next'); }
             function prevTrack() { changeTrack('prev'); }
 
-            // ========== ANÚNCIOS ==========
             function updateAdTimer() {
                 if (!adTimerEl) return;
                 if (!adsEnabled) { adTimerEl.textContent = 'OFF'; return; }
@@ -1143,7 +1186,6 @@
             function testAd() { playAd(); }
             function skipAd() { if (isAdPlaying) { adPlayer.pause(); finishAd(); showNotification('⏭️ Pulado'); } }
 
-            // ========== PLAYLIST ==========
             function renderPlaylist() {
                 if (!playlistContainer) return;
                 let html = '';
@@ -1170,17 +1212,14 @@
                 closeDrawerFunc();
             };
 
-            // ========== DRAWER ==========
             function openDrawer() { drawer.classList.add('open'); drawerOverlay.classList.add('active'); renderPlaylist(); }
             function closeDrawerFunc() { drawer.classList.remove('open'); drawerOverlay.classList.remove('active'); }
 
-            // ========== MODO CARRO ==========
             function toggleCarMode() {
                 body.classList.toggle('car-mode');
                 showNotification(body.classList.contains('car-mode') ? '🚗 Modo carro' : '🚗 Modo normal');
             }
 
-            // ========== VÍDEO EXTRA ==========
             let videoIndex = 0;
             function iniciarVideoExtra() {
                 if (!extraVideo) return;
@@ -1207,7 +1246,6 @@
                 });
             }
 
-            // ========== FEEDBACK ==========
             function toggleFeedbackModal() { feedbackModal.classList.toggle('open'); }
             function resetFeedback() {
                 feedbackText.value = '';
@@ -1312,32 +1350,20 @@
 
             exitCarModeBtn.addEventListener('click', toggleCarMode);
 
-            topTicker?.addEventListener('click', () => {
-                const novo = prompt('Editar letreiro:', topTickerText.innerText.replace(/<[^>]*>/g, ''));
-                if (novo?.trim()) { topTickerText.innerHTML = novo; showNotification('✅ Letreiro atualizado'); }
-            });
-
             // ========== INICIALIZAÇÃO ==========
             window.addEventListener('load', () => {
-                // Volume
                 if (musicPlayer) musicPlayer.volume = CONFIG.defaultVolume / 100;
                 if (adPlayer) adPlayer.volume = CONFIG.defaultVolume / 100;
                 if (volumeSlider) volumeSlider.value = CONFIG.defaultVolume;
                 if (volumePercent) volumePercent.textContent = CONFIG.defaultVolume + '%';
 
-                // Carrega primeira música
                 if (playlist.length) loadTrack(currentIndex);
                 else showNotification('Playlist vazia');
 
                 renderPlaylist();
-
-                // Inicia vídeo alternado
                 iniciarAlternanciaVideo();
-
-                // Inicia vídeo extra
                 iniciarVideoExtra();
 
-                // Tenta autoplay
                 setTimeout(() => {
                     if (!isPlaying && musicPlayer) {
                         musicPlayer.play().catch(() => {
