@@ -1,4 +1,4 @@
-9<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -314,21 +314,49 @@
             color: var(--text-secondary); 
         }
 
-        /* VÍDEO EXTRA */
+        /* VÍDEO EXTRA - AGORA DO MESMO TAMANHO DO VÍDEO PRINCIPAL */
         .extra-video-container { 
-            flex: 1; 
+            aspect-ratio: 16 / 9;
             background: #000; 
             border: 2px solid var(--primary-color);
             border-radius: 12px;
             margin: 5px;
             cursor: pointer; 
             position: relative; 
-            height: 120px;
             overflow: hidden;
         }
-        .extra-video-container video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-        .extra-overlay { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.8); color: white; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--primary-color); pointer-events: none; z-index: 10; font-size: 0.8rem; }
-        .extra-timer { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: white; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--primary-color); pointer-events: none; z-index: 10; font-size: 0.8rem; }
+        .extra-video-container video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            pointer-events: none; 
+        }
+        .extra-overlay { 
+            position: absolute; 
+            bottom: 8px; 
+            left: 8px; 
+            background: rgba(0,0,0,0.8); 
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            border: 1px solid var(--primary-color); 
+            pointer-events: none; 
+            z-index: 10; 
+            font-size: 0.8rem; 
+        }
+        .extra-timer { 
+            position: absolute; 
+            bottom: 8px; 
+            right: 8px; 
+            background: rgba(0,0,0,0.8); 
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            border: 1px solid var(--primary-color); 
+            pointer-events: none; 
+            z-index: 10; 
+            font-size: 0.8rem; 
+        }
 
         /* DRAWER */
         .drawer { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #000000; box-shadow: 4px 0 20px rgba(0,0,0,0.8); transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 2px solid var(--border-color); }
@@ -686,7 +714,7 @@
             </div>
         </div>
 
-        <!-- VÍDEO EXTRA -->
+        <!-- VÍDEO EXTRA - AGORA COM MESMO TAMANHO DO PRINCIPAL -->
         <div class="extra-video-container" id="extraVideoContainer">
             <video autoplay loop muted playsinline id="extraVideo">
                 <source src="abb.mp4" type="video/mp4">
@@ -928,7 +956,7 @@
 
         // ========== LISTA DE VÍDEOS EXTRA ==========
         const videosExtra = [
-            { src: 'zeco.mp4', nome: 'Clique no banner', link: 'https://www.aluguecopos.com.br/' },
+            { src: 'zeco.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
             { src: 'gestao.mp4', nome: 'Destaque', link: 'https://destaque.com.br/' },
             { src: 'anjo.mp4', nome: 'Anjo Azul', link: 'https://www.anjoazul.com.br' },
             { src: 'gold (1).mp4', nome: 'Goldfinger', link: 'https://www.goldfinger.com.br/' }
@@ -947,6 +975,8 @@
         let autoPlayAttempted = false;
         let shouldResumeMusic = false;
         let musicPausedTime = 0;
+        let videoIndex = 0;
+        let tempoRestante = 60;
 
         // ========== VARIÁVEIS PARA CONTROLE DO VÍDEO PRINCIPAL ==========
         let videoBase = 'macaco.mp4';
@@ -1008,9 +1038,6 @@
 
         // ========== SEU NÚMERO DO WHATSAPP ==========
         const SEU_NUMERO_WHATSAPP = '5512988461978';
-        
-        let videoIndex = 0;
-        let tempoRestante = 60;
 
         // ========== FUNÇÃO PARA OBTER O VÍDEO DE SAUDAÇÃO BASEADO NO HORÁRIO ==========
         function getVideoSaudacaoPorHorario() {
@@ -1533,6 +1560,60 @@
             }
         });
 
+        // ========== FUNÇÃO PARA INICIAR O VÍDEO EXTRA ==========
+        function iniciarVideoExtra() {
+            if (!extraVideo) return;
+            
+            const primeiroVideo = videosExtra[0];
+            extraVideo.src = primeiroVideo.src;
+            extraVideo.load();
+            extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo extra:', e));
+            extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
+            
+            // Timer de 60 segundos
+            setInterval(() => {
+                if (tempoRestante > 0) {
+                    tempoRestante--;
+                    const minutos = Math.floor(tempoRestante / 60);
+                    const segundos = tempoRestante % 60;
+                    extraTimer.textContent = `${minutos}:${segundos < 10 ? '0' + segundos : segundos}`;
+                }
+            }, 1000);
+            
+            // Troca de vídeo a cada 60 segundos
+            setInterval(() => {
+                videoIndex = (videoIndex + 1) % videosExtra.length;
+                const novoVideo = videosExtra[videoIndex];
+                extraVideo.src = novoVideo.src;
+                extraVideo.load();
+                extraVideo.play().catch(e => console.log('Erro ao trocar vídeo extra:', e));
+                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novoVideo.nome}`;
+                tempoRestante = 60;
+            }, 60000);
+        }
+
+        // ========== CLICK NO VÍDEO EXTRA ==========
+        if (extraContainer) {
+            extraContainer.addEventListener('click', function() {
+                const videoAtual = videosExtra[videoIndex];
+                if (videoAtual && videoAtual.link) {
+                    window.open(videoAtual.link, '_blank');
+                    showNotification(`🔗 Redirecionando para: ${videoAtual.nome}`);
+                }
+            });
+        }
+
+        // ========== CLICK NO LETREIRO PRINCIPAL ==========
+        if (topTicker) {
+            topTicker.addEventListener('click', function() {
+                const novoTexto = prompt('Editar letreiro principal:', topTickerText.innerText.replace(/<[^>]*>/g, ''));
+                if (novoTexto !== null && novoTexto.trim() !== '') {
+                    topTickerText.innerHTML = novoTexto;
+                    showNotification('✅ Letreiro principal atualizado!');
+                }
+            });
+        }
+
         // ========== INICIALIZAÇÃO ==========
         window.addEventListener('load', () => {
             musicPlayer.volume = CONFIG.defaultVolume / 100;
@@ -1548,7 +1629,7 @@
             mainVideo.style.display = 'block'; 
             carVideo.style.display = 'none';
             
-            iniciarVideoUnico();
+            iniciarVideoExtra(); // Inicia o vídeo extra com mesmo tamanho
             
             const attemptPlay = () => { 
                 if (!autoPlayAttempted) { 
@@ -1600,53 +1681,6 @@
             
             updateAdTimer();
         });
-
-        // Função para iniciar o vídeo extra
-        function iniciarVideoUnico() {
-            const primeiroVideo = videosExtra[0];
-            extraVideo.src = primeiroVideo.src;
-            extraVideo.load();
-            extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo:', e));
-            extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
-            
-            setInterval(() => {
-                if (tempoRestante > 0) {
-                    tempoRestante--;
-                    const minutos = Math.floor(tempoRestante / 60);
-                    const segundos = tempoRestante % 60;
-                    extraTimer.textContent = `${minutos}:${segundos < 10 ? '0' + segundos : segundos}`;
-                }
-            }, 1000);
-            
-            setInterval(() => {
-                videoIndex = (videoIndex + 1) % videosExtra.length;
-                const novoVideo = videosExtra[videoIndex];
-                extraVideo.src = novoVideo.src;
-                extraVideo.load();
-                extraVideo.play().catch(e => console.log('Erro ao trocar vídeo:', e));
-                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novoVideo.nome}`;
-                tempoRestante = 60;
-            }, 60000);
-        }
-
-        if (extraContainer) {
-            extraContainer.addEventListener('click', function() {
-                const videoAtual = videosExtra[videoIndex];
-                window.open(videoAtual.link, '_blank');
-                showNotification(`🔗 Redirecionando para: ${videoAtual.nome}`);
-            });
-        }
-
-        // Função para editar letreiro principal
-        if (topTicker) {
-            topTicker.addEventListener('click', function() {
-                const novoTexto = prompt('Editar letreiro principal:', topTickerText.innerText.replace(/<[^>]*>/g, ''));
-                if (novoTexto !== null && novoTexto.trim() !== '') {
-                    topTickerText.innerHTML = novoTexto;
-                    showNotification('✅ Letreiro principal atualizado!');
-                }
-            });
-        }
     </script>
 </body> 
 </html>
