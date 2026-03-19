@@ -22,6 +22,10 @@
             justify-content: center;
             transition: background-color 0.3s, color 0.3s;
             background-color: #000000 !important;
+            overflow-x: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
         }
 
         /* ========== CORES DOS TEMAS ========== */
@@ -41,7 +45,7 @@
         /* Modo carro */
         body.car-mode .app { background: #000; justify-content: center; }
         body.car-mode .top-bar,
-        body.car-mode .extra-video-container,
+        body.car-mode .extra-video-section,
         body.car-mode .footer,
         body.car-mode .music-ticker,
         body.car-mode .track-info,
@@ -100,6 +104,44 @@
             display: flex;
         }
 
+        /* Ajuste para tela cheia */
+        :-webkit-full-screen {
+            overflow: hidden !important;
+        }
+        
+        :-moz-full-screen {
+            overflow: hidden !important;
+        }
+        
+        :fullscreen {
+            overflow: hidden !important;
+        }
+        
+        :-webkit-full-screen .app {
+            max-width: 100%;
+            height: 100vh;
+            margin: 0;
+            border-radius: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        :-moz-full-screen .app {
+            max-width: 100%;
+            height: 100vh;
+            margin: 0;
+            border-radius: 0;
+            overflow-y: auto;
+        }
+        
+        :fullscreen .app {
+            max-width: 100%;
+            height: 100vh;
+            margin: 0;
+            border-radius: 0;
+            overflow-y: auto;
+        }
+
         .app {
             max-width: 420px;
             width: 100%;
@@ -111,7 +153,10 @@
             border: 1px solid var(--primary-color);
             border-radius: 25px;
             margin: 10px 0;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
         }
 
         /* SPLASH SCREEN */
@@ -228,7 +273,7 @@
         }
         
         .track-info-extra {
-            display: none; /* Mantido oculto */
+            display: none;
         }
 
         /* Progresso */
@@ -237,12 +282,12 @@
         .progress-bar { height: 3px; background: var(--border-color); cursor: pointer; overflow: hidden; border-radius: 2px; }
         .progress-fill { height: 100%; background: var(--primary-color); width: 0%; }
 
-        /* ========== CONTROLES - SEM BORDAS, FUNDOS OU ARREDONDAMENTOS ========== */
+        /* ========== CONTROLES ========== */
         .controls { 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            gap: 15px; 
+            gap: 20px; 
             padding: 8px 16px 12px; 
         }
         .control-btn { 
@@ -262,13 +307,13 @@
             transform: scale(0.95);
         }
         .play-btn { 
-            font-size: 2.5rem; 
+            font-size: 2.8rem; 
         }
         .shuffle-player-btn.active { 
             color: var(--primary-color); 
         }
 
-        /* Volume - também sem estilos */
+        /* Volume */
         .volume-area { 
             display: flex; 
             align-items: center; 
@@ -314,14 +359,17 @@
             color: var(--text-secondary); 
         }
 
-        /* VÍDEO EXTRA - AGORA DO MESMO TAMANHO DO VÍDEO PRINCIPAL */
+        /* ===== NOVA SEÇÃO DE VÍDEO EXTRA COM ESPAÇO PREENCHIDO ===== */
+        .extra-video-section {
+            margin: 5px;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
         .extra-video-container { 
             aspect-ratio: 16 / 9;
             background: #000; 
-            border: 2px solid var(--primary-color);
-            border-radius: 12px;
-            margin: 5px;
-            cursor: pointer; 
             position: relative; 
             overflow: hidden;
         }
@@ -356,6 +404,144 @@
             pointer-events: none; 
             z-index: 10; 
             font-size: 0.8rem; 
+        }
+
+        /* BARRA DE INFORMAÇÕES DO ANÚNCIO */
+        .ad-info-bar {
+            background: #0a0a0a;
+            border-top: 1px solid var(--primary-color);
+            border-bottom: 1px solid var(--primary-color);
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ad-info-icon {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.1rem;
+        }
+
+        .ad-info-text {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .ad-info-title {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ad-info-description {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ad-cta-button {
+            background: var(--primary-color);
+            color: #000;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        .ad-cta-button:active {
+            transform: scale(0.95);
+        }
+
+        /* PROGRESSO DO ANÚNCIO */
+        .ad-progress-container {
+            background: #0a0a0a;
+            border-bottom: 1px solid var(--primary-color);
+            padding: 8px 12px;
+        }
+
+        .ad-progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .ad-progress-bar {
+            height: 3px;
+            background: var(--border-color);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .ad-progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .ad-countdown {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--primary-color);
+        }
+
+        /* BOTÕES DE AÇÃO RÁPIDA - MAIS ESPAÇADOS */
+        .ad-action-buttons {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: #0a0a0a;
+        }
+
+        .ad-action-btn {
+            flex: 1;
+            background: #000;
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 12px 0;
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 70px;
+        }
+
+        .ad-action-btn i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .ad-action-btn span {
+            font-weight: 500;
+        }
+
+        .ad-action-btn:active {
+            transform: scale(0.95);
+            background: #1a1a1a;
         }
 
         /* DRAWER */
@@ -714,13 +900,56 @@
             </div>
         </div>
 
-        <!-- VÍDEO EXTRA - AGORA COM MESMO TAMANHO DO PRINCIPAL -->
-        <div class="extra-video-container" id="extraVideoContainer">
-            <video autoplay loop muted playsinline id="extraVideo">
-                <source src="abb.mp4" type="video/mp4">
-            </video>
-            <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
-            <div class="extra-timer" id="extraTimer">1:00</div>
+        <!-- ===== NOVA SEÇÃO DE VÍDEO EXTRA COM ESPAÇO PREENCHIDO ===== -->
+        <div class="extra-video-section">
+            <!-- VÍDEO EXTRA -->
+            <div class="extra-video-container" id="extraVideoContainer">
+                <video autoplay loop muted playsinline id="extraVideo">
+                    <source src="abb.mp4" type="video/mp4">
+                </video>
+                <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
+                <div class="extra-timer" id="extraTimer">1:00</div>
+            </div>
+
+            <!-- BARRA DE INFORMAÇÕES DO ANÚNCIO -->
+            <div class="ad-info-bar" id="adInfoBar">
+                <div class="ad-info-icon"><i class="fas fa-tag"></i></div>
+                <div class="ad-info-text">
+                    <div class="ad-info-title" id="adTitle">AlugueCopos</div>
+                    <div class="ad-info-description" id="adDescription">Copos personalizados para eventos</div>
+                </div>
+                <div class="ad-cta-button" id="adCTA" onclick="window.open('https://www.aluguecopos.com.br/', '_blank')">Saiba mais</div>
+            </div>
+
+            <!-- PROGRESSO DO ANÚNCIO -->
+            <div class="ad-progress-container" id="adProgressContainer">
+                <div class="ad-progress-header">
+                    <span><i class="fas fa-hourglass-half"></i> Anúncio em andamento</span>
+                    <span id="adTimeRemaining">1:00</span>
+                </div>
+                <div class="ad-progress-bar">
+                    <div class="ad-progress-fill" id="adProgressFill" style="width: 0%;"></div>
+                </div>
+                <div class="ad-countdown" id="adCountdown">
+                    <i class="fas fa-music"></i> Próxima música em <span id="adNextTime">60</span>s
+                </div>
+            </div>
+
+            <!-- BOTÕES DE AÇÃO RÁPIDA - MAIS ESPAÇADOS -->
+            <div class="ad-action-buttons">
+                <div class="ad-action-btn" id="adBuyBtn" onclick="window.open('https://www.aluguecopos.com.br/', '_blank')">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Comprar</span>
+                </div>
+                <div class="ad-action-btn" id="adPromoBtn" onclick="showNotification('Oferta: 20% OFF na primeira compra!')">
+                    <i class="fas fa-gift"></i>
+                    <span>Promoção</span>
+                </div>
+                <div class="ad-action-btn" id="adCallBtn" onclick="window.location.href='tel:+5511999999999'">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Ligar</span>
+                </div>
+            </div>
         </div>
 
         <!-- RODAPÉ -->
@@ -956,10 +1185,10 @@
 
         // ========== LISTA DE VÍDEOS EXTRA ==========
         const videosExtra = [
-            { src: 'zeco.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
-            { src: 'gestao.mp4', nome: 'Destaque', link: 'https://destaque.com.br/' },
-            { src: 'anjo.mp4', nome: 'Anjo Azul', link: 'https://www.anjoazul.com.br' },
-            { src: 'gold (1).mp4', nome: 'Goldfinger', link: 'https://www.goldfinger.com.br/' }
+            { src: 'zeco.mp4', nome: 'AlugueCopos', descricao: 'Copos personalizados para eventos', link: 'https://www.aluguecopos.com.br/' },
+            { src: 'gestao.mp4', nome: 'Destaque', descricao: 'Gestão empresarial', link: 'https://destaque.com.br/' },
+            { src: 'anjo.mp4', nome: 'Anjo Azul', descricao: 'Roupas e acessórios', link: 'https://www.anjoazul.com.br' },
+            { src: 'gold (1).mp4', nome: 'Goldfinger', descricao: 'Joias e relógios', link: 'https://www.goldfinger.com.br/' }
         ];
 
         // ========== ESTADO GLOBAL ==========
@@ -1016,16 +1245,23 @@
         const carVideo = document.getElementById('carVideo');
         const topTicker = document.getElementById('topTicker');
         const topTickerText = document.getElementById('topTickerText');
-        const musicTickerText = document.getElementById('musicTickerText');
         const exitCarModeBtn = document.getElementById('exitCarModeBtn');
         const playlistContainer = document.getElementById('playlistContainer');
-        const trackInfoExtra = document.getElementById('trackInfoExtra');
 
-        // Elementos do vídeo extra
+        // Elementos do vídeo extra e novos componentes
         const extraVideo = document.getElementById('extraVideo');
         const extraOverlay = document.getElementById('extraOverlay');
         const extraTimer = document.getElementById('extraTimer');
         const extraContainer = document.getElementById('extraVideoContainer');
+        const adTitle = document.getElementById('adTitle');
+        const adDescription = document.getElementById('adDescription');
+        const adCTA = document.getElementById('adCTA');
+        const adTimeRemaining = document.getElementById('adTimeRemaining');
+        const adProgressFill = document.getElementById('adProgressFill');
+        const adNextTime = document.getElementById('adNextTime');
+        const adBuyBtn = document.getElementById('adBuyBtn');
+        const adPromoBtn = document.getElementById('adPromoBtn');
+        const adCallBtn = document.getElementById('adCallBtn');
 
         // ========== ELEMENTOS DE FEEDBACK ==========
         const feedbackBtn = document.getElementById('feedbackBtn');
@@ -1560,6 +1796,24 @@
             }
         });
 
+        // ========== FUNÇÃO PARA ATUALIZAR INFORMAÇÕES DO VÍDEO EXTRA ==========
+        function atualizarInfoVideoExtra(index) {
+            const video = videosExtra[index];
+            if (!video) return;
+            
+            adTitle.textContent = video.nome;
+            adDescription.textContent = video.descricao || 'Clique para saber mais';
+            extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${video.nome}`;
+            
+            // Atualiza links dos botões
+            adCTA.onclick = () => window.open(video.link, '_blank');
+            adBuyBtn.onclick = () => window.open(video.link, '_blank');
+            adPromoBtn.onclick = () => showNotification(`Oferta especial de ${video.nome}!`);
+            
+            // Atualiza o telefone (exemplo)
+            adCallBtn.onclick = () => window.location.href = 'tel:+5511999999999';
+        }
+
         // ========== FUNÇÃO PARA INICIAR O VÍDEO EXTRA ==========
         function iniciarVideoExtra() {
             if (!extraVideo) return;
@@ -1568,26 +1822,32 @@
             extraVideo.src = primeiroVideo.src;
             extraVideo.load();
             extraVideo.play().catch(e => console.log('Erro ao iniciar vídeo extra:', e));
-            extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${primeiroVideo.nome}`;
+            atualizarInfoVideoExtra(0);
             
             // Timer de 60 segundos
-            setInterval(() => {
+            const intervalTimer = setInterval(() => {
                 if (tempoRestante > 0) {
                     tempoRestante--;
                     const minutos = Math.floor(tempoRestante / 60);
                     const segundos = tempoRestante % 60;
                     extraTimer.textContent = `${minutos}:${segundos < 10 ? '0' + segundos : segundos}`;
+                    
+                    // Atualiza progresso e timer
+                    const percent = ((60 - tempoRestante) / 60) * 100;
+                    if (adProgressFill) adProgressFill.style.width = percent + '%';
+                    if (adTimeRemaining) adTimeRemaining.textContent = `${minutos}:${segundos < 10 ? '0' + segundos : segundos}`;
+                    if (adNextTime) adNextTime.textContent = tempoRestante;
                 }
             }, 1000);
             
             // Troca de vídeo a cada 60 segundos
-            setInterval(() => {
+            const intervalVideo = setInterval(() => {
                 videoIndex = (videoIndex + 1) % videosExtra.length;
                 const novoVideo = videosExtra[videoIndex];
                 extraVideo.src = novoVideo.src;
                 extraVideo.load();
                 extraVideo.play().catch(e => console.log('Erro ao trocar vídeo extra:', e));
-                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novoVideo.nome}`;
+                atualizarInfoVideoExtra(videoIndex);
                 tempoRestante = 60;
             }, 60000);
         }
@@ -1614,6 +1874,17 @@
             });
         }
 
+        // ========== PREVENIR MOVIMENTAÇÃO EM TELA CHEIA ==========
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                document.body.style.overflow = 'hidden';
+                document.documentElement.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+                document.documentElement.style.overflow = '';
+            }
+        });
+
         // ========== INICIALIZAÇÃO ==========
         window.addEventListener('load', () => {
             musicPlayer.volume = CONFIG.defaultVolume / 100;
@@ -1629,7 +1900,7 @@
             mainVideo.style.display = 'block'; 
             carVideo.style.display = 'none';
             
-            iniciarVideoExtra(); // Inicia o vídeo extra com mesmo tamanho
+            iniciarVideoExtra(); // Inicia o vídeo extra com todos os componentes
             
             const attemptPlay = () => { 
                 if (!autoPlayAttempted) { 
