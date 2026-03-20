@@ -451,6 +451,10 @@
             border: none;
         }
 
+        .ad-cta-button:active {
+            transform: scale(0.95);
+        }
+
         /* PROGRESSO DO ANÚNCIO - SIMPLIFICADO */
         .ad-progress-container {
             background: #0a0a0a;
@@ -471,40 +475,6 @@
             background: var(--primary-color);
             width: 0%;
             transition: width 1s linear;
-        }
-
-        /* BOTÕES DE AÇÃO RÁPIDA */
-        .ad-action-buttons {
-            display: flex;
-            gap: 8px;
-            padding: 10px;
-            background: #0a0a0a;
-        }
-
-        .ad-action-btn {
-            flex: 1;
-            background: #000;
-            border: 1px solid var(--primary-color);
-            border-radius: 8px;
-            padding: 8px 0;
-            color: var(--text-primary);
-            font-size: 0.7rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            min-height: 60px;
-        }
-
-        .ad-action-btn i {
-            font-size: 1.3rem;
-            color: var(--primary-color);
-        }
-
-        .ad-action-btn:active {
-            transform: scale(0.95);
-            background: #1a1a1a;
         }
 
         /* DRAWER */
@@ -861,7 +831,7 @@
             </div>
         </div>
 
-        <!-- SEÇÃO DE VÍDEO EXTRA -->
+        <!-- SEÇÃO DE VÍDEO EXTRA - SEM OS BOTÕES -->
         <div class="extra-video-section">
             <div class="extra-video-container" id="extraVideoContainer">
                 <video autoplay loop muted playsinline id="extraVideo">
@@ -883,21 +853,6 @@
             <div class="ad-progress-container" id="adProgressContainer">
                 <div class="ad-progress-bar">
                     <div class="ad-progress-fill" id="adProgressFill" style="width: 0%;"></div>
-                </div>
-            </div>
-
-            <div class="ad-action-buttons">
-                <div class="ad-action-btn" id="adBuyBtn" onclick="window.open('https://www.aluguecopos.com.br/', '_blank')">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span>Comprar</span>
-                </div>
-                <div class="ad-action-btn" id="adPromoBtn" onclick="showNotification('Oferta: 20% OFF na primeira compra!')">
-                    <i class="fas fa-gift"></i>
-                    <span>Promoção</span>
-                </div>
-                <div class="ad-action-btn" id="adCallBtn" onclick="window.location.href='tel:+5511999999999'">
-                    <i class="fas fa-phone-alt"></i>
-                    <span>Ligar</span>
                 </div>
             </div>
         </div>
@@ -1216,9 +1171,6 @@
         const adDescription = document.getElementById('adDescription');
         const adCTA = document.getElementById('adCTA');
         const adProgressFill = document.getElementById('adProgressFill');
-        const adBuyBtn = document.getElementById('adBuyBtn');
-        const adPromoBtn = document.getElementById('adPromoBtn');
-        const adCallBtn = document.getElementById('adCallBtn');
 
         // ========== ELEMENTOS DE FEEDBACK ==========
         const feedbackBtn = document.getElementById('feedbackBtn');
@@ -1760,9 +1712,6 @@
             extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${video.nome}`;
             
             adCTA.onclick = () => window.open(video.link, '_blank');
-            adBuyBtn.onclick = () => window.open(video.link, '_blank');
-            adPromoBtn.onclick = () => showNotification(`Oferta especial de ${video.nome}!`);
-            adCallBtn.onclick = () => window.location.href = 'tel:+5511999999999';
         }
 
         // ========== FUNÇÃO PARA INICIAR O VÍDEO EXTRA ==========
