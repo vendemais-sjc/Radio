@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Rádio Playlist • Sua Música</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,17 +24,17 @@
             height: 100%;
         }
 
-        body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
-        body.theme-lilac { --primary-color: #b380ff; --primary-dark: #7a4db3; }
-        body.theme-blue { --primary-color: #00a8ff; --primary-dark: #0077be; }
-        body.theme-green { --primary-color: #00ff88; --primary-dark: #00cc6a; }
-        body.theme-orange { --primary-color: #ff7700; --primary-dark: #cc5500; }
-        body.theme-pink { --primary-color: #ff44aa; --primary-dark: #cc0088; }
-        body.theme-purple { --primary-color: #aa44ff; --primary-dark: #7700cc; }
-        body.theme-yellow { --primary-color: #ffdd44; --primary-dark: #ccaa00; }
-        body.theme-white { --primary-color: #ffffff; --primary-dark: #cccccc; }
-        body.theme-pure-black { --primary-color: #000000; --primary-dark: #000000; }
-        body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; }
+        body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; --primary-glow: rgba(230,57,70,0.5); }
+        body.theme-lilac { --primary-color: #b380ff; --primary-dark: #7a4db3; --primary-glow: rgba(179,128,255,0.5); }
+        body.theme-blue { --primary-color: #00a8ff; --primary-dark: #0077be; --primary-glow: rgba(0,168,255,0.5); }
+        body.theme-green { --primary-color: #00ff88; --primary-dark: #00cc6a; --primary-glow: rgba(0,255,136,0.5); }
+        body.theme-orange { --primary-color: #ff7700; --primary-dark: #cc5500; --primary-glow: rgba(255,119,0,0.5); }
+        body.theme-pink { --primary-color: #ff44aa; --primary-dark: #cc0088; --primary-glow: rgba(255,68,170,0.5); }
+        body.theme-purple { --primary-color: #aa44ff; --primary-dark: #7700cc; --primary-glow: rgba(170,68,255,0.5); }
+        body.theme-yellow { --primary-color: #ffdd44; --primary-dark: #ccaa00; --primary-glow: rgba(255,221,68,0.5); }
+        body.theme-white { --primary-color: #ffffff; --primary-dark: #cccccc; --primary-glow: rgba(255,255,255,0.3); }
+        body.theme-pure-black { --primary-color: #ffffff; --primary-dark: #888888; --primary-glow: rgba(255,255,255,0.2); background: #000; }
+        body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; --card-bg: #0a0a0a; }
 
         .app {
             width: 100%;
@@ -42,10 +42,10 @@
             background: #000000;
             display: flex;
             flex-direction: column;
-            border: 1px solid var(--primary-color);
             overflow-y: auto;
             overflow-x: hidden;
             position: relative;
+            scroll-behavior: smooth;
         }
 
         #splash { 
@@ -65,40 +65,47 @@
         #splash.display-none { display: none; }
         .splash-content { text-align: center; color: #fff; }
         .splash-content i { font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem; animation: pulse 1.5s infinite; }
-        .splash-content h1 { font-size: 1.8rem; }
+        .splash-content h1 { font-size: 1.8rem; letter-spacing: 1px; }
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
 
         #tap-to-start { 
             position: fixed; 
-            bottom: 90px;
+            bottom: 100px;
             left: 50%; 
             transform: translateX(-50%); 
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white; 
-            padding: 12px 24px; 
-            border-radius: 50px; 
+            padding: 14px 28px; 
+            border-radius: 60px; 
             font-weight: bold; 
-            font-size: 1rem; 
+            font-size: 1.1rem; 
             z-index: 10000; 
-            box-shadow: 0 0 25px rgba(230, 57, 70, 0.7), 0 4px 12px rgba(0,0,0,0.4); 
+            box-shadow: 0 0 30px var(--primary-glow), 0 6px 16px rgba(0,0,0,0.5); 
             cursor: pointer; 
-            border: 2px solid rgba(255,255,255,0.4); 
+            border: none; 
             text-align: center; 
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             display: none;
             animation: btnPulse 1.5s infinite;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
             white-space: nowrap;
+            font-weight: 700;
         }
         @keyframes btnPulse {
-            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); }
-            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 30px rgba(230,57,70,0.8); }
-            100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); }
+            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px var(--primary-glow); }
+            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 35px var(--primary-color); }
+            100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px var(--primary-glow); }
         }
-        #tap-to-start i { margin-right: 8px; font-size: 0.9rem; }
         #tap-to-start.hidden { display: none !important; }
 
-        .top-bar { background: #000; border-top: 1px solid var(--primary-color); border-bottom: 1px solid var(--primary-color); }
+        .top-bar {
+            background: #000;
+            margin: 12px 12px 0 12px;
+            border-radius: 28px 28px 20px 20px;
+            border: 1px solid var(--primary-color);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
         .top-ticker {
             width: 100%;
             overflow: hidden;
@@ -106,21 +113,31 @@
             background: #000;
             color: #fff;
             font-weight: 800;
-            font-size: 1.4rem;
-            padding: 15px 16px;
+            font-size: 1.2rem;
+            padding: 14px 16px;
             cursor: pointer;
+            letter-spacing: 0.3px;
         }
-        .top-ticker span { display: inline-block; padding-left: 100%; animation: ticker-scroll 25s linear infinite; }
+        .top-ticker span { display: inline-block; padding-left: 100%; animation: ticker-scroll 28s linear infinite; }
         @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .player-card {
+            background: var(--card-bg);
+            margin: 16px 12px;
+            border-radius: 32px;
+            border: 1px solid var(--primary-color);
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
 
         .video-container { 
             aspect-ratio: 16 / 9; 
             background: #000; 
             position: relative; 
-            border: 1px solid var(--primary-color);
-            border-radius: 12px;
-            margin: 5px;
+            border-radius: 28px 28px 16px 16px;
+            margin: 8px 8px 0 8px;
             overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.15);
         }
         video { width: 100%; height: 100%; object-fit: cover; display: block; }
         
@@ -128,103 +145,116 @@
             position: absolute; 
             top: 12px; 
             right: 12px; 
-            background: transparent;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
             color: white; 
             border: none;
-            font-size: 1.6rem; 
+            font-size: 1.4rem; 
             cursor: pointer; 
             z-index: 20; 
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
-            opacity: 0.7;
-            padding: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
         }
+        .video-menu-btn:active { transform: scale(0.9); background: var(--primary-color); }
 
-        .track-info { padding: 12px 16px 4px; text-align: center; }
-        .track-info p { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-info { padding: 16px 20px 8px; text-align: center; }
+        .track-info p { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px; }
 
-        .progress-area { padding: 0 16px 8px; }
-        .progress-time { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; }
-        .progress-bar { height: 4px; background: var(--border-color); cursor: pointer; border-radius: 2px; }
-        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 2px; }
+        .progress-area { padding: 8px 20px 12px; }
+        .progress-time { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px; }
+        .progress-bar { height: 5px; background: var(--border-color); cursor: pointer; border-radius: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 6px; }
 
-        .controls { display: flex; align-items: center; justify-content: space-evenly; padding: 12px 20px 20px; }
+        .controls { display: flex; align-items: center; justify-content: space-evenly; padding: 8px 20px 24px; gap: 8px; }
         .control-btn { 
-            background: none; 
+            background: rgba(20,20,20,0.8); 
             border: none; 
             color: #ffffff !important; 
-            font-size: 2rem; 
-            width: 48px; 
-            height: 48px; 
+            font-size: 1.8rem; 
+            width: 52px; 
+            height: 52px; 
             cursor: pointer; 
             border-radius: 50%; 
-            transition: all 0.2s; 
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
         }
-        .control-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.15); }
-        .play-btn { font-size: 3rem; width: 64px; height: 64px; color: #ffffff !important; }
-        .shuffle-player-btn.active { color: var(--primary-color) !important; }
+        .control-btn:active { transform: scale(0.92); background: var(--primary-color); color: #000 !important; }
+        .play-btn { font-size: 2.8rem; width: 72px; height: 72px; background: linear-gradient(145deg, var(--primary-color), var(--primary-dark)); box-shadow: 0 6px 18px var(--primary-glow); }
+        .shuffle-player-btn.active { color: var(--primary-color) !important; background: rgba(230,57,70,0.2); }
 
         .extra-video-section {
-            margin: 5px;
-            border: 1px solid var(--primary-color);
-            border-radius: 12px;
+            margin: 8px 12px 12px 12px;
+            border-radius: 28px;
             overflow: hidden;
             background: #000;
+            border: 1px solid var(--primary-color);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.5);
         }
         .extra-video-container { 
             width: 100%;
             background: #000; 
             position: relative; 
             aspect-ratio: 1015 / 512;
+            cursor: pointer;
         }
         .extra-video-container video { width: 100%; height: 100%; object-fit: cover; }
         .extra-overlay { 
             position: absolute; 
-            bottom: 8px; 
-            left: 8px; 
-            background: rgba(0,0,0,0.7); 
+            bottom: 12px; 
+            left: 12px; 
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
             color: var(--primary-color); 
-            padding: 4px 12px; 
-            border-radius: 20px; 
+            padding: 6px 16px; 
+            border-radius: 40px; 
             font-size: 0.8rem; 
             font-weight: bold;
             border: 1px solid var(--primary-color);
             pointer-events: none;
+            letter-spacing: 0.5px;
         }
 
-        .ad-panel {
-            background: #0a0a0a;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 15px 0;
-            border: 1px solid var(--border-color);
+        .footer {
+            text-align: center; 
+            padding: 14px; 
+            font-size: 0.7rem; 
+            color: var(--text-secondary); 
+            border-top: 1px solid var(--primary-color);
+            margin: 16px 12px 20px 12px;
+            border-radius: 40px;
+            background: #030303;
         }
-        .ad-panel h4 { color: var(--primary-color); margin-bottom: 6px; font-size: 0.8rem; }
-        .ad-timer { font-size: 1.8rem; font-weight: bold; text-align: center; color: var(--primary-color); }
-        .ad-status { font-size: 0.7rem; text-align: center; color: var(--text-secondary); margin: 4px 0; }
-        .ad-buttons { display: flex; justify-content: center; gap: 8px; }
-        .ad-btn { background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 4px 10px; border-radius: 12px; cursor: pointer; font-size: 0.7rem; }
 
-        .drawer { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #000000; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 2px solid var(--border-color); }
+        .drawer { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #000000; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); z-index: 2000; padding: 24px 20px; overflow-y: auto; border-right: 2px solid var(--primary-color); box-shadow: 8px 0 30px rgba(0,0,0,0.8); }
         .drawer.open { transform: translateX(0); }
-        .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 30px; }
+        .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 24px; }
         .close-drawer { background: none; border: none; color: var(--text-primary); font-size: 1.8rem; cursor: pointer; }
-        .drawer-item { background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 14px; width: 100%; text-align: left; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; }
-        .drawer-item i { width: 22px; color: var(--primary-color); }
-        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1999; display: none; }
+        .drawer-item { background: #111; border: 1px solid var(--border-color); color: var(--text-primary); padding: 14px 16px; width: 100%; text-align: left; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; cursor: pointer; border-radius: 60px; transition: 0.2s; }
+        .drawer-item:active { background: var(--primary-color); color: #000; }
+        .drawer-item i { width: 24px; color: var(--primary-color); }
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1999; display: none; backdrop-filter: blur(5px); }
         .drawer-overlay.active { display: block; }
 
-        .playlist-container { margin-top: 15px; max-height: 350px; overflow-y: auto; }
-        .playlist-item { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--border-color); border-radius: 30px; margin-bottom: 8px; cursor: pointer; background: #0a0a0a; }
-        .playlist-item.playing { border-color: var(--primary-color); background: #1a1a1a; box-shadow: 0 0 10px rgba(230,57,70,0.3); }
-        .music-number { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color); color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+        .playlist-container { margin-top: 20px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
+        .playlist-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 60px; margin-bottom: 10px; cursor: pointer; background: #0c0c0c; transition: 0.15s; }
+        .playlist-item.playing { border-color: var(--primary-color); background: #1e1e1e; box-shadow: 0 0 10px var(--primary-glow); }
+        .music-number { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-color); color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
         .playlist-info { flex: 1; }
-        .playlist-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .playlist-artist { font-size: 0.75rem; color: var(--text-secondary); }
-        .playlist-duration { font-size: 0.75rem; color: var(--primary-color); padding: 2px 6px; border: 1px solid var(--border-color); border-radius: 12px; }
+        .playlist-title { font-size: 0.85rem; color: var(--text-primary); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .playlist-artist { font-size: 0.7rem; color: var(--text-secondary); }
+        .playlist-duration { font-size: 0.7rem; color: var(--primary-color); padding: 4px 10px; border: 1px solid var(--border-color); border-radius: 30px; }
 
-        .color-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; padding: 15px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-        .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-        .color-option.active { border-color: white; }
+        .color-picker { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; padding: 15px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); justify-content: center; }
+        .color-option { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s; }
+        .color-option.active { border-color: white; transform: scale(1.1); box-shadow: 0 0 10px white; }
         .color-option.red { background: #e63946; }
         .color-option.lilac { background: #b380ff; }
         .color-option.blue { background: #00a8ff; }
@@ -234,22 +264,20 @@
         .color-option.purple { background: #aa44ff; }
         .color-option.yellow { background: #ffdd44; }
         .color-option.white { background: #ffffff; border: 1px solid #888; }
-        .color-option.pure-black { background: #000000; border: 1px solid #888; }
+        .color-option.pure-black { background: #111; border: 1px solid #fff; }
 
-        .notification { position: fixed; bottom: 16px; left: 16px; right: 16px; background: #000; color: #fff; padding: 10px 16px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 10px; text-align: center; }
+        .ad-panel { background: #0f0f0f; border-radius: 28px; padding: 16px; margin: 12px 0; border: 1px solid var(--border-color); text-align: center; }
+        .ad-panel h4 { color: var(--primary-color); margin-bottom: 8px; font-size: 0.85rem; }
+        .ad-timer { font-size: 2rem; font-weight: bold; text-align: center; color: var(--primary-color); }
+        .ad-buttons { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
+        .ad-btn { background: #222; border: none; color: white; padding: 6px 14px; border-radius: 50px; cursor: pointer; font-size: 0.7rem; }
+
+        .notification { position: fixed; bottom: 20px; left: 16px; right: 16px; background: #1a1a1a; color: #fff; padding: 12px 20px; z-index: 3000; transform: translateY(120px); transition: transform 0.3s; border-left: 4px solid var(--primary-color); border-radius: 60px; text-align: center; backdrop-filter: blur(10px); font-weight: 500; }
         .notification.show { transform: translateY(0); }
 
-        .footer { text-align: center; padding: 10px; font-size: 0.7rem; color: var(--text-secondary); border-top: 2px solid var(--primary-color); margin-top: 5px; }
-
-        .feedback-btn { position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(20,20,20,0.8); border: 1px solid var(--primary-color); color: var(--primary-color); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2000; }
-        .feedback-modal { position: fixed; bottom: 70px; right: 20px; width: 260px; background: #1a1a1a; border: 2px solid var(--primary-color); border-radius: 15px; padding: 15px; z-index: 2001; display: none; }
+        .feedback-btn { position: fixed; bottom: 24px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: rgba(0,0,0,0.7); border: 1px solid var(--primary-color); color: var(--primary-color); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2000; backdrop-filter: blur(8px); }
+        .feedback-modal { position: fixed; bottom: 90px; right: 20px; width: 280px; background: #141414; border: 2px solid var(--primary-color); border-radius: 28px; padding: 18px; z-index: 2001; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .feedback-modal.open { display: block; }
-        .feedback-modal .rating { display: flex; gap: 5px; margin: 10px 0; justify-content: center; }
-        .feedback-modal .star { color: #555; font-size: 1.3rem; cursor: pointer; }
-        .feedback-modal .star.active { color: #ffd700; }
-        .feedback-modal textarea { width: 100%; height: 60px; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; color: white; margin-bottom: 10px; }
-        .feedback-modal .modal-btn { padding: 6px; border-radius: 20px; cursor: pointer; background: #2a2a2a; color: white; border: none; margin: 2px; }
-        .feedback-modal .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
 
         body.car-mode .extra-video-section,
         body.car-mode .top-bar,
@@ -257,28 +285,83 @@
         body.car-mode .track-info,
         body.car-mode .progress-area,
         body.car-mode .ad-panel,
-        body.car-mode .feedback-btn { display: none !important; }
-        .car-exit-btn { position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.8); color: white; border: 2px solid var(--primary-color); border-radius: 50px; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 10000; }
+        body.car-mode .feedback-btn,
+        body.car-mode .video-menu-btn { display: none !important; }
+        
+        body.car-mode .player-card {
+            margin: 0;
+            border-radius: 0;
+            background: #000;
+            border: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        body.car-mode .video-container {
+            border-radius: 0;
+            margin: 0;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+        }
+        body.car-mode .controls {
+            padding: 20px 40px;
+            background: #000000cc;
+            backdrop-filter: blur(16px);
+            border-radius: 80px;
+            margin: 20px 30px;
+            gap: 20px;
+        }
+        body.car-mode .control-btn {
+            width: 70px;
+            height: 70px;
+            font-size: 2.5rem;
+            background: #222;
+        }
+        body.car-mode .play-btn {
+            width: 90px;
+            height: 90px;
+            font-size: 3.5rem;
+        }
+        .car-exit-btn { 
+            position: fixed; 
+            top: 24px; 
+            right: 24px; 
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px);
+            color: white; 
+            border: 2px solid var(--primary-color);
+            border-radius: 60px; 
+            width: 54px; 
+            height: 54px; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            z-index: 10000;
+            font-size: 1.4rem;
+        }
         body.car-mode .car-exit-btn { display: flex; }
+        body.car-mode #tap-to-start { display: none !important; }
     </style>
 </head>
 <body class="theme-red">
-    <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
+    <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times-circle"></i></div>
 
     <div id="splash">
         <div class="splash-content">
             <i class="fas fa-headphones-alt"></i>
             <h1>Rádio Playlist</h1>
-            <p>Carregando...</p>
+            <p>Sua trilha sonora</p>
         </div>
     </div>
     
-    <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA</div>
+    <div id="tap-to-start"><i class="fas fa-play-circle"></i> TOCAR AGORA</div>
 
     <div class="app">
         <div class="top-bar">
             <div class="top-ticker" id="topTicker">
-                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - A melhor programação musical - Sém vinhetas e sém blá blá blá - Anúncie aqui 12 98846-1978 <i class="fas fa-music fa-beat"></i></span>
+                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST • Sem vinhetas • O melhor pop rock e MPB • Anuncie aqui 12 98846-1978 <i class="fas fa-music fa-beat"></i></span>
             </div>
         </div>
 
@@ -319,15 +402,15 @@
             </div>
         </div>
 
-        <div class="footer">Rádio Playlist 2024 © Desenvolvido Por Roger Mendes</div>
+        <div class="footer">Rádio Playlist 2025 © Desenvolvido Por Roger Mendes</div>
     </div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <div class="drawer" id="drawer">
         <div class="drawer-header"><button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button></div>
         <div class="drawer-content">
-            <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
-            <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
+            <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car-side"></i> Modo Carro</button>
+            <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand-alt"></i> Tela Cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
 
             <div class="color-picker">
@@ -344,9 +427,9 @@
             </div>
 
             <div class="ad-panel">
-                <h4><i class="fas fa-microphone-alt"></i> Próximo anúncio de áudio</h4>
+                <h4><i class="fas fa-microphone-alt"></i> Próximo anúncio (áudio)</h4>
                 <div class="ad-timer" id="adTimer">25</div>
-                <div class="ad-status" id="adStatus"><i class="fas fa-compact-disc fa-spin"></i> Aguardando...</div>
+                <div class="ad-status" id="adStatus"><i class="fas fa-compact-disc fa-spin"></i> Ativo</div>
                 <div class="ad-buttons">
                     <button class="ad-btn" id="toggleAdsBtn"><i class="fas fa-toggle-on"></i> Ativo</button>
                     <button class="ad-btn" id="testAdBtn">Testar</button>
@@ -354,7 +437,7 @@
                 </div>
             </div>
 
-            <h4 style="color: var(--primary-color); margin: 10px 0;">🎵 Playlist</h4>
+            <h4 style="color: var(--primary-color); margin: 12px 0 8px;">🎵 Minha Playlist</h4>
             <div class="playlist-container" id="playlistContainer"></div>
         </div>
     </div>
@@ -362,8 +445,7 @@
     <audio id="musicPlayer" preload="auto"></audio>
     <audio id="adPlayer" preload="auto"></audio>
     <div class="notification" id="notification"><span id="notificationText"></span></div>
-
-    <div class="feedback-btn" id="feedbackBtn"><i class="fas fa-comment"></i></div>
+    <div class="feedback-btn" id="feedbackBtn"><i class="fas fa-comment-dots"></i></div>
     <div class="feedback-modal" id="feedbackModal">
         <h3><i class="fas fa-heart"></i> Sua opinião</h3>
         <div class="rating" id="ratingStars">
@@ -381,153 +463,151 @@
     </div>
 
     <script>
-        // PLAYLIST COMPLETA
+        // PLAYLIST COMPLETA COM 134 MÚSICAS
         const musicas = [
-            { id: 1, title: " Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01" },
-            { id: 2, title: " A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "00:01" },
-            { id: 3, title: " Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01" },
-            { id: 4, title: " Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01" },
-            { id: 5, title: " I_Love_You", artist: "Jim_Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "00:01" },
-            { id: 6, title: " Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "00:01" },
-            { id: 7, title: " Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "00:01" },
-            { id: 8, title: " What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "00:01" },
-            { id: 9, title: " More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "00:01" },
-            { id: 10, title: " Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", duration: "00:01" },
-            { id: 11, title: " FaJura Secreta Revelação", artist: "Duplicada!", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
-            { id: 12, title: " Noite do Prazer", artist: "Cláudio Zolli", src: "Brylho_Noite_do_Prazer_muzzik.m4a", duration: "00:01" },
-            { id: 13, title: " Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", duration: "00:01" },
-            { id: 14, title: " Codinome Beija-Flor", artist: "Cazuza", src: "Cazuza_Codinome_Beija_Flor.m4a", duration: "00:01" },
-            { id: 15, title: " Só os Loucos Sabem", artist: "Charlie Brown Jr.", src: "Charlie_Brown_Jr_S_os_loucos_sabem_muzzik.m4a", duration: "00:01" },
-            { id: 16, title: " Charme do Mundo", artist: "Marina Lima", src: "Charme_do_Charme_do_Mundo_muzzik.m4a", duration: "00:01" },
-            { id: 17, title: " Cheia de Charme", artist: "Guilherme Arantes", src: "Cheia_de_Cheia_de_Charme_muzzik.m4a", duration: "00:01" },
-            { id: 18, title: " Sailing", artist: "Christopher Cross", src: "Christopher_Cross_Sailing_muzzik.m4a", duration: "00:01" },
-            { id: 19, title: " Poeira No Vento", artist: "Chrystian & Ralf", src: "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", duration: "00:01" },
-            { id: 20, title: " Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", duration: "00:01" },
-            { id: 21, title: " Ném Pensar", artist: "KLEITON_KLEDIR", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "00:01" },
-            { id: 22, title: " Corre Pro Meu Mar", artist: "Maneva", src: "Corre_Pro_Corre_Pro_Meu_Mar_Radio_Edit__muzzik.m4a", duration: "00:01" },
-            { id: 23, title: " Time After Time", artist: "Cyndi Lauper", src: "Cyndi_Lauper_Time_after_time_muzzik.m4a", duration: "00:01" },
-            { id: 24, title: " Você Sempre Será", artist: "DINO & Banda Malta", src: "DINO_Feat_Banda_Malta_Voc_Sempre_Ser_DVD_Barzim_de_Rock.m4a", duration: "00:01" },
-            { id: 25, title: " Casinha Branca", artist: "DINO & Renato Vianna", src: "DINO_feat_Renato_Vianna_Casinha_Branca_DVD_Barzim_de_Rock_muzzik (1).m4a", duration: "00:01" },
-            { id: 26, title: " Send It Back", artist: "Don West", src: "DON_WEST_Send_It_Back_muzzik.m4a", duration: "00:01" },
-            { id: 27, title: " Thank You", artist: "Dido", src: "Dido_Thank_You_muzzik.m4a", duration: "00:01" },
-            { id: 28, title: "Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", duration: "00:01" },
-            { id: 29, title: " Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", duration: "00:01" },
-            { id: 30, title: "Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", duration: "00:01" },
-            { id: 31, title: " Pensando Nela", artist: "Dom Beto", src: "Dom_Beto_Pensando_Nela_2.m4a", duration: "00:01" },
-            { id: 32, title: " Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", duration: "00:01" },
-            { id: 33, title: " Sailing", artist: "Emmerson Nogueira", src: "Emmerson_Nogueira_Sailing_13.m4a", duration: "00:01" },
-            { id: 34, title: " Encostar na Tua", artist: "Anavitória", src: "Encostar_na_Encostar_na_Tua.m4a", duration: "00:01" },
-            { id: 35, title: " Somos Quem Podemos Ser", artist: "Engenheiros Do Hawaii", src: "Engenheiros_Do_Hawaii_Somos_Quem_Podemos_Ser_muzzik.m4a", duration: "00:01" },
-            { id: 36, title: " Entre o Céu e o Mar", artist: "Elba Ramalho", src: "Entre_O_Entre o Ceu e o Mar.m4a", duration: "00:01" },
-            { id: 37, title: " Epitáfio", artist: "Titãs", src: "Epit_fio_Epit_fio_muzzik.m4a", duration: "00:01" },
-            { id: 38, title: " Espumas ao Vento", artist: "Fagner", src: "Espumas_ao_Espumas_ao_Vento.m4a", duration: "00:01" },
-            { id: 39, title: " Esquece e Vem", artist: "Nico Rezende", src: "Esquece_e_Esquece_e_vem_Nico_5.m4a", duration: "00:01" },
-            { id: 40, title: " Só pro seu prazer", artist: "Hérois-da-Resistencia", src: "so proseu pazer.m4a", duration: "00:01" },
-            { id: 41, title: " kyline_Pigeon", artist: "Elton_John", src: "Elton_John_Skyline_Pigeon_muzzik.m4a", duration: "00:01" },
-            { id: 42, title: " Clube da Esquina", artist: "Flávio Venturini", src: "Fl_vio_Venturini_Clube_da_esquina.m4a", duration: "00:01" },
-            { id: 43, title: " Noites com Sol", artist: "Flávio Venturini & Vanessa da Mata", src: "Flavio venturininoitescom sol.m4a", duration: "00:01" },
-            { id: 44, title: " I_Like_Chopin", artist: "Gazebo", src: "Gazebo_I_Like_Chopin_muzzik.m4a", duration: "00:01" },
-            { id: 45, title: "I Was Born To Love You", artist: "Freddie Mercury", src: "Freddie_Mercury_I_Was_Born_To_Love_You_muzzik.m4a", duration: "00:01" },
-            { id: 46, title: " Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", duration: "00:01" },
-            { id: 47, title: " Careless Whisper", artist: "George Michael", src: "George_Michael_Careless_Whisper_muzzik.m4a", duration: "00:01" },
-            { id: 48, title: " Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01" },
-            { id: 49, title: " Dona Da Minha Cabeça", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dona_da_Minha_Cabe_a_muzzik.m4a", duration: "00:01" },
-            { id: 50, title: " A Noite", artist: "Gusttavo Lima", src: "Gusttavo_Lima_A_Noite_67k.m4a", duration: "00:01" },
-            { id: 51, title: " I Don't Want To", artist: "Toni braxton", src: "I_Don_t_I_Don_t_Want_To_muzzik.m4a", duration: "00:01" },
-            { id: 52, title: " Ai,Ai,Ai,Ai", artist: "Ivan Lins", src: "Ivan_Lins_Ai_Ai_Ai_Ai_Ai.m4a", duration: "00:01" },
-            { id: 53, title: " Vitoriosa", artist: "Ivan Lins", src: "Ivan_Lins_Vitoriosa_muzzik.m4a", duration: "00:01" },
-            { id: 54, title: " Ah Como Eu Amei", artist: "Ivete Sangalo", src: "Ivete Sangalo - Ah_ Como Eu Amei (Benito di Paula)(MP3_160K).mp3", duration: "00:01" },
-            { id: 55, title: " I'm Yours", artist: "Jason Mraz", src: "Jason_Mraz_I_m_Yours_muzzik.m4a", duration: "00:01" },
-            { id: 56, title: " Million Miles", artist: "Jason Mraz", src: "Jason_Mraz_Million_Miles_muzzik.m4a", duration: "00:01" },
-            { id: 57, title: " Papel Machê", artist: "João Bosco", src: "Jo_o_Bosco_Papel_Machê.m4a", duration: "00:01" },
-            { id: 58, title: " P.D.A.", artist: "John Legend", src: "John_Legend_P_D_A_muzzik.m4a", duration: "00:01" },
-            { id: 59, title: " Gostosa", artist: "Jorge Ben Jor", src: "Jorge_Ben_Jor_Gostosa_muzzik.m4a", duration: "00:01" },
-            { id: 60, title: " Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", duration: "00:01" },
-            { id: 61, title: " Dentro de um Abraço", artist: "Jota Quest", src: "Jota_Quest_Dentro_de_um_Abra_o_muzzik.m4a", duration: "00:01" },
-            { id: 62, title: " Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "00:01" },
-            { id: 63, title: " Everybody's Changing", artist: "Keane", src: "Keane_Everybody_s_Changing_muzzik.m4a", duration: "00:01" },
-            { id: 64, title: " Born Again", artist: "Lisa", src: "LISA_Born_Again_feat_Doja_Cat_RAYE_muzzik.m4a", duration: "00:01" },
-            { id: 65, title: " Die With A Smile", artist: "Lady Gaga & Bruno Mars", src: "Lady_Gaga_Bruno_Mars_Die_With_A_Smile_muzzik.m4a", duration: "00:01" },
-            { id: 66, title: " Lanterna dos Afogados", artist: "Paralamas", src: "Lanterna_Dos_Lanterna_Dos_Afogados_muzzik.m4a", duration: "00:01" },
-            { id: 67, title: " Let It Be Music", artist: "Travel Love Friends", src: "Let_It_Be_Music_Travel_Love_Friends_20.m4a", duration: "00:01" },
-            { id: 68, title: " Muito Estranho", artist: "Liga Joe", src: "Liga_Joe_Muito_Estranho_Flashbacks_ (1).m4a", duration: "00:01" },
-            { id: 69, title: " Mordida de Amor", artist: "Yahoo ", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", duration: "00:01" },
-            { id: 70, title: " Toda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", duration: "00:01" },
-            { id: 71, title: " For_Your_Babies ", artist: "Simply Red", src: "Simply_Red_For_Your_Babies_muzzik.m4a", duration: "00:01" },
-            { id: 72, title: " Reluz", artist: "Marcos Sabino", src: "MARCOS_SABINO_MARCOS_SABINO_reluz_muzzik.m4a", duration: "00:01" },
-            { id: 73, title: " Meu Mundo e Nada Mais", artist: "Guilherme Arantes", src: "MEU_MUNDO_E_NADA_MAIS_Guilherme_Arantes_muzzik.m4a", duration: "00:01" },
-            { id: 74, title: " Balada de Gisberta", artist: "Maria Bethânia", src: "Maria_Beth_nia_Balada_de_Gisberta_ (1).m4a", duration: "00:01" },
-            { id: 75, title: " Pra Rua me Levar", artist: "Maria Bethânia & Ana Carolina", src: "Maria_Maria_Beth_nia_Pra_Rua_Me_Levar_muzzik (1).m4a", duration: "00:01" },
-            { id: 76, title: " Just Another Day", artist: "Maurício Manieri feat. Jon Secada", src: "Maur_cio_Manieri_feat_Jon_Secada_Just_Another_Day_14.m4a", duration: "00:01" },
-            { id: 77, title: " I've Had The Time Of My Life", artist: "Mauricio Manieri", src: "Mauricio_Manieri_I_ve_Had_The_Time_Of_My_Life_muzzik.m4a", duration: "00:01" },
-            { id: 78, title: " Billie Jean", artist: "Michael Jackson", src: "Michael_Jackson_Billie_Jean_muzzik.m4a", duration: "00:01" },
-            { id: 79, title: " The Girl Is Mine", artist: "Michael Jackson", src: "Michael_Jackson_The_Girl_Is_Mine_muzzik.m4a", duration: "00:01" },
-            { id: 80, title: " Epitfio", artist: "Nando Reis", src: "Epit_fio_Epit_fio_muzzik.m4a", duration: "00:01" },
-            { id: 81, title: " Mina do Condomínio", artist: "Seu Jorge", src: "Mina_do_Mina_do_Condom_nio_muzzik.m4a", duration: "00:01" },
-            { id: 82, title: " My Sweet Lord", artist: "George Harrison", src: "My_Sweet_My_Sweet_Lord_GEORGE_HARRISON_The_HSCC_muzzik.m4a", duration: "00:01" },
-            { id: 83, title: " Sorri Sou Rei", artist: "Natiruts", src: "Natiruts_Sorri_Sou_Rei_muzzik.m4a", duration: "00:01" },
-            { id: 84, title: " Lotta Love", artist: "Nicolette Larson", src: "Nicolette_Larson_Lotta_Love_muzzik.m4a", duration: "00:01" },
-            { id: 85, title: " O Barquinho", artist: "Naira Leão", src: "O_Barquinho_O_Barquinho.m4a", duration: "00:01" },
-            { id: 86, title: " Paisagem da Janela", artist: "Lô Borges", src: "PAISAGEM_DA_JANELA_L_BORGES_muzzik.m4a", duration: "00:01" },
-            { id: 87, title: " Palco", artist: "Gilberto Gil & João Gomes", src: "PALCO_PALCO_muzzik.m4a", duration: "00:01" },
-            { id: 88, title: " Palavras", artist: "Cassia Eller", src: "Palavras_Ao_Palavras_Ao_Vento.m4a", duration: "00:01" },
-            { id: 89, title: " Palpite", artist: "Vanessa Rangel", src: "Palpite_Palpite_muzzik.m4a", duration: "00:01" },
-            { id: 90, title: " Let Her Go", artist: "Passenger", src: "Passenger_Passenger_Let_Her_Go_Official_Video__18.m4a", duration: "00:01" },
-            { id: 91, title: " Mil e Uma Noites de Amor", artist: "Pepeu Gomes", src: "Pepeu_Gomes_Mil_e_uma_noites_de_amor_muzzik.m4a", duration: "00:01" },
-            { id: 92, title: " Baby Come Back", artist: "Player", src: "Player_Baby_Come_Back_7.m4a", duration: "00:01" },
-            { id: 93, title: " Lady_Lady_Lady ", artist: "Joe Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", duration: "00:01" },
-            { id: 94, title: " Primavera", artist: "Cassiano", src: "Primavera_Album_Primavera_Album_Version__muzzik.m4a", duration: "00:01" },
-            { id: 95, title: " Jura Secreta Revela", artist: "Fagner Zé Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "00:01" },
-            { id: 96, title: " Calm Down", artist: "Rema & Selena Gomez", src: "Rema_Selena_Gomez_Calm_Down_muzzik.m4a", duration: "00:01" },
-            { id: 97, title: " Coração Pirata", artist: "Ricky Vallen", src: "Ricky_Vallen_Cora_o_pirata_muzzik (1).m4a", duration: "00:01" },
-            { id: 98, title: " Casinha Branca", artist: "Roberta Campos", src: "Roberta_Campos_Casinha_Branca.m4a", duration: "00:01" },
-            { id: 99, title: " Furdúncio", artist: "Roberto Carlos", src: "Roberto_Carlos Furduncio.m4a", duration: "00:01" },
-            { id: 100, title: " Everytime ou Go Away", artist: "Paul Young", src: "Paul_Young_Everytime_You_Go_Away_muzzik.m4a", duration: "00:01" },
-            { id: 101, title: " Róberta Sá", artist: "Róberta Sá", src: "Róberta Sá, _muzzik.m4a", duration: "00:01" },
-            { id: 102, title: " Sábado à Noite", artist: "Seu Jorge", src: "S_bado_Noite_Seu_Jorge_4.m4a", duration: "00:01" },
-            { id: 103, title: " Samba de Verão", artist: "Luiza Sonza", src: "Samba_De_Samba_De_Ver_o.m4a", duration: "00:01" },
-            { id: 104, title: " Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "00:01" },
-            { id: 105, title: " Shake You Down", artist: "Unknown", src: "Shake_You_Shake_You_Down.m4a", duration: "00:01" },
-            { id: 106, title: " Simples Desejo", artist: "Luciana Mllo", src: "Simples_Desejo_Simples_Desejo_muzzik.m4a", duration: "00:01" },
-            { id: 107, title: " Holding Back The Years", artist: "Simply Red", src: "Simply_Red_Holding_Back_The_Years_15.m4a", duration: "00:01" },
-            { id: 108, title: " Stars", artist: "Simply Red", src: "Simply_Red_Stars_muzzik.m4a", duration: "00:01" },
-            { id: 109, title: " Sunrise", artist: "Simply Red", src: "Simply_Red_Sunrise_muzzik.m4a", duration: "00:01" },
-            { id: 110, title: " Queixa", artist: "Caetano Veloso", src: "Queixa_Queixa_muzzik.m4a", duration: "00:01" },
-            { id: 111, title: " Garota Nacional", artist: "Skank", src: "Skank_Garota_Nacional_muzzik.m4a", duration: "00:01" },
-            { id: 112, title: " Resposta", artist: "Skank", src: "Skank_Resposta.m4a", duration: "00:01" },
-            { id: 113, title: " Vamos Fugir", artist: "Skank", src: "Skank_Vamos_Fugir_muzzik.m4a", duration: "00:01" },
-            { id: 114, title: " Sorte", artist: "Caetano Veloso & Gal Costa", src: "Sorte_Caetano_Veloso_Gal_Costa_.m4a", duration: "00:01" },
-            { id: 115, title: " Stand by Me", artist: "Ben E. King", src: "Stand_by_Stand_by_Me_muzzik.m4a", duration: "00:01" },
-            { id: 116, title: " Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", duration: "00:01" },
-            { id: 117, title: " Sultans of Swing", artist: "Dire Straits", src: "Sultans_of_Sultans_of_Swing_Backing_roger.m4a", duration: "00:01" },
-            { id: 118, title: " The_Time_KorgStyle_Life ", artist: "A cha Remember", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", duration: "00:01" },
-            { id: 119, title: " Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", duration: "00:01" },
-            { id: 120, title: " Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", duration: "00:01" },
-            { id: 121, title: " Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", duration: "00:01" },
-            { id: 122, title: " Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", duration: "00:01" },
-            { id: 123, title: " Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", duration: "00:01" },
-            { id: 124, title: " Oração ao Tempo", artist: "Maria Gadú", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4a", duration: "00:01" },
-            { id: 125, title: " Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "00:01" },
-            { id: 126, title: " Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", duration: "00:01" },
-            { id: 127, title: " Samba de Verão", artist: "ATENÇÃO DUPLICAS!", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01" },
-            { id: 128, title: " Não Vá Embora", artist: "Marisa Montes", src: "Marisa-Montes-não vá embora.m4a", duration: "00:01" },
-            { id: 129, title: " My Love My Love", artist: "Little Texas", src: "My_Love_My_Love_muzzik.m4a", duration: "00:01" },
-            { id: 130, title: " Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", duration: "00:01" },
-            { id: 131, title: " Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "00:01" },
-            { id: 132, title: " Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "00:01" },
-            { id: 133, title: " Na Estrada", artist: "Marisa Montes", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01" },
-            { id: 134, title: " Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "00:01" } 
+            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "03:45" },
+            { id: 2, title: "A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "04:12" },
+            { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "04:45" },
+            { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "03:32" },
+            { id: 5, title: "I Love You", artist: "Jim Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "03:58" },
+            { id: 6, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "03:45" },
+            { id: 7, title: "Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "04:22" },
+            { id: 8, title: "What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "04:55" },
+            { id: 9, title: "More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "03:17" },
+            { id: 10, title: "Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", duration: "03:28" },
+            { id: 11, title: "Jura Secreta Revelação", artist: "Fagner & Zé Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "04:05" },
+            { id: 12, title: "Noite do Prazer", artist: "Cláudio Zolli", src: "Brylho_Noite_do_Prazer_muzzik.m4a", duration: "03:52" },
+            { id: 13, title: "Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", duration: "03:48" },
+            { id: 14, title: "Codinome Beija-Flor", artist: "Cazuza", src: "Cazuza_Codinome_Beija_Flor.m4a", duration: "03:18" },
+            { id: 15, title: "Só os Loucos Sabem", artist: "Charlie Brown Jr.", src: "Charlie_Brown_Jr_S_os_loucos_sabem_muzzik.m4a", duration: "03:28" },
+            { id: 16, title: "Charme do Mundo", artist: "Marina Lima", src: "Charme_do_Charme_do_Mundo_muzzik.m4a", duration: "03:55" },
+            { id: 17, title: "Cheia de Charme", artist: "Guilherme Arantes", src: "Cheia_de_Cheia_de_Charme_muzzik.m4a", duration: "03:42" },
+            { id: 18, title: "Sailing", artist: "Christopher Cross", src: "Christopher_Cross_Sailing_muzzik.m4a", duration: "04:18" },
+            { id: 19, title: "Poeira No Vento", artist: "Chrystian & Ralf", src: "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", duration: "03:45" },
+            { id: 20, title: "Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", duration: "04:16" },
+            { id: 21, title: "Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "03:28" },
+            { id: 22, title: "Corre Pro Meu Mar", artist: "Maneva", src: "Corre_Pro_Corre_Pro_Meu_Mar_Radio_Edit__muzzik.m4a", duration: "03:35" },
+            { id: 23, title: "Time After Time", artist: "Cyndi Lauper", src: "Cyndi_Lauper_Time_after_time_muzzik.m4a", duration: "03:59" },
+            { id: 24, title: "Você Sempre Será", artist: "DINO & Banda Malta", src: "DINO_Feat_Banda_Malta_Voc_Sempre_Ser_DVD_Barzim_de_Rock.m4a", duration: "04:12" },
+            { id: 25, title: "Casinha Branca", artist: "DINO & Renato Vianna", src: "DINO_feat_Renato_Vianna_Casinha_Branca_DVD_Barzim_de_Rock_muzzik (1).m4a", duration: "03:48" },
+            { id: 26, title: "Send It Back", artist: "Don West", src: "DON_WEST_Send_It_Back_muzzik.m4a", duration: "03:32" },
+            { id: 27, title: "Thank You", artist: "Dido", src: "Dido_Thank_You_muzzik.m4a", duration: "03:38" },
+            { id: 28, title: "Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", duration: "04:22" },
+            { id: 29, title: "Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", duration: "04:08" },
+            { id: 30, title: "Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", duration: "04:35" },
+            { id: 31, title: "Pensando Nela", artist: "Dom Beto", src: "Dom_Beto_Pensando_Nela_2.m4a", duration: "03:55" },
+            { id: 32, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", duration: "06:30" },
+            { id: 33, title: "Sailing", artist: "Emmerson Nogueira", src: "Emmerson_Nogueira_Sailing_13.m4a", duration: "04:12" },
+            { id: 34, title: "Encostar na Tua", artist: "Anavitória", src: "Encostar_na_Encostar_na_Tua.m4a", duration: "03:25" },
+            { id: 35, title: "Somos Quem Podemos Ser", artist: "Engenheiros Do Hawaii", src: "Engenheiros_Do_Hawaii_Somos_Quem_Podemos_Ser_muzzik.m4a", duration: "03:42" },
+            { id: 36, title: "Entre o Céu e o Mar", artist: "Elba Ramalho", src: "Entre_O_Entre o Ceu e o Mar.m4a", duration: "03:58" },
+            { id: 37, title: "Epitáfio", artist: "Titãs", src: "Epit_fio_Epit_fio_muzzik.m4a", duration: "04:15" },
+            { id: 38, title: "Espumas ao Vento", artist: "Fagner", src: "Espumas_ao_Espumas_ao_Vento.m4a", duration: "04:28" },
+            { id: 39, title: "Esquece e Vem", artist: "Nico Rezende", src: "Esquece_e_Esquece_e_vem_Nico_5.m4a", duration: "03:45" },
+            { id: 40, title: "Só pro seu prazer", artist: "Heróis da Resistência", src: "so proseu pazer.m4a", duration: "03:32" },
+            { id: 41, title: "Skyline Pigeon", artist: "Elton John", src: "Elton_John_Skyline_Pigeon_muzzik.m4a", duration: "03:48" },
+            { id: 42, title: "Clube da Esquina", artist: "Flávio Venturini", src: "Fl_vio_Venturini_Clube_da_esquina.m4a", duration: "04:22" },
+            { id: 43, title: "Noites com Sol", artist: "Flávio Venturini & Vanessa da Mata", src: "Flavio venturininoitescom sol.m4a", duration: "03:55" },
+            { id: 44, title: "I Like Chopin", artist: "Gazebo", src: "Gazebo_I_Like_Chopin_muzzik.m4a", duration: "04:08" },
+            { id: 45, title: "I Was Born To Love You", artist: "Freddie Mercury", src: "Freddie_Mercury_I_Was_Born_To_Love_You_muzzik.m4a", duration: "03:38" },
+            { id: 46, title: "Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", duration: "03:42" },
+            { id: 47, title: "Careless Whisper", artist: "George Michael", src: "George_Michael_Careless_Whisper_muzzik.m4a", duration: "05:00" },
+            { id: 48, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "03:45" },
+            { id: 49, title: "Dona Da Minha Cabeça", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dona_da_Minha_Cabe_a_muzzik.m4a", duration: "03:28" },
+            { id: 50, title: "A Noite", artist: "Gusttavo Lima", src: "Gusttavo_Lima_A_Noite_67k.m4a", duration: "03:35" },
+            { id: 51, title: "I Don't Want To", artist: "Toni Braxton", src: "I_Don_t_I_Don_t_Want_To_muzzik.m4a", duration: "04:18" },
+            { id: 52, title: "Ai, Ai, Ai, Ai", artist: "Ivan Lins", src: "Ivan_Lins_Ai_Ai_Ai_Ai_Ai.m4a", duration: "03:52" },
+            { id: 53, title: "Vitoriosa", artist: "Ivan Lins", src: "Ivan_Lins_Vitoriosa_muzzik.m4a", duration: "04:05" },
+            { id: 54, title: "Ah Como Eu Amei", artist: "Ivete Sangalo", src: "Ivete Sangalo - Ah_ Como Eu Amei (Benito di Paula)(MP3_160K).mp3", duration: "04:12" },
+            { id: 55, title: "I'm Yours", artist: "Jason Mraz", src: "Jason_Mraz_I_m_Yours_muzzik.m4a", duration: "03:34" },
+            { id: 56, title: "Million Miles", artist: "Jason Mraz", src: "Jason_Mraz_Million_Miles_muzzik.m4a", duration: "03:58" },
+            { id: 57, title: "Papel Machê", artist: "João Bosco", src: "Jo_o_Bosco_Papel_Machê.m4a", duration: "03:42" },
+            { id: 58, title: "P.D.A.", artist: "John Legend", src: "John_Legend_P_D_A_muzzik.m4a", duration: "04:28" },
+            { id: 59, title: "Gostosa", artist: "Jorge Ben Jor", src: "Jorge_Ben_Jor_Gostosa_muzzik.m4a", duration: "03:15" },
+            { id: 60, title: "Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", duration: "03:48" },
+            { id: 61, title: "Dentro de um Abraço", artist: "Jota Quest", src: "Jota_Quest_Dentro_de_um_Abra_o_muzzik.m4a", duration: "03:55" },
+            { id: 62, title: "Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", duration: "03:28" },
+            { id: 63, title: "Everybody's Changing", artist: "Keane", src: "Keane_Everybody_s_Changing_muzzik.m4a", duration: "03:35" },
+            { id: 64, title: "Born Again", artist: "Lisa", src: "LISA_Born_Again_feat_Doja_Cat_RAYE_muzzik.m4a", duration: "03:42" },
+            { id: 65, title: "Die With A Smile", artist: "Lady Gaga & Bruno Mars", src: "Lady_Gaga_Bruno_Mars_Die_With_A_Smile_muzzik.m4a", duration: "04:08" },
+            { id: 66, title: "Lanterna dos Afogados", artist: "Paralamas", src: "Lanterna_Dos_Lanterna_Dos_Afogados_muzzik.m4a", duration: "03:32" },
+            { id: 67, title: "Let It Be Music", artist: "Travel Love Friends", src: "Let_It_Be_Music_Travel_Love_Friends_20.m4a", duration: "03:55" },
+            { id: 68, title: "Muito Estranho", artist: "Liga Joe", src: "Liga_Joe_Muito_Estranho_Flashbacks_ (1).m4a", duration: "03:45" },
+            { id: 69, title: "Mordida de Amor", artist: "Yahoo", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", duration: "03:38" },
+            { id: 70, title: "Toda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", duration: "03:52" },
+            { id: 71, title: "For Your Babies", artist: "Simply Red", src: "Simply_Red_For_Your_Babies_muzzik.m4a", duration: "04:12" },
+            { id: 72, title: "Reluz", artist: "Marcos Sabino", src: "MARCOS_SABINO_MARCOS_SABINO_reluz_muzzik.m4a", duration: "03:48" },
+            { id: 73, title: "Meu Mundo e Nada Mais", artist: "Guilherme Arantes", src: "MEU_MUNDO_E_NADA_MAIS_Guilherme_Arantes_muzzik.m4a", duration: "03:35" },
+            { id: 74, title: "Balada de Gisberta", artist: "Maria Bethânia", src: "Maria_Beth_nia_Balada_de_Gisberta_ (1).m4a", duration: "04:25" },
+            { id: 75, title: "Pra Rua me Levar", artist: "Maria Bethânia & Ana Carolina", src: "Maria_Maria_Beth_nia_Pra_Rua_Me_Levar_muzzik (1).m4a", duration: "03:58" },
+            { id: 76, title: "Just Another Day", artist: "Maurício Manieri feat. Jon Secada", src: "Maur_cio_Manieri_feat_Jon_Secada_Just_Another_Day_14.m4a", duration: "04:18" },
+            { id: 77, title: "I've Had The Time Of My Life", artist: "Mauricio Manieri", src: "Mauricio_Manieri_I_ve_Had_The_Time_Of_My_Life_muzzik.m4a", duration: "04:32" },
+            { id: 78, title: "Billie Jean", artist: "Michael Jackson", src: "Michael_Jackson_Billie_Jean_muzzik.m4a", duration: "04:54" },
+            { id: 79, title: "The Girl Is Mine", artist: "Michael Jackson", src: "Michael_Jackson_The_Girl_Is_Mine_muzzik.m4a", duration: "03:42" },
+            { id: 80, title: "Epitáfio", artist: "Nando Reis", src: "Epit_fio_Epit_fio_muzzik.m4a", duration: "04:15" },
+            { id: 81, title: "Mina do Condomínio", artist: "Seu Jorge", src: "Mina_do_Mina_do_Condom_nio_muzzik.m4a", duration: "03:28" },
+            { id: 82, title: "My Sweet Lord", artist: "George Harrison", src: "My_Sweet_My_Sweet_Lord_GEORGE_HARRISON_The_HSCC_muzzik.m4a", duration: "04:38" },
+            { id: 83, title: "Sorri Sou Rei", artist: "Natiruts", src: "Natiruts_Sorri_Sou_Rei_muzzik.m4a", duration: "03:45" },
+            { id: 84, title: "Lotta Love", artist: "Nicolette Larson", src: "Nicolette_Larson_Lotta_Love_muzzik.m4a", duration: "03:32" },
+            { id: 85, title: "O Barquinho", artist: "Naira Leão", src: "O_Barquinho_O_Barquinho.m4a", duration: "03:18" },
+            { id: 86, title: "Paisagem da Janela", artist: "Lô Borges", src: "PAISAGEM_DA_JANELA_L_BORGES_muzzik.m4a", duration: "03:25" },
+            { id: 87, title: "Palco", artist: "Gilberto Gil & João Gomes", src: "PALCO_PALCO_muzzik.m4a", duration: "03:55" },
+            { id: 88, title: "Palavras", artist: "Cassia Eller", src: "Palavras_Ao_Palavras_Ao_Vento.m4a", duration: "03:42" },
+            { id: 89, title: "Palpite", artist: "Vanessa Rangel", src: "Palpite_Palpite_muzzik.m4a", duration: "03:48" },
+            { id: 90, title: "Let Her Go", artist: "Passenger", src: "Passenger_Passenger_Let_Her_Go_Official_Video__18.m4a", duration: "04:12" },
+            { id: 91, title: "Mil e Uma Noites de Amor", artist: "Pepeu Gomes", src: "Pepeu_Gomes_Mil_e_uma_noites_de_amor_muzzik.m4a", duration: "03:58" },
+            { id: 92, title: "Baby Come Back", artist: "Player", src: "Player_Baby_Come_Back_7.m4a", duration: "04:08" },
+            { id: 93, title: "Lady Lady Lady", artist: "Joe Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", duration: "03:42" },
+            { id: 94, title: "Primavera", artist: "Cassiano", src: "Primavera_Album_Primavera_Album_Version__muzzik.m4a", duration: "03:55" },
+            { id: 95, title: "Jura Secreta Revelação", artist: "Fagner & Zé Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", duration: "04:05" },
+            { id: 96, title: "Calm Down", artist: "Rema & Selena Gomez", src: "Rema_Selena_Gomez_Calm_Down_muzzik.m4a", duration: "03:28" },
+            { id: 97, title: "Coração Pirata", artist: "Ricky Vallen", src: "Ricky_Vallen_Cora_o_pirata_muzzik (1).m4a", duration: "03:45" },
+            { id: 98, title: "Casinha Branca", artist: "Roberta Campos", src: "Roberta_Campos_Casinha_Branca.m4a", duration: "03:32" },
+            { id: 99, title: "Furdúncio", artist: "Roberto Carlos", src: "Roberto_Carlos Furduncio.m4a", duration: "03:48" },
+            { id: 100, title: "Everytime You Go Away", artist: "Paul Young", src: "Paul_Young_Everytime_You_Go_Away_muzzik.m4a", duration: "04:22" },
+            { id: 101, title: "Róberta Sá", artist: "Róberta Sá", src: "Róberta Sá, _muzzik.m4a", duration: "03:38" },
+            { id: 102, title: "Sábado à Noite", artist: "Seu Jorge", src: "S_bado_Noite_Seu_Jorge_4.m4a", duration: "03:25" },
+            { id: 103, title: "Samba de Verão", artist: "Luiza Sonza", src: "Samba_De_Samba_De_Ver_o.m4a", duration: "03:32" },
+            { id: 104, title: "Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", duration: "04:08" },
+            { id: 105, title: "Shake You Down", artist: "Gregory Abbott", src: "Shake_You_Shake_You_Down.m4a", duration: "04:05" },
+            { id: 106, title: "Simples Desejo", artist: "Luciana Mello", src: "Simples_Desejo_Simples_Desejo_muzzik.m4a", duration: "03:48" },
+            { id: 107, title: "Holding Back The Years", artist: "Simply Red", src: "Simply_Red_Holding_Back_The_Years_15.m4a", duration: "04:28" },
+            { id: 108, title: "Stars", artist: "Simply Red", src: "Simply_Red_Stars_muzzik.m4a", duration: "04:12" },
+            { id: 109, title: "Sunrise", artist: "Simply Red", src: "Simply_Red_Sunrise_muzzik.m4a", duration: "03:18" },
+            { id: 110, title: "Queixa", artist: "Caetano Veloso", src: "Queixa_Queixa_muzzik.m4a", duration: "03:42" },
+            { id: 111, title: "Garota Nacional", artist: "Skank", src: "Skank_Garota_Nacional_muzzik.m4a", duration: "03:15" },
+            { id: 112, title: "Resposta", artist: "Skank", src: "Skank_Resposta.m4a", duration: "03:35" },
+            { id: 113, title: "Vamos Fugir", artist: "Skank", src: "Skank_Vamos_Fugir_muzzik.m4a", duration: "03:55" },
+            { id: 114, title: "Sorte", artist: "Caetano Veloso & Gal Costa", src: "Sorte_Caetano_Veloso_Gal_Costa_.m4a", duration: "03:28" },
+            { id: 115, title: "Stand by Me", artist: "Ben E. King", src: "Stand_by_Stand_by_Me_muzzik.m4a", duration: "02:58" },
+            { id: 116, title: "Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", duration: "03:38" },
+            { id: 117, title: "Sultans of Swing", artist: "Dire Straits", src: "Sultans_of_Sultans_of_Swing_Backing_roger.m4a", duration: "05:48" },
+            { id: 118, title: "Remember The Time", artist: "A Cha", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", duration: "04:22" },
+            { id: 119, title: "Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", duration: "03:45" },
+            { id: 120, title: "Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", duration: "04:48" },
+            { id: 121, title: "Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", duration: "04:08" },
+            { id: 122, title: "Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", duration: "03:42" },
+            { id: 123, title: "Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", duration: "03:55" },
+            { id: 124, title: "Oração ao Tempo", artist: "Maria Gadú", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4a", duration: "03:48" },
+            { id: 125, title: "Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", duration: "03:42" },
+            { id: 126, title: "Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", duration: "03:48" },
+            { id: 127, title: "Samba de Verão", artist: "Marcos Valle", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "03:15" },
+            { id: 128, title: "Não Vá Embora", artist: "Marisa Montes", src: "Marisa-Montes-não vá embora.m4a", duration: "03:38" },
+            { id: 129, title: "My Love My Love", artist: "Little Texas", src: "My_Love_My_Love_muzzik.m4a", duration: "03:52" },
+            { id: 130, title: "Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", duration: "04:05" },
+            { id: 131, title: "Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", duration: "03:28" },
+            { id: 132, title: "Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", duration: "03:35" },
+            { id: 133, title: "Na Estrada", artist: "Marisa Montes", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "03:42" },
+            { id: 134, title: "Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", duration: "03:28" }
         ];
 
         let playlist = [...musicas];
-        // Música inicial aleatória
         let currentIndex = Math.floor(Math.random() * playlist.length);
         let isPlaying = false;
         let shuffle = false;
         let autoPlayAttempted = false;
         let videoIndex = 0;
         
-        // Configuração dos anúncios de voz - a cada 25 músicas
         let isAdPlaying = false;
         let adsEnabled = true;
         let musicPlayedCount = 0;
@@ -536,7 +616,7 @@
         let musicPausedTime = 0;
         
         const CONFIG = {
-            adsInterval: 25, // Anúncio a cada 25 músicas
+            adsInterval: 25,
             adsList: [
                 { src: 'zzcv.mp3', title: 'Oferta relâmpago' },
                 { src: 'zzcv.mp3', title: 'Promoção especial' },
@@ -551,7 +631,6 @@
             { src: 'Goldem (1).mp4', nome: 'Goldfinger', link: 'https://www.goldfinger.com.br/' }
         ];
 
-        // Elementos DOM
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -578,15 +657,12 @@
         const topTicker = document.getElementById('topTicker');
         const topTickerText = document.getElementById('topTickerText');
         const exitCarModeBtn = document.getElementById('exitCarModeBtn');
-        
-        // Elementos anúncio
         const adTimerEl = document.getElementById('adTimer');
         const adStatus = document.getElementById('adStatus');
         const toggleAdsBtn = document.getElementById('toggleAdsBtn');
         const testAdBtn = document.getElementById('testAdBtn');
         const skipAdBtn = document.getElementById('skipAdBtn');
 
-        // Volume padrão
         musicPlayer.volume = 1.0;
         adPlayer.volume = 1.0;
 
@@ -608,13 +684,11 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        // Funções de anúncio - a cada 25 músicas
         function updateAdTimer() {
             if (!adsEnabled) { 
                 adTimerEl.textContent = 'OFF'; 
                 return; 
             }
-            // Calcula quantas músicas faltam para o próximo anúncio
             let songsPlayed = musicPlayedCount;
             let songsUntilAd = CONFIG.adsInterval - (songsPlayed % CONFIG.adsInterval);
             if (songsUntilAd === CONFIG.adsInterval) songsUntilAd = 0;
@@ -661,7 +735,6 @@
 
         function checkAdInterval() {
             if (!adsEnabled) return;
-            // Verifica se deve tocar anúncio (múltiplo de 25)
             if (musicPlayedCount > 0 && musicPlayedCount % CONFIG.adsInterval === 0 && !isAdPlaying) {
                 playAd();
             }
@@ -759,7 +832,6 @@
                 return;
             }
             
-            // Incrementa contador de músicas tocadas
             musicPlayedCount++;
             
             if (shuffle && playlist.length > 1) {
@@ -772,8 +844,6 @@
             }
             loadTrack(currentIndex);
             if (isPlaying) playMusic();
-            
-            // Verifica se deve tocar anúncio
             checkAdInterval();
         }
 
@@ -805,7 +875,6 @@
 
         musicPlayer.addEventListener('ended', () => {
             if (!isAdPlaying) {
-                // Contabiliza a música que acabou de tocar
                 musicPlayedCount++;
                 checkAdInterval();
                 nextTrack();
@@ -828,7 +897,6 @@
             showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial');
         });
 
-        // Botões anúncio
         toggleAdsBtn.addEventListener('click', toggleAds);
         testAdBtn.addEventListener('click', testAd);
         skipAdBtn.addEventListener('click', skipAd);
@@ -944,7 +1012,6 @@
             }
         }
 
-        // Feedback
         const feedbackBtn = document.getElementById('feedbackBtn');
         const feedbackModal = document.getElementById('feedbackModal');
         const cancelFeedback = document.getElementById('cancelFeedback');
@@ -991,7 +1058,6 @@
         });
 
         window.addEventListener('load', () => {
-            // Carrega uma música aleatória ao iniciar
             loadTrack(currentIndex);
             renderPlaylist();
             iniciarCicloVideos();
