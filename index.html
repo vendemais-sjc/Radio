@@ -40,6 +40,8 @@
         body.theme-purple { --bg-primary: #000000; --bg-secondary: #0a0a0a; --bg-drawer: #050505; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; --primary-color: #aa44ff; --primary-light: #cc88ff; --primary-dark: #7700cc; }
         body.theme-yellow { --bg-primary: #000000; --bg-secondary: #0a0a0a; --bg-drawer: #050505; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; --primary-color: #ffdd44; --primary-light: #ffee88; --primary-dark: #ccaa00; }
         body.theme-white { --bg-primary: #000000; --bg-secondary: #0a0a0a; --bg-drawer: #050505; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; --primary-color: #ffffff; --primary-light: #eeeeee; --primary-dark: #cccccc; }
+        /* Novo tema: preto puro */
+        body.theme-pure-black { --bg-primary: #000000; --bg-secondary: #0a0a0a; --bg-drawer: #050505; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; --primary-color: #000000; --primary-light: #333333; --primary-dark: #000000; }
         body { --bg-primary: #000000; --bg-secondary: #0a0a0a; --bg-drawer: #050505; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; --primary-color: #e63946; --primary-light: #ff6b7a; --primary-dark: #b71c1c; }
 
         /* TELA CHEIA AUTOMÁTICA */
@@ -51,7 +53,7 @@
             display: flex;
             flex-direction: column;
             border: 1px solid var(--primary-color);  /* LINHA FINA NAS LATERAIS */
-            box-sizing: border-box;                  /* PARA NÃO AUMENTAR O TAMANHO TOTAL */
+            box-sizing: border-box;
             border-radius: 0;
             margin: 0;
             overflow-y: auto;
@@ -206,11 +208,11 @@
             background: rgba(200, 50, 60, 0.95);
         }
 
-        /* TOP BAR PRINCIPAL */
+        /* TOP BAR PRINCIPAL - bordas agora com 1px (mesma finura das laterais) */
         .top-bar {
             background: #000;
-            border-top: 2px solid var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
+            border-top: 1px solid var(--primary-color);
+            border-bottom: 1px solid var(--primary-color);
         }
         .top-ticker {
             width: 100%;
@@ -233,11 +235,12 @@
 
         /* PLAYER CARD */
         .player-card { background: #000000; }
+        /* Borda do vídeo principal agora com 1px */
         .video-container { 
             aspect-ratio: 16 / 9; 
             background: #000; 
             position: relative; 
-            border: 2px solid var(--primary-color);
+            border: 1px solid var(--primary-color);
             border-radius: 12px;
             margin: 5px;
             overflow: hidden;
@@ -380,10 +383,10 @@
             font-weight: 500;
         }
 
-        /* ===== SEÇÃO DE VÍDEO EXTRA - FUNDO PRETO SEM LINHAS ===== */
+        /* ===== SEÇÃO DE VÍDEO EXTRA - borda agora com 1px ===== */
         .extra-video-section {
             margin: 5px;
-            border: 2px solid var(--primary-color);
+            border: 1px solid var(--primary-color);
             border-radius: 12px;
             overflow: hidden;
             width: 100%;
@@ -517,14 +520,14 @@
             background: rgba(230, 57, 70, 0.1);
         }
 
-        /* SELETOR DE CORES */
+        /* SELETOR DE CORES - adicionada opção preta (pure-black) */
         .color-picker { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 15px 0; padding: 15px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
         .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .color-option:hover { transform: scale(1.1); }
         .color-option.active { border-color: white; box-shadow: 0 0 8px currentColor; }
         .color-option.red { background: #e63946; }
         .color-option.lilac { background: #b380ff; }
-        .color-option.black { background: #bb86fc; }
+        .color-option.black { background: #bb86fc; } /* roxo */
         .color-option.gray { background: #a0a0a0; }
         .color-option.blue { background: #00a8ff; }
         .color-option.green { background: #00ff88; }
@@ -533,6 +536,8 @@
         .color-option.purple { background: #aa44ff; }
         .color-option.yellow { background: #ffdd44; }
         .color-option.white { background: #ffffff; border: 1px solid #888; }
+        /* Nova opção: preto puro */
+        .color-option.pure-black { background: #000000; border: 1px solid #888; }
 
         /* PAINEL DE ANÚNCIOS */
         .ad-panel { background: #0a0a0a; border-radius: 8px; padding: 10px; margin: 15px 0; border: 1px solid var(--border-color); }
@@ -816,7 +821,9 @@
                 <div class="color-option pink" data-theme="theme-pink" title="Rosa"></div>
                 <div class="color-option purple" data-theme="theme-purple" title="Roxo profundo"></div>
                 <div class="color-option yellow" data-theme="theme-yellow" title="Amarelo"></div>
-                <div class="color-option white" data-theme="theme-white" title="Preto e Branco"></div>
+                <div class="color-option white" data-theme="theme-white" title="Branco"></div>
+                <!-- Nova opção preta -->
+                <div class="color-option pure-black" data-theme="theme-pure-black" title="Preto"></div>
             </div>
 
             <div class="ad-panel">
