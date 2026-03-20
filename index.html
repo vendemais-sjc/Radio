@@ -168,36 +168,41 @@
             100% { opacity: 0.6; transform: scale(1); } 
         }
 
-        /* TAP TO START - CORRIGIDO */
+        /* TAP TO START - CORRIGIDO - MENOR E FUNCIONAL */
         #tap-to-start { 
             position: fixed; 
             top: 50%; 
             left: 50%; 
             transform: translate(-50%, -50%); 
-            background: rgba(230, 57, 70, 0.9); 
+            background: rgba(230, 57, 70, 0.95); 
             color: white; 
-            padding: 15px 30px; 
-            border-radius: 50px; 
+            padding: 10px 20px; 
+            border-radius: 40px; 
             font-weight: bold; 
-            font-size: 1.2rem; 
+            font-size: 1rem; 
             z-index: 10000; 
-            box-shadow: 0 0 20px rgba(230, 57, 70, 0.5); 
-            transition: opacity 0.3s ease, transform 0.3s ease; 
+            box-shadow: 0 0 15px rgba(230, 57, 70, 0.5); 
+            transition: all 0.3s ease; 
             cursor: pointer; 
-            border: 2px solid white; 
+            border: 1.5px solid white; 
             text-align: center; 
-            letter-spacing: 1px; 
+            letter-spacing: 0.5px; 
             pointer-events: auto;
+            display: none;
         }
         #tap-to-start i { 
-            margin-right: 10px; 
-            font-size: 1.2rem; 
+            margin-right: 8px; 
+            font-size: 1rem; 
         }
         #tap-to-start.hidden { 
             opacity: 0; 
             transform: translate(-50%, -40%); 
             pointer-events: none;
             display: none !important;
+        }
+        #tap-to-start:active {
+            transform: translate(-50%, -50%) scale(0.95);
+            background: rgba(200, 50, 60, 0.95);
         }
 
         /* TOP BAR PRINCIPAL */
@@ -374,7 +379,7 @@
             font-weight: 500;
         }
 
-        /* ===== SEÇÃO DE VÍDEO EXTRA - FUNDO PRETO ===== */
+        /* ===== SEÇÃO DE VÍDEO EXTRA - FUNDO PRETO SEM LINHAS ===== */
         .extra-video-section {
             margin: 5px;
             border: 2px solid var(--primary-color);
@@ -405,43 +410,33 @@
             position: absolute; 
             bottom: 8px; 
             left: 8px; 
-            background: transparent; 
+            background: rgba(0, 0, 0, 0.7); 
             color: var(--primary-color); 
-            padding: 4px 8px; 
-            border-radius: 4px; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
             pointer-events: none; 
             z-index: 10; 
             font-size: 0.8rem; 
             font-weight: bold;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
-            border-left: 3px solid var(--primary-color);
+            border: 1px solid var(--primary-color);
+            backdrop-filter: blur(2px);
         }
 
         .extra-timer { 
             position: absolute; 
             bottom: 8px; 
             right: 8px; 
-            background: transparent; 
+            background: rgba(0, 0, 0, 0.7); 
             color: var(--primary-color); 
-            padding: 4px 8px; 
-            border-radius: 4px; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
             pointer-events: none; 
             z-index: 10; 
             font-size: 0.9rem; 
             font-weight: bold;
             font-family: monospace;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
-            border-right: 3px solid var(--primary-color);
-        }
-
-        /* BARRA DE INFORMAÇÕES DO ANÚNCIO - REMOVIDA */
-        .ad-info-bar {
-            display: none;
-        }
-
-        /* PROGRESSO DO ANÚNCIO - REMOVIDO */
-        .ad-progress-container {
-            display: none;
+            border: 1px solid var(--primary-color);
+            backdrop-filter: blur(2px);
         }
 
         /* DRAWER */
@@ -807,7 +802,7 @@
                 <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
                 <div class="extra-timer" id="extraTimer">1:00</div>
             </div>
-            <!-- INFO BAR E PROGRESS FORAM REMOVIDOS -->
+            <!-- INFO BAR E PROGRESS FORAM REMOVIDOS - FUNDO PRETO -->
         </div>
 
         <div class="footer">Rádio Playlist 2024 © Desenvolvido Por Roger Mendes</div>
@@ -922,10 +917,10 @@
 
         // ========== LISTA DE VÍDEOS EXTRA ==========
         const videosExtra = [
-            { src: 'zeco.mp4', nome: 'AlugueCopos', descricao: 'Copos personalizados para eventos', link: 'https://www.aluguecopos.com.br/' },
-            { src: 'gestao.mp4', nome: 'Destaque', descricao: 'Gestão empresarial', link: 'https://destaque.com.br/' },
-            { src: 'anjo.mp4', nome: 'Anjo Azul', descricao: 'Roupas e acessórios', link: 'https://www.anjoazul.com.br' },
-            { src: 'gold (1).mp4', nome: 'Goldfinger', descricao: 'Joias e relógios', link: 'https://www.goldfinger.com.br/' }
+            { src: 'zeco.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
+            { src: 'gestao.mp4', nome: 'Destaque', link: 'https://destaque.com.br/' },
+            { src: 'anjo.mp4', nome: 'Anjo Azul', link: 'https://www.anjoazul.com.br' },
+            { src: 'gold (1).mp4', nome: 'Goldfinger', link: 'https://www.goldfinger.com.br/' }
         ];
 
         // ========== ESTADO GLOBAL ==========
@@ -1381,6 +1376,8 @@
         document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => {
             if (document.fullscreenElement) {
                 document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
             }
         });
 
@@ -1613,26 +1610,38 @@
             // Ativar tela cheia automaticamente após 1 segundo
             setTimeout(ativarTelaCheia, 1000);
             
-            // Mostrar o botão de iniciar
+            // Mostrar o botão de iniciar se a música não começar sozinha
             setTimeout(() => {
                 if (!isPlaying) {
-                    tapToStart.classList.remove('hidden');
                     tapToStart.style.display = 'block';
                 }
-            }, 3000);
+            }, 2000);
+            
+            // Esconder o botão após 10 segundos se não for usado
+            setTimeout(() => {
+                if (tapToStart.style.display === 'block') {
+                    tapToStart.style.display = 'none';
+                }
+            }, 10000);
             
             // Evento de clique no botão de iniciar
-            tapToStart.addEventListener('click', function() {
+            tapToStart.addEventListener('click', function(e) {
+                e.stopPropagation();
                 iniciarPlayerNoToque();
+                this.style.display = 'none';
             });
             
-            // Também iniciar com qualquer toque na tela
-            document.addEventListener('touchstart', function() {
-                iniciarPlayerNoToque();
+            // Também iniciar com qualquer toque na tela (exceto no botão)
+            document.addEventListener('touchstart', function(e) {
+                if (e.target !== tapToStart) {
+                    iniciarPlayerNoToque();
+                }
             }, { once: true });
             
-            document.addEventListener('click', function() {
-                iniciarPlayerNoToque();
+            document.addEventListener('click', function(e) {
+                if (e.target !== tapToStart) {
+                    iniciarPlayerNoToque();
+                }
             }, { once: true });
             
             updateAdTimer();
