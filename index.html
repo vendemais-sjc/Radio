@@ -68,37 +68,37 @@
         .splash-content h1 { font-size: 1.8rem; }
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
 
-        /* BOTÃO INICIAR MELHORADO */
+        /* BOTÃO INICIAR - MENOR */
         #tap-to-start { 
             position: fixed; 
-            bottom: 100px;
+            bottom: 90px;
             left: 50%; 
             transform: translateX(-50%); 
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white; 
-            padding: 16px 32px; 
-            border-radius: 60px; 
+            padding: 12px 24px; 
+            border-radius: 50px; 
             font-weight: bold; 
-            font-size: 1.2rem; 
+            font-size: 1rem; 
             z-index: 10000; 
-            box-shadow: 0 0 30px rgba(230, 57, 70, 0.8), 0 4px 15px rgba(0,0,0,0.5); 
+            box-shadow: 0 0 25px rgba(230, 57, 70, 0.7), 0 4px 12px rgba(0,0,0,0.4); 
             cursor: pointer; 
-            border: 2px solid rgba(255,255,255,0.5); 
+            border: 2px solid rgba(255,255,255,0.4); 
             text-align: center; 
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             display: none;
             animation: btnPulse 1.5s infinite;
             backdrop-filter: blur(4px);
             white-space: nowrap;
         }
         @keyframes btnPulse {
-            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 20px rgba(230,57,70,0.5); }
-            50% { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 40px rgba(230,57,70,0.9); }
-            100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 20px rgba(230,57,70,0.5); }
+            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); }
+            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 30px rgba(230,57,70,0.8); }
+            100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); }
         }
-        #tap-to-start i { margin-right: 10px; }
+        #tap-to-start i { margin-right: 8px; font-size: 0.9rem; }
         #tap-to-start.hidden { display: none !important; }
-        #tap-to-start:active { transform: translateX(-50%) scale(0.96); }
+        #tap-to-start:active { transform: translateX(-50%) scale(0.97); }
 
         /* TOP BAR */
         .top-bar { background: #000; border-top: 1px solid var(--primary-color); border-bottom: 1px solid var(--primary-color); }
@@ -157,18 +157,27 @@
         .progress-bar { height: 4px; background: var(--border-color); cursor: pointer; border-radius: 2px; }
         .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 2px; }
 
-        /* CONTROLES */
-        .controls { display: flex; align-items: center; justify-content: space-evenly; padding: 12px 20px 16px; }
-        .control-btn { background: none; border: none; color: var(--text-primary); font-size: 2rem; width: 48px; height: 48px; cursor: pointer; border-radius: 50%; transition: all 0.2s; }
-        .control-btn:active { transform: scale(0.9); background: rgba(230, 57, 70, 0.2); }
-        .play-btn { font-size: 3rem; width: 64px; height: 64px; color: var(--primary-color); }
-        .shuffle-player-btn.active { color: var(--primary-color); }
-
-        /* VOLUME - FIXO 80% DESABILITADO */
-        .volume-area { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px 16px; opacity: 0.6; }
-        .volume-icon { color: var(--text-primary); font-size: 1.3rem; }
-        .volume-slider { flex: 1; height: 5px; background: var(--border-color); border-radius: 3px; opacity: 0.5; }
-        .volume-percent { font-size: 0.85rem; width: 45px; color: var(--text-secondary); }
+        /* CONTROLES - BOTÕES BRANCOS PERMANENTES */
+        .controls { display: flex; align-items: center; justify-content: space-evenly; padding: 12px 20px 20px; }
+        .control-btn { 
+            background: none; 
+            border: none; 
+            color: #ffffff !important; 
+            font-size: 2rem; 
+            width: 48px; 
+            height: 48px; 
+            cursor: pointer; 
+            border-radius: 50%; 
+            transition: all 0.2s; 
+        }
+        .control-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.15); }
+        .play-btn { 
+            font-size: 3rem; 
+            width: 64px; 
+            height: 64px; 
+            color: #ffffff !important; 
+        }
+        .shuffle-player-btn.active { color: var(--primary-color) !important; }
 
         /* VÍDEO EXTRA - TAMANHO 1015x512 */
         .extra-video-section {
@@ -256,7 +265,6 @@
         body.car-mode .footer,
         body.car-mode .track-info,
         body.car-mode .progress-area,
-        body.car-mode .volume-area,
         body.car-mode .feedback-btn { display: none !important; }
         .car-exit-btn { position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.8); color: white; border: 2px solid var(--primary-color); border-radius: 50px; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 10000; }
         body.car-mode .car-exit-btn { display: flex; }
@@ -273,7 +281,7 @@
         </div>
     </div>
     
-    <div id="tap-to-start"><i class="fas fa-play"></i> CLIQUE PARA INICIAR A MÚSICA</div>
+    <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA</div>
 
     <div class="app">
         <div class="top-bar">
@@ -307,12 +315,6 @@
                 <button class="control-btn play-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
                 <button class="control-btn" id="shufflePlayerBtn"><i class="fas fa-random"></i></button>
                 <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
-            </div>
-            
-            <div class="volume-area">
-                <i class="fas fa-volume-up volume-icon"></i>
-                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80" disabled>
-                <span class="volume-percent" id="volumePercent">80%</span>
             </div>
         </div>
 
@@ -374,7 +376,7 @@
     </div>
 
     <script>
-        // PLAYLIST COMPLETA
+        // PLAYLIST
         const musicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "03:45" },
             { id: 2, title: "A Vida Virou Paixão", artist: "Joanna Kell Smith", src: "A_VIDA_VIROU_PAIX_O_JOANNA_KELL_SMITH_VERS_O_ESPECIAL_muzzik (1).m4a", duration: "04:12" },
@@ -406,8 +408,6 @@
         const currentTimeEl = document.getElementById('currentTime');
         const totalTimeEl = document.getElementById('totalTime');
         const trackArtist = document.getElementById('trackArtist');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumePercent = document.getElementById('volumePercent');
         const splash = document.getElementById('splash');
         const tapToStart = document.getElementById('tap-to-start');
         const drawer = document.getElementById('drawer');
@@ -426,10 +426,8 @@
         const topTickerText = document.getElementById('topTickerText');
         const exitCarModeBtn = document.getElementById('exitCarModeBtn');
 
-        // Volume fixo 80%
-        musicPlayer.volume = 0.8;
-        volumeSlider.value = 80;
-        volumePercent.textContent = '80%';
+        // Volume padrão (usuário controla pelo celular)
+        musicPlayer.volume = 1.0;
 
         function showNotification(msg) {
             notificationText.textContent = msg;
@@ -491,9 +489,7 @@
                 isPlaying = true;
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 hideSplash();
-                if (tapToStart) {
-                    tapToStart.classList.add('hidden');
-                }
+                if (tapToStart) tapToStart.classList.add('hidden');
                 renderPlaylist();
             }).catch(e => console.log('Autoplay bloqueado:', e));
         }
@@ -536,7 +532,6 @@
             if (isPlaying) playMusic();
         }
 
-        // Eventos do player
         musicPlayer.addEventListener('timeupdate', () => {
             if (musicPlayer.duration) {
                 const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
@@ -553,7 +548,6 @@
             musicPlayer.currentTime = ((e.clientX - rect.left) / rect.width) * musicPlayer.duration;
         });
 
-        // Controles
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
         playBtn.addEventListener('click', togglePlayPause);
@@ -564,20 +558,17 @@
             showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial');
         });
 
-        // Drawer
         function openDrawer() { drawer.classList.add('open'); drawerOverlay.classList.add('active'); renderPlaylist(); }
         function closeDrawerFunc() { drawer.classList.remove('open'); drawerOverlay.classList.remove('active'); }
         document.getElementById('videoMenuBtn').addEventListener('click', openDrawer);
         closeDrawer.addEventListener('click', closeDrawerFunc);
         drawerOverlay.addEventListener('click', closeDrawerFunc);
 
-        // Tela cheia (nome alterado)
         document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => {
             if (document.fullscreenElement) document.exitFullscreen();
             else document.documentElement.requestFullscreen();
         });
 
-        // Modo carro
         document.getElementById('carModeDrawerBtn').addEventListener('click', () => {
             document.body.classList.toggle('car-mode');
             const isCar = document.body.classList.contains('car-mode');
@@ -596,13 +587,11 @@
 
         exitCarModeBtn.addEventListener('click', () => document.body.classList.remove('car-mode'));
 
-        // Compartilhar
         document.getElementById('shareDrawerBtn').addEventListener('click', () => {
             if (navigator.share) navigator.share({ title: 'Rádio Playlist', url: location.href });
             else { navigator.clipboard.writeText(location.href); showNotification('📋 Link copiado!'); }
         });
 
-        // Temas
         const colorOptions = document.querySelectorAll('.color-option');
         function setTheme(themeClass) {
             document.body.className = themeClass;
@@ -613,7 +602,6 @@
         setTheme(savedTheme);
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
 
-        // Vídeo extra com tamanho 1015x512
         function iniciarVideoExtra() {
             if (videosExtra.length) {
                 extraVideo.src = videosExtra[0].src;
@@ -637,7 +625,6 @@
             });
         }
 
-        // Vídeo principal com saudação
         let mostrandoBase = true;
         const videoBase = 'macaco.mp4';
         
@@ -668,7 +655,6 @@
             setInterval(alternarVideo, 15000);
         }
 
-        // Letreiro editável
         if (topTicker) {
             topTicker.addEventListener('click', () => {
                 const novoTexto = prompt('Editar letreiro:', topTickerText.innerText.replace(/<[^>]*>/g, ''));
@@ -676,7 +662,6 @@
             });
         }
 
-        // Iniciar player no toque
         function iniciarPlayer() {
             if (!isPlaying && !autoPlayAttempted) {
                 autoPlayAttempted = true;
@@ -684,7 +669,7 @@
             }
         }
 
-        // Feedback WhatsApp
+        // Feedback
         const feedbackBtn = document.getElementById('feedbackBtn');
         const feedbackModal = document.getElementById('feedbackModal');
         const cancelFeedback = document.getElementById('cancelFeedback');
@@ -730,7 +715,6 @@
             stars.forEach(s => { s.classList.remove('fas', 'active'); s.classList.add('far'); });
         });
 
-        // Inicialização
         window.addEventListener('load', () => {
             loadTrack(0);
             renderPlaylist();
@@ -738,9 +722,7 @@
             iniciarVideoExtra();
             
             setTimeout(() => {
-                if (!isPlaying) {
-                    tapToStart.style.display = 'block';
-                }
+                if (!isPlaying) tapToStart.style.display = 'block';
             }, 500);
 
             tapToStart.addEventListener('click', (e) => {
