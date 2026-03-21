@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Rádio Playlist • Modo Todas as Músicas</title>
+    <title>Rádio Playlist • Modo Período</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -293,6 +293,28 @@
             object-fit: cover !important;
         }
         
+        /* Texto sobreposto no modo carro */
+        .car-mode .drink-warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.6);
+            color: #ffdd44;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 25px;
+            border-radius: 20px;
+            border: 2px solid var(--primary-color);
+            backdrop-filter: blur(8px);
+            z-index: 25;
+            white-space: nowrap;
+            font-family: inherit;
+            text-shadow: 2px 2px 4px black;
+            pointer-events: none;
+        }
+        
         body.car-mode .player-card {
             position: fixed;
             bottom: 0;
@@ -353,32 +375,6 @@
         body.car-mode .car-exit-btn {
             display: flex;
         }
-        
-        /* Botão extra para trocar vídeo no modo carro */
-        .car-video-toggle {
-            background: var(--primary-color);
-            color: #000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        body.car-mode .car-video-toggle {
-            margin-top: 15px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            border: 1px solid var(--primary-color);
-            color: white;
-        }
     </style>
 </head>
 <body class="theme-red">
@@ -387,7 +383,7 @@
         <div class="splash-content">
             <i class="fas fa-headphones-alt"></i>
             <h1>Rádio Playlist</h1>
-            <p>Carregando todas as músicas...</p>
+            <p>Carregando músicas do período...</p>
         </div>
     </div>
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
@@ -395,7 +391,7 @@
     <div class="app">
         <div class="top-bar">
             <div class="top-ticker" id="topTicker">
-                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - Todas as músicas sem restrição - Anuncie aqui! - 12 98846-1978  <i class="fas fa-music fa-beat"></i></span>
+                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - Músicas do período - Anuncie aqui! - 12 98846-1978  <i class="fas fa-music fa-beat"></i></span>
             </div>
         </div>
 
@@ -419,20 +415,18 @@
                 <button class="control-btn" id="shufflePlayerBtn"><i class="fas fa-random"></i></button>
                 <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
             </div>
-            <!-- Botão para trocar vídeo no modo carro (aparece sempre, mas será estilizado de acordo) -->
-            <button class="car-video-toggle" id="toggleCarVideoBtn"><i class="fas fa-video"></i> Trocar vídeo modo carro</button>
         </div>
 
         <div class="extra-video-section">
             <div class="extra-video-container" id="extraVideoContainer">
                 <video autoplay loop muted playsinline id="extraVideo">
-                    <source src="sat.mp4" type="video/mp4">
+                    <source src="aluguecopos (1).mp4" type="video/mp4">
                 </video>
                 <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
             </div>
         </div>
 
-        <div class="footer">Rádio Playlist 2025 © Roger Mendes | Modo "Todas as músicas" ativo</div>
+        <div class="footer">Rádio Playlist 2025 © Roger Mendes | Modo Período ativo</div>
     </div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -442,7 +436,7 @@
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
-            <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
+            <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-clock"></i> ⏰ Modo: Período do dia</button>
             
             <div class="color-picker">
                 <div class="color-option red active" data-theme="theme-red"></div>
@@ -468,7 +462,7 @@
                 </div>
             </div>
 
-            <h4 style="color: var(--primary-color); margin: 10px 0;">🎵 Playlist Completa (158 músicas)</h4>
+            <h4 style="color: var(--primary-color); margin: 10px 0;">🎵 Playlist do Período</h4>
             <div class="playlist-container" id="playlistContainer"></div>
         </div>
     </div>
@@ -498,7 +492,7 @@
         // ==================== PLAYLIST COMPLETA (158 músicas) ====================
         // Substitua este array pelo seu completo com as 158 músicas.
         const musicas = [
-         { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
+             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01", periodo: "tarde" },
@@ -656,11 +650,10 @@
             { id: 156, title: "Linger", artist: "The Cranberries", src: "The_Cranberries_Linger_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 157, title: "Garoto de Aluguel", artist: "Zé Ramalho", src: "Z_Ramalho_Garoto_de_Aluguel_muzzik.m4a", duration: "00:01", periodo: "tarde" },
             { id: 158, title: "Fogo (Acústico)", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", duration: "00:01", periodo: "tarde" }
-            // ... adicione todas as 158 músicas aqui ...
         ];
 
         // ==================== CONFIGURAÇÃO DO PLAYER ====================
-        let allSongsMode = true;
+        let allSongsMode = false;          // Começa no modo período (false)
         let currentPeriod = getCurrentPeriod();
         let filteredPlaylist = [];
         let currentIndex = 0;
@@ -752,10 +745,12 @@
         function updateFilteredPlaylist() {
             if (allSongsMode) {
                 filteredPlaylist = [...musicas];
+                toggleAllSongsBtn.innerHTML = '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas';
             } else {
                 currentPeriod = getCurrentPeriod();
                 filteredPlaylist = musicas.filter(m => m.periodo === currentPeriod || m.periodo === "todos");
                 if (filteredPlaylist.length === 0) filteredPlaylist = [...musicas];
+                toggleAllSongsBtn.innerHTML = '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
             }
             renderPlaylist();
         }
@@ -970,7 +965,6 @@
             allSongsMode = !allSongsMode;
             updateFilteredPlaylist();
             const modoAtual = allSongsMode ? "🌎 TODAS as músicas (sem filtro)" : "⏰ Modo PERÍODO (respeita manhã/tarde/noite)";
-            toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
             showNotification(`🎛️ ${modoAtual}`);
             const currentExists = filteredPlaylist.some(m => m.id === musicas[currentIndex].id);
             if (!currentExists && filteredPlaylist.length) {
@@ -986,26 +980,33 @@
         // Modo carro
         function enableCarMode() {
             document.body.classList.add('car-mode');
+            // Adiciona o texto de aviso se ainda não existir
+            if (!document.querySelector('.drink-warning')) {
+                const warningDiv = document.createElement('div');
+                warningDiv.className = 'drink-warning';
+                warningDiv.innerHTML = '<i class="fas fa-ban"></i> Se beber, não dirija! <i class="fas fa-car-crash"></i>';
+                document.body.appendChild(warningDiv);
+            }
+            // Troca o vídeo para o do modo carro (naobeba.mp4)
+            mainVideo.src = 'naobeba.mp4';
+            mainVideo.load();
+            mainVideo.play().catch(e => console.log);
             window.scrollTo(0, 0);
             document.body.style.overflow = 'hidden';
-            showNotification('🚗 Modo Carro ATIVO');
+            showNotification('🚗 Modo Carro ATIVO - Direção segura!');
         }
 
         function disableCarMode() {
             document.body.classList.remove('car-mode');
-            document.body.style.overflow = '';
-            showNotification('Modo normal');
-        }
-
-        // Trocar vídeo no modo carro (alterna entre macaco.mp4 e naobeba.mp4)
-        let isCarVideoAlternate = false;
-        function toggleCarVideo() {
-            const newSrc = isCarVideoAlternate ? 'macaco.mp4' : 'naobeba.mp4';
-            mainVideo.src = newSrc;
+            // Remove o texto de aviso
+            const warning = document.querySelector('.drink-warning');
+            if (warning) warning.remove();
+            // Volta para o vídeo normal
+            mainVideo.src = 'macaco.mp4';
             mainVideo.load();
             mainVideo.play().catch(e => console.log);
-            isCarVideoAlternate = !isCarVideoAlternate;
-            showNotification(`🎬 Vídeo alterado para: ${newSrc}`);
+            document.body.style.overflow = '';
+            showNotification('Modo normal');
         }
 
         // Event listeners do player
@@ -1065,7 +1066,6 @@
         });
         document.getElementById('carModeDrawerBtn').addEventListener('click', enableCarMode);
         document.getElementById('exitCarModeBtn').addEventListener('click', disableCarMode);
-        document.getElementById('toggleCarVideoBtn').addEventListener('click', toggleCarVideo);
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
 
         // Temas
@@ -1124,7 +1124,8 @@
 
         // Inicialização
         window.addEventListener('load', () => {
-            updateFilteredPlaylist();
+            updateFilteredPlaylist();               // Já define o modo período
+            // Escolhe uma música aleatória da playlist filtrada
             const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
             currentIndex = getGlobalIndexFromFiltered(randomFilteredIndex);
             loadTrack(currentIndex);
@@ -1138,6 +1139,7 @@
                 }
                 tapToStart.style.display = 'none';
             });
+            // Atualiza a playlist do período a cada minuto, caso não esteja no modo "todas"
             setInterval(() => {
                 if (!allSongsMode) updateFilteredPlaylist();
             }, 60000);
