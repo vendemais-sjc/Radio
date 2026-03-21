@@ -254,58 +254,119 @@
         .feedback-modal .modal-btn { padding: 6px; border-radius: 20px; cursor: pointer; background: #2a2a2a; color: white; border: none; margin: 2px; }
         .feedback-modal .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
 
-        /* ========== MODO CARRO ========== */
+        /* ========== MODO CARRO CORRIGIDO ========== */
         body.car-mode .extra-video-section,
         body.car-mode .top-bar,
         body.car-mode .footer,
-        body.car-mode .feedback-btn { display: none !important; }
+        body.car-mode .feedback-btn {
+            display: none !important;
+        }
         
         body.car-mode .app {
             position: relative;
             border: none;
             overflow: hidden;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
         }
+        
         body.car-mode .video-container {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             margin: 0;
             border: none;
             border-radius: 0;
             z-index: 0;
+            background: #000;
         }
+        
         body.car-mode .video-container video {
-            object-fit: cover;
             width: 100%;
             height: 100%;
+            object-fit: cover;  /* Garante que o vídeo preencha a tela sem distorção */
         }
+        
         body.car-mode .player-card {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 10;
-            padding: 16px;
-            border-top: 1px solid var(--primary-color);
-            border-radius: 20px 20px 0 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(12px);
+            z-index: 20;
+            padding: 20px 16px 30px;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 30px 30px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
         }
+        
+        body.car-mode .track-info {
+            padding: 8px 12px;
+        }
+        
         body.car-mode .track-info p {
-            font-size: 1rem;
-            text-shadow: 0 0 4px black;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 0 1px 2px black;
+            white-space: normal;
+            text-align: center;
+            line-height: 1.3;
         }
-        body.car-mode .controls {
-            padding: 8px 20px;
-        }
+        
         body.car-mode .progress-area {
-            padding: 0 8px;
+            padding: 8px 12px;
         }
+        
+        body.car-mode .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+        }
+        
+        body.car-mode .progress-fill {
+            background: var(--primary-color);
+        }
+        
+        body.car-mode .controls {
+            padding: 12px 12px 8px;
+            gap: 10px;
+        }
+        
+        body.car-mode .control-btn {
+            font-size: 2.2rem;
+            width: 56px;
+            height: 56px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            transition: transform 0.1s ease;
+        }
+        
+        body.car-mode .control-btn:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        body.car-mode .play-btn {
+            font-size: 3.2rem;
+            width: 72px;
+            height: 72px;
+            background: var(--primary-color);
+            color: #000 !important;
+            box-shadow: 0 0 15px rgba(230,57,70,0.5);
+        }
+        
+        body.car-mode .play-btn:active {
+            transform: scale(0.95);
+        }
+        
         body.car-mode .video-menu-btn {
-            display: none; /* botão de menu não necessário no modo carro */
+            display: none; /* esconde o botão de menu no modo carro */
         }
+        
         .car-exit-btn {
             position: fixed;
             top: 20px;
@@ -322,9 +383,16 @@
             cursor: pointer;
             z-index: 10000;
             backdrop-filter: blur(4px);
+            font-size: 1.4rem;
         }
+        
         body.car-mode .car-exit-btn {
             display: flex;
+        }
+        
+        /* Ajuste para garantir que o app não tenha rolagem no modo carro */
+        body.car-mode {
+            overflow: hidden;
         }
     </style>
 </head>
@@ -371,7 +439,7 @@
         <div class="extra-video-section">
             <div class="extra-video-container" id="extraVideoContainer">
                 <video autoplay loop muted playsinline id="extraVideo">
-                    <source src="naobeba.mp4" type="video/mp4">
+                    <source src="aluguecopos (1).mp4" type="video/mp4">
                 </video>
                 <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
             </div>
@@ -440,8 +508,8 @@
     </div>
 
     <script>
-        // ==================== PLAYLIST COMPLETA COM 158 MÚSICAS ====================
-        // (Mantenha aqui o array completo com as 158 músicas conforme fornecido originalmente)
+        // ==================== PLAYLIST COMPLETA ====================
+        // (Coloque aqui o array completo com as 158 músicas conforme seu original)
         const musicas = [
            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
@@ -649,20 +717,18 @@
         const testAdBtn = document.getElementById('testAdBtn');
         const skipAdBtn = document.getElementById('skipAdBtn');
 
-        // ========== VÍDEOS: PRINCIPAL E EXTRA COM ALTERNÂNCIA (exceto no modo carro) ==========
+        // ========== VÍDEOS: PRINCIPAL E EXTRA ==========
         const mainVideo = document.getElementById('mainVideo');
         const extraVideo = document.getElementById('extraVideo');
         const extraOverlay = document.getElementById('extraOverlay');
 
-        // Lista de vídeos para o extra (propaganda) – alterna a cada 15s
         const videosExtra = [
             { src: 'aluguecopos (1).mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
             { src: 'Gestão (1).mp4', nome: 'Destaque', link: 'https://destaque.com.br/' }
         ];
         let extraVideoIndex = 0;
 
-        // Para o vídeo principal (fora do modo carro): alterna entre macaco.mp4 e vídeo de saudação
-        let principalToggle = false; // false = macaco, true = saudação
+        let principalToggle = false;
         let principalInterval = null;
 
         function getSaudacaoVideo() {
@@ -673,18 +739,13 @@
         }
 
         function alternarVideoPrincipal() {
-            if (document.body.classList.contains('car-mode')) return; // não alterna no modo carro
+            if (document.body.classList.contains('car-mode')) return;
             principalToggle = !principalToggle;
-            let novoSrc;
-            if (principalToggle) {
-                novoSrc = getSaudacaoVideo();
-            } else {
-                novoSrc = 'macaco.mp4';
-            }
+            let novoSrc = principalToggle ? getSaudacaoVideo() : 'macaco.mp4';
             if (mainVideo.src.includes(novoSrc)) return;
             mainVideo.src = novoSrc;
             mainVideo.load();
-            mainVideo.play().catch(e => console.log('Auto-play principal:', e));
+            mainVideo.play().catch(e => console.log);
         }
 
         function iniciarAlternanciaPrincipal() {
@@ -704,18 +765,14 @@
             const novo = videosExtra[extraVideoIndex];
             extraVideo.src = novo.src;
             extraVideo.load();
-            extraVideo.play().catch(e => console.log('Auto-play extra:', e));
+            extraVideo.play().catch(e => console.log);
             extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novo.nome}`;
-            const container = document.getElementById('extraVideoContainer');
-            container.onclick = () => {
+            document.getElementById('extraVideoContainer').onclick = () => {
                 if (novo.link) window.open(novo.link, '_blank');
             };
         }
 
-        // Iniciar alternância do extra (sempre ativa)
-        setInterval(alternarVideoExtra, 15000);
-
-        // Configuração inicial dos vídeos
+        // Inicialização dos vídeos
         mainVideo.src = 'macaco.mp4';
         mainVideo.load();
         mainVideo.play().catch(e => console.log);
@@ -728,8 +785,9 @@
         document.getElementById('extraVideoContainer').onclick = () => {
             if (videosExtra[extraVideoIndex]?.link) window.open(videosExtra[extraVideoIndex].link, '_blank');
         };
+        setInterval(alternarVideoExtra, 15000);
 
-        // ========== FUNÇÕES DO PLAYER E DEMAIS LÓGICAS ==========
+        // ========== FUNÇÕES DO PLAYER ==========
         function getCurrentPeriod() {
             const hora = new Date().getHours();
             if (hora < 6) return "madrugada";
@@ -743,9 +801,7 @@
                 filteredPlaylist = [...musicas];
             } else {
                 currentPeriod = getCurrentPeriod();
-                filteredPlaylist = musicas.filter(m => 
-                    m.periodo === currentPeriod || m.periodo === "todos"
-                );
+                filteredPlaylist = musicas.filter(m => m.periodo === currentPeriod || m.periodo === "todos");
                 if (filteredPlaylist.length === 0) filteredPlaylist = [...musicas];
             }
             renderPlaylist();
@@ -881,7 +937,7 @@
             playlistContainer.innerHTML = html;
         }
 
-        // Anúncios de áudio
+        // Anúncios
         function playAd() {
             if (!adsEnabled || isAdPlaying) return;
             const ad = CONFIG.adsList[currentAdIndex];
@@ -945,7 +1001,6 @@
         function testAd() { playAd(); }
         function skipAd() { if (isAdPlaying) { adPlayer.pause(); finishAd(); showNotification('⏭️ Anúncio pulado'); } }
 
-        // Interface
         function showNotification(msg) {
             const notif = document.getElementById('notification');
             document.getElementById('notificationText').innerText = msg;
@@ -975,25 +1030,22 @@
             }
         }
 
-        // Controle do modo carro
+        // Modo carro
         function enableCarMode() {
             document.body.classList.add('car-mode');
-            // Para a alternância do vídeo principal
             pararAlternanciaPrincipal();
-            // Troca o vídeo para naobeba.mp4
+            // Troca para o vídeo do modo carro (naobeba.mp4)
             mainVideo.src = 'naobeba.mp4';
             mainVideo.load();
             mainVideo.play().catch(e => console.log('Erro no vídeo carro:', e));
-            showNotification('🚗 Modo Carro ATIVO - Vídeo "naobeba.mp4"');
+            showNotification('🚗 Modo Carro ATIVO');
         }
 
         function disableCarMode() {
             document.body.classList.remove('car-mode');
-            // Restaura o vídeo normal (macaco.mp4)
             mainVideo.src = 'macaco.mp4';
             mainVideo.load();
             mainVideo.play().catch(e => console.log);
-            // Reinicia a alternância
             principalToggle = false;
             iniciarAlternanciaPrincipal();
             showNotification('Modo normal');
