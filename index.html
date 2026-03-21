@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (mantenha todo o CSS igual ao código anterior) */
+        /* (todo o CSS permanece igual ao original) */
         * {
             margin: 0;
             padding: 0;
@@ -214,7 +214,6 @@
         .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1999; display: none; }
         .drawer-overlay.active { display: block; }
 
-        /* Botão "Todas as músicas" */
         .mode-toggle-btn {
             background: var(--primary-color);
             color: #000;
@@ -270,7 +269,6 @@
         .feedback-modal .modal-btn { padding: 6px; border-radius: 20px; cursor: pointer; background: #2a2a2a; color: white; border: none; margin: 2px; }
         .feedback-modal .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
 
-        /* Modo carro - mantém os controles */
         body.car-mode .extra-video-section,
         body.car-mode .top-bar,
         body.car-mode .footer,
@@ -355,10 +353,7 @@
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
-
-            <!-- Botão para alternar entre modo período e todas as músicas -->
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
-
             <div class="color-picker">
                 <div class="color-option red active" data-theme="theme-red"></div>
                 <div class="color-option lilac" data-theme="theme-lilac"></div>
@@ -371,7 +366,6 @@
                 <div class="color-option white" data-theme="theme-white"></div>
                 <div class="color-option pure-black" data-theme="theme-pure-black"></div>
             </div>
-
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> Próximo anúncio de áudio</h4>
                 <div class="ad-timer" id="adTimer">25</div>
@@ -382,7 +376,6 @@
                     <button class="ad-btn" id="skipAdBtn" style="display:none;">Pular</button>
                 </div>
             </div>
-
             <h4 style="color: var(--primary-color); margin: 10px 0;">🎵 Playlist do Período</h4>
             <div class="playlist-container" id="playlistContainer"></div>
         </div>
@@ -410,8 +403,7 @@
     </div>
 
     <script>
-        // ==================== PLAYLIST COMPLETA (158 MÚSICAS) ====================
-        // Adicionado período "tardenoite" para músicas que tocam tanto à tarde quanto à noite
+        // ==================== PLAYLIST COMPLETA (CORRIGIDA) ====================
         const musicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
@@ -571,36 +563,25 @@
             { id: 156, title: "Linger", artist: "The Cranberries", src: "The_Cranberries_Linger_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 157, title: "Garoto de Aluguel", artist: "Zé Ramalho", src: "Z_Ramalho_Garoto_de_Aluguel_muzzik.m4a", duration: "00:01", periodo: "tarde" },
             { id: 158, title: "Fogo (Acústico)", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", duration: "00:01", periodo: "tarde" }
-        
-        ];
-        
         ];
 
-        // Para teste, incluímos algumas músicas com período "tardenoite" (substitua pela sua lista real)
-        // Você pode marcar quaisquer músicas com periodo: "tardenoite" e elas tocarão na tarde e na noite.
-        // Vamos adicionar algumas músicas da sua lista como "tardenoite" para demonstração.
-        musicas.push({ id: 159, title: "Boa Sorte ", artist: "Vanessa Da Mata Boa Sorte Part.Good Luck", src: "Vanessa_Da_Mata_Boa_Sorte_Good_Luck_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 160, title: "Torn", artist: "Natalie Imbruglia", src: "Natalie_Imbruglia_Torn_muzzik.m4a", duration: "00:01", periodo: "tardenoite" }); 
-        musicas.push({ id: 161, title: " NaEstradaNaEstrada", artist: " Cidade Negra", src: " Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 162, title: " A_Namorada ANamorada", artist: "CarlinhosB rown ", src: "A_Namorada_A_Namorada_Carlinhos_Brown_muzzik.m4a", duration: "00:01", periodo: "manha" });
-        musicas.push({ id: 163, title: "Ainda Bem Que Chegou ", artist: "Vitor Kley ", src: "Vitor_Kley_Ainda_Bem_Que_Chegou_muzzik.m4a ", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 164, title: " A Loba ", artist: "Alcione", src: "A_Loba_A_Loba_muzzik.m4a ", duration: "00:01", periodo: "manha" });
-    
-        musicas.push({ id: 165, title: "VerdadeChinesa ", artist: " Verdade_Chinesa_Verdade_Chinesa_Emilio Santiago", src: "Verdade_Chinesa_Verdade_Chinesa_Em_lio_Santiago_muzzik.m4a", duration: "00:01", periodo: "tarde" });
-        musicas.push({ id: 166, title: "Balada Louca  ", artist: "Nei Matogrosso", src: "NEY_MATOGROSSO_BALADA_DO_LOUCO_muzzik.m4a ", duration: "00:01", periodo: "tardenoite" });
-         musicas.push({ id: 167, title: "Problemas", artist: "Ana Carolina ", src: " Ana_Carolina_Problemas_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 168, title: " Andança", artist: "Luana Carvalho E Golden_Boys ", src: " Andan_a_Luana_Carvalho_e_Golden_Boys_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 166, title: "Faz Uma Loucura Por Mim ", artist: "Alcione ", src: " Alcione_Faz_Uma_Loucura_Por_Mim_muzzik.m4a", duration: "00:01", periodo: "manha" });
-        musicas.push({ id: 167, title: " Coisas daVida", artist: "Milton Nascimento ", src: "Milton_Nascimento_Coisas_da_Vida_muzzik.m4a ", duration: "00:01", periodo: "tardenoite" });
-         musicas.push({ id: 168, title: "Saigon ", artist: " Emilio Santiago", src: " Saigon_Saigon_muzzik.m4a", duration: "00:01", periodo: "tarde" });
-        musicas.push({ id: 169, title: "Belo Intriga DaOposição ", artist: " Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a ", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 170, title: "Dia Branco ", artist: "Geraldo Azevedo ", src: "Geraldo_Azevedo_Dia_Branco.m4a ", duration: "00:01", periodo: "noite" });
-        musicas.push({ id: 171, title: "Tô Voltando ", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a ", duration: "00:01", periodo: "manha" });
-    
-        
-
-
-
+        // Novas músicas com IDs únicos e correção de espaços
+        musicas.push({ id: 159, title: "Boa Sorte", artist: "Vanessa Da Mata Boa Sorte Part.Good Luck", src: "Vanessa_Da_Mata_Boa_Sorte_Good_Luck_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 160, title: "Torn", artist: "Natalie Imbruglia", src: "Natalie_Imbruglia_Torn_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 161, title: "Na Estrada", artist: "Cidade Negra", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 162, title: "A Namorada", artist: "Carlinhos Brown", src: "A_Namorada_A_Namorada_Carlinhos_Brown_muzzik.m4a", duration: "00:01", periodo: "manha" });
+        musicas.push({ id: 163, title: "Ainda Bem Que Chegou", artist: "Vitor Kley", src: "Vitor_Kley_Ainda_Bem_Que_Chegou_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 164, title: "A Loba", artist: "Alcione", src: "A_Loba_A_Loba_muzzik.m4a", duration: "00:01", periodo: "manha" });
+        musicas.push({ id: 165, title: "Verdade Chinesa", artist: "Emilio Santiago", src: "Verdade_Chinesa_Verdade_Chinesa_Em_lio_Santiago_muzzik.m4a", duration: "00:01", periodo: "tarde" });
+        musicas.push({ id: 166, title: "Balada Louca", artist: "Nei Matogrosso", src: "NEY_MATOGROSSO_BALADA_DO_LOUCO_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 167, title: "Problemas", artist: "Ana Carolina", src: "Ana_Carolina_Problemas_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 168, title: "Andança", artist: "Luana Carvalho e Golden Boys", src: "Andan_a_Luana_Carvalho_e_Golden_Boys_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 169, title: "Faz Uma Loucura Por Mim", artist: "Alcione", src: "Alcione_Faz_Uma_Loucura_Por_Mim_muzzik.m4a", duration: "00:01", periodo: "manha" });
+        musicas.push({ id: 170, title: "Coisas da Vida", artist: "Milton Nascimento", src: "Milton_Nascimento_Coisas_da_Vida_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 171, title: "Saigon", artist: "Emilio Santiago", src: "Saigon_Saigon_muzzik.m4a", duration: "00:01", periodo: "tarde" });
+        musicas.push({ id: 172, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
+        musicas.push({ id: 173, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01", periodo: "noite" });
+        musicas.push({ id: 174, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", duration: "00:01", periodo: "manha" });
 
         // ==================== SISTEMA DE PERÍODO COM TODAS AS MÚSICAS ====================
         let playlist = [...musicas];
@@ -611,7 +592,7 @@
         let shuffle = false;
         let autoPlayAttempted = false;
         let videoIndex = 0;
-        let allSongsMode = false;  // NOVO: controle para tocar todas as músicas
+        let allSongsMode = false;  // Controle para tocar todas as músicas
         
         // Configuração dos anúncios
         let isAdPlaying = false;
@@ -722,14 +703,12 @@
             return "noite";
         }
 
-        // Nova função de filtro: considera allSongsMode e o período "tardenoite"
         function updateFilteredPlaylist() {
             if (allSongsMode) {
                 filteredPlaylist = [...playlist];
             } else {
                 const period = getCurrentPeriod();
                 currentPeriod = period;
-                // Filtra músicas do período atual, "todos" e também "tardenoite" se for tarde ou noite
                 filteredPlaylist = playlist.filter(m => {
                     if (m.periodo === currentPeriod) return true;
                     if (m.periodo === "todos") return true;
@@ -863,7 +842,6 @@
             }
             const selectedMusic = playlist[globalIndex];
             if (!allSongsMode) {
-                // Verifica se a música é permitida no período atual (incluindo tardenoite)
                 const period = getCurrentPeriod();
                 const allowed = (selectedMusic.periodo === period) ||
                                 (selectedMusic.periodo === "todos") ||
@@ -1194,7 +1172,6 @@
 
         // ==================== INICIALIZAÇÃO ====================
         window.addEventListener('load', () => {
-            // Filtra a playlist inicial conforme período (allSongsMode = false)
             updateFilteredPlaylist();
             
             const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
