@@ -6,7 +6,6 @@
     <title>Rádio Playlist • Modo Todas as Músicas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ========== ESTILOS COMPLETOS ========== */
         * {
             margin: 0;
             padding: 0;
@@ -254,7 +253,7 @@
         .feedback-modal .modal-btn { padding: 6px; border-radius: 20px; cursor: pointer; background: #2a2a2a; color: white; border: none; margin: 2px; }
         .feedback-modal .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
 
-        /* ========== MODO CARRO CORRIGIDO ========== */
+        /* ========== MODO CARRO CORRIGIDO - OCUPA 100% DA TELA ========== */
         body.car-mode .extra-video-section,
         body.car-mode .top-bar,
         body.car-mode .footer,
@@ -263,24 +262,27 @@
         }
         
         body.car-mode .app {
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             border: none;
             overflow: hidden;
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
         }
         
         body.car-mode .video-container {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            margin: 0;
-            border: none;
-            border-radius: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
             z-index: 0;
             background: #000;
         }
@@ -288,7 +290,7 @@
         body.car-mode .video-container video {
             width: 100%;
             height: 100%;
-            object-fit: cover;  /* Garante que o vídeo preencha a tela sem distorção */
+            object-fit: cover;
         }
         
         body.car-mode .player-card {
@@ -364,7 +366,7 @@
         }
         
         body.car-mode .video-menu-btn {
-            display: none; /* esconde o botão de menu no modo carro */
+            display: none;
         }
         
         .car-exit-btn {
@@ -388,11 +390,6 @@
         
         body.car-mode .car-exit-btn {
             display: flex;
-        }
-        
-        /* Ajuste para garantir que o app não tenha rolagem no modo carro */
-        body.car-mode {
-            overflow: hidden;
         }
     </style>
 </head>
@@ -508,10 +505,11 @@
     </div>
 
     <script>
-        // ==================== PLAYLIST COMPLETA ====================
-        // (Coloque aqui o array completo com as 158 músicas conforme seu original)
+        // ==================== PLAYLIST COMPLETA (158 músicas) ====================
+        // Insira aqui o array completo com as 158 músicas conforme seu projeto original.
+        // Para este exemplo, apenas as duas primeiras estão listadas, mas você deve incluir todas.
         const musicas = [
-           { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
+         { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01", periodo: "tarde" },
@@ -668,7 +666,8 @@
             { id: 155, title: "Knife", artist: "Rockwell", src: "Knife_Rockwell_Sucesso_de_HD_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 156, title: "Linger", artist: "The Cranberries", src: "The_Cranberries_Linger_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 157, title: "Garoto de Aluguel", artist: "Zé Ramalho", src: "Z_Ramalho_Garoto_de_Aluguel_muzzik.m4a", duration: "00:01", periodo: "tarde" },
-            { id: 158, title: "Fogo (Acústico)", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", duration: "00:01", periodo: "tarde" }
+            { id: 158, title: "Fogo (Acústico)", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", duration: "00:01", periodo: "tarde" }  
+            // ... inclua as demais músicas aqui ...
         ];
 
         // ==================== CONFIGURAÇÃO DO PLAYER ====================
@@ -717,7 +716,7 @@
         const testAdBtn = document.getElementById('testAdBtn');
         const skipAdBtn = document.getElementById('skipAdBtn');
 
-        // ========== VÍDEOS: PRINCIPAL E EXTRA ==========
+        // ========== VÍDEOS PRINCIPAL E EXTRA ==========
         const mainVideo = document.getElementById('mainVideo');
         const extraVideo = document.getElementById('extraVideo');
         const extraOverlay = document.getElementById('extraOverlay');
@@ -728,7 +727,7 @@
         ];
         let extraVideoIndex = 0;
 
-        let principalToggle = false;
+        let principalToggle = false; // false = macaco, true = saudação
         let principalInterval = null;
 
         function getSaudacaoVideo() {
@@ -739,13 +738,13 @@
         }
 
         function alternarVideoPrincipal() {
-            if (document.body.classList.contains('car-mode')) return;
+            if (document.body.classList.contains('car-mode')) return; // não alterna no modo carro
             principalToggle = !principalToggle;
             let novoSrc = principalToggle ? getSaudacaoVideo() : 'macaco.mp4';
             if (mainVideo.src.includes(novoSrc)) return;
             mainVideo.src = novoSrc;
             mainVideo.load();
-            mainVideo.play().catch(e => console.log);
+            mainVideo.play().catch(e => console.log('Erro ao alternar principal:', e));
         }
 
         function iniciarAlternanciaPrincipal() {
@@ -765,7 +764,7 @@
             const novo = videosExtra[extraVideoIndex];
             extraVideo.src = novo.src;
             extraVideo.load();
-            extraVideo.play().catch(e => console.log);
+            extraVideo.play().catch(e => console.log('Erro ao alternar extra:', e));
             extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novo.nome}`;
             document.getElementById('extraVideoContainer').onclick = () => {
                 if (novo.link) window.open(novo.link, '_blank');
@@ -937,7 +936,7 @@
             playlistContainer.innerHTML = html;
         }
 
-        // Anúncios
+        // Anúncios de áudio
         function playAd() {
             if (!adsEnabled || isAdPlaying) return;
             const ad = CONFIG.adsList[currentAdIndex];
@@ -1034,10 +1033,12 @@
         function enableCarMode() {
             document.body.classList.add('car-mode');
             pararAlternanciaPrincipal();
-            // Troca para o vídeo do modo carro (naobeba.mp4)
             mainVideo.src = 'naobeba.mp4';
             mainVideo.load();
             mainVideo.play().catch(e => console.log('Erro no vídeo carro:', e));
+            // Força a rolagem para o topo e evita scroll extra
+            window.scrollTo(0, 0);
+            document.body.style.overflow = 'hidden';
             showNotification('🚗 Modo Carro ATIVO');
         }
 
@@ -1048,10 +1049,11 @@
             mainVideo.play().catch(e => console.log);
             principalToggle = false;
             iniciarAlternanciaPrincipal();
+            document.body.style.overflow = '';
             showNotification('Modo normal');
         }
 
-        // Event listeners
+        // Event listeners de áudio e controles
         musicPlayer.addEventListener('timeupdate', () => {
             if (musicPlayer.duration && !isNaN(musicPlayer.duration)) {
                 const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
