@@ -371,7 +371,7 @@
         <div class="extra-video-section">
             <div class="extra-video-container" id="extraVideoContainer">
                 <video autoplay loop muted playsinline id="extraVideo">
-                    <source src="naobeba.mp4" type="video/mp4">
+                    <source src="aluguecopos (1).mp4" type="video/mp4">
                 </video>
                 <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
             </div>
@@ -441,6 +441,7 @@
 
     <script>
         // ==================== PLAYLIST COMPLETA COM 158 MÚSICAS ====================
+        // (Mantenha aqui o array completo com as 158 músicas conforme fornecido originalmente)
         const musicas = [
            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
@@ -648,7 +649,7 @@
         const testAdBtn = document.getElementById('testAdBtn');
         const skipAdBtn = document.getElementById('skipAdBtn');
 
-        // ========== VÍDEOS: PRINCIPAL E EXTRA COM ALTERNÂNCIA A CADA 15s ==========
+        // ========== VÍDEOS: PRINCIPAL E EXTRA COM ALTERNÂNCIA (exceto no modo carro) ==========
         const mainVideo = document.getElementById('mainVideo');
         const extraVideo = document.getElementById('extraVideo');
         const extraOverlay = document.getElementById('extraOverlay');
@@ -660,8 +661,10 @@
         ];
         let extraVideoIndex = 0;
 
-        // Para o vídeo principal: alterna entre macaco.mp4 e o vídeo de saudação conforme horário
+        // Para o vídeo principal (fora do modo carro): alterna entre macaco.mp4 e vídeo de saudação
         let principalToggle = false; // false = macaco, true = saudação
+        let principalInterval = null;
+
         function getSaudacaoVideo() {
             const hora = new Date().getHours();
             if (hora >= 5 && hora < 12) return 'bomdia.mp4';
@@ -670,6 +673,7 @@
         }
 
         function alternarVideoPrincipal() {
+            if (document.body.classList.contains('car-mode')) return; // não alterna no modo carro
             principalToggle = !principalToggle;
             let novoSrc;
             if (principalToggle) {
@@ -677,11 +681,22 @@
             } else {
                 novoSrc = 'macaco.mp4';
             }
-            // Evitar recarregar o mesmo vídeo desnecessariamente
             if (mainVideo.src.includes(novoSrc)) return;
             mainVideo.src = novoSrc;
             mainVideo.load();
             mainVideo.play().catch(e => console.log('Auto-play principal:', e));
+        }
+
+        function iniciarAlternanciaPrincipal() {
+            if (principalInterval) clearInterval(principalInterval);
+            principalInterval = setInterval(alternarVideoPrincipal, 15000);
+        }
+
+        function pararAlternanciaPrincipal() {
+            if (principalInterval) {
+                clearInterval(principalInterval);
+                principalInterval = null;
+            }
         }
 
         function alternarVideoExtra() {
@@ -691,21 +706,21 @@
             extraVideo.load();
             extraVideo.play().catch(e => console.log('Auto-play extra:', e));
             extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novo.nome}`;
-            // Atualiza link para clique
             const container = document.getElementById('extraVideoContainer');
             container.onclick = () => {
                 if (novo.link) window.open(novo.link, '_blank');
             };
         }
 
-        // Iniciar alternância a cada 15 segundos
-        setInterval(alternarVideoPrincipal, 15000);
+        // Iniciar alternância do extra (sempre ativa)
         setInterval(alternarVideoExtra, 15000);
 
         // Configuração inicial dos vídeos
         mainVideo.src = 'macaco.mp4';
         mainVideo.load();
         mainVideo.play().catch(e => console.log);
+        iniciarAlternanciaPrincipal();
+
         extraVideo.src = videosExtra[0].src;
         extraVideo.load();
         extraVideo.play().catch(e => console.log);
@@ -960,7 +975,31 @@
             }
         }
 
-        // Event listeners do player
+        // Controle do modo carro
+        function enableCarMode() {
+            document.body.classList.add('car-mode');
+            // Para a alternância do vídeo principal
+            pararAlternanciaPrincipal();
+            // Troca o vídeo para naobeba.mp4
+            mainVideo.src = 'naobeba.mp4';
+            mainVideo.load();
+            mainVideo.play().catch(e => console.log('Erro no vídeo carro:', e));
+            showNotification('🚗 Modo Carro ATIVO - Vídeo "naobeba.mp4"');
+        }
+
+        function disableCarMode() {
+            document.body.classList.remove('car-mode');
+            // Restaura o vídeo normal (macaco.mp4)
+            mainVideo.src = 'macaco.mp4';
+            mainVideo.load();
+            mainVideo.play().catch(e => console.log);
+            // Reinicia a alternância
+            principalToggle = false;
+            iniciarAlternanciaPrincipal();
+            showNotification('Modo normal');
+        }
+
+        // Event listeners
         musicPlayer.addEventListener('timeupdate', () => {
             if (musicPlayer.duration && !isNaN(musicPlayer.duration)) {
                 const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
@@ -1015,14 +1054,8 @@
             if (navigator.share) navigator.share({ title: 'Rádio Playlist', url: location.href });
             else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); }
         });
-        document.getElementById('carModeDrawerBtn').addEventListener('click', () => {
-            document.body.classList.toggle('car-mode');
-            showNotification(document.body.classList.contains('car-mode') ? '🚗 Modo Carro ATIVO' : '🚗 Modo Carro DESATIVADO');
-        });
-        document.getElementById('exitCarModeBtn').addEventListener('click', () => {
-            document.body.classList.remove('car-mode');
-            showNotification('Modo normal');
-        });
+        document.getElementById('carModeDrawerBtn').addEventListener('click', enableCarMode);
+        document.getElementById('exitCarModeBtn').addEventListener('click', disableCarMode);
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
 
         // Temas
