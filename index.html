@@ -672,7 +672,7 @@
             { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01", periodo: "manha" }
         ];
 
-        // ==================== PLAYER CORRIGIDO ====================
+        // ==================== PLAYER CORRIGIDO - INICIALIZAÇÃO GARANTIDA ====================
         let audioCtx = null;
         let currentSource = null;
         let isPlaying = false;
@@ -690,12 +690,13 @@
         let musicPausedOffset = 0;
         let isMusicLoading = false;
         let isTransitioning = false;
+        let isInitialized = false;
         
         // Keeper silencioso
         let silentSource = null;
         let isKeeperActive = false;
         
-        const ADS_INTERVAL = 30; // A CADA 30 MÚSICAS
+        const ADS_INTERVAL = 30;
         
         const CONFIG = { 
             adsInterval: ADS_INTERVAL, 
@@ -740,12 +741,14 @@
                 await ctx.resume();
                 silentSource.start();
                 isKeeperActive = true;
+                console.log("Background keeper ativo");
             } catch(e) { console.warn("keeper error", e); }
         }
         
         async function keepAlive() {
             if(audioCtx && audioCtx.state === 'suspended') {
                 await audioCtx.resume();
+                console.log("Contexto reativado");
             }
         }
         setInterval(keepAlive, 5000);
@@ -763,22 +766,29 @@
             try {
                 const track = musicas[index];
                 if(!track) return false;
+                
+                console.log(`Carregando música: ${track.title}`);
                 const buffer = await fetchAndDecode(track.src);
                 currentMusicBuffer = buffer;
                 currentMusicIndex = index;
                 trackArtist.textContent = `${track.title} - ${track.artist}`;
+                
                 if(totalTimeEl && buffer.duration) {
                     const dur = buffer.duration;
                     const mins = Math.floor(dur/60);
                     const secs = Math.floor(dur%60);
                     totalTimeEl.textContent = `${mins}:${secs<10?'0':''}${secs}`;
                 }
+                
+                currentOffset = 0;
+                startTime = 0;
+                
                 if(autoPlay && !isAdPlaying) {
-                    playCurrentMusic();
+                    await playCurrentMusic();
                 }
                 return true;
             } catch(e) { 
-                console.error("load error", e);
+                console.error("Erro ao carregar música:", e);
                 return false;
             } finally {
                 isMusicLoading = false;
@@ -796,7 +806,7 @@
             }
         }
         
-        function playCurrentMusic() {
+        async function playCurrentMusic() {
             if(!currentMusicBuffer || isAdPlaying || isTransitioning) return;
             
             stopCurrentSource();
@@ -805,11 +815,13 @@
             if(!ctx) return;
             
             try {
+                await ctx.resume();
+                
                 currentSource = ctx.createBufferSource();
                 currentSource.buffer = currentMusicBuffer;
                 currentSource.connect(ctx.destination);
                 currentSource.onended = () => { 
-                    if(!isAdPlaying && !isTransitioning) {
+                    if(!isAdPlaying && !isTransitioning && isPlaying) {
                         nextTrack();
                     }
                 };
@@ -819,18 +831,25 @@
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 updateProgressLoop();
                 renderPlaylist();
+                console.log("Música iniciada com sucesso");
             } catch(e) {
-                console.error("play error", e);
+                console.error("Erro ao tocar música:", e);
+                isPlaying = false;
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
         }
         
         function pauseMusic() {
             if(!currentSource || !audioCtx) return;
-            currentOffset += audioCtx.currentTime - startTime;
-            stopCurrentSource();
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            renderPlaylist();
+            try {
+                currentOffset += audioCtx.currentTime - startTime;
+                stopCurrentSource();
+                isPlaying = false;
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                renderPlaylist();
+            } catch(e) {
+                console.error("Erro ao pausar:", e);
+            }
         }
         
         async function playMusic() {
@@ -839,15 +858,14 @@
                 return; 
             }
             
-            if(!currentMusicBuffer) {
-                await loadMusicBuffer(currentMusicIndex, true);
-                return;
-            }
-            
             await initAudioContext();
             await startBackgroundKeeper();
-            await audioCtx.resume();
-            playCurrentMusic();
+            
+            if(!currentMusicBuffer) {
+                await loadMusicBuffer(currentMusicIndex, true);
+            } else {
+                await playCurrentMusic();
+            }
             
             splash.classList.add('hidden');
             setTimeout(()=>splash.classList.add('display-none'),500);
@@ -862,17 +880,14 @@
             
             isTransitioning = true;
             
-            // Para a música atual
             if(currentSource) {
                 stopCurrentSource();
             }
             currentOffset = 0;
             
-            // Incrementa contador de músicas tocadas
             musicPlayedCount++;
             updateAdTimer();
             
-            // Calcula próxima música
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentMusicIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
             
@@ -889,12 +904,11 @@
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentMusicIndex = newGlobal;
             
-            // Carrega e toca a nova música
-            const loaded = await loadMusicBuffer(currentMusicIndex, isPlaying);
+            const wasPlaying = isPlaying;
+            const loaded = await loadMusicBuffer(currentMusicIndex, wasPlaying);
             
             isTransitioning = false;
             
-            // Verifica se precisa tocar anúncio
             checkAdInterval();
         }
         
@@ -927,7 +941,8 @@
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentMusicIndex = newGlobal;
             
-            await loadMusicBuffer(currentMusicIndex, isPlaying);
+            const wasPlaying = isPlaying;
+            await loadMusicBuffer(currentMusicIndex, wasPlaying);
             
             isTransitioning = false;
         }
@@ -941,7 +956,7 @@
             try {
                 const elapsed = currentOffset + (audioCtx.currentTime - startTime);
                 const duration = currentMusicBuffer ? currentMusicBuffer.duration : 0;
-                if(duration && duration > 0) {
+                if(duration && duration > 0 && elapsed <= duration) {
                     const percent = Math.min(100, (elapsed / duration) * 100);
                     progressFill.style.width = percent + '%';
                     const mins = Math.floor(elapsed / 60);
@@ -986,6 +1001,8 @@
             }
         }
         
+        let adSource = null;
+        
         function finishAd() {
             isAdPlaying = false;
             document.getElementById('adStatus').innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
@@ -1008,7 +1025,6 @@
         
         function checkAdInterval() {
             if(!adsEnabled) return;
-            // Verifica se deve tocar anúncio (a cada ADS_INTERVAL músicas)
             if(musicPlayedCount > 0 && musicPlayedCount % ADS_INTERVAL === 0 && !isAdPlaying) {
                 playAd();
             }
@@ -1099,7 +1115,8 @@
             if(currentSource) stopCurrentSource();
             currentOffset = 0;
             currentMusicIndex = globalIdx;
-            await loadMusicBuffer(currentMusicIndex, isPlaying);
+            const wasPlaying = isPlaying;
+            await loadMusicBuffer(currentMusicIndex, wasPlaying);
             
             document.getElementById('drawer').classList.remove('open');
             document.getElementById('drawerOverlay').classList.remove('active');
@@ -1113,23 +1130,34 @@
         }
         
         async function init() {
+            console.log("Inicializando player...");
             updateFilteredPlaylist();
+            
+            // Seleciona uma música aleatória
             const randomIdx = Math.floor(Math.random() * filteredPlaylist.length);
             currentMusicIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIdx].id);
+            
+            // Pré-carrega a primeira música
             await loadMusicBuffer(currentMusicIndex, false);
+            console.log("Música pré-carregada:", musicas[currentMusicIndex].title);
+            
             updateAdTimer();
             
+            // Configura o botão de tocar
             tapToStart.style.display = 'block';
             tapToStart.addEventListener('click', async () => {
+                console.log("Botão TOCAR clicado");
                 await initAudioContext();
                 await startBackgroundKeeper();
-                playMusic();
+                await playMusic();
                 tapToStart.style.display = 'none';
             });
             
             setInterval(() => { 
                 if(!allSongsMode) updateFilteredPlaylist(); 
             }, 60000);
+            
+            isInitialized = true;
         }
         
         // Event listeners
@@ -1223,7 +1251,7 @@
         
         document.getElementById('carModeDrawerBtn')?.addEventListener('click', () => {
             document.body.classList.add('car-mode');
-            showNotification('🚗 Modo Carro ATIVO - Vídeo normal');
+            showNotification('🚗 Modo Carro ATIVO');
         });
         
         document.getElementById('exitCarModeBtn')?.addEventListener('click', () => {
@@ -1353,6 +1381,7 @@
         };
         setInterval(alternarVideoExtra, 15000);
         
+        // Inicia o player
         init();
     </script>
 </body>
