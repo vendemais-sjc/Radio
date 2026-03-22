@@ -7,7 +7,6 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (todo o CSS permanece igual ao original) */
         * {
             margin: 0;
             padding: 0;
@@ -176,6 +175,7 @@
             background: #000; 
             position: relative; 
             aspect-ratio: 1015 / 512;
+            cursor: pointer;
         }
         .extra-video-container video { width: 100%; height: 100%; object-fit: cover; }
         .extra-overlay { 
@@ -284,6 +284,32 @@
         body.car-mode .controls { position: fixed; bottom: 20px; left: 0; right: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border-radius: 50px; margin: 0 auto; width: 90%; padding: 8px; justify-content: space-evenly; z-index: 100; }
         body.car-mode .control-btn { font-size: 2rem; width: 56px; height: 56px; background: rgba(0,0,0,0.5); border-radius: 50%; }
         body.car-mode .play-btn { font-size: 2.8rem; width: 70px; height: 70px; background: var(--primary-color); color: #000 !important; }
+        
+        /* Melhorias para scroll suave */
+        .app::-webkit-scrollbar {
+            width: 4px;
+        }
+        .app::-webkit-scrollbar-track {
+            background: #111;
+        }
+        .app::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        /* Indicador de carregamento */
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--primary-color);
+            font-size: 2rem;
+            display: none;
+        }
+        .video-container.loading .loading-indicator {
+            display: block;
+        }
     </style>
 </head>
 <body class="theme-red">
@@ -307,7 +333,8 @@
         </div>
 
         <div class="player-card">
-            <div class="video-container">
+            <div class="video-container" id="mainVideoContainer">
+                <div class="loading-indicator"><i class="fas fa-spinner fa-pulse"></i></div>
                 <video autoplay loop muted playsinline id="mainVideo">
                     <source src="macaco.mp4" type="video/mp4">
                 </video>
@@ -403,7 +430,7 @@
     </div>
 
     <script>
-        // ==================== PLAYLIST COMPLETA (CORRIGIDA) ====================
+        // ==================== PLAYLIST COMPLETA (174 MÚSICAS CORRIGIDAS) ====================
         const musicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
@@ -562,26 +589,24 @@
             { id: 155, title: "Knife", artist: "Rockwell", src: "Knife_Rockwell_Sucesso_de_HD_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 156, title: "Linger", artist: "The Cranberries", src: "The_Cranberries_Linger_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 157, title: "Garoto de Aluguel", artist: "Zé Ramalho", src: "Z_Ramalho_Garoto_de_Aluguel_muzzik.m4a", duration: "00:01", periodo: "tarde" },
-            { id: 158, title: "Fogo (Acústico)", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", duration: "00:01", periodo: "tarde" }
+            { id: 158, title: "Fogo (Acústico)", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", duration: "00:01", periodo: "tarde" },
+            { id: 159, title: "Boa Sorte", artist: "Vanessa Da Mata", src: "Vanessa_Da_Mata_Boa_Sorte_Good_Luck_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 160, title: "Torn", artist: "Natalie Imbruglia", src: "Natalie_Imbruglia_Torn_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 161, title: "Na Estrada", artist: "Cidade Negra", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 162, title: "A Namorada", artist: "Carlinhos Brown", src: "A_Namorada_A_Namorada_Carlinhos_Brown_muzzik.m4a", duration: "00:01", periodo: "manha" },
+            { id: 163, title: "Ainda Bem Que Chegou", artist: "Vitor Kley", src: "Vitor_Kley_Ainda_Bem_Que_Chegou_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 164, title: "A Loba", artist: "Alcione", src: "A_Loba_A_Loba_muzzik.m4a", duration: "00:01", periodo: "manha" },
+            { id: 165, title: "Verdade Chinesa", artist: "Emilio Santiago", src: "Verdade_Chinesa_Verdade_Chinesa_Em_lio_Santiago_muzzik.m4a", duration: "00:01", periodo: "tarde" },
+            { id: 166, title: "Balada Louca", artist: "Ney Matogrosso", src: "NEY_MATOGROSSO_BALADA_DO_LOUCO_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 167, title: "Problemas", artist: "Ana Carolina", src: "Ana_Carolina_Problemas_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 168, title: "Andança", artist: "Luana Carvalho e Golden Boys", src: "Andan_a_Luana_Carvalho_e_Golden_Boys_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 169, title: "Faz Uma Loucura Por Mim", artist: "Alcione", src: "Alcione_Faz_Uma_Loucura_Por_Mim_muzzik.m4a", duration: "00:01", periodo: "manha" },
+            { id: 170, title: "Coisas da Vida", artist: "Milton Nascimento", src: "Milton_Nascimento_Coisas_da_Vida_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 171, title: "Saigon", artist: "Emilio Santiago", src: "Saigon_Saigon_muzzik.m4a", duration: "00:01", periodo: "tarde" },
+            { id: 172, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
+            { id: 173, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01", periodo: "noite" },
+            { id: 174, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", duration: "00:01", periodo: "manha" }
         ];
-
-        // Novas músicas com IDs únicos e correção de espaços
-        musicas.push({ id: 159, title: "Boa Sorte", artist: "Vanessa Da Mata Boa Sorte Part.Good Luck", src: "Vanessa_Da_Mata_Boa_Sorte_Good_Luck_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 160, title: "Torn", artist: "Natalie Imbruglia", src: "Natalie_Imbruglia_Torn_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 161, title: "Na Estrada", artist: "Cidade Negra", src: "Na_Estrada_Na_Estrada_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 162, title: "A Namorada", artist: "Carlinhos Brown", src: "A_Namorada_A_Namorada_Carlinhos_Brown_muzzik.m4a", duration: "00:01", periodo: "manha" });
-        musicas.push({ id: 163, title: "Ainda Bem Que Chegou", artist: "Vitor Kley", src: "Vitor_Kley_Ainda_Bem_Que_Chegou_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 164, title: "A Loba", artist: "Alcione", src: "A_Loba_A_Loba_muzzik.m4a", duration: "00:01", periodo: "manha" });
-        musicas.push({ id: 165, title: "Verdade Chinesa", artist: "Emilio Santiago", src: "Verdade_Chinesa_Verdade_Chinesa_Em_lio_Santiago_muzzik.m4a", duration: "00:01", periodo: "tarde" });
-        musicas.push({ id: 166, title: "Balada Louca", artist: "Nei Matogrosso", src: "NEY_MATOGROSSO_BALADA_DO_LOUCO_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 167, title: "Problemas", artist: "Ana Carolina", src: "Ana_Carolina_Problemas_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 168, title: "Andança", artist: "Luana Carvalho e Golden Boys", src: "Andan_a_Luana_Carvalho_e_Golden_Boys_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 169, title: "Faz Uma Loucura Por Mim", artist: "Alcione", src: "Alcione_Faz_Uma_Loucura_Por_Mim_muzzik.m4a", duration: "00:01", periodo: "manha" });
-        musicas.push({ id: 170, title: "Coisas da Vida", artist: "Milton Nascimento", src: "Milton_Nascimento_Coisas_da_Vida_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 171, title: "Saigon", artist: "Emilio Santiago", src: "Saigon_Saigon_muzzik.m4a", duration: "00:01", periodo: "tarde" });
-        musicas.push({ id: 172, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", duration: "00:01", periodo: "tardenoite" });
-        musicas.push({ id: 173, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01", periodo: "noite" });
-        musicas.push({ id: 174, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", duration: "00:01", periodo: "manha" });
 
         // ==================== SISTEMA DE PERÍODO COM TODAS AS MÚSICAS ====================
         let playlist = [...musicas];
@@ -592,7 +617,7 @@
         let shuffle = false;
         let autoPlayAttempted = false;
         let videoIndex = 0;
-        let allSongsMode = false;  // Controle para tocar todas as músicas
+        let allSongsMode = false;
         
         // Configuração dos anúncios
         let isAdPlaying = false;
@@ -664,6 +689,7 @@
         musicPlayer.volume = 1.0;
         adPlayer.volume = 1.0;
 
+        // ==================== FUNÇÕES DE UTILIDADE ====================
         function showNotification(msg) {
             notificationText.textContent = msg;
             notification.classList.add('show');
@@ -715,30 +741,38 @@
                     if (m.periodo === "tardenoite" && (currentPeriod === "tarde" || currentPeriod === "noite")) return true;
                     return false;
                 });
-                if (filteredPlaylist.length === 0) filteredPlaylist = [...playlist];
+                
+                if (filteredPlaylist.length === 0) {
+                    filteredPlaylist = [...playlist];
+                    showNotification(`⚠️ Nenhuma música para ${currentPeriod}, tocando todas`);
+                }
             }
 
             const currentMusic = playlist[currentIndex];
-            const belongsToNew = filteredPlaylist.some(m => m.id === currentMusic.id);
-            if (!belongsToNew && filteredPlaylist.length > 0) {
-                const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
-                const newGlobalIndex = playlist.findIndex(m => m.id === filteredPlaylist[randomFilteredIndex].id);
-                if (newGlobalIndex !== -1) {
-                    currentIndex = newGlobalIndex;
-                    loadTrack(currentIndex);
-                    if (isPlaying) playMusic();
-                    showNotification(`🎵 Lista atualizada: ${allSongsMode ? 'Todas as músicas' : currentPeriod.toUpperCase()}`);
+            if (currentMusic) {
+                const belongsToNew = filteredPlaylist.some(m => m.id === currentMusic.id);
+                if (!belongsToNew && filteredPlaylist.length > 0) {
+                    const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
+                    const newGlobalIndex = playlist.findIndex(m => m.id === filteredPlaylist[randomFilteredIndex].id);
+                    if (newGlobalIndex !== -1) {
+                        currentIndex = newGlobalIndex;
+                        loadTrack(currentIndex);
+                        if (isPlaying) playMusic();
+                        showNotification(`🎵 Lista atualizada: ${allSongsMode ? 'Todas as músicas' : currentPeriod.toUpperCase()}`);
+                    }
                 }
             }
             renderPlaylist();
         }
 
         function getFilteredIndexFromGlobal(globalIndex) {
+            if (!playlist[globalIndex]) return 0;
             const musicId = playlist[globalIndex].id;
             return filteredPlaylist.findIndex(m => m.id === musicId);
         }
 
         function getGlobalIndexFromFiltered(filteredIndex) {
+            if (!filteredPlaylist[filteredIndex]) return 0;
             const musicId = filteredPlaylist[filteredIndex].id;
             return playlist.findIndex(m => m.id === musicId);
         }
@@ -749,15 +783,24 @@
             if (index < 0) index = playlist.length - 1;
             currentIndex = index;
             const track = playlist[currentIndex];
+            if (!track) return;
+            
             musicPlayer.src = track.src;
             musicPlayer.load();
             trackArtist.textContent = `${track.title} - ${track.artist}`;
             currentTimeEl.textContent = '0:00';
             progressFill.style.width = '0%';
+            
             musicPlayer.addEventListener('loadedmetadata', function onLoaded() {
                 updateDuration();
                 musicPlayer.removeEventListener('loadedmetadata', onLoaded);
             });
+            
+            musicPlayer.addEventListener('canplay', function onCanPlay() {
+                updateDuration();
+                musicPlayer.removeEventListener('canplay', onCanPlay);
+            });
+            
             renderPlaylist();
         }
 
@@ -766,13 +809,20 @@
                 shouldResumeMusic = true;
                 return;
             }
-            musicPlayer.play().then(() => {
-                isPlaying = true;
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                hideSplash();
-                if (tapToStart) tapToStart.classList.add('hidden');
-                renderPlaylist();
-            }).catch(e => console.log('Autoplay bloqueado:', e));
+            
+            const playPromise = musicPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    isPlaying = true;
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    hideSplash();
+                    if (tapToStart) tapToStart.classList.add('hidden');
+                    renderPlaylist();
+                }).catch(e => {
+                    console.log('Autoplay bloqueado:', e);
+                    if (tapToStart) tapToStart.style.display = 'block';
+                });
+            }
         }
 
         function pauseMusic() {
@@ -803,7 +853,7 @@
             if (shuffle && filteredPlaylist.length > 1) {
                 let newFilteredIndex;
                 do { newFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length); }
-                while (newFilteredIndex === filteredIndex);
+                while (newFilteredIndex === filteredIndex && filteredPlaylist.length > 1);
                 filteredIndex = newFilteredIndex;
             } else {
                 filteredIndex = (filteredIndex + 1) % filteredPlaylist.length;
@@ -824,7 +874,7 @@
             if (shuffle && filteredPlaylist.length > 1) {
                 let newFilteredIndex;
                 do { newFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length); }
-                while (newFilteredIndex === filteredIndex);
+                while (newFilteredIndex === filteredIndex && filteredPlaylist.length > 1);
                 filteredIndex = newFilteredIndex;
             } else {
                 filteredIndex = (filteredIndex - 1 + filteredPlaylist.length) % filteredPlaylist.length;
@@ -841,6 +891,8 @@
                 return;
             }
             const selectedMusic = playlist[globalIndex];
+            if (!selectedMusic) return;
+            
             if (!allSongsMode) {
                 const period = getCurrentPeriod();
                 const allowed = (selectedMusic.periodo === period) ||
@@ -858,6 +910,7 @@
         };
 
         function renderPlaylist() {
+            if (!playlistContainer) return;
             let html = '';
             filteredPlaylist.forEach((musica, idx) => {
                 const globalIndex = playlist.findIndex(m => m.id === musica.id);
@@ -866,13 +919,20 @@
                 html += `<div class="playlist-item ${isPlayingNow ? 'playing' : ''}" onclick="selectSong(${globalIndex})">
                             <div class="music-number">${(idx+1).toString().padStart(2,'0')}</div>
                             <div class="playlist-info">
-                                <div class="playlist-title">${musica.title}</div>
-                                <div class="playlist-artist">${musica.artist}</div>
+                                <div class="playlist-title">${escapeHtml(musica.title)}</div>
+                                <div class="playlist-artist">${escapeHtml(musica.artist)}</div>
                             </div>
                             <div class="playlist-duration">${duration}</div>
                         </div>`;
             });
             playlistContainer.innerHTML = html;
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         // ==================== ANÚNCIOS ====================
@@ -901,7 +961,11 @@
             adStatus.innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.title}`;
             skipAdBtn.style.display = 'inline-block';
             showNotification(`📢 Anúncio: ${ad.title}`);
-            adPlayer.play().catch(() => finishAd());
+            
+            const playAdPromise = adPlayer.play();
+            if (playAdPromise !== undefined) {
+                playAdPromise.catch(() => finishAd());
+            }
             adPlayer.onended = finishAd; 
             adPlayer.onerror = finishAd;
         }
@@ -957,11 +1021,14 @@
             }
         });
 
-        document.getElementById('progressBar').addEventListener('click', (e) => {
-            if (isAdPlaying || !musicPlayer.duration) return;
-            const rect = e.currentTarget.getBoundingClientRect();
-            musicPlayer.currentTime = ((e.clientX - rect.left) / rect.width) * musicPlayer.duration;
-        });
+        const progressBar = document.getElementById('progressBar');
+        if (progressBar) {
+            progressBar.addEventListener('click', (e) => {
+                if (isAdPlaying || !musicPlayer.duration) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                musicPlayer.currentTime = ((e.clientX - rect.left) / rect.width) * musicPlayer.duration;
+            });
+        }
 
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
@@ -978,49 +1045,59 @@
         // ==================== MENU LATERAL E MODO CARRO ====================
         function openDrawer() { drawer.classList.add('open'); drawerOverlay.classList.add('active'); renderPlaylist(); }
         function closeDrawerFunc() { drawer.classList.remove('open'); drawerOverlay.classList.remove('active'); }
-        document.getElementById('videoMenuBtn').addEventListener('click', openDrawer);
+        
+        const videoMenuBtn = document.getElementById('videoMenuBtn');
+        if (videoMenuBtn) videoMenuBtn.addEventListener('click', openDrawer);
         closeDrawer.addEventListener('click', closeDrawerFunc);
         drawerOverlay.addEventListener('click', closeDrawerFunc);
-        document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => {
-            if (document.fullscreenElement) document.exitFullscreen();
-            else document.documentElement.requestFullscreen();
-        });
+        
+        const fullscreenDrawerBtn = document.getElementById('fullscreenDrawerBtn');
+        if (fullscreenDrawerBtn) {
+            fullscreenDrawerBtn.addEventListener('click', () => {
+                if (document.fullscreenElement) document.exitFullscreen();
+                else document.documentElement.requestFullscreen();
+            });
+        }
 
-        document.getElementById('carModeDrawerBtn').addEventListener('click', () => {
-            document.body.classList.toggle('car-mode');
-            const isCar = document.body.classList.contains('car-mode');
-            if (isCar) {
-                mainVideo.style.display = 'none';
-                carVideo.style.display = 'block';
-                mainVideo.pause();
-                if (carVideos.length > 0) {
-                    carVideo.src = carVideos[currentCarVideoIndex].src;
-                    carVideo.load();
-                    carVideo.play().catch(e => console.log('Erro modo carro:', e));
-                }
-                if (carVideoInterval) clearInterval(carVideoInterval);
-                carVideoInterval = setInterval(() => {
-                    if (document.body.classList.contains('car-mode')) {
-                        currentCarVideoIndex = (currentCarVideoIndex + 1) % carVideos.length;
+        const carModeDrawerBtn = document.getElementById('carModeDrawerBtn');
+        if (carModeDrawerBtn) {
+            carModeDrawerBtn.addEventListener('click', () => {
+                document.body.classList.toggle('car-mode');
+                const isCar = document.body.classList.contains('car-mode');
+                if (isCar) {
+                    mainVideo.style.display = 'none';
+                    carVideo.style.display = 'block';
+                    mainVideo.pause();
+                    if (carVideos.length > 0) {
                         carVideo.src = carVideos[currentCarVideoIndex].src;
                         carVideo.load();
-                        carVideo.play().catch(e => console.log('Erro troca vídeo carro:', e));
-                        showNotification(`🚗 Modo Carro: ${carVideos[currentCarVideoIndex].nome}`);
+                        carVideo.play().catch(e => console.log('Erro modo carro:', e));
                     }
-                }, 30000);
-                showNotification('🚗 Modo Carro Ativado');
-            } else {
-                mainVideo.style.display = 'block';
-                carVideo.style.display = 'none';
-                carVideo.pause();
-                mainVideo.play().catch(e => console.log('Erro:', e));
-                if (carVideoInterval) {
-                    clearInterval(carVideoInterval);
-                    carVideoInterval = null;
+                    if (carVideoInterval) clearInterval(carVideoInterval);
+                    carVideoInterval = setInterval(() => {
+                        if (document.body.classList.contains('car-mode')) {
+                            currentCarVideoIndex = (currentCarVideoIndex + 1) % carVideos.length;
+                            carVideo.src = carVideos[currentCarVideoIndex].src;
+                            carVideo.load();
+                            carVideo.play().catch(e => console.log('Erro troca vídeo carro:', e));
+                            showNotification(`🚗 Modo Carro: ${carVideos[currentCarVideoIndex].nome}`);
+                        }
+                    }, 30000);
+                    showNotification('🚗 Modo Carro Ativado');
+                } else {
+                    mainVideo.style.display = 'block';
+                    carVideo.style.display = 'none';
+                    carVideo.pause();
+                    mainVideo.play().catch(e => console.log('Erro:', e));
+                    if (carVideoInterval) {
+                        clearInterval(carVideoInterval);
+                        carVideoInterval = null;
+                    }
+                    showNotification('🚗 Modo Carro Desativado');
                 }
-                showNotification('🚗 Modo Carro Desativado');
-            }
-        });
+                closeDrawerFunc();
+            });
+        }
 
         exitCarModeBtn.addEventListener('click', () => {
             document.body.classList.remove('car-mode');
@@ -1035,19 +1112,27 @@
             showNotification('🚗 Modo Carro Desativado');
         });
 
-        document.getElementById('shareDrawerBtn').addEventListener('click', () => {
-            if (navigator.share) navigator.share({ title: 'Rádio Playlist', url: location.href });
-            else { navigator.clipboard.writeText(location.href); showNotification('📋 Link copiado!'); }
-        });
+        const shareDrawerBtn = document.getElementById('shareDrawerBtn');
+        if (shareDrawerBtn) {
+            shareDrawerBtn.addEventListener('click', () => {
+                if (navigator.share) navigator.share({ title: 'Rádio Playlist', url: location.href });
+                else { navigator.clipboard.writeText(location.href); showNotification('📋 Link copiado!'); }
+            });
+        }
 
         // ==================== BOTÃO TODAS AS MÚSICAS ====================
         function toggleAllSongs() {
             allSongsMode = !allSongsMode;
             updateFilteredPlaylist();
-            toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
+            if (toggleAllSongsBtn) {
+                toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
+            }
             showNotification(allSongsMode ? '🎵 Modo TODAS as músicas ativado' : '🎵 Modo período ativado');
         }
-        toggleAllSongsBtn.addEventListener('click', toggleAllSongs);
+        
+        if (toggleAllSongsBtn) {
+            toggleAllSongsBtn.addEventListener('click', toggleAllSongs);
+        }
 
         // ==================== TEMAS ====================
         const colorOptions = document.querySelectorAll('.color-option');
@@ -1062,7 +1147,7 @@
 
         // ==================== VÍDEOS EXTRAS E PRINCIPAIS ====================
         function iniciarVideoExtra() {
-            if (videosExtra.length) {
+            if (videosExtra.length && extraVideo) {
                 extraVideo.src = videosExtra[0].src;
                 extraVideo.load();
                 extraVideo.play().catch(e => console.log('Erro vídeo extra:', e));
@@ -1092,6 +1177,7 @@
             if (hora >= 12 && hora < 18) return 'boatarde.mp4';
             return 'boanoite.mp4';
         }
+        
         function alternarVideo() {
             if (mostrandoBase) {
                 mainVideo.src = getVideoSaudacao();
@@ -1104,6 +1190,7 @@
             }
             mostrandoBase = !mostrandoBase;
         }
+        
         function iniciarCicloVideos() {
             mainVideo.src = videoBase;
             mainVideo.load();
@@ -1150,33 +1237,43 @@
             });
         });
 
-        function toggleFeedback() { feedbackModal.classList.toggle('open'); }
-        feedbackBtn.addEventListener('click', toggleFeedback);
-        cancelFeedback.addEventListener('click', () => {
-            feedbackModal.classList.remove('open');
-            feedbackTextarea.value = '';
-            stars.forEach(s => { s.classList.remove('fas', 'active'); s.classList.add('far'); });
-            currentRating = 0;
-        });
-        sendFeedback.addEventListener('click', () => {
-            if (currentRating === 0) { showNotification('⭐ Dê uma nota de 1 a 5 estrelas'); return; }
-            let msg = `🎵 *Rádio Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`;
-            if (feedbackTextarea.value.trim()) msg += `💬 ${feedbackTextarea.value.trim()}\n`;
-            window.open(`https://wa.me/${SEU_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
-            showNotification('✅ WhatsApp aberto!');
-            feedbackModal.classList.remove('open');
-            feedbackTextarea.value = '';
-            currentRating = 0;
-            stars.forEach(s => { s.classList.remove('fas', 'active'); s.classList.add('far'); });
-        });
+        function toggleFeedback() { 
+            if (feedbackModal) feedbackModal.classList.toggle('open'); 
+        }
+        
+        if (feedbackBtn) feedbackBtn.addEventListener('click', toggleFeedback);
+        if (cancelFeedback) {
+            cancelFeedback.addEventListener('click', () => {
+                if (feedbackModal) feedbackModal.classList.remove('open');
+                if (feedbackTextarea) feedbackTextarea.value = '';
+                stars.forEach(s => { s.classList.remove('fas', 'active'); s.classList.add('far'); });
+                currentRating = 0;
+            });
+        }
+        
+        if (sendFeedback) {
+            sendFeedback.addEventListener('click', () => {
+                if (currentRating === 0) { showNotification('⭐ Dê uma nota de 1 a 5 estrelas'); return; }
+                let msg = `🎵 *Rádio Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`;
+                if (feedbackTextarea && feedbackTextarea.value.trim()) msg += `💬 ${feedbackTextarea.value.trim()}\n`;
+                window.open(`https://wa.me/${SEU_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
+                showNotification('✅ WhatsApp aberto!');
+                if (feedbackModal) feedbackModal.classList.remove('open');
+                if (feedbackTextarea) feedbackTextarea.value = '';
+                currentRating = 0;
+                stars.forEach(s => { s.classList.remove('fas', 'active'); s.classList.add('far'); });
+            });
+        }
 
         // ==================== INICIALIZAÇÃO ====================
         window.addEventListener('load', () => {
             updateFilteredPlaylist();
             
-            const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
-            currentIndex = getGlobalIndexFromFiltered(randomFilteredIndex);
-            loadTrack(currentIndex);
+            if (filteredPlaylist.length > 0) {
+                const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
+                currentIndex = getGlobalIndexFromFiltered(randomFilteredIndex);
+                loadTrack(currentIndex);
+            }
             renderPlaylist();
             
             iniciarCicloVideos();
@@ -1186,21 +1283,26 @@
             setInterval(updateFilteredPlaylist, 60000);
             
             setTimeout(() => {
-                if (!isPlaying) tapToStart.style.display = 'block';
+                if (!isPlaying && tapToStart) tapToStart.style.display = 'block';
             }, 500);
 
-            tapToStart.addEventListener('click', (e) => {
-                e.stopPropagation();
-                iniciarPlayer();
-                tapToStart.style.display = 'none';
-            });
-
-            document.addEventListener('click', function iniciarPrimeiroToque(e) {
-                if (e.target !== tapToStart && !autoPlayAttempted) {
+            if (tapToStart) {
+                tapToStart.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     iniciarPlayer();
-                    document.removeEventListener('click', iniciarPrimeiroToque);
-                }
-            });
+                    tapToStart.style.display = 'none';
+                });
+            }
+
+            // Melhor suporte para autoplay em dispositivos móveis
+            const startAutoplay = function() {
+                iniciarPlayer();
+                document.removeEventListener('touchstart', startAutoplay);
+                document.removeEventListener('click', startAutoplay);
+            };
+            
+            document.addEventListener('touchstart', startAutoplay);
+            document.addEventListener('click', startAutoplay);
         });
     </script>
 </body>
