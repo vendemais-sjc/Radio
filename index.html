@@ -3,7 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Rádio Playlist • 173 Músicas</title>
+    <title>Rádio Playlist • Modo Todas as Músicas</title>
+    
+    <!-- ========== PWA CONFIGURAÇÃO ========== -->
+    <link rel="manifest" href="data:application/manifest+json,{
+        \"name\": \"Rádio Playlist\",
+        \"short_name\": \"Rádio\",
+        \"description\": \"As melhores músicas sem parar! 173 faixas para você curtir.\",
+        \"start_url\": \".\",
+        \"display\": \"standalone\",
+        \"theme_color\": \"#e63946\",
+        \"background_color\": \"#000000\",
+        \"icons\": [{
+            \"src\": \"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23e63946'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white'%3E🎵%3C/text%3E%3C/svg%3E\",
+            \"sizes\": \"any\",
+            \"type\": \"image/svg+xml\"
+        }]
+    }">
+    <meta name="theme-color" content="#e63946">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Rádio Playlist">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23e63946'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white'%3E🎵%3C/text%3E%3C/svg%3E">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -253,6 +275,25 @@
         .feedback-modal .modal-btn { padding: 6px; border-radius: 20px; cursor: pointer; background: #2a2a2a; color: white; border: none; margin: 2px; }
         .feedback-modal .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
 
+        .install-banner {
+            position: fixed;
+            bottom: 80px;
+            left: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #e63946, #b71c1c);
+            color: white;
+            padding: 12px;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 12px;
+            z-index: 10001;
+            display: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .install-banner i { margin-right: 8px; }
+
         body.car-mode .extra-video-section,
         body.car-mode .top-bar,
         body.car-mode .footer,
@@ -391,15 +432,19 @@
         <div class="splash-content">
             <i class="fas fa-headphones-alt"></i>
             <h1>Rádio Playlist</h1>
-            <p>Carregando 173 músicas...</p>
+            <p>Carregando todas as músicas...</p>
         </div>
     </div>
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
+    
+    <div class="install-banner" id="installBanner">
+        <i class="fas fa-download"></i> 📱 INSTALE O APP para ouvir com a tela bloqueada!
+    </div>
 
     <div class="app">
         <div class="top-bar">
             <div class="top-ticker" id="topTicker">
-                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - 173 músicas - Anuncie aqui! - 12 98846-1978  <i class="fas fa-music fa-beat"></i></span>
+                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - Todas as músicas sem restrição - Anuncie aqui! - 12 98846-1978  <i class="fas fa-music fa-beat"></i></span>
             </div>
         </div>
 
@@ -434,7 +479,7 @@
             </div>
         </div>
 
-        <div class="footer">Rádio Playlist 2025 © Roger Mendes | 173 músicas | Toque sem parar</div>
+        <div class="footer">Rádio Playlist 2025 © Roger Mendes | Modo "Todas as músicas" ativo | 📱 Instale o app!</div>
     </div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -444,6 +489,7 @@
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
+            <button class="drawer-item" id="installAppBtn"><i class="fas fa-download"></i> 📱 Instalar App (tela bloqueada)</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
             
             <div class="color-picker">
@@ -497,10 +543,9 @@
     </div>
 
     <script>
-        // ==================== PLAYLIST COMPLETA ====================
+        // ==================== PLAYLIST COMPLETA (173 músicas) ====================
         const musicas = [
-         
-            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
+               { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "00:01", periodo: "tarde" },
@@ -674,19 +719,19 @@
 { id: 173, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", duration: "00:01", periodo: "manha" } 
         ];
         
-        // Completa até 173 músicas
+        // Completa até 173 músicas (mantendo as que você já tinha)
         for(let i = musicas.length + 1; i <= 173; i++) {
             musicas.push({ 
                 id: i, 
-                title: `Música Especial ${i}`, 
-                artist: "Artista Show", 
+                title: `Música ${i}`, 
+                artist: "Artista Especial", 
                 src: `musica${i}.mp3`, 
                 duration: "03:30", 
                 periodo: "todos" 
             });
         }
 
-        // ==================== PLAYER SIMPLES COM AUDIO TAG ====================
+        // ==================== PLAYER ====================
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -702,7 +747,6 @@
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         
-        // Variáveis de estado
         let currentIndex = 0;
         let isPlaying = false;
         let shuffle = false;
@@ -713,6 +757,7 @@
         let isAdPlaying = false;
         let adInterval = 30;
         let currentAdIndex = 0;
+        let shouldResumeMusic = false;
         
         const adsList = [
             { src: 'zzcv.mp3', title: 'Oferta especial' },
@@ -720,7 +765,6 @@
             { src: 'zzcv.mp3', title: 'Novidade imperdível' }
         ];
         
-        // Atualiza playlist filtrada
         function updateFilteredPlaylist() {
             if(allSongsMode) {
                 filteredPlaylist = [...musicas];
@@ -735,7 +779,6 @@
             renderPlaylist();
         }
         
-        // Renderiza lista de músicas
         function renderPlaylist() {
             let html = '';
             filteredPlaylist.forEach((m, idx) => {
@@ -753,7 +796,6 @@
             playlistContainer.innerHTML = html;
         }
         
-        // Carrega música
         function loadTrack(index) {
             if(index >= musicas.length) index = 0;
             if(index < 0) index = musicas.length - 1;
@@ -776,7 +818,6 @@
             renderPlaylist();
         }
         
-        // Toca música
         function playMusic() {
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio terminar');
@@ -792,7 +833,6 @@
             }).catch(e => console.log("Erro:", e));
         }
         
-        // Pausa música
         function pauseMusic() {
             musicPlayer.pause();
             isPlaying = false;
@@ -800,7 +840,6 @@
             renderPlaylist();
         }
         
-        // Alterna play/pause
         function togglePlayPause() {
             if(isAdPlaying) {
                 showNotification('Anúncio tocando...');
@@ -809,7 +848,6 @@
             isPlaying ? pauseMusic() : playMusic();
         }
         
-        // Próxima música
         function nextTrack() {
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio');
@@ -839,7 +877,6 @@
             checkAdInterval();
         }
         
-        // Música anterior
         function prevTrack() {
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio');
@@ -865,7 +902,6 @@
             if(isPlaying) playMusic();
         }
         
-        // Seleciona música da playlist
         window.selectSong = function(globalIdx) {
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio terminar');
@@ -890,7 +926,6 @@
             closeDrawer();
         };
         
-        // Atualiza barra de progresso
         musicPlayer.addEventListener('timeupdate', () => {
             if(musicPlayer.duration && !isNaN(musicPlayer.duration)) {
                 const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
@@ -901,7 +936,6 @@
             }
         });
         
-        // Quando a música termina
         musicPlayer.addEventListener('ended', () => {
             if(!isAdPlaying) {
                 musicPlayedCount++;
@@ -910,21 +944,12 @@
             }
         });
         
-        // Barra de progresso clicável
         document.getElementById('progressBar').addEventListener('click', (e) => {
             if(isAdPlaying) return;
             const rect = e.currentTarget.getBoundingClientRect();
             const percent = (e.clientX - rect.left) / rect.width;
             musicPlayer.currentTime = percent * musicPlayer.duration;
         });
-        
-        // Formata tempo
-        function formatTime(seconds) {
-            if(isNaN(seconds)) return '0:00';
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
         
         // ==================== ANÚNCIOS ====================
         function playAd() {
@@ -947,8 +972,6 @@
             adPlayer.onended = finishAd;
             adPlayer.onerror = finishAd;
         }
-        
-        let shouldResumeMusic = false;
         
         function finishAd() {
             isAdPlaying = false;
@@ -997,10 +1020,10 @@
         
         // ==================== UTILITÁRIOS ====================
         function showNotification(msg) {
-            const notif = document.getElementById('notification');
+            const n = document.getElementById('notification');
             document.getElementById('notificationText').innerText = msg;
-            notif.classList.add('show');
-            setTimeout(() => notif.classList.remove('show'), 2000);
+            n.classList.add('show');
+            setTimeout(() => n.classList.remove('show'), 2000);
         }
         
         function closeDrawer() {
@@ -1022,6 +1045,61 @@
                 if(isPlaying) playMusic();
             }
         }
+        
+        // ==================== PWA INSTALAÇÃO ====================
+        let deferredPrompt;
+        const installBanner = document.getElementById('installBanner');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.style.display = 'block';
+        });
+        
+        function installApp() {
+            if(deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if(choiceResult.outcome === 'accepted') {
+                        showNotification('✅ App instalado! Agora ouça com tela bloqueada!');
+                    }
+                    deferredPrompt = null;
+                    installBanner.style.display = 'none';
+                });
+            } else {
+                showNotification('📱 Toque em "Adicionar à Tela de Início" no menu do navegador');
+            }
+        }
+        
+        document.getElementById('installAppBtn')?.addEventListener('click', installApp);
+        installBanner.addEventListener('click', installApp);
+        
+        // ==================== MANTER ÁUDIO EM SEGUNDO PLANO ====================
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && musicPlayer.paused && isPlaying && !isAdPlaying) {
+                musicPlayer.play().catch(e => console.log);
+            }
+        });
+        
+        musicPlayer.addEventListener('pause', function(e) {
+            if (!isAdPlaying && isPlaying && document.hidden) {
+                setTimeout(() => {
+                    if (musicPlayer.paused && isPlaying && !isAdPlaying) {
+                        musicPlayer.play().catch(e => console.log);
+                    }
+                }, 100);
+            }
+        });
+        
+        let keepAliveInterval = setInterval(() => {
+            if (isPlaying && musicPlayer.paused && !isAdPlaying && !document.hidden) {
+                musicPlayer.play().catch(e => console.log);
+            }
+        }, 10000);
+        
+        window.addEventListener('beforeunload', () => {
+            clearInterval(keepAliveInterval);
+        });
         
         // ==================== EVENT LISTENERS ====================
         playBtn.addEventListener('click', togglePlayPause);
@@ -1061,7 +1139,7 @@
         });
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
-        // Temas
+        // ==================== TEMAS ====================
         const colorOptions = document.querySelectorAll('.color-option');
         function setTheme(themeClass) {
             document.body.className = themeClass;
@@ -1072,7 +1150,7 @@
         setTheme(savedTheme);
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
-        // Feedback
+        // ==================== FEEDBACK ====================
         const feedbackBtn = document.getElementById('feedbackBtn');
         const feedbackModal = document.getElementById('feedbackModal');
         const cancelFeedback = document.getElementById('cancelFeedback');
@@ -1106,7 +1184,7 @@
             });
         });
         sendFeedback.addEventListener('click', () => {
-            if(currentRating === 0) { showNotification('⭐ Dê uma nota'); return; }
+            if(currentRating === 0) { showNotification('⭐ Dê uma nota de 1 a 5 estrelas'); return; }
             let msg = `🎵 *Rádio Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`;
             if(feedbackTextarea.value.trim()) msg += `💬 ${feedbackTextarea.value.trim()}\n`;
             window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`, '_blank');
@@ -1147,7 +1225,7 @@
             if(mainVideo.src.includes(novoSrc)) return;
             mainVideo.src = novoSrc;
             mainVideo.load();
-            mainVideo.play().catch(e => console.log('Erro:', e));
+            mainVideo.play().catch(e => console.log('Erro ao alternar principal:', e));
         }
         
         function iniciarAlternanciaPrincipal() {
@@ -1160,7 +1238,7 @@
             const novo = videosExtra[extraVideoIndex];
             extraVideo.src = novo.src;
             extraVideo.load();
-            extraVideo.play().catch(e => console.log('Erro:', e));
+            extraVideo.play().catch(e => console.log('Erro ao alternar extra:', e));
             extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novo.nome}`;
             document.getElementById('extraVideoContainer').onclick = () => {
                 if(novo.link) window.open(novo.link, '_blank');
@@ -1180,6 +1258,13 @@
             if(videosExtra[extraVideoIndex]?.link) window.open(videosExtra[extraVideoIndex].link, '_blank');
         };
         setInterval(alternarVideoExtra, 15000);
+        
+        // ==================== SERVICE WORKER ====================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registrado!'))
+                .catch(err => console.log('Erro no Service Worker:', err));
+        }
         
         // ==================== INICIALIZAÇÃO ====================
         window.addEventListener('load', () => {
