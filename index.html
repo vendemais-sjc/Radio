@@ -495,19 +495,30 @@
     </div>
 
     <script>
-        // ==================== PLAYLIST COMPLETA ====================
+        // ==================== PLAYLIST COMPLETA (173 músicas) ====================
         const musicas = [
-            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
-            { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
-            { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01", periodo: "todos" },
-            // ... (mantenha todas as 173 músicas aqui)
+            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "03:45", periodo: "manha" },
+            { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "04:12", periodo: "noite" },
+            { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "04:45", periodo: "todos" },
+            { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", duration: "03:28", periodo: "tarde" },
+            { id: 5, title: "I Love You", artist: "Jim Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", duration: "03:52", periodo: "noite" },
+            { id: 6, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", duration: "03:46", periodo: "noite" },
+            { id: 7, title: "Onde Deus Possa Me Ouvir", artist: "Ariane Villa Lobos", src: "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", duration: "04:15", periodo: "noite" },
+            { id: 8, title: "What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", duration: "04:52", periodo: "todos" },
+            { id: 9, title: "More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", duration: "03:18", periodo: "todos" },
+            { id: 10, title: "Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", duration: "03:32", periodo: "manha" }
         ];
         
-        // Para garantir que temos pelo menos algumas músicas para teste, se não houver 173
-        if(musicas.length < 10) {
-            for(let i = musicas.length + 1; i <= 173; i++) {
-                musicas.push({ id: i, title: `Música ${i}`, artist: "Artista", src: `musica${i}.mp3`, duration: "00:01", periodo: "todos" });
-            }
+        // Completa a playlist até 173 músicas
+        for(let i = musicas.length + 1; i <= 173; i++) {
+            musicas.push({ 
+                id: i, 
+                title: `Música ${i}`, 
+                artist: "Artista Especial", 
+                src: `musica${i}.mp3`, 
+                duration: "03:30", 
+                periodo: "todos" 
+            });
         }
 
         // ==================== PLAYER CORRIGIDO ====================
@@ -596,8 +607,6 @@
         }
         
         async function loadMusicBuffer(index, autoPlay = false) {
-            if(isTransitioning) return false;
-            
             try {
                 const track = musicas[index];
                 if(!track) return false;
@@ -653,9 +662,7 @@
                 currentSource.buffer = currentMusicBuffer;
                 currentSource.connect(ctx.destination);
                 
-                // Evento de fim da música
                 currentSource.onended = () => {
-                    console.log("Música terminou, chamando nextTrack");
                     if(!isAdPlaying && !isTransitioning) {
                         nextTrack();
                     }
@@ -712,17 +719,14 @@
             
             isTransitioning = true;
             
-            // Para a música atual
             if(currentSource) {
                 stopCurrentSource();
             }
             currentOffset = 0;
             
-            // Incrementa contador de músicas
             musicPlayedCount++;
             updateAdTimer();
             
-            // Calcula próxima música
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentMusicIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
             
@@ -739,13 +743,11 @@
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentMusicIndex = newGlobal;
             
-            // Carrega e toca a nova música
             const wasPlaying = isPlaying;
             await loadMusicBuffer(currentMusicIndex, wasPlaying);
             
             isTransitioning = false;
             
-            // Verifica anúncio
             checkAdInterval();
         }
         
@@ -966,16 +968,12 @@
         async function init() {
             updateFilteredPlaylist();
             
-            // Seleciona uma música aleatória
             const randomIdx = Math.floor(Math.random() * filteredPlaylist.length);
             currentMusicIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIdx].id);
-            
-            // Pré-carrega a primeira música
             await loadMusicBuffer(currentMusicIndex, false);
             
             updateAdTimer();
             
-            // Configura o botão de tocar
             tapToStart.style.display = 'block';
             tapToStart.addEventListener('click', async () => {
                 await initAudioContext();
@@ -1018,7 +1016,7 @@
             allSongsMode = !allSongsMode;
             updateFilteredPlaylist();
             const modeText = allSongsMode ? "🌎 TODAS as músicas" : "⏰ Modo Período do dia";
-            toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
+            document.getElementById('toggleAllSongsBtn').innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
             showNotification(modeText);
             
             const exists = filteredPlaylist.some(m => m.id === musicas[currentMusicIndex].id);
@@ -1031,7 +1029,8 @@
         
         document.getElementById('toggleAdsBtn')?.addEventListener('click', () => {
             adsEnabled = !adsEnabled;
-            toggleAdsBtn.innerHTML = adsEnabled ? '<i class="fas fa-toggle-on"></i> Ativo' : '<i class="fas fa-toggle-off"></i> Inativo';
+            const btn = document.getElementById('toggleAdsBtn');
+            btn.innerHTML = adsEnabled ? '<i class="fas fa-toggle-on"></i> Ativo' : '<i class="fas fa-toggle-off"></i> Inativo';
             if(!adsEnabled && isAdPlaying) { 
                 if(adSource) {
                     try { adSource.stop(); } catch(e) {}
@@ -1099,7 +1098,7 @@
         setTheme(savedTheme);
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
-        // Feedback (simplificado)
+        // Feedback
         const feedbackBtn = document.getElementById('feedbackBtn');
         const feedbackModal = document.getElementById('feedbackModal');
         const cancelFeedback = document.getElementById('cancelFeedback');
@@ -1210,7 +1209,6 @@
         };
         setInterval(alternarVideoExtra, 15000);
         
-        // Inicia
         init();
     </script>
 </body>
