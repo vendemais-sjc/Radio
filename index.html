@@ -526,6 +526,45 @@
             { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", duration: "00:01", periodo: "manha" }
         ];
 
+        // ==================== BACKGROUND AUDIO KEEPER (TELA BLOQUEADA) ====================
+        let audioCtx = null;
+        let silentSource = null;
+        let isKeeperActive = false;
+
+        async function startBackgroundKeeper() {
+            if (isKeeperActive) return;
+            try {
+                // Cria o contexto de áudio (suspenso inicialmente)
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                // Cria um buffer de 2 segundos de silêncio
+                const bufferSize = audioCtx.sampleRate * 2;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const channelData = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) channelData[i] = 0; // silêncio total
+                
+                silentSource = audioCtx.createBufferSource();
+                silentSource.buffer = buffer;
+                silentSource.loop = true;
+                silentSource.connect(audioCtx.destination);
+                
+                // Necessário iniciar o contexto após interação do usuário
+                await audioCtx.resume();
+                silentSource.start();
+                isKeeperActive = true;
+                console.log("Background keeper ativo - áudio continuará em segundo plano");
+            } catch (e) {
+                console.warn("Erro ao ativar background keeper:", e);
+            }
+        }
+
+        // Função para garantir que o contexto de áudio continue ativo (reúme se suspenso)
+        function keepAudioContextAlive() {
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(e => console.log);
+            }
+        }
+        setInterval(keepAudioContextAlive, 10000); // a cada 10 segundos
+
         // ==================== CONFIGURAÇÃO DO PLAYER ====================
         let allSongsMode = true;
         let currentPeriod = getCurrentPeriod();
@@ -696,6 +735,8 @@
                 shouldResumeMusic = true;
                 return;
             }
+            // Garante que o background keeper está ativo antes de tocar
+            if (!isKeeperActive) startBackgroundKeeper();
             musicPlayer.play().then(() => {
                 isPlaying = true;
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -703,7 +744,7 @@
                 setTimeout(() => splash.classList.add('display-none'), 500);
                 tapToStart.classList.add('hidden');
                 renderPlaylist();
-            }).catch(e => console.log("Autoplay bloqueado até interação:", e));
+            }).catch(e => console.log("Erro ao tocar:", e));
         }
 
         function pauseMusic() {
@@ -884,11 +925,10 @@
             }
         }
 
-        // Modo carro - vídeo normal e botões funcionais
+        // Modo carro
         function enableCarMode() {
             document.body.classList.add('car-mode');
             pararAlternanciaPrincipal();
-            // Mantém o vídeo normal sem alterar
             showNotification('🚗 Modo Carro ATIVO - Vídeo normal');
         }
 
@@ -1019,10 +1059,11 @@
             loadTrack(currentIndex);
             updateAdTimer();
             tapToStart.style.display = 'block';
-            tapToStart.addEventListener('click', (e) => {
+            tapToStart.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 if (!userInteracted) {
                     userInteracted = true;
+                    await startBackgroundKeeper(); // Ativa o keeper silencioso
                     playMusic();
                 }
                 tapToStart.style.display = 'none';
