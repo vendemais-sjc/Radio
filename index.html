@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -241,6 +242,33 @@
         .notification { position: fixed; bottom: 16px; left: 16px; right: 16px; background: #000; color: #fff; padding: 10px 16px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 10px; text-align: center; }
         .notification.show { transform: translateY(0); }
 
+        /* Notificação de atualização */
+        .update-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #e63946, #b71c1c);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 10002;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: slideDown 0.5s ease;
+            cursor: pointer;
+        }
+        .update-notification i { font-size: 1.2rem; }
+        .update-notification.show { display: flex; }
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
         .footer { text-align: center; padding: 10px; font-size: 0.7rem; color: var(--text-secondary); border-top: 2px solid var(--primary-color); margin-top: 5px; }
 
         .feedback-btn { position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(20,20,20,0.8); border: 1px solid var(--primary-color); color: var(--primary-color); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2000; }
@@ -255,6 +283,25 @@
         .feedback-modal .modal-btn { padding: 8px 16px; border-radius: 25px; cursor: pointer; background: #2a2a2a; color: white; border: none; font-size: 0.8rem; font-weight: bold; }
         .feedback-modal .modal-btn.send { background: #25D366; color: #000; }
         .feedback-modal .modal-btn.cancel { background: #444; }
+
+        .tip-banner {
+            position: fixed;
+            bottom: 80px;
+            left: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #e63946, #b71c1c);
+            color: white;
+            padding: 10px;
+            border-radius: 25px;
+            text-align: center;
+            font-size: 11px;
+            z-index: 10001;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .tip-banner i { margin-right: 5px; }
 
         body.car-mode .extra-video-section,
         body.car-mode .top-bar,
@@ -386,26 +433,6 @@
         body.car-mode .car-exit-btn {
             display: flex;
         }
-        
-        /* Dica para tela bloqueada */
-        .tip-banner {
-            position: fixed;
-            bottom: 80px;
-            left: 10px;
-            right: 10px;
-            background: linear-gradient(135deg, #e63946, #b71c1c);
-            color: white;
-            padding: 10px;
-            border-radius: 25px;
-            text-align: center;
-            font-size: 11px;
-            z-index: 10001;
-            cursor: pointer;
-            font-weight: bold;
-            display: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .tip-banner i { margin-right: 5px; }
     </style>
 </head>
 <body class="theme-red">
@@ -421,6 +448,13 @@
     
     <div class="tip-banner" id="tipBanner">
         <i class="fas fa-info-circle"></i> DICA: Bloqueie a tela e o áudio continua! 🎵
+    </div>
+
+    <!-- NOTIFICADOR DE ATUALIZAÇÃO -->
+    <div class="update-notification" id="updateNotification">
+        <i class="fas fa-sync-alt fa-spin"></i>
+        <span id="updateMessage">🔄 Site atualizado! Novidades disponíveis.</span>
+        <i class="fas fa-times-circle" style="cursor:pointer;" onclick="closeUpdateNotification()"></i>
     </div>
 
     <div class="app">
@@ -461,7 +495,7 @@
             </div>
         </div>
 
-        <div class="footer">Rádio Playlist 2025 © Roger Mendes | 173 músicas | Toque sem parar</div>
+        <div class="footer">Rádio Playlist 2025 © Roger Mendes | 173 músicas | Toque sem parar | Versão 2.0</div>
     </div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -524,9 +558,56 @@
     </div>
 
     <script>
+        // ==================== VERSÃO E NOTIFICADOR DE ATUALIZAÇÃO ====================
+        // SEMPRE QUE VOCÊ ALTERAR ALGO, MUDE ESTE NÚMERO!
+        const VERSAO_ATUAL = "2.0.0";
+        const DATA_ATUALIZACAO = "15/01/2025";
+        const LOG_ALTERACOES = [
+            "✅ 173 músicas funcionando perfeitamente",
+            "🎵 Áudio continua com tela bloqueada",
+            "📱 Feedback WhatsApp com letra normal",
+            "🎨 Temas de cores funcionando",
+            "🚗 Modo carro ativado",
+            "🔊 Anúncios a cada 30 músicas",
+            "🔄 Notificador de atualizações"
+        ];
+        
+        // Função para verificar se é a primeira vez que o usuário acessa esta versão
+        function checkVersion() {
+            const versaoSalva = localStorage.getItem('radio_versao');
+            if (versaoSalva !== VERSAO_ATUAL) {
+                // Nova versão detectada!
+                localStorage.setItem('radio_versao', VERSAO_ATUAL);
+                showUpdateNotification();
+            }
+        }
+        
+        // Mostra notificação de atualização
+        function showUpdateNotification() {
+            const updateDiv = document.getElementById('updateNotification');
+            const updateMsg = document.getElementById('updateMessage');
+            
+            // Cria mensagem com as mudanças
+            let msg = `🔄 ATUALIZAÇÃO (${DATA_ATUALIZACAO})\n`;
+            LOG_ALTERACOES.forEach(item => {
+                msg += `\n${item}`;
+            });
+            updateMsg.innerHTML = msg.replace(/\n/g, '<br>');
+            
+            updateDiv.classList.add('show');
+            
+            // Esconde após 8 segundos
+            setTimeout(() => {
+                updateDiv.classList.remove('show');
+            }, 8000);
+        }
+        
+        function closeUpdateNotification() {
+            document.getElementById('updateNotification').classList.remove('show');
+        }
+        
         // ==================== PLAYLIST COMPLETA ====================
         const musicas = [
-         
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", duration: "00:01", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", duration: "00:01", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", duration: "00:01", periodo: "todos" },
@@ -698,16 +779,17 @@
 { id: 170, title: "Saigon", artist: "Emilio Santiago", src: "Saigon_Saigon_muzzik.m4a", duration: "00:01", periodo: "tarde" },
 { id: 171, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", duration: "00:01", periodo: "tardenoite" },
 { id: 172, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", duration: "00:01", periodo: "noite" },
-{ id: 173, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", duration: "00:01", periodo: "manha" }   
+{ id: 173, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", duration: "00:01", periodo: "manha" } 
         ];
         
         // Completa até 173 músicas
-        for(let i = musicas.length + 1; i <= 173; i++) {
+        while(musicas.length < 173) {
+            const newId = musicas.length + 1;
             musicas.push({ 
-                id: i, 
-                title: `Música Especial ${i}`, 
+                id: newId, 
+                title: `Música Especial ${newId}`, 
                 artist: "Artista Show", 
-                src: `musica${i}.mp3`, 
+                src: `musica${newId}.mp3`, 
                 duration: "03:30", 
                 periodo: "todos" 
             });
@@ -813,7 +895,6 @@
                 setTimeout(() => splash.classList.add('display-none'), 500);
                 tapToStart.classList.add('hidden');
                 renderPlaylist();
-                // Mostra dica após tocar
                 setTimeout(() => {
                     tipBanner.style.display = 'block';
                     setTimeout(() => {
@@ -1043,14 +1124,12 @@
         
         function startSilentAudio() {
             if (isBackgroundActive) return;
-            
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const bufferSize = audioContext.sampleRate * 2;
                 const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
                 const channelData = buffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) channelData[i] = 0;
-                
                 const source = audioContext.createBufferSource();
                 source.buffer = buffer;
                 source.loop = true;
@@ -1151,7 +1230,7 @@
         setTheme(savedTheme);
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
-        // ==================== FEEDBACK CORRIGIDO ====================
+        // ==================== FEEDBACK ====================
         const feedbackBtn = document.getElementById('feedbackBtn');
         const feedbackModal = document.getElementById('feedbackModal');
         const cancelFeedback = document.getElementById('cancelFeedback');
@@ -1280,6 +1359,7 @@
         
         // ==================== INICIALIZAÇÃO ====================
         window.addEventListener('load', () => {
+            checkVersion(); // Verifica se é uma nova versão
             updateFilteredPlaylist();
             const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
             currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomFilteredIndex].id);
