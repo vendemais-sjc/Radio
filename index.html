@@ -461,7 +461,7 @@
 
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> Próximo anúncio de áudio</h4>
-                <div class="ad-timer" id="adTimer">25</div>
+                <div class="ad-timer" id="adTimer">30</div>
                 <div class="ad-status" id="adStatus"><i class="fas fa-compact-disc fa-spin"></i> Aguardando...</div>
                 <div class="ad-buttons">
                     <button class="ad-btn" id="toggleAdsBtn"><i class="fas fa-toggle-on"></i> Ativo</button>
@@ -672,7 +672,7 @@
             { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", duration: "00:01", periodo: "manha" }
         ];
 
-        // ==================== PLAYER COM WEB AUDIO API PARA BACKGROUND ====================
+        // ==================== PLAYER CORRIGIDO ====================
         let audioCtx = null;
         let currentSource = null;
         let isPlaying = false;
@@ -686,18 +686,19 @@
         let musicPlayedCount = 0;
         let adsEnabled = true;
         let isAdPlaying = false;
-        let adBuffer = null;
-        let adSource = null;
         let shouldResumeMusic = false;
         let musicPausedOffset = 0;
         let isMusicLoading = false;
+        let isTransitioning = false;
         
         // Keeper silencioso
         let silentSource = null;
         let isKeeperActive = false;
         
+        const ADS_INTERVAL = 30; // A CADA 30 MÚSICAS
+        
         const CONFIG = { 
-            adsInterval: 25, 
+            adsInterval: ADS_INTERVAL, 
             adsList: [
                 { src: 'zzcv.mp3', title: 'Oferta relâmpago' },
                 { src: 'zzcv.mp3', title: 'Promoção especial' },
@@ -739,17 +740,15 @@
                 await ctx.resume();
                 silentSource.start();
                 isKeeperActive = true;
-                console.log("Background keeper ativo");
             } catch(e) { console.warn("keeper error", e); }
         }
         
         async function keepAlive() {
             if(audioCtx && audioCtx.state === 'suspended') {
                 await audioCtx.resume();
-                console.log("Contexto reativado");
             }
         }
-        setInterval(keepAlive, 8000);
+        setInterval(keepAlive, 5000);
         
         async function fetchAndDecode(url) {
             const ctx = await initAudioContext();
@@ -758,51 +757,71 @@
             return await ctx.decodeAudioData(arrayBuffer);
         }
         
-        async function loadMusicBuffer(index) {
-            if(isMusicLoading) return;
+        async function loadMusicBuffer(index, autoPlay = false) {
+            if(isMusicLoading) return false;
             isMusicLoading = true;
             try {
                 const track = musicas[index];
-                if(!track) return;
+                if(!track) return false;
                 const buffer = await fetchAndDecode(track.src);
                 currentMusicBuffer = buffer;
                 currentMusicIndex = index;
                 trackArtist.textContent = `${track.title} - ${track.artist}`;
-                if(totalTimeEl) {
+                if(totalTimeEl && buffer.duration) {
                     const dur = buffer.duration;
                     const mins = Math.floor(dur/60);
                     const secs = Math.floor(dur%60);
                     totalTimeEl.textContent = `${mins}:${secs<10?'0':''}${secs}`;
                 }
-                if(isPlaying && !isAdPlaying) playCurrentMusic();
-            } catch(e) { console.error("load error", e); }
-            isMusicLoading = false;
+                if(autoPlay && !isAdPlaying) {
+                    playCurrentMusic();
+                }
+                return true;
+            } catch(e) { 
+                console.error("load error", e);
+                return false;
+            } finally {
+                isMusicLoading = false;
+            }
         }
         
         function stopCurrentSource() {
             if(currentSource) {
-                try { currentSource.stop(); } catch(e) {}
-                currentSource.disconnect();
+                try { 
+                    currentSource.stop(); 
+                    currentSource.onended = null;
+                } catch(e) {}
+                try { currentSource.disconnect(); } catch(e) {}
                 currentSource = null;
             }
         }
         
         function playCurrentMusic() {
-            if(!currentMusicBuffer || isAdPlaying) return;
+            if(!currentMusicBuffer || isAdPlaying || isTransitioning) return;
+            
             stopCurrentSource();
+            
             const ctx = audioCtx;
             if(!ctx) return;
-            currentSource = ctx.createBufferSource();
-            currentSource.buffer = currentMusicBuffer;
-            currentSource.connect(ctx.destination);
-            currentSource.onended = () => { 
-                if(!isAdPlaying) nextTrack(); 
-            };
-            currentSource.start(0, currentOffset);
-            startTime = ctx.currentTime;
-            isPlaying = true;
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            updateProgressLoop();
+            
+            try {
+                currentSource = ctx.createBufferSource();
+                currentSource.buffer = currentMusicBuffer;
+                currentSource.connect(ctx.destination);
+                currentSource.onended = () => { 
+                    if(!isAdPlaying && !isTransitioning) {
+                        nextTrack();
+                    }
+                };
+                currentSource.start(0, currentOffset);
+                startTime = ctx.currentTime;
+                isPlaying = true;
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                updateProgressLoop();
+                renderPlaylist();
+            } catch(e) {
+                console.error("play error", e);
+            }
         }
         
         function pauseMusic() {
@@ -811,60 +830,106 @@
             stopCurrentSource();
             isPlaying = false;
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        }
-        
-        async function resumeMusic() {
-            if(!currentMusicBuffer || isAdPlaying) return;
-            await initAudioContext();
-            playCurrentMusic();
+            renderPlaylist();
         }
         
         async function playMusic() {
-            if(isAdPlaying) { shouldResumeMusic = true; return; }
-            if(!currentMusicBuffer) await loadMusicBuffer(currentMusicIndex);
-            if(currentMusicBuffer) {
-                await initAudioContext();
-                await startBackgroundKeeper();
-                await audioCtx.resume();
-                playCurrentMusic();
-                splash.classList.add('hidden');
-                setTimeout(()=>splash.classList.add('display-none'),500);
-                tapToStart.classList.add('hidden');
+            if(isAdPlaying) { 
+                shouldResumeMusic = true; 
+                return; 
             }
+            
+            if(!currentMusicBuffer) {
+                await loadMusicBuffer(currentMusicIndex, true);
+                return;
+            }
+            
+            await initAudioContext();
+            await startBackgroundKeeper();
+            await audioCtx.resume();
+            playCurrentMusic();
+            
+            splash.classList.add('hidden');
+            setTimeout(()=>splash.classList.add('display-none'),500);
+            tapToStart.classList.add('hidden');
         }
         
         async function nextTrack() {
-            if(isAdPlaying) { showNotification('Aguarde o anúncio'); return; }
-            if(currentSource) stopCurrentSource();
+            if(isAdPlaying || isTransitioning) { 
+                showNotification('Aguarde o anúncio terminar'); 
+                return; 
+            }
+            
+            isTransitioning = true;
+            
+            // Para a música atual
+            if(currentSource) {
+                stopCurrentSource();
+            }
             currentOffset = 0;
+            
+            // Incrementa contador de músicas tocadas
             musicPlayedCount++;
-            let filteredIdx = filteredPlaylist.findIndex(m=>m.id===musicas[currentMusicIndex].id);
-            if(shuffle && filteredPlaylist.length>1) {
+            updateAdTimer();
+            
+            // Calcula próxima música
+            let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentMusicIndex].id);
+            if(filteredIdx === -1) filteredIdx = 0;
+            
+            if(shuffle && filteredPlaylist.length > 1) {
                 let newIdx;
-                do { newIdx = Math.floor(Math.random()*filteredPlaylist.length); } while(newIdx===filteredIdx);
+                do { 
+                    newIdx = Math.floor(Math.random() * filteredPlaylist.length); 
+                } while(newIdx === filteredIdx);
                 filteredIdx = newIdx;
-            } else filteredIdx = (filteredIdx+1)%filteredPlaylist.length;
-            const newGlobal = musicas.findIndex(m=>m.id===filteredPlaylist[filteredIdx].id);
+            } else {
+                filteredIdx = (filteredIdx + 1) % filteredPlaylist.length;
+            }
+            
+            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentMusicIndex = newGlobal;
-            await loadMusicBuffer(currentMusicIndex);
-            if(isPlaying) playMusic();
+            
+            // Carrega e toca a nova música
+            const loaded = await loadMusicBuffer(currentMusicIndex, isPlaying);
+            
+            isTransitioning = false;
+            
+            // Verifica se precisa tocar anúncio
             checkAdInterval();
         }
         
         async function prevTrack() {
-            if(isAdPlaying) { showNotification('Aguarde o anúncio'); return; }
-            if(currentSource) stopCurrentSource();
+            if(isAdPlaying || isTransitioning) { 
+                showNotification('Aguarde o anúncio terminar'); 
+                return; 
+            }
+            
+            isTransitioning = true;
+            
+            if(currentSource) {
+                stopCurrentSource();
+            }
             currentOffset = 0;
-            let filteredIdx = filteredPlaylist.findIndex(m=>m.id===musicas[currentMusicIndex].id);
-            if(shuffle && filteredPlaylist.length>1) {
+            
+            let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentMusicIndex].id);
+            if(filteredIdx === -1) filteredIdx = 0;
+            
+            if(shuffle && filteredPlaylist.length > 1) {
                 let newIdx;
-                do { newIdx = Math.floor(Math.random()*filteredPlaylist.length); } while(newIdx===filteredIdx);
+                do { 
+                    newIdx = Math.floor(Math.random() * filteredPlaylist.length); 
+                } while(newIdx === filteredIdx);
                 filteredIdx = newIdx;
-            } else filteredIdx = (filteredIdx-1+filteredPlaylist.length)%filteredPlaylist.length;
-            const newGlobal = musicas.findIndex(m=>m.id===filteredPlaylist[filteredIdx].id);
+            } else {
+                filteredIdx = (filteredIdx - 1 + filteredPlaylist.length) % filteredPlaylist.length;
+            }
+            
+            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentMusicIndex = newGlobal;
-            await loadMusicBuffer(currentMusicIndex);
-            if(isPlaying) playMusic();
+            
+            await loadMusicBuffer(currentMusicIndex, isPlaying);
+            
+            isTransitioning = false;
         }
         
         function updateProgressLoop() {
@@ -872,74 +937,104 @@
                 requestAnimationFrame(updateProgressLoop);
                 return;
             }
-            const elapsed = currentOffset + (audioCtx.currentTime - startTime);
-            const duration = currentMusicBuffer ? currentMusicBuffer.duration : 0;
-            if(duration) {
-                const percent = (elapsed/duration)*100;
-                progressFill.style.width = Math.min(100,percent)+'%';
-                const mins = Math.floor(elapsed/60);
-                const secs = Math.floor(elapsed%60);
-                currentTimeEl.textContent = `${mins}:${secs<10?'0':''}${secs}`;
-            }
+            
+            try {
+                const elapsed = currentOffset + (audioCtx.currentTime - startTime);
+                const duration = currentMusicBuffer ? currentMusicBuffer.duration : 0;
+                if(duration && duration > 0) {
+                    const percent = Math.min(100, (elapsed / duration) * 100);
+                    progressFill.style.width = percent + '%';
+                    const mins = Math.floor(elapsed / 60);
+                    const secs = Math.floor(elapsed % 60);
+                    currentTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                }
+            } catch(e) {}
             requestAnimationFrame(updateProgressLoop);
         }
         
         async function playAd() {
             if(!adsEnabled || isAdPlaying) return;
+            
             const ad = CONFIG.adsList[currentAdIndex];
             if(!ad) return;
+            
+            isAdPlaying = true;
+            
             if(isPlaying) {
                 musicPausedOffset = currentOffset + (audioCtx.currentTime - startTime);
                 pauseMusic();
                 shouldResumeMusic = true;
             }
-            isAdPlaying = true;
+            
             document.getElementById('adStatus').innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.title}`;
             document.getElementById('skipAdBtn').style.display = 'inline-block';
+            
             try {
                 const buffer = await fetchAndDecode(ad.src);
-                adBuffer = buffer;
                 const ctx = audioCtx;
-                if(adSource) adSource.disconnect();
+                if(adSource) {
+                    try { adSource.stop(); } catch(e) {}
+                    try { adSource.disconnect(); } catch(e) {}
+                }
                 adSource = ctx.createBufferSource();
-                adSource.buffer = adBuffer;
+                adSource.buffer = buffer;
                 adSource.connect(ctx.destination);
                 adSource.onended = finishAd;
                 adSource.start();
-            } catch(e) { finishAd(); }
+            } catch(e) { 
+                finishAd(); 
+            }
         }
         
         function finishAd() {
             isAdPlaying = false;
             document.getElementById('adStatus').innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
             document.getElementById('skipAdBtn').style.display = 'none';
+            
+            if(adSource) {
+                try { adSource.disconnect(); } catch(e) {}
+                adSource = null;
+            }
+            
             if(shouldResumeMusic && currentMusicBuffer) {
                 currentOffset = musicPausedOffset;
                 playMusic();
                 shouldResumeMusic = false;
             }
-            currentAdIndex = (currentAdIndex+1)%CONFIG.adsList.length;
+            
+            currentAdIndex = (currentAdIndex + 1) % CONFIG.adsList.length;
             updateAdTimer();
         }
         
         function checkAdInterval() {
             if(!adsEnabled) return;
-            if(musicPlayedCount>0 && musicPlayedCount%CONFIG.adsInterval===0 && !isAdPlaying) playAd();
-            updateAdTimer();
+            // Verifica se deve tocar anúncio (a cada ADS_INTERVAL músicas)
+            if(musicPlayedCount > 0 && musicPlayedCount % ADS_INTERVAL === 0 && !isAdPlaying) {
+                playAd();
+            }
         }
         
         function updateAdTimer() {
             const el = document.getElementById('adTimer');
-            if(!adsEnabled) { el.textContent='OFF'; return; }
-            let songsUntil = CONFIG.adsInterval - (musicPlayedCount % CONFIG.adsInterval);
-            if(songsUntil === CONFIG.adsInterval) songsUntil = 0;
+            if(!adsEnabled) { 
+                el.textContent='OFF'; 
+                return; 
+            }
+            let songsUntil = ADS_INTERVAL - (musicPlayedCount % ADS_INTERVAL);
+            if(songsUntil === ADS_INTERVAL) songsUntil = 0;
             el.textContent = songsUntil;
         }
         
         function togglePlayPause() {
-            if(isAdPlaying) return;
-            if(isPlaying) pauseMusic();
-            else playMusic();
+            if(isAdPlaying) {
+                showNotification('Anúncio tocando...');
+                return;
+            }
+            if(isPlaying) {
+                pauseMusic();
+            } else {
+                playMusic();
+            }
         }
         
         function getCurrentPeriod() {
@@ -951,11 +1046,12 @@
         }
         
         function updateFilteredPlaylist() {
-            if(allSongsMode) filteredPlaylist = [...musicas];
-            else {
+            if(allSongsMode) {
+                filteredPlaylist = [...musicas];
+            } else {
                 const period = getCurrentPeriod();
-                filteredPlaylist = musicas.filter(m=>m.periodo===period||m.periodo==="todos");
-                if(!filteredPlaylist.length) filteredPlaylist=[...musicas];
+                filteredPlaylist = musicas.filter(m => m.periodo === period || m.periodo === "todos");
+                if(filteredPlaylist.length === 0) filteredPlaylist = [...musicas];
             }
             renderPlaylist();
         }
@@ -963,33 +1059,48 @@
         function renderPlaylist() {
             const container = document.getElementById('playlistContainer');
             if(!container) return;
-            let html='';
-            filteredPlaylist.forEach((m,idx)=>{
-                const globalIdx = musicas.findIndex(p=>p.id===m.id);
-                const active = (globalIdx===currentMusicIndex && isPlaying);
-                html+=`<div class="playlist-item ${active?'playing':''}" onclick="selectSong(${globalIdx})">
+            let html = '';
+            filteredPlaylist.forEach((m, idx) => {
+                const globalIdx = musicas.findIndex(p => p.id === m.id);
+                const active = (globalIdx === currentMusicIndex && isPlaying);
+                html += `<div class="playlist-item ${active ? 'playing' : ''}" onclick="selectSong(${globalIdx})">
                             <div class="music-number">${(idx+1).toString().padStart(2,'0')}</div>
                             <div class="playlist-info">
-                                <div class="playlist-title">${m.title}</div>
-                                <div class="playlist-artist">${m.artist}</div>
+                                <div class="playlist-title">${escapeHtml(m.title)}</div>
+                                <div class="playlist-artist">${escapeHtml(m.artist)}</div>
                             </div>
-                            <div class="playlist-duration">${m.duration||'--:--'}</div>
+                            <div class="playlist-duration">${m.duration || '--:--'}</div>
                         </div>`;
             });
-            container.innerHTML=html;
+            container.innerHTML = html;
+        }
+        
+        function escapeHtml(text) {
+            if(!text) return '';
+            return text.replace(/[&<>]/g, function(m) {
+                if(m === '&') return '&amp;';
+                if(m === '<') return '&lt;';
+                if(m === '>') return '&gt;';
+                return m;
+            });
         }
         
         window.selectSong = async function(globalIdx) {
-            if(isAdPlaying) { showNotification('Aguarde o anúncio'); return; }
-            if(!allSongsMode && musicas[globalIdx].periodo!==getCurrentPeriod() && musicas[globalIdx].periodo!=="todos") {
-                showNotification(`Música do período ${musicas[globalIdx].periodo}. Ative "Todas"`);
+            if(isAdPlaying) { 
+                showNotification('Aguarde o anúncio terminar'); 
+                return; 
+            }
+            
+            if(!allSongsMode && musicas[globalIdx].periodo !== getCurrentPeriod() && musicas[globalIdx].periodo !== "todos") {
+                showNotification(`🎵 Essa música é do período ${musicas[globalIdx].periodo}. Ative "Todas" para tocar.`);
                 return;
             }
+            
             if(currentSource) stopCurrentSource();
-            currentOffset=0;
-            currentMusicIndex=globalIdx;
-            await loadMusicBuffer(currentMusicIndex);
-            if(isPlaying) playMusic();
+            currentOffset = 0;
+            currentMusicIndex = globalIdx;
+            await loadMusicBuffer(currentMusicIndex, isPlaying);
+            
             document.getElementById('drawer').classList.remove('open');
             document.getElementById('drawerOverlay').classList.remove('active');
         };
@@ -998,147 +1109,249 @@
             const n = document.getElementById('notification');
             document.getElementById('notificationText').innerText = msg;
             n.classList.add('show');
-            setTimeout(()=>n.classList.remove('show'),2000);
+            setTimeout(() => n.classList.remove('show'), 2000);
         }
         
         async function init() {
             updateFilteredPlaylist();
-            const randomIdx = Math.floor(Math.random()*filteredPlaylist.length);
-            currentMusicIndex = musicas.findIndex(m=>m.id===filteredPlaylist[randomIdx].id);
-            await loadMusicBuffer(currentMusicIndex);
+            const randomIdx = Math.floor(Math.random() * filteredPlaylist.length);
+            currentMusicIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIdx].id);
+            await loadMusicBuffer(currentMusicIndex, false);
             updateAdTimer();
-            tapToStart.style.display='block';
-            tapToStart.addEventListener('click', async ()=>{
+            
+            tapToStart.style.display = 'block';
+            tapToStart.addEventListener('click', async () => {
                 await initAudioContext();
                 await startBackgroundKeeper();
                 playMusic();
-                tapToStart.style.display='none';
+                tapToStart.style.display = 'none';
             });
-            setInterval(()=>{ if(!allSongsMode) updateFilteredPlaylist(); },60000);
+            
+            setInterval(() => { 
+                if(!allSongsMode) updateFilteredPlaylist(); 
+            }, 60000);
         }
         
         // Event listeners
         playBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
-        shuffleBtn.addEventListener('click', ()=>{
-            shuffle=!shuffle;
+        shuffleBtn.addEventListener('click', () => {
+            shuffle = !shuffle;
             shuffleBtn.classList.toggle('active', shuffle);
-            showNotification(shuffle?'Aleatório ON':'Sequencial');
+            showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial');
         });
-        document.getElementById('progressBar')?.addEventListener('click', (e)=>{
-            if(isAdPlaying || !currentMusicBuffer) return;
+        
+        document.getElementById('progressBar')?.addEventListener('click', (e) => {
+            if(isAdPlaying || !currentMusicBuffer || !currentMusicBuffer.duration) return;
             const rect = e.currentTarget.getBoundingClientRect();
-            const percent = (e.clientX - rect.left)/rect.width;
+            const percent = (e.clientX - rect.left) / rect.width;
             const newTime = percent * currentMusicBuffer.duration;
             if(currentSource) {
                 currentOffset = newTime;
-                const ctx = audioCtx;
-                if(ctx && currentSource) {
-                    stopCurrentSource();
+                const wasPlaying = isPlaying;
+                stopCurrentSource();
+                if(wasPlaying && !isAdPlaying) {
                     playCurrentMusic();
                 }
             }
         });
-        document.getElementById('toggleAllSongsBtn')?.addEventListener('click', ()=>{
+        
+        document.getElementById('toggleAllSongsBtn')?.addEventListener('click', () => {
             allSongsMode = !allSongsMode;
             updateFilteredPlaylist();
-            const modeText = allSongsMode?"TODAS as músicas":"Modo Período";
+            const modeText = allSongsMode ? "🌎 TODAS as músicas" : "⏰ Modo Período do dia";
+            toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
             showNotification(modeText);
-            const exists = filteredPlaylist.some(m=>m.id===musicas[currentMusicIndex].id);
-            if(!exists && filteredPlaylist.length){
-                const newGlobal = musicas.findIndex(m=>m.id===filteredPlaylist[0].id);
+            
+            const exists = filteredPlaylist.some(m => m.id === musicas[currentMusicIndex].id);
+            if(!exists && filteredPlaylist.length) {
+                const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[0].id);
                 currentMusicIndex = newGlobal;
-                loadMusicBuffer(currentMusicIndex);
-                if(isPlaying) playMusic();
+                loadMusicBuffer(currentMusicIndex, isPlaying);
             }
         });
-        document.getElementById('toggleAdsBtn')?.addEventListener('click', ()=>{
-            adsEnabled=!adsEnabled;
-            document.getElementById('toggleAdsBtn').innerHTML = adsEnabled?'<i class="fas fa-toggle-on"></i> Ativo':'<i class="fas fa-toggle-off"></i> Inativo';
-            if(!adsEnabled && isAdPlaying) { adSource?.stop(); finishAd(); }
+        
+        document.getElementById('toggleAdsBtn')?.addEventListener('click', () => {
+            adsEnabled = !adsEnabled;
+            toggleAdsBtn.innerHTML = adsEnabled ? '<i class="fas fa-toggle-on"></i> Ativo' : '<i class="fas fa-toggle-off"></i> Inativo';
+            if(!adsEnabled && isAdPlaying) { 
+                if(adSource) {
+                    try { adSource.stop(); } catch(e) {}
+                }
+                finishAd(); 
+            }
             updateAdTimer();
         });
-        document.getElementById('testAdBtn')?.addEventListener('click', ()=>playAd());
-        document.getElementById('skipAdBtn')?.addEventListener('click', ()=>{ if(isAdPlaying){ adSource?.stop(); finishAd(); showNotification('Pulado'); } });
-        document.getElementById('videoMenuBtn')?.addEventListener('click', ()=>{
+        
+        document.getElementById('testAdBtn')?.addEventListener('click', () => playAd());
+        document.getElementById('skipAdBtn')?.addEventListener('click', () => { 
+            if(isAdPlaying) { 
+                if(adSource) {
+                    try { adSource.stop(); } catch(e) {}
+                }
+                finishAd(); 
+                showNotification('⏭️ Anúncio pulado'); 
+            } 
+        });
+        
+        document.getElementById('videoMenuBtn')?.addEventListener('click', () => {
             document.getElementById('drawer').classList.add('open');
             document.getElementById('drawerOverlay').classList.add('active');
             renderPlaylist();
         });
-        document.getElementById('closeDrawer')?.addEventListener('click', ()=>{
+        
+        document.getElementById('closeDrawer')?.addEventListener('click', () => {
             document.getElementById('drawer').classList.remove('open');
             document.getElementById('drawerOverlay').classList.remove('active');
         });
-        document.getElementById('drawerOverlay')?.addEventListener('click', ()=>{
+        
+        document.getElementById('drawerOverlay')?.addEventListener('click', () => {
             document.getElementById('drawer').classList.remove('open');
             document.getElementById('drawerOverlay').classList.remove('active');
         });
-        document.getElementById('fullscreenDrawerBtn')?.addEventListener('click', ()=>{
+        
+        document.getElementById('fullscreenDrawerBtn')?.addEventListener('click', () => {
             if(document.fullscreenElement) document.exitFullscreen();
             else document.documentElement.requestFullscreen();
         });
-        document.getElementById('shareDrawerBtn')?.addEventListener('click', ()=>{
+        
+        document.getElementById('shareDrawerBtn')?.addEventListener('click', () => {
             if(navigator.share) navigator.share({title:'Rádio Playlist', url:location.href});
             else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); }
         });
-        document.getElementById('carModeDrawerBtn')?.addEventListener('click', ()=>{
+        
+        document.getElementById('carModeDrawerBtn')?.addEventListener('click', () => {
             document.body.classList.add('car-mode');
-            showNotification('🚗 Modo Carro ATIVO');
+            showNotification('🚗 Modo Carro ATIVO - Vídeo normal');
         });
-        document.getElementById('exitCarModeBtn')?.addEventListener('click', ()=>{
+        
+        document.getElementById('exitCarModeBtn')?.addEventListener('click', () => {
             document.body.classList.remove('car-mode');
             showNotification('Modo normal');
         });
         
         // Temas
         const colorOptions = document.querySelectorAll('.color-option');
-        function setTheme(themeClass){ document.body.className=themeClass; localStorage.setItem('radioTheme',themeClass); colorOptions.forEach(opt=>opt.classList.toggle('active',opt.dataset.theme===themeClass)); }
-        const savedTheme = localStorage.getItem('radioTheme')||'theme-red';
+        function setTheme(themeClass) { 
+            document.body.className = themeClass; 
+            localStorage.setItem('radioTheme', themeClass); 
+            colorOptions.forEach(opt => opt.classList.toggle('active', opt.dataset.theme === themeClass));
+        }
+        const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
         setTheme(savedTheme);
-        colorOptions.forEach(opt=>opt.addEventListener('click',()=>setTheme(opt.dataset.theme)));
+        colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
         // Feedback
-        const feedbackBtn=document.getElementById('feedbackBtn'), feedbackModal=document.getElementById('feedbackModal');
-        feedbackBtn?.addEventListener('click',()=>feedbackModal.classList.toggle('open'));
-        document.getElementById('cancelFeedback')?.addEventListener('click',()=>feedbackModal.classList.remove('open'));
-        document.getElementById('sendFeedback')?.addEventListener('click',()=>{
-            let rating=0;
-            document.querySelectorAll('.star').forEach((s,i)=>{ if(s.classList.contains('active')) rating=i+1; });
-            if(rating===0){ showNotification('⭐ Dê uma nota de 1 a 5 estrelas'); return; }
-            let msg = `🎵 *Rádio Playlist*\n⭐ Nota: ${'★'.repeat(rating)}${'☆'.repeat(5-rating)}\n`;
-            const text=document.getElementById('feedbackText').value.trim();
-            if(text) msg+=`💬 ${text}\n`;
-            window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`,'_blank');
-            showNotification('✅ WhatsApp aberto!');
-            feedbackModal.classList.remove('open');
-            document.getElementById('feedbackText').value = '';
-            document.querySelectorAll('.star').forEach(s=>{ s.classList.remove('fas','active'); s.classList.add('far'); });
-        });
-        document.querySelectorAll('.star').forEach(s=>{
-            s.addEventListener('click',()=>{
-                const rating=parseInt(s.dataset.rating);
-                document.querySelectorAll('.star').forEach((star,i)=>{ 
-                    if(i<rating) { star.classList.add('fas','active'); star.classList.remove('far'); }
-                    else { star.classList.remove('fas','active'); star.classList.add('far'); }
+        const feedbackBtn = document.getElementById('feedbackBtn');
+        const feedbackModal = document.getElementById('feedbackModal');
+        const cancelFeedback = document.getElementById('cancelFeedback');
+        const sendFeedback = document.getElementById('sendFeedback');
+        const feedbackTextarea = document.getElementById('feedbackText');
+        
+        let currentRating = 0;
+        
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', () => {
+                currentRating = parseInt(star.dataset.rating);
+                document.querySelectorAll('.star').forEach((s, i) => {
+                    if(i < currentRating) {
+                        s.classList.add('fas', 'active');
+                        s.classList.remove('far');
+                    } else {
+                        s.classList.remove('fas', 'active');
+                        s.classList.add('far');
+                    }
                 });
             });
         });
         
+        feedbackBtn?.addEventListener('click', () => feedbackModal.classList.toggle('open'));
+        cancelFeedback?.addEventListener('click', () => {
+            feedbackModal.classList.remove('open');
+            feedbackTextarea.value = '';
+            currentRating = 0;
+            document.querySelectorAll('.star').forEach(s => {
+                s.classList.remove('fas', 'active');
+                s.classList.add('far');
+            });
+        });
+        
+        sendFeedback?.addEventListener('click', () => {
+            if(currentRating === 0) { showNotification('⭐ Dê uma nota de 1 a 5 estrelas'); return; }
+            let msg = `🎵 *Rádio Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`;
+            if(feedbackTextarea.value.trim()) msg += `💬 ${feedbackTextarea.value.trim()}\n`;
+            window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`, '_blank');
+            showNotification('✅ WhatsApp aberto!');
+            feedbackModal.classList.remove('open');
+            feedbackTextarea.value = '';
+            currentRating = 0;
+            document.querySelectorAll('.star').forEach(s => {
+                s.classList.remove('fas', 'active');
+                s.classList.add('far');
+            });
+        });
+        
         // Vídeos
-        const mainVideo=document.getElementById('mainVideo'), extraVideo=document.getElementById('extraVideo');
-        const videosExtra=[
-            { src:'aluguecopos (1).mp4', nome:'AlugueCopos', link:'https://www.aluguecopos.com.br/' },
-            { src:'Gestão (1).mp4', nome:'Destaque', link:'https://destaque.com.br/' }
+        const mainVideo = document.getElementById('mainVideo');
+        const extraVideo = document.getElementById('extraVideo');
+        const extraOverlay = document.getElementById('extraOverlay');
+        
+        const videosExtra = [
+            { src: 'aluguecopos (1).mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' },
+            { src: 'Gestão (1).mp4', nome: 'Destaque', link: 'https://destaque.com.br/' }
         ];
-        let extraIdx=0;
-        function getSaudacaoVideo(){ const h=new Date().getHours(); if(h>=5&&h<12) return 'bomdia.mp4'; if(h>=12&&h<18) return 'boatarde.mp4'; return 'boanoite.mp4'; }
-        let principalToggle=false, principalInterval;
-        function alternarPrincipal(){ if(document.body.classList.contains('car-mode')) return; principalToggle=!principalToggle; let src=principalToggle?getSaudacaoVideo():'macaco.mp4'; if(mainVideo.src.includes(src)) return; mainVideo.src=src; mainVideo.load(); mainVideo.play().catch(e=>console.log); }
-        function iniciarAlternancia(){ if(principalInterval) clearInterval(principalInterval); principalInterval=setInterval(alternarPrincipal,15000); }
-        function alternarExtra(){ extraIdx=(extraIdx+1)%videosExtra.length; const v=videosExtra[extraIdx]; extraVideo.src=v.src; extraVideo.load(); extraVideo.play().catch(e=>console.log); document.getElementById('extraOverlay').innerHTML=`<i class="fas fa-ad"></i> ${v.nome}`; document.getElementById('extraVideoContainer').onclick=()=>{ if(v.link) window.open(v.link,'_blank'); }; }
-        mainVideo.src='macaco.mp4'; mainVideo.load(); mainVideo.play().catch(e=>console.log); iniciarAlternancia();
-        extraVideo.src=videosExtra[0].src; extraVideo.load(); extraVideo.play().catch(e=>console.log); setInterval(alternarExtra,15000);
+        let extraVideoIndex = 0;
+        let principalToggle = false;
+        let principalInterval = null;
+        
+        function getSaudacaoVideo() {
+            const hora = new Date().getHours();
+            if(hora >= 5 && hora < 12) return 'bomdia.mp4';
+            if(hora >= 12 && hora < 18) return 'boatarde.mp4';
+            return 'boanoite.mp4';
+        }
+        
+        function alternarVideoPrincipal() {
+            if(document.body.classList.contains('car-mode')) return;
+            principalToggle = !principalToggle;
+            let novoSrc = principalToggle ? getSaudacaoVideo() : 'macaco.mp4';
+            if(mainVideo.src.includes(novoSrc)) return;
+            mainVideo.src = novoSrc;
+            mainVideo.load();
+            mainVideo.play().catch(e => console.log('Erro ao alternar principal:', e));
+        }
+        
+        function iniciarAlternanciaPrincipal() {
+            if(principalInterval) clearInterval(principalInterval);
+            principalInterval = setInterval(alternarVideoPrincipal, 15000);
+        }
+        
+        function alternarVideoExtra() {
+            extraVideoIndex = (extraVideoIndex + 1) % videosExtra.length;
+            const novo = videosExtra[extraVideoIndex];
+            extraVideo.src = novo.src;
+            extraVideo.load();
+            extraVideo.play().catch(e => console.log('Erro ao alternar extra:', e));
+            extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novo.nome}`;
+            document.getElementById('extraVideoContainer').onclick = () => {
+                if(novo.link) window.open(novo.link, '_blank');
+            };
+        }
+        
+        mainVideo.src = 'macaco.mp4';
+        mainVideo.load();
+        mainVideo.play().catch(e => console.log);
+        iniciarAlternanciaPrincipal();
+        
+        extraVideo.src = videosExtra[0].src;
+        extraVideo.load();
+        extraVideo.play().catch(e => console.log);
+        extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${videosExtra[0].nome}`;
+        document.getElementById('extraVideoContainer').onclick = () => {
+            if(videosExtra[extraVideoIndex]?.link) window.open(videosExtra[extraVideoIndex].link, '_blank');
+        };
+        setInterval(alternarVideoExtra, 15000);
         
         init();
     </script>
