@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Rádio Playlist • Carregando</title>
+    <title>Rádio Playlist • 173 Músicas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -253,31 +253,6 @@
         .feedback-modal .modal-btn { padding: 6px; border-radius: 20px; cursor: pointer; background: #2a2a2a; color: white; border: none; margin: 2px; }
         .feedback-modal .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
 
-        /* Botão de simular tela bloqueada */
-        .lock-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.8);
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 10px 15px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10001;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(4px);
-        }
-        .lock-btn i { font-size: 14px; }
-        .lock-btn.active {
-            background: var(--primary-color);
-            color: #000;
-        }
-
         .tip-banner {
             position: fixed;
             bottom: 80px;
@@ -441,12 +416,7 @@
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
     
     <div class="tip-banner" id="tipBanner">
-        <i class="fas fa-info-circle"></i> 🎵 DICA: Toque no botão 🔒 para SIMULAR tela bloqueada!
-    </div>
-
-    <!-- Botão para simular tela bloqueada -->
-    <div class="lock-btn" id="lockScreenBtn">
-        <i class="fas fa-lock"></i> Simular Tela Bloqueada
+        <i class="fas fa-info-circle"></i> 🎵 DICA: Música toca até o fim, espera 7 segundos e toca a próxima!
     </div>
 
     <div class="app">
@@ -487,7 +457,7 @@
             </div>
         </div>
 
-        <div class="footer">Rádio Playlist 2025 © Roger Mendes | 173 músicas | Toque sem parar | Timer 7s</div>
+        <div class="footer">Rádio Playlist 2025 © Roger Mendes | 173 músicas | Intervalo de 7 segundos</div>
     </div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -552,7 +522,7 @@
     <script>
         // ==================== PLAYLIST COMPLETA ====================
         const musicas = [
- { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+          { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -724,8 +694,7 @@
             { id: 170, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", periodo: "tarde" },
             { id: 171, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "noite" },
             { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", periodo: "manha" },
-            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" } 
-            
+            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" }  
         ];
         
         // Completa até 173 músicas
@@ -740,7 +709,7 @@
             });
         }
 
-        // ==================== PLAYER COM TIMER DE 7 SEGUNDOS ====================
+        // ==================== PLAYER COM INTERVALO DE 7 SEGUNDOS ====================
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -756,7 +725,6 @@
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         const tipBanner = document.getElementById('tipBanner');
-        const lockScreenBtn = document.getElementById('lockScreenBtn');
         
         let currentIndex = 0;
         let isPlaying = false;
@@ -770,8 +738,9 @@
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         
-        // TIMER DE 7 SEGUNDOS PARA PRÓXIMA MÚSICA
-        let nextMusicTimer = null;
+        // TIMER DE 7 SEGUNDOS DE INTERVALO ENTRE MÚSICAS
+        let intervalTimer = null;
+        let isWaiting = false;
         
         const adsList = [
             { src: 'zzcv.mp3', title: 'Oferta especial' },
@@ -802,26 +771,70 @@
             }
         }
         
-        // ==================== TIMER DE 7 SEGUNDOS ====================
-        function startNextMusicTimer() {
-            if (nextMusicTimer) clearTimeout(nextMusicTimer);
+        // ==================== FUNÇÃO DE ESPERA DE 7 SEGUNDOS ====================
+        function startWaitInterval() {
+            if (intervalTimer) clearTimeout(intervalTimer);
+            isWaiting = true;
             
-            // Mostra no status que vai trocar em 7 segundos
-            showNotification(`⏱️ Próxima música em 7 segundos...`, 3000);
+            // Mostra contagem regressiva
+            let countdown = 7;
+            showNotification(`⏱️ Próxima música em ${countdown} segundos...`, 7000);
             
-            nextMusicTimer = setTimeout(() => {
-                if (isPlaying && !isAdPlaying) {
-                    console.log("⏰ Timer de 7 segundos: trocando música...");
-                    nextTrack();
+            // Atualiza a cada segundo
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    showNotification(`⏱️ Próxima música em ${countdown} segundos...`, 1000);
                 }
-            }, 7000); // 7 segundos
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+            
+            intervalTimer = setTimeout(() => {
+                isWaiting = false;
+                clearInterval(countdownInterval);
+                console.log("⏰ Intervalo de 7 segundos terminado, tocando próxima música...");
+                loadAndPlayNext();
+            }, 7000);
         }
         
-        function stopNextMusicTimer() {
-            if (nextMusicTimer) {
-                clearTimeout(nextMusicTimer);
-                nextMusicTimer = null;
+        function stopWaitInterval() {
+            if (intervalTimer) {
+                clearTimeout(intervalTimer);
+                intervalTimer = null;
             }
+            isWaiting = false;
+        }
+        
+        function loadAndPlayNext() {
+            if (isAdPlaying) return;
+            
+            musicPlayedCount++;
+            updateAdTimer();
+            
+            let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
+            if(filteredIdx === -1) filteredIdx = 0;
+            
+            if(shuffle && filteredPlaylist.length > 1) {
+                let newIdx;
+                do {
+                    newIdx = Math.floor(Math.random() * filteredPlaylist.length);
+                } while(newIdx === filteredIdx);
+                filteredIdx = newIdx;
+            } else {
+                filteredIdx = (filteredIdx + 1) % filteredPlaylist.length;
+            }
+            
+            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
+            currentIndex = newGlobal;
+            loadTrack(currentIndex);
+            
+            if (isPlaying) {
+                playMusic();
+            }
+            
+            checkAdInterval();
         }
         
         function updateFilteredPlaylist() {
@@ -888,7 +901,6 @@
                 isPlaying = true;
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 updateMediaSessionPlaybackState(true);
-                startNextMusicTimer(); // Inicia timer de 7 segundos
                 splash.classList.add('hidden');
                 setTimeout(() => splash.classList.add('display-none'), 500);
                 tapToStart.classList.add('hidden');
@@ -905,7 +917,6 @@
             isPlaying = false;
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
             updateMediaSessionPlaybackState(false);
-            stopNextMusicTimer(); // Para o timer quando pausa
             renderPlaylist();
         }
         
@@ -927,33 +938,14 @@
                 return;
             }
             
-            stopNextMusicTimer();
+            // Para a música atual
+            musicPlayer.pause();
+            isPlaying = false;
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            updateMediaSessionPlaybackState(false);
             
-            musicPlayedCount++;
-            updateAdTimer();
-            
-            let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
-            if(filteredIdx === -1) filteredIdx = 0;
-            
-            if(shuffle && filteredPlaylist.length > 1) {
-                let newIdx;
-                do {
-                    newIdx = Math.floor(Math.random() * filteredPlaylist.length);
-                } while(newIdx === filteredIdx);
-                filteredIdx = newIdx;
-            } else {
-                filteredIdx = (filteredIdx + 1) % filteredPlaylist.length;
-            }
-            
-            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
-            currentIndex = newGlobal;
-            loadTrack(currentIndex);
-            
-            if(isPlaying) {
-                playMusic();
-            }
-            
-            checkAdInterval();
+            // Inicia o intervalo de 7 segundos
+            startWaitInterval();
         }
         
         function prevTrack() {
@@ -962,7 +954,9 @@
                 return;
             }
             
-            stopNextMusicTimer();
+            stopWaitInterval();
+            
+            musicPlayer.pause();
             
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
@@ -980,10 +974,7 @@
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            
-            if(isPlaying) {
-                playMusic();
-            }
+            playMusic();
         }
         
         window.selectSong = function(globalIdx) {
@@ -1004,7 +995,7 @@
                 }
             }
             
-            stopNextMusicTimer();
+            stopWaitInterval();
             currentIndex = globalIdx;
             loadTrack(currentIndex);
             if(isPlaying) playMusic();
@@ -1021,10 +1012,16 @@
             }
         });
         
+        // QUANDO A MÚSICA TERMINA NATURALMENTE
         musicPlayer.addEventListener('ended', () => {
             if(!isAdPlaying && isPlaying) {
-                console.log("Música terminou naturalmente");
-                nextTrack();
+                console.log("🎵 Música terminou naturalmente, iniciando intervalo de 7 segundos...");
+                // Para a reprodução visual
+                isPlaying = false;
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                updateMediaSessionPlaybackState(false);
+                // Inicia o intervalo de 7 segundos
+                startWaitInterval();
             }
         });
         
@@ -1034,51 +1031,8 @@
             const percent = (e.clientX - rect.left) / rect.width;
             if(musicPlayer.duration) {
                 musicPlayer.currentTime = percent * musicPlayer.duration;
-                // Reinicia o timer quando pula a música
-                if(isPlaying) {
-                    stopNextMusicTimer();
-                    startNextMusicTimer();
-                }
             }
         });
-        
-        // ==================== BOTÃO DE SIMULAR TELA BLOQUEADA ====================
-        let isLocked = false;
-        
-        function simulateLockScreen() {
-            if (!isPlaying) {
-                showNotification('⚠️ Toque uma música primeiro!');
-                return;
-            }
-            
-            isLocked = !isLocked;
-            
-            if (isLocked) {
-                lockScreenBtn.innerHTML = '<i class="fas fa-unlock"></i> Tela Desbloqueada';
-                lockScreenBtn.classList.add('active');
-                showNotification('🔒 SIMULANDO TELA BLOQUEADA! A música continua e vai trocar em 7 segundos!', 3000);
-                
-                // Simula tela bloqueada - esconde o conteúdo visualmente
-                document.querySelector('.app').style.opacity = '0.3';
-                document.querySelector('.app').style.pointerEvents = 'none';
-                document.querySelector('.lock-btn').style.opacity = '1';
-                document.querySelector('.lock-btn').style.pointerEvents = 'auto';
-                
-                // O áudio continua tocando normalmente
-                // O timer de 7 segundos continua rodando
-                
-            } else {
-                lockScreenBtn.innerHTML = '<i class="fas fa-lock"></i> Simular Tela Bloqueada';
-                lockScreenBtn.classList.remove('active');
-                showNotification('🔓 Tela desbloqueada!', 2000);
-                
-                // Restaura a visibilidade
-                document.querySelector('.app').style.opacity = '1';
-                document.querySelector('.app').style.pointerEvents = 'auto';
-            }
-        }
-        
-        lockScreenBtn.addEventListener('click', simulateLockScreen);
         
         // ==================== ANÚNCIOS ====================
         function playAd() {
@@ -1086,11 +1040,13 @@
             const ad = adsList[currentAdIndex];
             if(!ad) return;
             
-            stopNextMusicTimer();
+            stopWaitInterval();
             
             if(isPlaying) {
                 musicPlayer.pause();
                 shouldResumeMusic = true;
+                isPlaying = false;
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
             
             adPlayer.src = ad.src;
@@ -1110,8 +1066,8 @@
             document.getElementById('skipAdBtn').style.display = 'none';
             
             if(shouldResumeMusic) {
-                playMusic();
                 shouldResumeMusic = false;
+                playMusic();
             }
             currentAdIndex = (currentAdIndex + 1) % adsList.length;
             updateAdTimer();
