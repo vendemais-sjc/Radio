@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Rádio Playlist • Caregando Músicas</title>
+    <title>Rádio Playlist • Tocando em Segundo Plano</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -521,7 +521,6 @@
 
     <script>
         // ==================== PLAYLIST COMPLETA COM 173 MÚSICAS ====================
-        // TODAS AS MÚSICAS - SEM DURATION (o player pega a duração real do arquivo)
         const musicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
@@ -695,7 +694,7 @@
             { id: 170, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", periodo: "tarde" },
             { id: 171, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "noite" },
             { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", periodo: "manha" },
-            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" }
+            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" } 
         ];
 
         // ==================== PLAYER COM TIMER ====================
@@ -734,7 +733,38 @@
             { src: 'zzcv.mp3', title: 'Novidade imperdível' }
         ];
         
-        // ==================== MEDIA SESSION API ====================
+        // -------------------- ÁUDIO SILENCIOSO EM SEGUNDO PLANO --------------------
+        let audioCtx = null;
+        let silentSource = null;
+        let isBackgroundActive = false;
+
+        function startSilentAudio() {
+            if (isBackgroundActive) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const bufferSize = audioCtx.sampleRate * 2; // 2 segundos de silêncio
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const channelData = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) channelData[i] = 0;
+                silentSource = audioCtx.createBufferSource();
+                silentSource.buffer = buffer;
+                silentSource.loop = true;
+                silentSource.connect(audioCtx.destination);
+                silentSource.start();
+                isBackgroundActive = true;
+                console.log("Áudio silencioso ativado para manter o contexto em segundo plano.");
+            } catch (e) {
+                console.warn("Erro ao iniciar áudio silencioso:", e);
+            }
+        }
+
+        function keepAudioAlive() {
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(e => console.log);
+            }
+        }
+
+        // -------------------- FUNÇÕES DO PLAYER --------------------
         function updateMediaSession(track) {
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
@@ -747,7 +777,6 @@
                 navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
                 navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
                 navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
-                navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
             }
         }
         
@@ -757,25 +786,18 @@
             }
         }
         
-        // ==================== TIMER PARA TROCAR MÚSICA ====================
         function startTimer() {
             if (timerInterval) clearInterval(timerInterval);
-            
             timerInterval = setInterval(() => {
                 if (isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) {
                     const currentTime = musicPlayer.currentTime;
                     const duration = musicPlayer.duration;
-                    
-                    // Atualiza barra de progresso
                     const percent = (currentTime / duration) * 100;
                     progressFill.style.width = percent + '%';
                     const mins = Math.floor(currentTime / 60);
                     const secs = Math.floor(currentTime % 60);
                     currentTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-                    
-                    // Se chegou perto do fim (último 0.3 segundo), troca de música
                     if (duration - currentTime <= 0.3) {
-                        console.log("Música terminou, trocando...");
                         clearInterval(timerInterval);
                         timerInterval = null;
                         nextTrack();
@@ -832,9 +854,7 @@
             trackArtist.textContent = `${track.title} - ${track.artist}`;
             currentTimeEl.textContent = '0:00';
             progressFill.style.width = '0%';
-            
             updateMediaSession(track);
-            
             musicPlayer.addEventListener('loadedmetadata', function onMeta() {
                 if(musicPlayer.duration && !isNaN(musicPlayer.duration)) {
                     const mins = Math.floor(musicPlayer.duration / 60);
@@ -851,6 +871,13 @@
                 showNotification('Aguarde o anúncio terminar');
                 return;
             }
+            // Inicia o contexto de áudio silencioso na primeira interação do usuário
+            if (!isBackgroundActive) {
+                startSilentAudio();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(e => console.log);
+            }
             musicPlayer.play().then(() => {
                 isPlaying = true;
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -864,7 +891,7 @@
                     tipBanner.style.display = 'block';
                     setTimeout(() => tipBanner.style.display = 'none', 5000);
                 }, 2000);
-            }).catch(e => console.log("Erro:", e));
+            }).catch(e => console.log("Erro ao tocar:", e));
         }
         
         function pauseMusic() {
@@ -893,15 +920,11 @@
                 showNotification('Aguarde o anúncio');
                 return;
             }
-            
             stopTimer();
-            
             musicPlayedCount++;
             updateAdTimer();
-            
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
-            
             if(shuffle && filteredPlaylist.length > 1) {
                 let newIdx;
                 do {
@@ -911,15 +934,10 @@
             } else {
                 filteredIdx = (filteredIdx + 1) % filteredPlaylist.length;
             }
-            
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            
-            if(isPlaying) {
-                playMusic();
-            }
-            
+            if(isPlaying) playMusic();
             checkAdInterval();
         }
         
@@ -928,12 +946,9 @@
                 showNotification('Aguarde o anúncio');
                 return;
             }
-            
             stopTimer();
-            
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
-            
             if(shuffle && filteredPlaylist.length > 1) {
                 let newIdx;
                 do {
@@ -943,14 +958,10 @@
             } else {
                 filteredIdx = (filteredIdx - 1 + filteredPlaylist.length) % filteredPlaylist.length;
             }
-            
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            
-            if(isPlaying) {
-                playMusic();
-            }
+            if(isPlaying) playMusic();
         }
         
         window.selectSong = function(globalIdx) {
@@ -958,19 +969,16 @@
                 showNotification('Aguarde o anúncio terminar');
                 return;
             }
-            
             if(!allSongsMode) {
                 const hora = new Date().getHours();
                 let periodo = "manha";
                 if(hora >= 12 && hora < 18) periodo = "tarde";
                 else if(hora >= 18) periodo = "noite";
-                
                 if(musicas[globalIdx].periodo !== periodo && musicas[globalIdx].periodo !== "todos") {
                     showNotification(`Essa música é do período ${musicas[globalIdx].periodo}`);
                     return;
                 }
             }
-            
             stopTimer();
             currentIndex = globalIdx;
             loadTrack(currentIndex);
@@ -983,20 +991,16 @@
             if(!adsEnabled || isAdPlaying) return;
             const ad = adsList[currentAdIndex];
             if(!ad) return;
-            
             stopTimer();
-            
             if(isPlaying) {
                 musicPlayer.pause();
                 shouldResumeMusic = true;
             }
-            
             adPlayer.src = ad.src;
             adPlayer.load();
             isAdPlaying = true;
             document.getElementById('adStatus').innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.title}`;
             document.getElementById('skipAdBtn').style.display = 'inline-block';
-            
             adPlayer.play().catch(() => finishAd());
             adPlayer.onended = finishAd;
             adPlayer.onerror = finishAd;
@@ -1006,7 +1010,6 @@
             isAdPlaying = false;
             document.getElementById('adStatus').innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
             document.getElementById('skipAdBtn').style.display = 'none';
-            
             if(shouldResumeMusic) {
                 playMusic();
                 shouldResumeMusic = false;
@@ -1065,7 +1068,6 @@
             updateFilteredPlaylist();
             toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
             showNotification(allSongsMode ? "Todas as músicas" : "Modo período do dia");
-            
             const exists = filteredPlaylist.some(m => m.id === musicas[currentIndex].id);
             if(!exists && filteredPlaylist.length) {
                 const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[0].id);
@@ -1075,49 +1077,7 @@
             }
         }
         
-        // ==================== MANTER ÁUDIO EM SEGUNDO PLANO ====================
-        let audioContext = null;
-        let isBackgroundActive = false;
-        
-        function startSilentAudio() {
-            if(isBackgroundActive) return;
-            try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const bufferSize = audioContext.sampleRate * 2;
-                const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-                const channelData = buffer.getChannelData(0);
-                for(let i = 0; i < bufferSize; i++) channelData[i] = 0;
-                const source = audioContext.createBufferSource();
-                source.buffer = buffer;
-                source.loop = true;
-                source.connect(audioContext.destination);
-                source.start();
-                isBackgroundActive = true;
-            } catch(e) { console.log("Erro:", e); }
-        }
-        
-        function keepAudioAlive() {
-            if(audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().catch(e => console.log);
-            }
-        }
-        
-        const originalPlayMusic = playMusic;
-        window.playMusic = function() {
-            if(!isBackgroundActive) startSilentAudio();
-            if(audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().catch(e => console.log);
-            }
-            originalPlayMusic();
-        };
-        playMusic = window.playMusic;
-        
-        document.addEventListener('visibilitychange', function() {
-            keepAudioAlive();
-        });
-        
-        setInterval(() => { keepAudioAlive(); }, 5000);
-        
+        // Eventos de UI
         document.getElementById('progressBar').addEventListener('click', (e) => {
             if(isAdPlaying) return;
             const rect = e.currentTarget.getBoundingClientRect();
@@ -1127,7 +1087,6 @@
             }
         });
         
-        // ==================== EVENT LISTENERS ====================
         playBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
@@ -1284,6 +1243,12 @@
             if(videosExtra[extraVideoIndex]?.link) window.open(videosExtra[extraVideoIndex].link, '_blank');
         };
         setInterval(alternarVideoExtra, 15000);
+        
+        // ==================== MANTER ÁUDIO EM SEGUNDO PLANO ====================
+        document.addEventListener('visibilitychange', function() {
+            keepAudioAlive();
+        });
+        setInterval(() => { keepAudioAlive(); }, 5000);
         
         // ==================== INICIALIZAÇÃO ====================
         window.addEventListener('load', () => {
