@@ -416,7 +416,7 @@
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
     
     <div class="tip-banner" id="tipBanner">
-        <i class="fas fa-info-circle"></i> 🎵 DICA: Música toca até o fim, espera 7 segundos e toca a próxima!
+        <i class="fas fa-info-circle"></i> 🎵 Música toca até o fim, espera 7 segundos e toca a próxima!
     </div>
 
     <div class="app">
@@ -457,7 +457,7 @@
             </div>
         </div>
 
-        <div class="footer">Rádio Playlist 2025 © Roger Mendes | 173 músicas | Intervalo de 7 segundos</div>
+        <div class="footer">Rádio Playlist 2025 © Roger Mendes | 173 músicas | Intervalo de 7 segundos entre músicas</div>
     </div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -741,6 +741,7 @@
         // TIMER DE 7 SEGUNDOS DE INTERVALO ENTRE MÚSICAS
         let intervalTimer = null;
         let isWaiting = false;
+        let countdownInterval = null;
         
         const adsList = [
             { src: 'zzcv.mp3', title: 'Oferta especial' },
@@ -774,26 +775,28 @@
         // ==================== FUNÇÃO DE ESPERA DE 7 SEGUNDOS ====================
         function startWaitInterval() {
             if (intervalTimer) clearTimeout(intervalTimer);
+            if (countdownInterval) clearInterval(countdownInterval);
             isWaiting = true;
             
-            // Mostra contagem regressiva
             let countdown = 7;
             showNotification(`⏱️ Próxima música em ${countdown} segundos...`, 7000);
             
-            // Atualiza a cada segundo
-            const countdownInterval = setInterval(() => {
+            // Atualiza a contagem regressiva a cada segundo
+            countdownInterval = setInterval(() => {
                 countdown--;
                 if (countdown > 0) {
                     showNotification(`⏱️ Próxima música em ${countdown} segundos...`, 1000);
                 }
                 if (countdown <= 0) {
                     clearInterval(countdownInterval);
+                    countdownInterval = null;
                 }
             }, 1000);
             
             intervalTimer = setTimeout(() => {
                 isWaiting = false;
                 clearInterval(countdownInterval);
+                countdownInterval = null;
                 console.log("⏰ Intervalo de 7 segundos terminado, tocando próxima música...");
                 loadAndPlayNext();
             }, 7000);
@@ -804,10 +807,14 @@
                 clearTimeout(intervalTimer);
                 intervalTimer = null;
             }
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
             isWaiting = false;
         }
         
-        function loadAndPlayNext() {
+        async function loadAndPlayNext() {
             if (isAdPlaying) return;
             
             musicPlayedCount++;
@@ -828,11 +835,16 @@
             
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
-            loadTrack(currentIndex);
+            await loadTrack(currentIndex);
             
-            if (isPlaying) {
-                playMusic();
-            }
+            // Força o play com um pequeno delay para garantir
+            setTimeout(() => {
+                if (isPlaying === false) {
+                    playMusic();
+                } else {
+                    playMusic();
+                }
+            }, 100);
             
             checkAdInterval();
         }
@@ -868,7 +880,7 @@
             playlistContainer.innerHTML = html;
         }
         
-        function loadTrack(index) {
+        async function loadTrack(index) {
             if(index >= musicas.length) index = 0;
             if(index < 0) index = musicas.length - 1;
             currentIndex = index;
@@ -881,15 +893,17 @@
             
             updateMediaSession(track);
             
-            musicPlayer.addEventListener('loadedmetadata', function onMeta() {
-                if(musicPlayer.duration && !isNaN(musicPlayer.duration)) {
-                    const mins = Math.floor(musicPlayer.duration / 60);
-                    const secs = Math.floor(musicPlayer.duration % 60);
-                    totalTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-                }
-                musicPlayer.removeEventListener('loadedmetadata', onMeta);
+            return new Promise((resolve) => {
+                musicPlayer.addEventListener('loadedmetadata', function onMeta() {
+                    if(musicPlayer.duration && !isNaN(musicPlayer.duration)) {
+                        const mins = Math.floor(musicPlayer.duration / 60);
+                        const secs = Math.floor(musicPlayer.duration % 60);
+                        totalTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    }
+                    musicPlayer.removeEventListener('loadedmetadata', onMeta);
+                    resolve();
+                });
             });
-            renderPlaylist();
         }
         
         function playMusic() {
@@ -909,7 +923,7 @@
                     tipBanner.style.display = 'block';
                     setTimeout(() => tipBanner.style.display = 'none', 5000);
                 }, 2000);
-            }).catch(e => console.log("Erro:", e));
+            }).catch(e => console.log("Erro ao tocar:", e));
         }
         
         function pauseMusic() {
@@ -957,6 +971,8 @@
             stopWaitInterval();
             
             musicPlayer.pause();
+            isPlaying = false;
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
             
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
@@ -973,8 +989,9 @@
             
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
-            loadTrack(currentIndex);
-            playMusic();
+            loadTrack(currentIndex).then(() => {
+                playMusic();
+            });
         }
         
         window.selectSong = function(globalIdx) {
@@ -997,8 +1014,10 @@
             
             stopWaitInterval();
             currentIndex = globalIdx;
-            loadTrack(currentIndex);
-            if(isPlaying) playMusic();
+            loadTrack(currentIndex).then(() => {
+                if(isPlaying) playMusic();
+                else playMusic();
+            });
             closeDrawer();
         };
         
@@ -1128,8 +1147,9 @@
             if(!exists && filteredPlaylist.length) {
                 const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[0].id);
                 currentIndex = newGlobal;
-                loadTrack(currentIndex);
-                if(isPlaying) playMusic();
+                loadTrack(currentIndex).then(() => {
+                    if(isPlaying) playMusic();
+                });
             }
         }
         
@@ -1339,7 +1359,9 @@
             updateFilteredPlaylist();
             const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
             currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomFilteredIndex].id);
-            loadTrack(currentIndex);
+            loadTrack(currentIndex).then(() => {
+                console.log("Música carregada, aguardando clique");
+            });
             updateAdTimer();
             
             tapToStart.style.display = 'block';
