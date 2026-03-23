@@ -47,56 +47,6 @@
             position: relative;
         }
 
-        #splash { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 9999; 
-            transition: opacity 0.5s ease; 
-            pointer-events: none;
-        }
-        #splash.hidden { opacity: 0; }
-        #splash.display-none { display: none; }
-        .splash-content { text-align: center; color: #fff; }
-        .splash-content i { font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem; animation: pulse 1.5s infinite; }
-        .splash-content h1 { font-size: 1.8rem; }
-        @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
-
-        #tap-to-start { 
-            position: fixed; 
-            bottom: 90px;
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white; 
-            padding: 14px 32px; 
-            border-radius: 50px; 
-            font-weight: bold; 
-            font-size: 1.2rem; 
-            z-index: 10000; 
-            box-shadow: 0 0 25px rgba(230, 57, 70, 0.7), 0 4px 12px rgba(0,0,0,0.4); 
-            cursor: pointer; 
-            border: 2px solid rgba(255,255,255,0.5); 
-            text-align: center; 
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(4px);
-            white-space: nowrap;
-            animation: btnPulse 1.5s infinite;
-        }
-        @keyframes btnPulse {
-            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); }
-            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 30px rgba(230,57,70,0.8); }
-            100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); }
-        }
-        #tap-to-start i { margin-right: 8px; font-size: 1rem; }
-        #tap-to-start.hidden { display: none !important; }
-
         .top-bar { background: #000; border-top: 1px solid var(--primary-color); border-bottom: 1px solid var(--primary-color); }
         .top-ticker {
             width: 100%;
@@ -406,15 +356,7 @@
 </head>
 <body class="theme-red">
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
-    <div id="splash">
-        <div class="splash-content">
-            <i class="fas fa-headphones-alt"></i>
-            <h1>Rádio Playlist</h1>
-            <p>Toque no botão abaixo para começar</p>
-        </div>
-    </div>
-    <div id="tap-to-start"><i class="fas fa-play-circle"></i> TOCAR MÚSICA AGORA</div>
-    
+
     <div class="tip-banner" id="tipBanner">
         <i class="fas fa-info-circle"></i> 🎵 DICA: Bloqueie a tela e o áudio continua!
     </div>
@@ -434,7 +376,7 @@
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-list-ul"></i></button>
             </div>
             <div class="track-info">
-                <p id="trackArtist">🎵 Clique em "TOCAR MÚSICA"</p>
+                <p id="trackArtist">🎵 Carregando...</p>
             </div>
             <div class="progress-area">
                 <div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
@@ -586,8 +528,6 @@
         const currentTimeEl = document.getElementById('currentTime');
         const totalTimeEl = document.getElementById('totalTime');
         const trackArtist = document.getElementById('trackArtist');
-        const splash = document.getElementById('splash');
-        const tapToStart = document.getElementById('tap-to-start');
         const shuffleBtn = document.getElementById('shufflePlayerBtn');
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
@@ -611,6 +551,7 @@
                 silentSource.connect(audioCtx.destination);
                 silentSource.start();
                 isBackgroundActive = true;
+                console.log("Áudio silencioso ativado para manter o contexto.");
             } catch(e) { console.warn(e); }
         }
         function keepAudioAlive() { if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(e=>{}); }
@@ -618,7 +559,7 @@
         function updateFilteredPlaylist() { filteredPlaylist = allSongsMode ? [...musicas] : musicas.filter(m=>m.periodo==="todos"||m.periodo===["manha","tarde","noite"][Math.floor(new Date().getHours()/6)%3]); if(!filteredPlaylist.length) filteredPlaylist=[...musicas]; renderPlaylist(); }
         function renderPlaylist() { let html=''; filteredPlaylist.forEach((m,idx)=>{ const isActive = (musicas.findIndex(p=>p.id===m.id)===currentIndex && isPlaying); html+=`<div class="playlist-item ${isActive?'playing':''}" onclick="selectSong(${musicas.findIndex(p=>p.id===m.id)})"><div class="music-number">${(idx+1).toString().padStart(2,'0')}</div><div class="playlist-info"><div class="playlist-title">${m.title}</div><div class="playlist-artist">${m.artist}</div></div><div class="playlist-duration">03:30</div></div>`; }); playlistContainer.innerHTML=html; }
         function loadTrack(index) { if(index>=musicas.length) index=0; if(index<0) index=musicas.length-1; currentIndex=index; const track=musicas[currentIndex]; musicPlayer.src=track.src; musicPlayer.load(); trackArtist.textContent=`${track.title} - ${track.artist}`; currentTimeEl.textContent='0:00'; progressFill.style.width='0%'; musicPlayer.addEventListener('loadedmetadata',function onMeta(){ if(musicPlayer.duration && !isNaN(musicPlayer.duration)){ const mins=Math.floor(musicPlayer.duration/60), secs=Math.floor(musicPlayer.duration%60); totalTimeEl.textContent=`${mins}:${secs<10?'0':''}${secs}`; } musicPlayer.removeEventListener('loadedmetadata',onMeta); }); renderPlaylist(); }
-        function playMusic() { if(isAdPlaying){ showNotification('Aguarde o anúncio'); return; } if(!isBackgroundActive) startSilentAudio(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); musicPlayer.play().then(()=>{ isPlaying=true; playBtn.innerHTML='<i class="fas fa-pause"></i>'; startTimer(); splash.classList.add('hidden'); setTimeout(()=>splash.classList.add('display-none'),500); tapToStart.classList.add('hidden'); renderPlaylist(); setTimeout(()=>{ tipBanner.style.display='block'; setTimeout(()=>tipBanner.style.display='none',5000); },2000); }).catch(e=>console.log); }
+        function playMusic() { if(isAdPlaying){ showNotification('Aguarde o anúncio'); return; } if(!isBackgroundActive) startSilentAudio(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); musicPlayer.play().then(()=>{ isPlaying=true; playBtn.innerHTML='<i class="fas fa-pause"></i>'; startTimer(); renderPlaylist(); setTimeout(()=>{ tipBanner.style.display='block'; setTimeout(()=>tipBanner.style.display='none',5000); },2000); }).catch(e=>{ console.log("Autoplay bloqueado, usuário precisa tocar no play"); isPlaying=false; playBtn.innerHTML='<i class="fas fa-play"></i>'; }); }
         function pauseMusic() { musicPlayer.pause(); isPlaying=false; playBtn.innerHTML='<i class="fas fa-play"></i>'; stopTimer(); renderPlaylist(); }
         function togglePlayPause() { if(isAdPlaying){ showNotification('Anúncio tocando...'); return; } isPlaying?pauseMusic():playMusic(); }
         function nextTrack() { if(isAdPlaying){ showNotification('Aguarde o anúncio'); return; } stopTimer(); musicPlayedCount++; let filteredIdx = filteredPlaylist.findIndex(m=>m.id===musicas[currentIndex].id); if(filteredIdx===-1) filteredIdx=0; if(shuffle && filteredPlaylist.length>1){ let newIdx; do newIdx=Math.floor(Math.random()*filteredPlaylist.length); while(newIdx===filteredIdx); filteredIdx=newIdx; } else filteredIdx=(filteredIdx+1)%filteredPlaylist.length; currentIndex=musicas.findIndex(m=>m.id===filteredPlaylist[filteredIdx].id); loadTrack(currentIndex); if(isPlaying) playMusic(); if(adsEnabled && musicPlayedCount%adInterval===0 && !isAdPlaying) playAd(); }
@@ -676,7 +617,15 @@
         document.addEventListener('visibilitychange',keepAudioAlive);
         setInterval(keepAudioAlive,5000);
         
-        window.addEventListener('load',()=>{ updateFilteredPlaylist(); const randomFilteredIndex=Math.floor(Math.random()*filteredPlaylist.length); currentIndex=musicas.findIndex(m=>m.id===filteredPlaylist[randomFilteredIndex].id); loadTrack(currentIndex); tapToStart.addEventListener('click',(e)=>{ e.stopPropagation(); playMusic(); }); setInterval(()=>{ if(!allSongsMode) updateFilteredPlaylist(); },60000); });
+        window.addEventListener('load',()=>{ 
+            updateFilteredPlaylist(); 
+            const randomFilteredIndex=Math.floor(Math.random()*filteredPlaylist.length); 
+            currentIndex=musicas.findIndex(m=>m.id===filteredPlaylist[randomFilteredIndex].id); 
+            loadTrack(currentIndex); 
+            // Tenta iniciar a reprodução automaticamente
+            playMusic();
+            setInterval(()=>{ if(!allSongsMode) updateFilteredPlaylist(); },60000);
+        });
     </script>
 </body>
 </html>
