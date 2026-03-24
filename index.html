@@ -90,7 +90,25 @@
         .feedback-btn { position: fixed; bottom: 20px; right: 20px; background: transparent; color: #ffffff !important; font-size: 1.5rem; cursor: pointer; z-index: 2000; }
         .feedback-modal { position: fixed; bottom: 70px; right: 20px; width: 260px; background: #1a1a1a; border: 2px solid var(--primary-color); border-radius: 15px; padding: 15px; z-index: 2001; display: none; }
         .feedback-modal.open { display: block; }
-        .greeting-indicator { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; font-weight: bold; color: var(--primary-color); border: 1px solid var(--primary-color); backdrop-filter: blur(4px); z-index: 20; pointer-events: none; }
+        /* Saudação sobreposta na mídia principal */
+        .greeting-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            backdrop-filter: blur(8px);
+            z-index: 25;
+            pointer-events: none;
+            font-family: monospace;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
         body.car-mode .extra-video-section, body.car-mode .top-bar, body.car-mode .footer { display: none !important; }
         .car-exit-btn { position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; border: 2px solid var(--primary-color); border-radius: 50px; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 10000; }
         body.car-mode .car-exit-btn { display: flex; }
@@ -108,12 +126,16 @@
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
     
     <div class="app">
-        <div class="top-bar"><div class="top-ticker"><span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - 173 músicas - Anuncie aqui! <i class="fas fa-music fa-beat"></i></span></div></div>
+        <div class="top-bar">
+            <div class="top-ticker">
+                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - 173 músicas - Anuncie aqui! - 12 98846-1978 <i class="fas fa-music fa-beat"></i></span>
+            </div>
+        </div>
         
         <div class="player-card">
             <div class="video-container" id="mainMediaContainer">
                 <video autoplay loop muted playsinline id="mainMedia"></video>
-                <div class="greeting-indicator" id="greetingIndicator">🌞 Bom dia!</div>
+                <div class="greeting-overlay" id="greetingOverlay">🌞 Bom dia!</div>
                 <div class="media-type-selector" id="mainMediaSelector">
                     <button class="media-type-btn" data-type="video"><i class="fas fa-video"></i> Vídeo</button>
                     <button class="media-type-btn" data-type="image"><i class="fas fa-image"></i> Foto</button>
@@ -137,7 +159,7 @@
                 </div>
             </div>
         </div>
-        <div class="footer">Rádio Playlist 2025 • 173 músicas • Multi-mídia • Fallback automático</div>
+        <div class="footer">Rádio Playlist 2025 • 173 músicas • Multi-mídia • Anúncios interativos</div>
     </div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -183,9 +205,6 @@
 
     <script>
         // ==================== PLAYLIST COMPLETA COM 173 MÚSICAS ====================
-        // ✅ Mantendo os nomes ORIGINAIS (com acentos, underscores, etc)
-        // ✅ O código tem FALLBACK automático - se o arquivo não existir, toca áudio sintetizado
-        
         const musicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escrever", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
@@ -199,7 +218,6 @@
             { id: 10, title: "Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", periodo: "manha" }
         ];
         
-        // Completar até 173 músicas
         const artistasComplemento = ["Djavan", "Eagles", "Fagner", "Guns N Roses", "Jason Mraz", "Jota Quest", "Lulu Santos", "Natiruts", "Simply Red", "Skank"];
         const titulosComplemento = ["Correnteza", "Hotel California", "Espumas ao Vento", "Knockin On Heaven's Door", "I'm Yours", "Dentro de um Abraço", "Toda Forma de Amor", "Sorri Sou Rei", "Holding Back The Years", "Garota Nacional"];
         
@@ -241,21 +259,13 @@
         
         function stopSynthesizedAudio() {
             if (currentTimeout) clearTimeout(currentTimeout);
-            currentOscillators.forEach(osc => {
-                try { osc.stop(); } catch(e) {}
-            });
+            currentOscillators.forEach(osc => { try { osc.stop(); } catch(e) {} });
             currentOscillators = [];
         }
         
         function playSynthesizedAudio(trackId, duration = 30) {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-            
+            if (!audioContext) { audioContext = new (window.AudioContext || window.webkitAudioContext)(); }
+            if (audioContext.state === 'suspended') { audioContext.resume(); }
             stopSynthesizedAudio();
             
             const baseNote = 220 + (trackId % 50) * 2;
@@ -268,62 +278,40 @@
                 const note = notes[i % notes.length];
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
                 oscillator.type = i % 2 === 0 ? 'sine' : 'triangle';
                 oscillator.frequency.value = note * (1 + (i % 3) * 0.02);
-                
                 gainNode.gain.value = 0.12;
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
                 oscillator.start(startTime + timeOffset);
                 oscillator.stop(startTime + timeOffset + noteDuration * 0.7);
                 currentOscillators.push(oscillator);
-                
                 timeOffset += noteDuration;
             }
-            
-            currentTimeout = setTimeout(() => {
-                if (isPlaying) nextTrack();
-            }, duration * 1000);
-            
+            currentTimeout = setTimeout(() => { if (isPlaying) nextTrack(); }, duration * 1000);
             return duration;
         }
         
-        // ==================== PLAYER COM FALLBACK AUTOMÁTICO ====================
         async function playAudioWithFallback(src, trackId) {
             return new Promise((resolve) => {
                 musicPlayer.src = src;
                 musicPlayer.load();
-                
                 const timeoutId = setTimeout(() => {
-                    console.log(`⚠️ Fallback ativado: ${src} não carregou`);
+                    console.log(`⚠️ Fallback ativado: ${src}`);
                     playSynthesizedAudio(trackId);
                     resolve(false);
                 }, 3000);
-                
                 musicPlayer.oncanplaythrough = () => {
                     clearTimeout(timeoutId);
-                    musicPlayer.play()
-                        .then(() => resolve(true))
-                        .catch(() => {
-                            playSynthesizedAudio(trackId);
-                            resolve(false);
-                        });
+                    musicPlayer.play().then(() => resolve(true)).catch(() => { playSynthesizedAudio(trackId); resolve(false); });
                 };
-                
-                musicPlayer.onerror = () => {
-                    clearTimeout(timeoutId);
-                    playSynthesizedAudio(trackId);
-                    resolve(false);
-                };
+                musicPlayer.onerror = () => { clearTimeout(timeoutId); playSynthesizedAudio(trackId); resolve(false); };
             });
         }
         
         function updateFilteredPlaylist() {
-            if(allSongsMode) {
-                filteredPlaylist = [...musicas];
-            } else {
+            if(allSongsMode) { filteredPlaylist = [...musicas]; }
+            else {
                 const hora = new Date().getHours();
                 let periodo = "manha";
                 if(hora >= 12 && hora < 18) periodo = "tarde";
@@ -356,21 +344,14 @@
             if(index < 0) index = musicas.length - 1;
             currentIndex = index;
             const track = musicas[currentIndex];
-            
             musicPlayer.src = track.src;
             trackArtist.textContent = `${track.title} - ${track.artist}`;
             currentTimeEl.textContent = '0:00';
             totalTimeEl.textContent = '03:30';
             progressFill.style.width = '0%';
-            
             if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: track.title,
-                    artist: track.artist,
-                    album: 'Rádio Playlist'
-                });
+                navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist, album: 'Rádio Playlist' });
             }
-            
             renderPlaylist();
         }
         
@@ -378,16 +359,10 @@
             if(timerInterval) clearInterval(timerInterval);
             let startTime = Date.now();
             const duration = 210;
-            
             timerInterval = setInterval(() => {
                 if(isPlaying && !isAdPlaying) {
                     const elapsed = (Date.now() - startTime) / 1000;
-                    if(elapsed >= duration) {
-                        clearInterval(timerInterval);
-                        timerInterval = null;
-                        nextTrack();
-                        return;
-                    }
+                    if(elapsed >= duration) { clearInterval(timerInterval); timerInterval = null; nextTrack(); return; }
                     const percent = (elapsed / duration) * 100;
                     progressFill.style.width = percent + '%';
                     const mins = Math.floor(elapsed / 60);
@@ -397,42 +372,22 @@
             }, 100);
         }
         
-        function stopTimer() {
-            if(timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-        }
+        function stopTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
         
         async function playMusic() {
-            if(isAdPlaying) {
-                showNotification('Aguarde o anúncio terminar');
-                return;
-            }
-            
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
-            if (audioContext.state === 'suspended') {
-                await audioContext.resume();
-            }
-            
+            if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
+            if (!audioContext) { audioContext = new (window.AudioContext || window.webkitAudioContext)(); }
+            if (audioContext.state === 'suspended') { await audioContext.resume(); }
             const track = musicas[currentIndex];
             await playAudioWithFallback(track.src, track.id);
-            
             isPlaying = true;
             playBtn.innerHTML = '<i class="fas fa-pause"></i>';
             startTimer();
-            
             splash.classList.add('hidden');
             setTimeout(() => splash.classList.add('display-none'), 500);
             tapToStart.classList.add('hidden');
             renderPlaylist();
-            
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.playbackState = 'playing';
-            }
+            if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
         }
         
         function pauseMusic() {
@@ -442,138 +397,92 @@
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
             stopTimer();
             renderPlaylist();
-            
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.playbackState = 'paused';
-            }
+            if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'paused'; }
         }
         
         function togglePlayPause() {
-            if(isAdPlaying) {
-                showNotification('Aguarde o anúncio');
-                return;
-            }
+            if(isAdPlaying) { showNotification('Aguarde o anúncio'); return; }
             isPlaying ? pauseMusic() : playMusic();
         }
         
         function nextTrack() {
             if(isAdPlaying) return;
-            
             stopTimer();
             stopSynthesizedAudio();
             musicPlayer.pause();
-            
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
-            
             if(shuffle && filteredPlaylist.length > 1) {
                 let newIdx;
-                do {
-                    newIdx = Math.floor(Math.random() * filteredPlaylist.length);
-                } while(newIdx === filteredIdx);
+                do { newIdx = Math.floor(Math.random() * filteredPlaylist.length); } while(newIdx === filteredIdx);
                 filteredIdx = newIdx;
-            } else {
-                filteredIdx = (filteredIdx + 1) % filteredPlaylist.length;
-            }
-            
+            } else { filteredIdx = (filteredIdx + 1) % filteredPlaylist.length; }
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            
-            if(isPlaying) {
-                playMusic();
-            }
+            if(isPlaying) { playMusic(); }
         }
         
         function prevTrack() {
             if(isAdPlaying) return;
-            
             stopTimer();
             stopSynthesizedAudio();
             musicPlayer.pause();
-            
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
-            
             if(shuffle && filteredPlaylist.length > 1) {
                 let newIdx;
-                do {
-                    newIdx = Math.floor(Math.random() * filteredPlaylist.length);
-                } while(newIdx === filteredIdx);
+                do { newIdx = Math.floor(Math.random() * filteredPlaylist.length); } while(newIdx === filteredIdx);
                 filteredIdx = newIdx;
-            } else {
-                filteredIdx = (filteredIdx - 1 + filteredPlaylist.length) % filteredPlaylist.length;
-            }
-            
+            } else { filteredIdx = (filteredIdx - 1 + filteredPlaylist.length) % filteredPlaylist.length; }
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            
-            if(isPlaying) {
-                playMusic();
-            }
+            if(isPlaying) { playMusic(); }
         }
         
         window.selectSong = function(globalIdx) {
-            if(isAdPlaying) {
-                showNotification('Aguarde o anúncio terminar');
-                return;
-            }
-            
+            if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
             stopTimer();
             stopSynthesizedAudio();
             musicPlayer.pause();
-            
             currentIndex = globalIdx;
             loadTrack(currentIndex);
             if(isPlaying) playMusic();
             closeDrawer();
         };
         
-        // ==================== MULTI-MÍDIA ====================
-        const mediaLibrary = {
-            video: {
-                padrao: ['https://videos.pexels.com/video-files/855743/855743-hd_1920_1080_25fps.mp4', 'https://videos.pexels.com/video-files/799134/799134-hd_1920_1080_25fps.mp4'],
-                bomdia: ['https://videos.pexels.com/video-files/2845911/2845911-hd_1920_1080_24fps.mp4', 'https://videos.pexels.com/video-files/2816679/2816679-hd_1920_1080_24fps.mp4'],
-                boatarde: ['https://videos.pexels.com/video-files/2098247/2098247-hd_1920_1080_24fps.mp4', 'https://videos.pexels.com/video-files/1886841/1886841-hd_1920_1080_30fps.mp4'],
-                boanoite: ['https://videos.pexels.com/video-files/2013625/2013625-hd_1920_1080_24fps.mp4', 'https://videos.pexels.com/video-files/3254786/3254786-hd_1920_1080_30fps.mp4']
-            },
-            image: {
-                padrao: ['https://picsum.photos/id/100/1280/720', 'https://picsum.photos/id/1015/1280/720'],
-                bomdia: ['https://picsum.photos/id/16/1280/720', 'https://picsum.photos/id/29/1280/720'],
-                boatarde: ['https://picsum.photos/id/15/1280/720', 'https://picsum.photos/id/30/1280/720'],
-                boanoite: ['https://picsum.photos/id/42/1280/720', 'https://picsum.photos/id/76/1280/720']
-            },
-            gif: {
-                padrao: ['https://media.giphy.com/media/26tPplGWjN0xLyxUQ/giphy.gif', 'https://media.giphy.com/media/l0MYt5jH6gkWHygDe/giphy.gif'],
-                bomdia: ['https://media.giphy.com/media/l0MYt5jH6gkWHygDe/giphy.gif', 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif'],
-                boatarde: ['https://media.giphy.com/media/xT9IgzoKnwFWm9TkH2/giphy.gif', 'https://media.giphy.com/media/l0MYEq5BJi4XiLPZ6/giphy.gif'],
-                boanoite: ['https://media.giphy.com/media/26gR2qejcKcgH4tA4/giphy.gif', 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif']
-            }
+        // ==================== MULTI-MÍDIA COM SAUDAÇÃO SOBREPOSTA ====================
+        // Mídia Principal (alterna a cada 15s)
+        const mediaPrincipal = {
+            video: ['https://videos.pexels.com/video-files/855743/855743-hd_1920_1080_25fps.mp4', 'https://videos.pexels.com/video-files/799134/799134-hd_1920_1080_25fps.mp4', 'https://videos.pexels.com/video-files/2845911/2845911-hd_1920_1080_24fps.mp4'],
+            image: ['https://picsum.photos/id/100/1280/720', 'https://picsum.photos/id/1015/1280/720', 'https://picsum.photos/id/16/1280/720'],
+            gif: ['https://media.giphy.com/media/26tPplGWjN0xLyxUQ/giphy.gif', 'https://media.giphy.com/media/l0MYt5jH6gkWHygDe/giphy.gif', 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif']
         };
         
-        function getCurrentGreeting() {
+        // Mídia Anúncios (2 anúncios clicáveis)
+        const anuncios = [
+            { src: 'https://videos.pexels.com/video-files/2098247/2098247-hd_1920_1080_24fps.mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/', tipo: 'video' },
+            { src: 'https://picsum.photos/id/104/1280/720', nome: 'Destaque', link: 'https://destaque.com.br/', tipo: 'image' }
+        ];
+        
+        function getSaudacao() {
             const hora = new Date().getHours();
-            if (hora >= 5 && hora < 12) return { texto: "🌞 Bom dia!", emoji: "🌞", nome: "bomdia" };
-            if (hora >= 12 && hora < 18) return { texto: "☀️ Boa tarde!", emoji: "☀️", nome: "boatarde" };
-            return { texto: "🌙 Boa noite!", emoji: "🌙", nome: "boanoite" };
+            if (hora >= 5 && hora < 12) return { texto: "🌞 Bom dia!", emoji: "🌞" };
+            if (hora >= 12 && hora < 18) return { texto: "☀️ Boa tarde!", emoji: "☀️" };
+            return { texto: "🌙 Boa noite!", emoji: "🌙" };
         }
         
         let mainMediaType = 'video';
-        let extraMediaType = 'video';
         let mainMediaIndex = 0;
         let extraMediaIndex = 0;
-        let currentGreeting = getCurrentGreeting();
-        
-        function getMediaList(type, greeting) {
-            const lib = mediaLibrary[type];
-            return lib[greeting] || lib.padrao;
-        }
         
         function updateMainMedia() {
-            const mediaList = getMediaList(mainMediaType, currentGreeting.nome);
+            const mediaList = mediaPrincipal[mainMediaType];
             const src = mediaList[mainMediaIndex % mediaList.length];
             const oldMedia = document.getElementById('mainMedia');
+            const saudacao = getSaudacao();
+            document.getElementById('greetingOverlay').innerHTML = `${saudacao.emoji} ${saudacao.texto}`;
             
             if (mainMediaType === 'video') {
                 const newVideo = document.createElement('video');
@@ -601,18 +510,19 @@
         }
         
         function updateExtraMedia() {
-            const mediaList = getMediaList(extraMediaType, currentGreeting.nome);
-            const src = mediaList[extraMediaIndex % mediaList.length];
+            const anuncio = anuncios[extraMediaIndex % anuncios.length];
             const oldMedia = document.getElementById('extraMedia');
+            document.getElementById('extraOverlay').innerHTML = `<i class="fas fa-ad"></i> ${anuncio.nome}`;
+            document.getElementById('extraMediaContainer').onclick = () => { if(anuncio.link) window.open(anuncio.link, '_blank'); };
             
-            if (extraMediaType === 'video') {
+            if (anuncio.tipo === 'video') {
                 const newVideo = document.createElement('video');
                 newVideo.id = 'extraMedia';
                 newVideo.autoplay = true;
                 newVideo.loop = true;
                 newVideo.muted = true;
                 newVideo.playsInline = true;
-                newVideo.src = src;
+                newVideo.src = anuncio.src;
                 newVideo.style.width = '100%';
                 newVideo.style.height = '100%';
                 newVideo.style.objectFit = 'cover';
@@ -621,7 +531,7 @@
             } else {
                 const newImg = document.createElement('img');
                 newImg.id = 'extraMedia';
-                newImg.src = src;
+                newImg.src = anuncio.src;
                 newImg.style.width = '100%';
                 newImg.style.height = '100%';
                 newImg.style.objectFit = 'cover';
@@ -641,37 +551,24 @@
         }
         
         function changeExtraMediaType(type) {
-            extraMediaType = type;
-            extraMediaIndex = 0;
-            updateExtraMedia();
-            document.querySelectorAll('.extra-media-btn').forEach(btn => {
-                if(btn.dataset.extraType === type) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
+            // Não altera o tipo do anúncio, apenas notifica
+            showNotification(`Anúncios em modo: ${type === 'video' ? 'Vídeo' : type === 'image' ? 'Foto' : 'GIF'}`);
         }
         
-        function rotateMedia() {
+        function rotateMainMedia() {
             mainMediaIndex++;
             updateMainMedia();
+        }
+        
+        function rotateExtraMedia() {
             extraMediaIndex++;
             updateExtraMedia();
         }
         
-        function updateGreetingUI() {
-            const greeting = getCurrentGreeting();
-            document.getElementById('greetingIndicator').innerHTML = `${greeting.emoji} ${greeting.texto}`;
-            document.getElementById('topTickerText').innerHTML = `<i class="fas fa-headphones-alt fa-spin"></i> ${greeting.texto} RÁDIO PLAYLIST - 173 músicas - Anuncie aqui! <i class="fas fa-music fa-beat"></i>`;
-        }
-        
-        function checkGreetingChange() {
-            const newGreeting = getCurrentGreeting();
-            if (newGreeting.nome !== currentGreeting.nome) {
-                currentGreeting = newGreeting;
-                updateGreetingUI();
-                updateMainMedia();
-                updateExtraMedia();
-                showNotification(`${currentGreeting.texto} 🎉 Mídias atualizadas!`);
-            }
+        // Atualiza saudação a cada minuto (sem alterar ticker)
+        function updateGreetingOnly() {
+            const saudacao = getSaudacao();
+            document.getElementById('greetingOverlay').innerHTML = `${saudacao.emoji} ${saudacao.texto}`;
         }
         
         // ==================== UTILITÁRIOS ====================
@@ -692,7 +589,6 @@
             updateFilteredPlaylist();
             toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
             showNotification(allSongsMode ? "Todas as músicas" : "Modo período");
-            
             const exists = filteredPlaylist.some(m => m.id === musicas[currentIndex].id);
             if(!exists && filteredPlaylist.length) {
                 const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[0].id);
@@ -812,11 +708,14 @@
             tapToStart.style.display = 'block';
             tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
-            setInterval(checkGreetingChange, 60000);
-            setInterval(rotateMedia, 20000);
-            updateGreetingUI();
+            setInterval(updateGreetingOnly, 60000);
+            setInterval(rotateMainMedia, 15000);
+            setInterval(rotateExtraMedia, 15000);
+            
+            // Inicia mídias
             changeMainMediaType('video');
-            changeExtraMediaType('video');
+            updateExtraMedia();
+            updateGreetingOnly();
         });
         
         document.querySelectorAll('.media-type-btn').forEach(btn => {
