@@ -259,7 +259,60 @@
         .feedback-modal .modal-btn.send:hover { background: #20b859; }
         .feedback-modal .modal-btn.cancel:hover { background: #444; }
 
-        /* Status de transmissão */
+        /* Modal de QR Code para TV */
+        .qr-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e1e1e;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 20px;
+            z-index: 10002;
+            display: none;
+            text-align: center;
+            max-width: 90%;
+            width: 320px;
+        }
+        .qr-modal.open {
+            display: block;
+        }
+        .qr-modal h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .qr-modal p {
+            color: #fff;
+            font-size: 0.8rem;
+            margin: 10px 0;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .qr-modal .close-qr {
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .qr-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 10001;
+            display: none;
+        }
+        .qr-overlay.active {
+            display: block;
+        }
+        
         .cast-status {
             position: fixed;
             top: 20px;
@@ -275,26 +328,9 @@
             z-index: 10001;
             border: 1px solid var(--primary-color);
             backdrop-filter: blur(8px);
-            font-weight: bold;
         }
         .cast-status.active {
             display: flex;
-        }
-        .cast-status i {
-            font-size: 1rem;
-        }
-        .cast-status button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-left: 5px;
-            padding: 2px 6px;
-            border-radius: 20px;
-        }
-        .cast-status button:hover {
-            background: rgba(255,255,255,0.2);
         }
 
         body.car-mode .extra-video-section,
@@ -423,21 +459,13 @@
         body.car-mode .car-exit-btn {
             display: flex;
         }
-        
-        /* Animação de pulsação */
-        @keyframes castPulse {
-            0% { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.05); }
-        }
-        .casting-active {
-            animation: castPulse 1s infinite alternate;
-        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
 </head>
 <body class="theme-red">
     <div class="cast-status" id="castStatus">
         <i class="fas fa-tv fa-fw"></i>
-        <span id="castStatusText">Compartilhando tela...</span>
+        <span id="castStatusText">Compartilhando link...</span>
         <button id="stopCastBtn"><i class="fas fa-times"></i></button>
     </div>
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
@@ -497,7 +525,7 @@
         <div class="drawer-content">
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
-            <button class="drawer-item" id="castToTvBtn"><i class="fas fa-tv"></i> Transmitir para TV / Compartilhar tela</button>
+            <button class="drawer-item" id="castToTvBtn"><i class="fas fa-tv"></i> Transmitir para TV</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar link</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
             
@@ -528,6 +556,17 @@
             <h4 style="color: var(--primary-color); margin: 10px 0;">🎵 Playlist Completa (173 músicas)</h4>
             <div class="playlist-container" id="playlistContainer"></div>
         </div>
+    </div>
+
+    <!-- Modal de QR Code -->
+    <div class="qr-overlay" id="qrOverlay"></div>
+    <div class="qr-modal" id="qrModal">
+        <h3><i class="fas fa-tv"></i> Transmitir para TV</h3>
+        <p>1️⃣ Escaneie o QR Code com seu celular</p>
+        <p>2️⃣ Ou abra este link no navegador da TV:</p>
+        <div id="qrcode"></div>
+        <p id="castUrl" style="font-size: 0.7rem; word-break: break-all; background: #0a0a0a; padding: 8px; border-radius: 8px;"></p>
+        <button class="close-qr" id="closeQrModal"><i class="fas fa-check"></i> Entendi</button>
     </div>
 
     <audio id="musicPlayer" preload="auto"></audio>
@@ -753,74 +792,70 @@
         ];
         
         let audioCtx = null, silentSource = null;
+        let isCastingActive = false;
+        let qrCodeInstance = null;
         
-        // ========== FUNÇÃO DE COMPARTILHAMENTO DE TELA (FUNCIONAL) ==========
-        let mediaStream = null;
-        let isScreenSharing = false;
-        
-        async function startScreenShare() {
-            if (isScreenSharing) {
-                showNotification("✅ Já está compartilhando a tela!");
-                return;
+        // ========== FUNÇÃO CORRETA PARA TRANSMITIR PARA TV ==========
+        function shareToTV() {
+            const currentUrl = window.location.href;
+            const qrModal = document.getElementById('qrModal');
+            const qrOverlay = document.getElementById('qrOverlay');
+            const castUrlElement = document.getElementById('castUrl');
+            const qrcodeDiv = document.getElementById('qrcode');
+            
+            // Limpa QR Code anterior
+            qrcodeDiv.innerHTML = '';
+            
+            // Mostra o link
+            castUrlElement.textContent = currentUrl;
+            
+            // Gera QR Code
+            try {
+                if (typeof QRCode !== 'undefined') {
+                    qrCodeInstance = new QRCode(qrcodeDiv, {
+                        text: currentUrl,
+                        width: 200,
+                        height: 200,
+                        colorDark: "#ffffff",
+                        colorLight: "#000000",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                } else {
+                    // Fallback
+                    qrcodeDiv.innerHTML = `<div style="color:white;padding:20px;">${currentUrl.substring(0, 30)}...</div>`;
+                }
+            } catch(e) {
+                qrcodeDiv.innerHTML = `<div style="color:white;padding:20px;">Escaneie o código no celular</div>`;
             }
             
-            try {
-                // Solicita permissão para capturar tela
-                const stream = await navigator.mediaDevices.getDisplayMedia({
-                    video: {
-                        cursor: "always",
-                        displaySurface: "monitor"
-                    },
-                    audio: true,
-                    preferCurrentTab: true
-                });
-                
-                mediaStream = stream;
-                isScreenSharing = true;
-                
-                // Mostra o status
-                const castStatus = document.getElementById('castStatus');
-                const castStatusText = document.getElementById('castStatusText');
-                castStatus.classList.add('active');
-                castStatusText.innerHTML = '<i class="fas fa-tv fa-fw"></i> Transmitindo tela...';
-                
-                showNotification("📺 Transmissão iniciada! Abra o espelhamento na TV ou use o Windows + K");
-                
-                // Quando o usuário parar o compartilhamento
-                stream.getVideoTracks()[0].onended = () => {
-                    stopScreenShare();
-                };
-                
-                // Adiciona classe de animação no vídeo
-                document.getElementById('mainVideo').classList.add('casting-active');
-                
-            } catch (error) {
-                console.error("Erro ao compartilhar tela:", error);
-                if (error.name === 'NotAllowedError') {
-                    showNotification("❌ Permissão negada! Permita o compartilhamento de tela");
-                } else if (error.name === 'NotFoundError') {
-                    showNotification("❌ Nenhum dispositivo de captura encontrado");
-                } else {
-                    showNotification("❌ Erro ao iniciar transmissão: " + error.message);
-                }
-            }
+            qrModal.classList.add('open');
+            qrOverlay.classList.add('active');
+            
+            // Mostra status
+            const castStatus = document.getElementById('castStatus');
+            const castStatusText = document.getElementById('castStatusText');
+            castStatus.classList.add('active');
+            castStatusText.innerHTML = '<i class="fas fa-qrcode"></i> QR Code gerado! Escaneie na TV';
+            isCastingActive = true;
+            
+            showNotification("📺 QR Code gerado! Escaneie com seu celular ou abra na TV");
         }
         
-        function stopScreenShare() {
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => {
-                    track.stop();
-                });
-                mediaStream = null;
-            }
-            
-            isScreenSharing = false;
+        function stopCasting() {
+            const qrModal = document.getElementById('qrModal');
+            const qrOverlay = document.getElementById('qrOverlay');
             const castStatus = document.getElementById('castStatus');
+            
+            qrModal.classList.remove('open');
+            qrOverlay.classList.remove('active');
             castStatus.classList.remove('active');
+            isCastingActive = false;
             
-            document.getElementById('mainVideo').classList.remove('casting-active');
-            
-            showNotification("Transmissão de tela encerrada");
+            showNotification("Transmissão encerrada");
+        }
+        
+        function closeQrModal() {
+            stopCasting();
         }
         
         // Função para compartilhar link
@@ -1094,8 +1129,10 @@
         document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
         document.getElementById('drawerOverlay').addEventListener('click',closeDrawer);
         document.getElementById('fullscreenDrawerBtn').addEventListener('click',()=>{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
-        document.getElementById('castToTvBtn').addEventListener('click',startScreenShare);
-        document.getElementById('stopCastBtn').addEventListener('click',stopScreenShare);
+        document.getElementById('castToTvBtn').addEventListener('click',shareToTV);
+        document.getElementById('stopCastBtn').addEventListener('click',stopCasting);
+        document.getElementById('closeQrModal').addEventListener('click',closeQrModal);
+        document.getElementById('qrOverlay').addEventListener('click',closeQrModal);
         document.getElementById('shareDrawerBtn').addEventListener('click',shareLink);
         document.getElementById('carModeDrawerBtn').addEventListener('click',()=>{ document.body.classList.add('car-mode'); showNotification('🚗 Modo Carro ATIVO'); });
         document.getElementById('exitCarModeBtn').addEventListener('click',()=>{ document.body.classList.remove('car-mode'); showNotification('Modo normal'); });
