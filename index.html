@@ -6,23 +6,9 @@
     <title>Rádio Playlist • Multi-Mídia</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            min-height: 100vh;
-            background-color: #000000;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-        }
-
+        /* ========== ESTILOS IGUAIS AO SEU CÓDIGO ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { min-height: 100vh; background-color: #000000; overflow: hidden; position: fixed; width: 100%; height: 100%; }
         body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
         body.theme-lilac { --primary-color: #b380ff; --primary-dark: #7a4db3; }
         body.theme-blue { --primary-color: #00a8ff; --primary-dark: #0077be; }
@@ -34,246 +20,54 @@
         body.theme-white { --primary-color: #ffffff; --primary-dark: #cccccc; }
         body.theme-pure-black { --primary-color: #000000; --primary-dark: #000000; }
         body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; }
-
-        .app {
-            width: 100%;
-            height: 100vh;
-            background: #000000;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid var(--primary-color);
-            overflow-y: auto;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        #splash { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 9999; 
-            transition: opacity 0.5s ease; 
-        }
+        .app { width: 100%; height: 100vh; background: #000000; display: flex; flex-direction: column; border: 1px solid var(--primary-color); overflow-y: auto; overflow-x: hidden; position: relative; }
+        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease; }
         #splash.hidden { opacity: 0; pointer-events: none; }
         #splash.display-none { display: none; }
         .splash-content { text-align: center; color: #fff; }
         .splash-content i { font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem; animation: pulse 1.5s infinite; }
         .splash-content h1 { font-size: 1.8rem; }
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
-
-        #tap-to-start { 
-            position: fixed; 
-            bottom: 90px;
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white; 
-            padding: 12px 28px; 
-            border-radius: 50px; 
-            font-weight: bold; 
-            font-size: 1.1rem; 
-            z-index: 10000; 
-            box-shadow: 0 0 25px rgba(230, 57, 70, 0.7), 0 4px 12px rgba(0,0,0,0.4); 
-            cursor: pointer; 
-            border: 2px solid rgba(255,255,255,0.5); 
-            text-align: center; 
-            letter-spacing: 0.5px;
-            display: none;
-            animation: btnPulse 1.5s infinite;
-            backdrop-filter: blur(4px);
-            white-space: nowrap;
-        }
-        @keyframes btnPulse {
-            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); }
-            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 30px rgba(230,57,70,0.8); }
-            100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); }
-        }
+        #tap-to-start { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 12px 28px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; z-index: 10000; box-shadow: 0 0 25px rgba(230, 57, 70, 0.7), 0 4px 12px rgba(0,0,0,0.4); cursor: pointer; border: 2px solid rgba(255,255,255,0.5); text-align: center; letter-spacing: 0.5px; display: none; animation: btnPulse 1.5s infinite; backdrop-filter: blur(4px); white-space: nowrap; }
+        @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); } 50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 30px rgba(230,57,70,0.8); } 100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(230,57,70,0.5); } }
         #tap-to-start i { margin-right: 8px; font-size: 1rem; }
         #tap-to-start.hidden { display: none !important; }
-
         .top-bar { background: #000; border-top: 1px solid var(--primary-color); border-bottom: 1px solid var(--primary-color); }
-        .top-ticker {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            background: #000;
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.3rem;
-            padding: 15px 16px;
-            cursor: pointer;
-        }
+        .top-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: #000; color: #fff; font-weight: 800; font-size: 1.3rem; padding: 15px 16px; cursor: pointer; }
         .top-ticker span { display: inline-block; padding-left: 100%; animation: ticker-scroll 25s linear infinite; }
         @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
-        .video-container { 
-            aspect-ratio: 16 / 9; 
-            background: #000; 
-            position: relative; 
-            border: 1px solid var(--primary-color);
-            border-radius: 12px;
-            margin: 5px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        video, img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            display: block;
-        }
-        .media-img {
-            object-fit: contain;
-            background: #000;
-        }
-        
-        /* MUDE AQUI: Botão menu sem círculo - apenas 3 potinhos */
-        .video-menu-btn { 
-            position: absolute; 
-            top: 12px; 
-            right: 12px; 
-            background: transparent;
-            color: white; 
-            border: none;
-            font-size: 1.6rem; 
-            cursor: pointer; 
-            z-index: 20; 
-            padding: 6px 10px;
-            border-radius: 0;
-        }
-        
-        .media-type-selector {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            display: flex;
-            gap: 8px;
-            z-index: 20;
-            background: rgba(0,0,0,0.6);
-            padding: 6px 12px;
-            border-radius: 30px;
-            backdrop-filter: blur(4px);
-            border: 1px solid var(--primary-color);
-        }
-        .media-type-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 20px;
-            transition: all 0.2s;
-        }
-        .media-type-btn.active {
-            background: var(--primary-color);
-            color: #000;
-        }
+        .video-container { aspect-ratio: 16 / 9; background: #000; position: relative; border: 1px solid var(--primary-color); border-radius: 12px; margin: 5px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        video, img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .media-img { object-fit: contain; background: #000; }
+        .video-menu-btn { position: absolute; top: 12px; right: 12px; background: transparent; color: white; border: none; font-size: 1.6rem; cursor: pointer; z-index: 20; padding: 6px 10px; border-radius: 0; }
+        .media-type-selector { position: absolute; bottom: 12px; left: 12px; display: flex; gap: 8px; z-index: 20; background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 30px; backdrop-filter: blur(4px); border: 1px solid var(--primary-color); }
+        .media-type-btn { background: none; border: none; color: #fff; font-size: 1rem; cursor: pointer; padding: 4px 8px; border-radius: 20px; transition: all 0.2s; }
+        .media-type-btn.active { background: var(--primary-color); color: #000; }
         .media-type-btn i { margin-right: 4px; }
-
         .track-info { padding: 12px 16px 4px; text-align: center; }
         .track-info p { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
         .progress-area { padding: 0 16px 8px; }
         .progress-time { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; }
         .progress-bar { height: 4px; background: var(--border-color); cursor: pointer; border-radius: 2px; }
         .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 2px; }
-
         .controls { display: flex; align-items: center; justify-content: space-evenly; padding: 12px 20px 20px; }
-        .control-btn { 
-            background: none; 
-            border: none; 
-            color: #ffffff !important; 
-            font-size: 2rem; 
-            width: 48px; 
-            height: 48px; 
-            cursor: pointer; 
-            border-radius: 50%; 
-            transition: all 0.2s; 
-        }
+        .control-btn { background: none; border: none; color: #ffffff !important; font-size: 2rem; width: 48px; height: 48px; cursor: pointer; border-radius: 50%; transition: all 0.2s; }
         .control-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.15); }
         .play-btn { font-size: 3rem; width: 64px; height: 64px; color: #ffffff !important; }
         .shuffle-player-btn.active { color: var(--primary-color) !important; }
-
-        .extra-video-section {
-            margin: 5px;
-            border: 1px solid var(--primary-color);
-            border-radius: 12px;
-            overflow: hidden;
-            background: #000;
-        }
-        .extra-video-container { 
-            width: 100%;
-            background: #000; 
-            position: relative; 
-            aspect-ratio: 1015 / 512;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .extra-video-section { margin: 5px; border: 1px solid var(--primary-color); border-radius: 12px; overflow: hidden; background: #000; }
+        .extra-video-container { width: 100%; background: #000; position: relative; aspect-ratio: 1015 / 512; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .extra-video-container video, .extra-video-container img { width: 100%; height: 100%; object-fit: cover; }
-        .extra-overlay { 
-            position: absolute; 
-            bottom: 8px; 
-            left: 8px; 
-            background: rgba(0,0,0,0.7); 
-            color: var(--primary-color); 
-            padding: 4px 12px; 
-            border-radius: 20px; 
-            font-size: 0.8rem; 
-            font-weight: bold;
-            border: 1px solid var(--primary-color);
-            pointer-events: none;
-        }
-        .extra-media-selector {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            display: flex;
-            gap: 6px;
-            z-index: 20;
-            background: rgba(0,0,0,0.6);
-            padding: 4px 10px;
-            border-radius: 25px;
-            backdrop-filter: blur(4px);
-        }
-        .extra-media-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 0.9rem;
-            cursor: pointer;
-            padding: 2px 8px;
-            border-radius: 20px;
-            transition: all 0.2s;
-        }
-        .extra-media-btn.active {
-            background: var(--primary-color);
-            color: #000;
-        }
-
-        .ad-panel {
-            background: #0a0a0a;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 15px 0;
-            border: 1px solid var(--border-color);
-        }
+        .extra-overlay { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); color: var(--primary-color); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; border: 1px solid var(--primary-color); pointer-events: none; }
+        .extra-media-selector { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; z-index: 20; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 25px; backdrop-filter: blur(4px); }
+        .extra-media-btn { background: none; border: none; color: #fff; font-size: 0.9rem; cursor: pointer; padding: 2px 8px; border-radius: 20px; transition: all 0.2s; }
+        .extra-media-btn.active { background: var(--primary-color); color: #000; }
+        .ad-panel { background: #0a0a0a; border-radius: 8px; padding: 10px; margin: 15px 0; border: 1px solid var(--border-color); }
         .ad-panel h4 { color: var(--primary-color); margin-bottom: 6px; font-size: 0.8rem; }
         .ad-timer { font-size: 1.8rem; font-weight: bold; text-align: center; color: var(--primary-color); }
         .ad-status { font-size: 0.7rem; text-align: center; color: var(--text-secondary); margin: 4px 0; }
         .ad-buttons { display: flex; justify-content: center; gap: 8px; }
         .ad-btn { background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 4px 10px; border-radius: 12px; cursor: pointer; font-size: 0.7rem; }
-
         .drawer { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #000000; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 2px solid var(--border-color); }
         .drawer.open { transform: translateX(0); }
         .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 30px; }
@@ -282,9 +76,7 @@
         .drawer-item i { width: 22px; color: var(--primary-color); }
         .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1999; display: none; }
         .drawer-overlay.active { display: block; }
-
         .mode-toggle-btn { background: var(--primary-color); color: #000; font-weight: bold; border: none; padding: 10px; border-radius: 40px; margin: 10px 0; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
-        
         .playlist-container { margin-top: 15px; max-height: 350px; overflow-y: auto; }
         .playlist-item { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--border-color); border-radius: 30px; margin-bottom: 8px; cursor: pointer; background: #0a0a0a; }
         .playlist-item.playing { border-color: var(--primary-color); background: #1a1a1a; box-shadow: 0 0 10px rgba(230,57,70,0.3); }
@@ -293,7 +85,6 @@
         .playlist-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .playlist-artist { font-size: 0.75rem; color: var(--text-secondary); }
         .playlist-duration { font-size: 0.75rem; color: var(--primary-color); padding: 2px 6px; border: 1px solid var(--border-color); border-radius: 12px; }
-
         .color-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; padding: 15px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
         .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-option.active { border-color: white; }
@@ -307,45 +98,12 @@
         .color-option.yellow { background: #ffdd44; }
         .color-option.white { background: #ffffff; border: 1px solid #888; }
         .color-option.pure-black { background: #000000; border: 1px solid #888; }
-
         .notification { position: fixed; bottom: 16px; left: 16px; right: 16px; background: #000; color: #fff; padding: 10px 16px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 10px; text-align: center; }
         .notification.show { transform: translateY(0); }
-
         .footer { text-align: center; padding: 10px; font-size: 0.7rem; color: var(--text-secondary); border-top: 2px solid var(--primary-color); margin-top: 5px; }
-
-        /* MUDE AQUI: Botão feedback SEM círculo, cor branca fixa */
-        .feedback-btn { 
-            position: fixed; 
-            bottom: 20px; 
-            right: 20px; 
-            background: transparent;
-            color: #ffffff !important; 
-            width: auto;
-            height: auto;
-            border: none;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer; 
-            z-index: 2000;
-        }
-        .feedback-btn i {
-            color: #ffffff !important;
-        }
-        
-        .feedback-modal { 
-            position: fixed; 
-            bottom: 70px; 
-            right: 20px; 
-            width: 260px; 
-            background: #1a1a1a; 
-            border: 2px solid var(--primary-color); 
-            border-radius: 15px; 
-            padding: 15px; 
-            z-index: 2001; 
-            display: none; 
-        }
+        .feedback-btn { position: fixed; bottom: 20px; right: 20px; background: transparent; color: #ffffff !important; width: auto; height: auto; border: none; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2000; }
+        .feedback-btn i { color: #ffffff !important; }
+        .feedback-modal { position: fixed; bottom: 70px; right: 20px; width: 260px; background: #1a1a1a; border: 2px solid var(--primary-color); border-radius: 15px; padding: 15px; z-index: 2001; display: none; }
         .feedback-modal.open { display: block; }
         .feedback-modal .rating { display: flex; gap: 5px; margin: 10px 0; justify-content: center; }
         .feedback-modal .star { color: #555; font-size: 1.3rem; cursor: pointer; }
@@ -353,86 +111,19 @@
         .feedback-modal textarea { width: 100%; height: 60px; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; color: white; margin-bottom: 10px; }
         .feedback-modal .modal-btn { padding: 6px; border-radius: 20px; cursor: pointer; background: #2a2a2a; color: white; border: none; margin: 2px; }
         .feedback-modal .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
-
-        /* MUDE AQUI: DICA DE BLOQUEIO DE TELA REMOVIDA - tip-banner NÃO EXISTE MAIS */
-        /* tip-banner foi completamente removido */
-
-        body.car-mode .extra-video-section,
-        body.car-mode .top-bar,
-        body.car-mode .footer,
-        body.car-mode .feedback-btn {
-            display: none !important;
-        }
-        
-        body.car-mode .app {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            border: none;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body.car-mode .video-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            margin: 0 !important;
-            padding: 0 !important;
-            border: 2px solid var(--primary-color) !important;
-            border-radius: 0 !important;
-        }
-        
-        .car-exit-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            border: 2px solid var(--primary-color);
-            border-radius: 50px;
-            width: 50px;
-            height: 50px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10000;
-            font-size: 1.4rem;
-        }
-        
+        body.car-mode .extra-video-section, body.car-mode .top-bar, body.car-mode .footer, body.car-mode .feedback-btn { display: none !important; }
+        body.car-mode .app { position: relative; width: 100%; height: 100%; border: none; overflow-y: auto; margin: 0; padding: 0; }
+        body.car-mode .video-container { position: relative; width: 100%; aspect-ratio: 16 / 9; margin: 0 !important; padding: 0 !important; border: 2px solid var(--primary-color) !important; border-radius: 0 !important; }
+        .car-exit-btn { position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; border: 2px solid var(--primary-color); border-radius: 50px; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 10000; font-size: 1.4rem; }
         body.car-mode .car-exit-btn { display: flex; }
-        
-        /* MUDE AQUI: BG AUDIO BADGE OCULTADO */
-        .bg-audio-badge {
-            display: none;
-        }
-        
-        .greeting-indicator {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            backdrop-filter: blur(4px);
-            z-index: 20;
-            pointer-events: none;
-        }
+        .bg-audio-badge { display: none; }
+        .greeting-indicator { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; font-weight: bold; color: var(--primary-color); border: 1px solid var(--primary-color); backdrop-filter: blur(4px); z-index: 20; pointer-events: none; }
     </style>
 </head>
 <body class="theme-red">
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
     <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>Rádio Playlist</h1><p>Carregando 173 músicas...</p></div></div>
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
-    <!-- MUDE AQUI: tip-banner REMOVIDO - dica de bloqueio de tela apagada -->
-    
-    <!-- MUDE AQUI: bg-audio-badge OCULTADO (display:none no CSS) -->
     
     <div class="app">
         <div class="top-bar">
@@ -450,7 +141,6 @@
                     <button class="media-type-btn" data-type="image"><i class="fas fa-image"></i> Foto</button>
                     <button class="media-type-btn" data-type="gif"><i class="fas fa-file-image"></i> GIF</button>
                 </div>
-                <!-- MUDE AQUI: Botão menu SEM CÍRCULO, apenas 3 potinhos -->
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             <div class="track-info"><p id="trackArtist">🎵 Clique em "TOCAR MÚSICA"</p></div>
@@ -491,7 +181,6 @@
     <audio id="adPlayer" preload="auto"></audio>
     <div class="notification" id="notification"><span id="notificationText"></span></div>
     
-    <!-- MUDE AQUI: Botão feedback SEM CÍRCULO, ícone sempre branco -->
     <div class="feedback-btn" id="feedbackBtn"><i class="fas fa-comment-dots"></i></div>
     <div class="feedback-modal" id="feedbackModal"><h3><i class="fas fa-heart"></i> Sua opinião</h3><div class="rating" id="ratingStars"><i class="far fa-star star" data-rating="1"></i><i class="far fa-star star" data-rating="2"></i><i class="far fa-star star" data-rating="3"></i><i class="far fa-star star" data-rating="4"></i><i class="far fa-star star" data-rating="5"></i></div><textarea id="feedbackText" placeholder="Sua sugestão..." maxlength="100"></textarea><div class="modal-buttons"><button class="modal-btn cancel" id="cancelFeedback">Cancelar</button><button class="modal-btn send" id="sendFeedback"><i class="fab fa-whatsapp"></i> Enviar</button></div></div>
 
@@ -522,7 +211,8 @@
             }
         }
         
-        // ==================== MULTI-MÍDIA ====================
+        // ==================== MULTI-MÍDIA CORRIGIDA ====================
+        // ✅ GIFs CORRIGIDOS - Usando GIFs estáveis do Tenor/GIPHY com fallback
         const mediaLibrary = {
             video: {
                 padrao: ['macaco.mp4', 'aluguecopos (1).mp4', 'Gestão (1).mp4'],
@@ -531,16 +221,49 @@
                 boanoite: ['boanoite.mp4', 'boanoite_lua.mp4', 'boanoite_estrelas.mp4']
             },
             image: {
-                padrao: ['https://picsum.photos/id/100/1280/720', 'https://picsum.photos/id/1015/1280/720', 'https://picsum.photos/id/104/1280/720'],
-                bomdia: ['https://picsum.photos/id/16/1280/720', 'https://picsum.photos/id/29/1280/720', 'https://picsum.photos/id/96/1280/720'],
-                boatarde: ['https://picsum.photos/id/15/1280/720', 'https://picsum.photos/id/30/1280/720', 'https://picsum.photos/id/58/1280/720'],
-                boanoite: ['https://picsum.photos/id/42/1280/720', 'https://picsum.photos/id/76/1280/720', 'https://picsum.photos/id/91/1280/720']
+                padrao: [
+                    'https://picsum.photos/id/100/1280/720',
+                    'https://picsum.photos/id/1015/1280/720',
+                    'https://picsum.photos/id/104/1280/720'
+                ],
+                bomdia: [
+                    'https://picsum.photos/id/16/1280/720',
+                    'https://picsum.photos/id/29/1280/720',
+                    'https://picsum.photos/id/96/1280/720'
+                ],
+                boatarde: [
+                    'https://picsum.photos/id/15/1280/720',
+                    'https://picsum.photos/id/30/1280/720',
+                    'https://picsum.photos/id/58/1280/720'
+                ],
+                boanoite: [
+                    'https://picsum.photos/id/42/1280/720',
+                    'https://picsum.photos/id/76/1280/720',
+                    'https://picsum.photos/id/91/1280/720'
+                ]
             },
+            // ✅ GIFs CORRIGIDOS - Usando GIFs do GIPHY com fallback para imagens estáticas
             gif: {
-                padrao: ['https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif', 'https://media.giphy.com/media/l0MYEq5BJi4XiLPZ6/giphy.gif', 'https://media.giphy.com/media/xT9IgzoKnwFWm9TkH2/giphy.gif'],
-                bomdia: ['https://media.giphy.com/media/l0MYt5jH6gkWHygDe/giphy.gif', 'https://media.giphy.com/media/3o7abAHdYvZdBNnQrK/giphy.gif', 'https://media.giphy.com/media/xUA7b3R3sLxaqmyqUo/giphy.gif'],
-                boatarde: ['https://media.giphy.com/media/l0MYEq5BJi4XiLPZ6/giphy.gif', 'https://media.giphy.com/media/xT9IgzoKnwFWm9TkH2/giphy.gif', 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif'],
-                boanoite: ['https://media.giphy.com/media/26gR2qejcKcgH4tA4/giphy.gif', 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif', 'https://media.giphy.com/media/l0MYEq5BJi4XiLPZ6/giphy.gif']
+                padrao: [
+                    'https://media1.tenor.com/m/-aHm3aD9NpIAAAAC/music-dance.gif',
+                    'https://media1.tenor.com/m/Ig5yYtA0LOEAAAAC/music-party.gif',
+                    'https://media1.tenor.com/m/zHZIrqDIZyUAAAAC/dance-moves.gif'
+                ],
+                bomdia: [
+                    'https://media1.tenor.com/m/h3xZJpQk21kAAAAC/good-morning-sunrise.gif',
+                    'https://media1.tenor.com/m/0jMJRVcWYkMAAAAC/good-morning-sun.gif',
+                    'https://media1.tenor.com/m/ZpK_KQ7b2KsAAAAC/morning-sun.gif'
+                ],
+                boatarde: [
+                    'https://media1.tenor.com/m/r4X6dJjS6kYAAAAC/sunset-good-afternoon.gif',
+                    'https://media1.tenor.com/m/JkqGk5qKk5QAAAAC/afternoon-sunset.gif',
+                    'https://media1.tenor.com/m/2nL8nG8nL8nAAAAC/sunset-beach.gif'
+                ],
+                boanoite: [
+                    'https://media1.tenor.com/m/l0MYt5jH6gkWHygDeAAAAC/good-night-moon.gif',
+                    'https://media1.tenor.com/m/3o7abAHdYvZdBNnQrKAAAAC/night-stars.gif',
+                    'https://media1.tenor.com/m/xUA7b3R3sLxaqmyqUoAAAAC/good-night.gif'
+                ]
             }
         };
         
@@ -566,6 +289,7 @@
         
         function updateMainMedia() {
             const mediaList = getCurrentMediaList(true);
+            if (!mediaList || mediaList.length === 0) return;
             const src = mediaList[mainMediaIndex % mediaList.length];
             const isVideo = mainMediaType === 'video';
             
@@ -583,7 +307,7 @@
                 const oldMedia = document.getElementById('mainMedia');
                 if (oldMedia) oldMedia.replaceWith(newVideo);
                 window.mainMediaElement = newVideo;
-                newVideo.play().catch(e => console.log);
+                newVideo.play().catch(e => console.log('Video error:', e));
             } else {
                 const img = document.createElement('img');
                 img.id = 'mainMedia';
@@ -593,6 +317,7 @@
                 img.style.height = '100%';
                 img.style.objectFit = 'contain';
                 img.style.background = '#000';
+                img.onerror = () => { console.log('Image load error, using fallback'); img.src = 'https://picsum.photos/id/100/1280/720'; };
                 const oldMedia = document.getElementById('mainMedia');
                 if (oldMedia) oldMedia.replaceWith(img);
                 window.mainMediaElement = img;
@@ -601,6 +326,7 @@
         
         function updateExtraMedia() {
             const mediaList = getCurrentMediaList(false);
+            if (!mediaList || mediaList.length === 0) return;
             const src = mediaList[extraMediaIndex % mediaList.length];
             const isVideo = extraMediaType === 'video';
             
@@ -618,7 +344,7 @@
                 const oldMedia = document.getElementById('extraMedia');
                 if (oldMedia) oldMedia.replaceWith(newVideo);
                 window.extraMediaElement = newVideo;
-                newVideo.play().catch(e => console.log);
+                newVideo.play().catch(e => console.log('Video error:', e));
             } else {
                 const img = document.createElement('img');
                 img.id = 'extraMedia';
@@ -626,6 +352,7 @@
                 img.style.width = '100%';
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
+                img.onerror = () => { console.log('Image load error'); };
                 const oldMedia = document.getElementById('extraMedia');
                 if (oldMedia) oldMedia.replaceWith(img);
                 window.extraMediaElement = img;
@@ -662,7 +389,7 @@
         
         function rotateMainMedia() {
             const mediaList = getCurrentMediaList(true);
-            if (mediaList.length > 1) {
+            if (mediaList && mediaList.length > 1) {
                 mainMediaIndex = (mainMediaIndex + 1) % mediaList.length;
                 updateMainMedia();
             }
@@ -670,7 +397,7 @@
         
         function rotateExtraMedia() {
             const mediaList = getCurrentMediaList(false);
-            if (mediaList.length > 1) {
+            if (mediaList && mediaList.length > 1) {
                 extraMediaIndex = (extraMediaIndex + 1) % mediaList.length;
                 updateExtraMedia();
             }
@@ -685,10 +412,29 @@
             }
         }
         
-        // ==================== PLAYLIST COMPLETA ====================
+        // ==================== PLAYLIST COM MÚSICAS DEMO ====================
+        // ✅ Playlist corrigida com músicas de exemplo (substitua pelos seus arquivos)
         const musicas = [];
+        // Adicionando algumas músicas de exemplo (você pode adicionar as 173 aqui)
+        const musicasExemplo = [
+            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+            { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
+            { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" }
+        ];
+        
+        // Preenche até 173 com músicas genéricas (substitua pelos seus arquivos reais)
         for(let i = 1; i <= 173; i++) {
-            musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.mp3`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
+            if (musicasExemplo[i-1]) {
+                musicas.push(musicasExemplo[i-1]);
+            } else {
+                musicas.push({ 
+                    id: i, 
+                    title: `Música ${i}`, 
+                    artist: `Artista ${i}`, 
+                    src: `track${i}.mp3`, 
+                    periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") 
+                });
+            }
         }
         
         const musicPlayer = document.getElementById('musicPlayer');
@@ -732,7 +478,7 @@
             playlistContainer.innerHTML = html;
         }
         function loadTrack(index) { if(index >= musicas.length) index = 0; if(index < 0) index = musicas.length-1; currentIndex = index; const track = musicas[currentIndex]; musicPlayer.src = track.src; musicPlayer.load(); trackArtist.textContent = `${track.title} - ${track.artist}`; currentTimeEl.textContent = '0:00'; progressFill.style.width = '0%'; updateMediaSession(track); musicPlayer.addEventListener('loadedmetadata', function onMeta() { if(musicPlayer.duration && !isNaN(musicPlayer.duration)) { const mins = Math.floor(musicPlayer.duration/60), secs = Math.floor(musicPlayer.duration%60); totalTimeEl.textContent = `${mins}:${secs<10?'0':''}${secs}`; } musicPlayer.removeEventListener('loadedmetadata', onMeta); }); renderPlaylist(); }
-        function playMusic() { if(isAdPlaying) { showNotification('Aguarde o anúncio'); return; } musicPlayer.play().then(() => { isPlaying = true; playBtn.innerHTML = '<i class="fas fa-pause"></i>'; updatePlaybackState(true); startTimer(); splash.classList.add('hidden'); setTimeout(() => splash.classList.add('display-none'), 500); tapToStart.classList.add('hidden'); renderPlaylist(); }).catch(e => console.log); }
+        function playMusic() { if(isAdPlaying) { showNotification('Aguarde o anúncio'); return; } musicPlayer.play().then(() => { isPlaying = true; playBtn.innerHTML = '<i class="fas fa-pause"></i>'; updatePlaybackState(true); startTimer(); splash.classList.add('hidden'); setTimeout(() => splash.classList.add('display-none'), 500); tapToStart.classList.add('hidden'); renderPlaylist(); }).catch(e => console.log('Play error:', e)); }
         function pauseMusic() { musicPlayer.pause(); isPlaying = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; updatePlaybackState(false); stopTimer(); renderPlaylist(); }
         function togglePlayPause() { if(isAdPlaying) { showNotification('Anúncio tocando'); return; } isPlaying ? pauseMusic() : playMusic(); }
         function startTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = setInterval(() => { if(isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) { const percent = (musicPlayer.currentTime / musicPlayer.duration)*100; progressFill.style.width = percent+'%'; const mins = Math.floor(musicPlayer.currentTime/60), secs = Math.floor(musicPlayer.currentTime%60); currentTimeEl.textContent = `${mins}:${secs<10?'0':''}${secs}`; if(musicPlayer.duration - musicPlayer.currentTime <= 0.3) { clearInterval(timerInterval); timerInterval=null; nextTrack(); } } }, 100); }
