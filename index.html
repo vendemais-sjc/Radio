@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Rádio Playlist • Tocando em Segundo Plano BX</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
+    
+    <!-- Google Cast SDK -->
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    
     <style>
         * {
             margin: 0;
@@ -259,58 +262,46 @@
         .feedback-modal .modal-btn.send:hover { background: #20b859; }
         .feedback-modal .modal-btn.cancel:hover { background: #444; }
 
-        /* Modal de QR Code para TV */
-        .qr-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1e1e1e;
-            border: 2px solid var(--primary-color);
-            border-radius: 20px;
-            padding: 20px;
-            z-index: 10002;
-            display: none;
-            text-align: center;
-            max-width: 90%;
-            width: 320px;
-        }
-        .qr-modal.open {
-            display: block;
-        }
-        .qr-modal h3 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-        .qr-modal p {
-            color: #fff;
-            font-size: 0.8rem;
-            margin: 10px 0;
-        }
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            margin: 15px 0;
-        }
-        .qr-modal .close-qr {
-            background: var(--primary-color);
-            color: #000;
+        /* Cast Button e Indicador */
+        .cast-btn-custom {
+            background: none;
             border: none;
-            padding: 8px 20px;
-            border-radius: 25px;
+            color: var(--text-primary);
+            padding: 12px 14px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             cursor: pointer;
-            margin-top: 10px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 8px;
         }
-        .qr-overlay {
+        .cast-btn-custom i { width: 22px; color: var(--primary-color); }
+        .cast-btn-custom:hover { background: rgba(255,255,255,0.1); }
+        
+        .cast-status {
             position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 10001;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
             display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 10001;
+            border: 1px solid var(--primary-color);
+            backdrop-filter: blur(4px);
         }
-        .qr-overlay.active {
-            display: block;
+        .cast-status.active {
+            display: flex;
+        }
+        .cast-status i {
+            animation: pulse 1s infinite;
         }
 
         body.car-mode .extra-video-section,
@@ -439,9 +430,36 @@
         body.car-mode .car-exit-btn {
             display: flex;
         }
+        
+        /* Google Cast Button Customizado */
+        .google-cast-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cast-device-list {
+            margin-top: 10px;
+            padding: 10px;
+            background: #0a0a0a;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .cast-device-list.active {
+            display: block;
+        }
     </style>
 </head>
 <body class="theme-red">
+    <div class="cast-status" id="castStatus">
+        <i class="fas fa-tv fa-fw"></i>
+        <span id="castStatusText">Conectando...</span>
+        <button id="stopCastBtn" style="background:none;border:none;color:white;cursor:pointer;margin-left:8px;"><i class="fas fa-times"></i></button>
+    </div>
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
     <div id="splash">
         <div class="splash-content">
@@ -451,16 +469,6 @@
         </div>
     </div>
     <div id="tap-to-start"><i class="fas fa-play-circle"></i> TOCAR MÚSICA AGORA</div>
-
-    <!-- Modal de QR Code para TV -->
-    <div class="qr-overlay" id="qrOverlay"></div>
-    <div class="qr-modal" id="qrModal">
-        <h3><i class="fas fa-tv"></i> Compartilhar na TV</h3>
-        <p>Escaneie o QR Code com seu celular ou abra no navegador da TV:</p>
-        <div id="qrcode"></div>
-        <p id="castUrl" style="font-size: 0.7rem; word-break: break-all;"></p>
-        <button class="close-qr" id="closeQrModal"><i class="fas fa-check"></i> Entendi</button>
-    </div>
 
     <div class="app">
         <div class="top-bar">
@@ -509,7 +517,14 @@
         <div class="drawer-content">
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
-            <button class="drawer-item" id="castToTvBtn"><i class="fas fa-tv"></i> Compartilhar na TV</button>
+            
+            <!-- Botão de Cast nativo -->
+            <div id="castButtonContainer" class="drawer-item" style="cursor: pointer;">
+                <i class="fas fa-tv"></i>
+                <span>Transmitir para TV <span id="castDeviceName" style="font-size: 0.7rem; color: var(--primary-color);"></span></span>
+                <div id="castButton" style="margin-left: auto;"></div>
+            </div>
+            
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar link</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
             
@@ -759,13 +774,160 @@
         
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [], musicPlayedCount = 0, adsEnabled = true, isAdPlaying = false, adInterval = 30, shouldResumeMusic = false, timerInterval = null;
         
-        // Anúncios corrigidos
         const adsList = [
             { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", title: "Oferta Especial", duration: 10 },
             { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", title: "Promoção Imperdível", duration: 12 }
         ];
         
         let audioCtx = null, silentSource = null;
+        
+        // ========== GOOGLE CAST IMPLEMENTAÇÃO ==========
+        let castSession = null;
+        let castContext = null;
+        
+        window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
+            if (loaded) {
+                initializeCastApi();
+            }
+        };
+        
+        function initializeCastApi() {
+            const applicationID = chrome.cast?.DEFAULT_MEDIA_RECEIVER_APP_ID || "CC1AD845"; // ID padrão do receptor
+            const sessionRequest = new chrome.cast.SessionRequest(applicationID);
+            const apiConfig = new chrome.cast.ApiConfig(sessionRequest, sessionListener, receiverListener);
+            
+            try {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: applicationID,
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+                castContext = cast.framework.CastContext.getInstance();
+                castContext.addEventListener(
+                    cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+                    onSessionStateChange
+                );
+                
+                // Adiciona botão de cast
+                const castButton = document.getElementById('castButton');
+                if (castButton) {
+                    const button = new cast.framework.CastButton(castButton);
+                    button.addEventListener('click', () => {
+                        if (castContext.getSessionState() === cast.framework.SessionState.NO_SESSION) {
+                            castContext.requestSession().catch(e => console.log);
+                        } else {
+                            castContext.endCurrentSession(true);
+                        }
+                    });
+                }
+                
+                console.log("Cast API inicializada");
+            } catch(e) {
+                console.log("Erro ao inicializar Cast:", e);
+                // Fallback: Tentativa manual
+                try {
+                    cast.receiver.logger.setLevel(0);
+                    cast.framework.CastContext.getInstance().setOptions({
+                        receiverApplicationId: applicationID
+                    });
+                } catch(err) {}
+            }
+        }
+        
+        function sessionListener(session) {
+            castSession = session;
+            updateCastStatus(true, session.getReceiver().friendlyName);
+        }
+        
+        function receiverListener(e) {
+            if (e === 'available') {
+                console.log("Dispositivos de cast disponíveis");
+                document.getElementById('castDeviceName').textContent = "📺 Disponíveis";
+            } else {
+                console.log("Nenhum dispositivo de cast encontrado");
+                document.getElementById('castDeviceName').textContent = "🔍 Nenhum dispositivo";
+            }
+        }
+        
+        function onSessionStateChange(event) {
+            const sessionState = event.sessionState;
+            if (sessionState === cast.framework.SessionState.SESSION_STARTED) {
+                const session = castContext.getCurrentSession();
+                if (session) {
+                    castSession = session;
+                    updateCastStatus(true, session.getReceiver().friendlyName);
+                    showNotification(`📺 Transmitindo para: ${session.getReceiver().friendlyName}`);
+                    
+                    // Inicia a transmissão da página
+                    startCasting();
+                }
+            } else if (sessionState === cast.framework.SessionState.SESSION_ENDED) {
+                castSession = null;
+                updateCastStatus(false);
+                showNotification("Transmissão encerrada");
+            }
+        }
+        
+        function updateCastStatus(isCasting, deviceName = "") {
+            const castStatus = document.getElementById('castStatus');
+            const castStatusText = document.getElementById('castStatusText');
+            const castDeviceNameSpan = document.getElementById('castDeviceName');
+            
+            if (isCasting && deviceName) {
+                castStatus.classList.add('active');
+                castStatusText.textContent = `Transmitindo para: ${deviceName}`;
+                if (castDeviceNameSpan) castDeviceNameSpan.textContent = `📺 ${deviceName}`;
+            } else {
+                castStatus.classList.remove('active');
+                castStatusText.textContent = 'Desconectado';
+                if (castDeviceNameSpan) castDeviceNameSpan.textContent = '';
+            }
+        }
+        
+        function startCasting() {
+            if (!castSession) return;
+            
+            // Cria a mensagem para enviar para o receptor
+            const message = {
+                type: 'LOAD',
+                url: window.location.href,
+                title: 'Rádio Playlist',
+                currentMusic: musicas[currentIndex]?.title || 'Carregando...',
+                isPlaying: isPlaying,
+                currentTime: musicPlayer.currentTime || 0
+            };
+            
+            try {
+                // Tenta enviar mensagem para o receptor
+                castSession.sendMessage('urn:x-cast:com.google.cast.media', message);
+            } catch(e) {
+                console.log("Erro ao enviar mensagem:", e);
+            }
+        }
+        
+        function stopCasting() {
+            if (castContext) {
+                castContext.endCurrentSession(true);
+            }
+            updateCastStatus(false);
+        }
+        
+        // Função para compartilhar link
+        function shareLink() {
+            const currentUrl = window.location.href;
+            if(navigator.share) {
+                navigator.share({
+                    title: 'Rádio Playlist',
+                    text: 'Ouça as melhores músicas!',
+                    url: currentUrl
+                }).catch(e => console.log('Erro ao compartilhar:', e));
+            } else {
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    showNotification('✅ Link copiado! Compartilhe com seus amigos');
+                }).catch(() => {
+                    showNotification('📋 ' + currentUrl);
+                });
+            }
+        }
         
         function setupBackgroundAudio() {
             if (audioCtx) return;
@@ -840,6 +1002,9 @@
                 setTimeout(()=>splash.classList.add('display-none'),500); 
                 tapToStart.classList.add('hidden'); 
                 renderPlaylist(); 
+                
+                // Atualiza status do cast
+                if (castSession) startCasting();
             }).catch(e=>console.log("Play error:", e)); 
         }
         
@@ -849,6 +1014,7 @@
             playBtn.innerHTML='<i class="fas fa-play"></i>'; 
             stopTimer(); 
             renderPlaylist(); 
+            if (castSession) startCasting();
         }
         
         function togglePlayPause() { 
@@ -872,6 +1038,7 @@
             loadTrack(currentIndex); 
             if(isPlaying) playMusic(); 
             if(adsEnabled && musicPlayedCount%adInterval===0 && !isAdPlaying) playAd(); 
+            if (castSession) startCasting();
         }
         
         function prevTrack() { 
@@ -888,6 +1055,7 @@
             currentIndex=musicas.findIndex(m=>m.id===filteredPlaylist[filteredIdx].id); 
             loadTrack(currentIndex); 
             if(isPlaying) playMusic(); 
+            if (castSession) startCasting();
         }
         
         window.selectSong = function(globalIdx){ 
@@ -897,6 +1065,7 @@
             loadTrack(currentIndex); 
             if(isPlaying) playMusic(); 
             closeDrawer(); 
+            if (castSession) startCasting();
         };
         
         function startTimer(){ 
@@ -923,46 +1092,31 @@
             } 
         }
         
-        let currentAdIndex = 0;
-        
         function playAd() { 
             if(!adsEnabled || isAdPlaying) return; 
-            
             stopTimer(); 
-            
             if(isPlaying){ 
                 musicPlayer.pause(); 
                 shouldResumeMusic=true; 
             } 
-            
             const randomAd = adsList[Math.floor(Math.random() * adsList.length)];
-            
             if(randomAd && randomAd.src){
                 adPlayer.src = randomAd.src;
                 adPlayer.load();
                 isAdPlaying = true;
-                
                 const adStatus = document.getElementById('adStatus');
                 const skipAdBtn = document.getElementById('skipAdBtn');
-                
                 adStatus.innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${randomAd.title}`;
                 skipAdBtn.style.display = 'inline-block';
-                
                 const playPromise = adPlayer.play();
-                
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
                         console.error("Erro ao tocar anúncio:", error);
-                        showNotification("Erro ao carregar anúncio");
                         finishAd();
                     });
                 }
-                
                 adPlayer.onended = () => finishAd();
-                adPlayer.onerror = () => {
-                    console.error("Erro no áudio do anúncio");
-                    finishAd();
-                };
+                adPlayer.onerror = () => finishAd();
             } else {
                 finishAd();
             }
@@ -972,10 +1126,8 @@
             isAdPlaying = false; 
             const adStatus = document.getElementById('adStatus');
             const skipAdBtn = document.getElementById('skipAdBtn');
-            
             adStatus.innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...'; 
             skipAdBtn.style.display = 'none'; 
-            
             if(shouldResumeMusic){ 
                 playMusic(); 
                 shouldResumeMusic = false; 
@@ -1034,88 +1186,13 @@
             } 
         }
         
-        // ========== FUNÇÃO DE COMPARTILHAMENTO PARA TV (QR CODE) ==========
-        let qrCodeInstance = null;
-        
-        function shareToTV() {
-            // Pega a URL atual da página
-            const currentUrl = window.location.href;
-            
-            // Mostra o modal com QR Code
-            const qrModal = document.getElementById('qrModal');
-            const qrOverlay = document.getElementById('qrOverlay');
-            const castUrlElement = document.getElementById('castUrl');
-            
-            // Limpa QR Code anterior
-            const qrcodeDiv = document.getElementById('qrcode');
-            qrcodeDiv.innerHTML = '';
-            
-            // Gera novo QR Code
-            try {
-                qrCodeInstance = new QRCode(qrcodeDiv, {
-                    text: currentUrl,
-                    width: 200,
-                    height: 200,
-                    colorDark: "#ffffff",
-                    colorLight: "#000000",
-                    correctLevel: QRCode.CorrectLevel.M
-                });
-            } catch(e) {
-                // Fallback se a biblioteca não carregar
-                qrcodeDiv.innerHTML = `<canvas id="qrCanvas" width="200" height="200"></canvas>`;
-                const canvas = document.getElementById('qrCanvas');
-                if(canvas) {
-                    // QR Code simples via canvas
-                    const QRCodeGen = (text, canvas) => {
-                        // Implementação simples
-                        canvas.getContext('2d').fillStyle = '#fff';
-                        canvas.fillRect(0, 0, 200, 200);
-                        canvas.getContext('2d').fillStyle = '#000';
-                        canvas.getContext('2d').font = '12px monospace';
-                        canvas.getContext('2d').fillText(text, 10, 100);
-                    };
-                    QRCodeGen(currentUrl, canvas);
-                }
-            }
-            
-            castUrlElement.textContent = currentUrl;
-            qrModal.classList.add('open');
-            qrOverlay.classList.add('active');
-            
-            showNotification("📺 Escaneie o QR Code na TV ou Smartphone");
-        }
-        
-        function closeQrModal() {
-            const qrModal = document.getElementById('qrModal');
-            const qrOverlay = document.getElementById('qrOverlay');
-            qrModal.classList.remove('open');
-            qrOverlay.classList.remove('active');
-        }
-        
-        // Função de compartilhamento de link
-        function shareLink() {
-            const currentUrl = window.location.href;
-            if(navigator.share) {
-                navigator.share({
-                    title: 'Rádio Playlist',
-                    text: 'Ouça as melhores músicas!',
-                    url: currentUrl
-                }).catch(e => console.log('Erro ao compartilhar:', e));
-            } else {
-                navigator.clipboard.writeText(currentUrl).then(() => {
-                    showNotification('✅ Link copiado! Compartilhe com seus amigos');
-                }).catch(() => {
-                    showNotification('📋 ' + currentUrl);
-                });
-            }
-        }
-        
         // Event listeners
         document.getElementById('progressBar').addEventListener('click',(e)=>{ 
             if(isAdPlaying) return; 
             const rect=e.currentTarget.getBoundingClientRect(); 
             const percent=(e.clientX-rect.left)/rect.width; 
             if(musicPlayer.duration) musicPlayer.currentTime=percent*musicPlayer.duration; 
+            if (castSession) startCasting();
         });
         
         playBtn.addEventListener('click',togglePlayPause);
@@ -1129,12 +1206,10 @@
         document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
         document.getElementById('drawerOverlay').addEventListener('click',closeDrawer);
         document.getElementById('fullscreenDrawerBtn').addEventListener('click',()=>{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
-        document.getElementById('castToTvBtn').addEventListener('click',shareToTV);
-        document.getElementById('closeQrModal').addEventListener('click',closeQrModal);
-        document.getElementById('qrOverlay').addEventListener('click',closeQrModal);
         document.getElementById('shareDrawerBtn').addEventListener('click',shareLink);
         document.getElementById('carModeDrawerBtn').addEventListener('click',()=>{ document.body.classList.add('car-mode'); showNotification('🚗 Modo Carro ATIVO'); });
         document.getElementById('exitCarModeBtn').addEventListener('click',()=>{ document.body.classList.remove('car-mode'); showNotification('Modo normal'); });
+        document.getElementById('stopCastBtn').addEventListener('click',stopCasting);
         toggleAllSongsBtn.addEventListener('click',toggleAllSongsModeFunc);
         
         // Temas
