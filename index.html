@@ -746,7 +746,7 @@
         const extraVideo = document.getElementById('extraVideo'); const extraOverlay = document.getElementById('extraOverlay'); const videosExtra = [{ src: 'aluguecopos (1).mp4', nome: 'AlugueCopos', link: 'https://www.aluguecopos.com.br/' }, { src: 'Gestão (1).mp4', nome: 'Destaque', link: 'https://destaque.com.br/' }]; let extraVideoIndex = 0;
         function alternarVideoExtra() { extraVideoIndex = (extraVideoIndex+1) % videosExtra.length; const novo = videosExtra[extraVideoIndex]; extraVideo.src = novo.src; extraVideo.load(); extraVideo.play().catch(e=>console.log); extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novo.nome}`; document.getElementById('extraVideoContainer').onclick = () => { if(novo.link) window.open(novo.link, '_blank'); }; }
         setInterval(alternarVideoExtra, 15000);
-        document.getElementById('mainVideo').src = 'macaco.mp4'; document.getElementById('mainVideo').load(); document.getElementById('mainVideo').play().catch(e=>console.log);
+        document.getElementById('mainVideo').src = 'boa.mp4'; document.getElementById('mainVideo').load(); document.getElementById('mainVideo').play().catch(e=>console.log);
         
         // Inicialização final
         window.addEventListener('load', () => { updateFilteredPlaylist(); const randomFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length); currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomFilteredIndex].id); loadTrack(currentIndex); updateAdTimer(); tapToStart.style.display = 'block'; tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; }); setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000); initBackgroundAudio(); });
