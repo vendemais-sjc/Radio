@@ -258,6 +258,31 @@
         .feedback-modal .modal-btn.send:hover { background: #20b859; }
         .feedback-modal .modal-btn.cancel:hover { background: #444; }
 
+        /* Cast to TV Indicator */
+        .cast-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 10001;
+            border: 1px solid var(--primary-color);
+            backdrop-filter: blur(4px);
+        }
+        .cast-indicator.active {
+            display: flex;
+        }
+        .cast-indicator i {
+            font-size: 1rem;
+            animation: pulse 1s infinite;
+        }
+
         body.car-mode .extra-video-section,
         body.car-mode .top-bar,
         body.car-mode .footer,
@@ -387,6 +412,11 @@
     </style>
 </head>
 <body class="theme-red">
+    <div class="cast-indicator" id="castIndicator">
+        <i class="fas fa-tv"></i>
+        <span>Compartilhando tela...</span>
+        <button id="stopCastBtn" style="background:none;border:none;color:white;cursor:pointer;margin-left:8px;"><i class="fas fa-times"></i></button>
+    </div>
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
     <div id="splash">
         <div class="splash-content">
@@ -405,7 +435,7 @@
         </div>
 
         <div class="player-card">
-            <div class="video-container">
+            <div class="video-container" id="videoContainer">
                 <video autoplay loop muted playsinline id="mainVideo">
                     <source src="macaco.mp4" type="video/mp4">
                 </video>
@@ -444,7 +474,8 @@
         <div class="drawer-content">
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
-            <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
+            <button class="drawer-item" id="castToTvBtn"><i class="fas fa-tv"></i> Compartilhar tela na TV</button>
+            <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar link</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
             
             <div class="color-picker">
@@ -500,7 +531,7 @@
     <script>
         // PLAYLIST COMPLETA 173 MÚSICAS
         const musicas = [
-                    { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -675,11 +706,6 @@
             { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" } 
         ];
         
-        // Completar até 173 músicas
-        for(let i=7; i<=173; i++) {
-            musicas.push({ id: i, title: `Música ${i}`, artist: "Artista Variado", src: `musica${i}.mp3`, periodo: "todos" });
-        }
-        
         // Elementos do player
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
@@ -697,11 +723,16 @@
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [], musicPlayedCount = 0, adsEnabled = true, isAdPlaying = false, adInterval = 30, shouldResumeMusic = false, timerInterval = null;
-        const adsList = [{ src: 'zzcv.mp3', title: 'Oferta especial' }];
+        
+        // Anúncios corrigidos - usando um URL de áudio de exemplo válido
+        const adsList = [
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", title: "Oferta Especial", duration: 10 },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", title: "Promoção Imperdível", duration: 12 }
+        ];
         
         let audioCtx = null, silentSource = null;
         
-        // Função para manter áudio em segundo plano (tela bloqueada)
+        // Função para manter áudio em segundo plano
         function setupBackgroundAudio() {
             if (audioCtx) return;
             try {
@@ -716,7 +747,6 @@
                 silentSource.connect(audioCtx.destination);
                 silentSource.start();
                 
-                // Resume audio context on user interaction
                 document.addEventListener('click', () => {
                     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
                 }, { once: true });
@@ -859,47 +889,84 @@
             } 
         }
         
+        // Anúncio corrigido
+        let currentAdIndex = 0;
+        
         function playAd() { 
-            if(!adsEnabled||isAdPlaying) return; 
+            if(!adsEnabled || isAdPlaying) return; 
+            
             stopTimer(); 
+            
             if(isPlaying){ 
                 musicPlayer.pause(); 
                 shouldResumeMusic=true; 
             } 
-            if(adsList[0] && adsList[0].src){
-                adPlayer.src=adsList[0].src; 
-                adPlayer.load(); 
-                isAdPlaying=true; 
-                document.getElementById('adStatus').innerHTML=`<i class="fas fa-volume-up"></i> Tocando anúncio`; 
-                document.getElementById('skipAdBtn').style.display='inline-block'; 
-                adPlayer.play().catch(()=>finishAd()); 
-                adPlayer.onended=finishAd; 
-                adPlayer.onerror=finishAd;
+            
+            // Seleciona um anúncio aleatório
+            const randomAd = adsList[Math.floor(Math.random() * adsList.length)];
+            
+            if(randomAd && randomAd.src){
+                adPlayer.src = randomAd.src;
+                adPlayer.load();
+                isAdPlaying = true;
+                
+                const adStatus = document.getElementById('adStatus');
+                const skipAdBtn = document.getElementById('skipAdBtn');
+                
+                adStatus.innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${randomAd.title}`;
+                skipAdBtn.style.display = 'inline-block';
+                
+                // Toca o anúncio
+                const playPromise = adPlayer.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error("Erro ao tocar anúncio:", error);
+                        showNotification("Erro ao carregar anúncio");
+                        finishAd();
+                    });
+                }
+                
+                adPlayer.onended = () => finishAd();
+                adPlayer.onerror = () => {
+                    console.error("Erro no áudio do anúncio");
+                    finishAd();
+                };
             } else {
                 finishAd();
             }
         }
         
         function finishAd(){ 
-            isAdPlaying=false; 
-            document.getElementById('adStatus').innerHTML='<i class="fas fa-compact-disc fa-spin"></i> Aguardando...'; 
-            document.getElementById('skipAdBtn').style.display='none'; 
+            isAdPlaying = false; 
+            const adStatus = document.getElementById('adStatus');
+            const skipAdBtn = document.getElementById('skipAdBtn');
+            
+            adStatus.innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...'; 
+            skipAdBtn.style.display = 'none'; 
+            
             if(shouldResumeMusic){ 
                 playMusic(); 
-                shouldResumeMusic=false; 
+                shouldResumeMusic = false; 
             } 
         }
         
         function toggleAds(){ 
             adsEnabled=!adsEnabled; 
-            document.getElementById('toggleAdsBtn').innerHTML=adsEnabled?'<i class="fas fa-toggle-on"></i> Ativo':'<i class="fas fa-toggle-off"></i> Inativo'; 
+            const toggleBtn = document.getElementById('toggleAdsBtn');
+            toggleBtn.innerHTML = adsEnabled?'<i class="fas fa-toggle-on"></i> Ativo':'<i class="fas fa-toggle-off"></i> Inativo'; 
             if(!adsEnabled && isAdPlaying){ 
                 adPlayer.pause(); 
                 finishAd(); 
             } 
+            showNotification(adsEnabled ? "Anúncios ativados" : "Anúncios desativados");
         }
         
         function testAd(){ 
+            if(isAdPlaying) {
+                showNotification("Já tem um anúncio tocando");
+                return;
+            }
             playAd(); 
         }
         
@@ -907,7 +974,7 @@
             if(isAdPlaying){ 
                 adPlayer.pause(); 
                 finishAd(); 
-                showNotification('⏭️ Pulado'); 
+                showNotification('⏭️ Anúncio pulado'); 
             } 
         }
         
@@ -936,6 +1003,87 @@
             } 
         }
         
+        // ========== FUNÇÃO DE COMPARTILHAMENTO DE TELA PARA TV ==========
+        let mediaStream = null;
+        let mediaRecorder = null;
+        let videoElement = null;
+        let isCasting = false;
+        
+        async function startScreenShare() {
+            if (isCasting) {
+                showNotification("Já está compartilhando tela");
+                return;
+            }
+            
+            try {
+                // Solicita permissão para capturar tela
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: {
+                        cursor: "always",
+                        displaySurface: "monitor"
+                    },
+                    audio: true,
+                    preferCurrentTab: true
+                });
+                
+                mediaStream = stream;
+                isCasting = true;
+                
+                // Cria um elemento de vídeo para exibir o compartilhamento (opcional)
+                videoElement = document.createElement('video');
+                videoElement.srcObject = stream;
+                videoElement.style.position = 'fixed';
+                videoElement.style.bottom = '10px';
+                videoElement.style.right = '10px';
+                videoElement.style.width = '200px';
+                videoElement.style.borderRadius = '8px';
+                videoElement.style.border = '2px solid var(--primary-color)';
+                videoElement.style.zIndex = '9999';
+                videoElement.style.backgroundColor = '#000';
+                videoElement.autoplay = true;
+                videoElement.muted = true;
+                document.body.appendChild(videoElement);
+                
+                // Mostra indicador
+                const castIndicator = document.getElementById('castIndicator');
+                castIndicator.classList.add('active');
+                
+                // Quando o usuário parar o compartilhamento
+                stream.getVideoTracks()[0].onended = () => {
+                    stopScreenShare();
+                };
+                
+                showNotification("📺 Compartilhando tela! Abra o espelhamento na TV");
+                
+            } catch (error) {
+                console.error("Erro ao compartilhar tela:", error);
+                showNotification("Erro ao compartilhar tela. Verifique as permissões");
+            }
+        }
+        
+        function stopScreenShare() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => {
+                    track.stop();
+                });
+                mediaStream = null;
+            }
+            
+            if (videoElement && videoElement.parentNode) {
+                videoElement.parentNode.removeChild(videoElement);
+                videoElement = null;
+            }
+            
+            isCasting = false;
+            const castIndicator = document.getElementById('castIndicator');
+            castIndicator.classList.remove('active');
+            
+            showNotification("Compartilhamento de tela encerrado");
+        }
+        
+        // Botão para parar compartilhamento
+        document.getElementById('stopCastBtn')?.addEventListener('click', stopScreenShare);
+        
         // Event listeners
         document.getElementById('progressBar').addEventListener('click',(e)=>{ 
             if(isAdPlaying) return; 
@@ -955,6 +1103,7 @@
         document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
         document.getElementById('drawerOverlay').addEventListener('click',closeDrawer);
         document.getElementById('fullscreenDrawerBtn').addEventListener('click',()=>{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
+        document.getElementById('castToTvBtn').addEventListener('click',startScreenShare);
         document.getElementById('shareDrawerBtn').addEventListener('click',()=>{ if(navigator.share) navigator.share({title:'Rádio Playlist',url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
         document.getElementById('carModeDrawerBtn').addEventListener('click',()=>{ document.body.classList.add('car-mode'); showNotification('🚗 Modo Carro ATIVO'); });
         document.getElementById('exitCarModeBtn').addEventListener('click',()=>{ document.body.classList.remove('car-mode'); showNotification('Modo normal'); });
@@ -966,7 +1115,7 @@
         const savedTheme=localStorage.getItem('radioTheme')||'theme-red'; setTheme(savedTheme);
         colorOptions.forEach(opt=>opt.addEventListener('click',()=>setTheme(opt.dataset.theme)));
         
-        // Feedback com cores claras
+        // Feedback
         const feedbackBtn=document.getElementById('feedbackBtn'), feedbackModal=document.getElementById('feedbackModal'), cancelFeedback=document.getElementById('cancelFeedback'), sendFeedback=document.getElementById('sendFeedback'), feedbackTextarea=document.getElementById('feedbackText'); 
         let currentRating=0;
         const stars = document.querySelectorAll('.star');
