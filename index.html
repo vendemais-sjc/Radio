@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Rádio Playlist • 173 Músicas • Modo Tela Desligada</title>
+    <title>Rádio Playlist • Caregando Músicas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -253,7 +253,25 @@
         .feedback-modal .modal-btn { padding: 6px; border-radius: 20px; cursor: pointer; background: #2a2a2a; color: white; border: none; margin: 2px; }
         .feedback-modal .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
 
-        /* Modo Carro - Versão Otimizada para Tela Desligada */
+        .tip-banner {
+            position: fixed;
+            bottom: 80px;
+            left: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #e63946, #b71c1c);
+            color: white;
+            padding: 10px;
+            border-radius: 25px;
+            text-align: center;
+            font-size: 11px;
+            z-index: 10001;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .tip-banner i { margin-right: 5px; }
+
         body.car-mode .extra-video-section,
         body.car-mode .top-bar,
         body.car-mode .footer,
@@ -384,33 +402,10 @@
         body.car-mode .car-exit-btn {
             display: flex;
         }
-        
-        /* Bloqueio de tela - Informação */
-        .screen-lock-info {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.7);
-            color: var(--primary-color);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            z-index: 999;
-            pointer-events: none;
-            backdrop-filter: blur(4px);
-            display: none;
-        }
-        
-        body.car-mode .screen-lock-info {
-            display: block;
-        }
     </style>
 </head>
 <body class="theme-red">
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
-    <div class="screen-lock-info">
-        <i class="fas fa-mobile-alt"></i> Toque continua com tela desligada
-    </div>
     <div id="splash">
         <div class="splash-content">
             <i class="fas fa-headphones-alt"></i>
@@ -419,11 +414,15 @@
         </div>
     </div>
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
+    
+    <div class="tip-banner" id="tipBanner">
+        <i class="fas fa-info-circle"></i> 🎵 DICA: Bloqueie a tela e o áudio continua!
+    </div>
 
     <div class="app">
         <div class="top-bar">
             <div class="top-ticker" id="topTicker">
-                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - 173 músicas - Toque contínuo com tela desligada! <i class="fas fa-music fa-beat"></i></span>
+                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RÁDIO PLAYLIST - 173 músicas - Anuncie aqui! - 12 98846-1978  <i class="fas fa-music fa-beat"></i></span>
             </div>
         </div>
 
@@ -465,7 +464,7 @@
     <div class="drawer" id="drawer">
         <div class="drawer-header"><button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button></div>
         <div class="drawer-content">
-            <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro (tela desligada)</button>
+            <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
@@ -521,9 +520,10 @@
     </div>
 
     <script>
-        // ==================== PLAYLIST COMPLETA ====================
+        // ==================== PLAYLIST COMPLETA COM 173 MÚSICAS ====================
+        // TODAS AS MÚSICAS - SEM DURATION (o player pega a duração real do arquivo)
         const musicas = [
-         { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -695,23 +695,10 @@
             { id: 170, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", periodo: "tarde" },
             { id: 171, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "noite" },
             { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", periodo: "manha" },
-            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" } 
-            // ... (todas as suas 173 músicas aqui - mantenha sua lista completa)
+            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" }
         ];
-        
-        // Preencher até 173 músicas se necessário
-        while(musicas.length < 173) {
-            musicas.push({ 
-                id: musicas.length + 1, 
-                title: `Música ${musicas.length + 1}`, 
-                artist: "Artista Show", 
-                src: `musica${musicas.length + 1}.mp3`, 
-                duration: "03:30", 
-                periodo: "todos" 
-            });
-        }
 
-        // ==================== PLAYER PRINCIPAL ====================
+        // ==================== PLAYER COM TIMER ====================
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -726,8 +713,8 @@
         const shuffleBtn = document.getElementById('shufflePlayerBtn');
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
+        const tipBanner = document.getElementById('tipBanner');
         
-        // Variáveis de estado
         let currentIndex = 0;
         let isPlaying = false;
         let shuffle = false;
@@ -738,31 +725,8 @@
         let isAdPlaying = false;
         let adInterval = 30;
         let currentAdIndex = 0;
-        
-        // Mantém áudio ativo mesmo com tela desligada
-        let wakeLock = null;
-        
-        // Solicitar WakeLock para manter áudio rodando
-        async function requestWakeLock() {
-            if ('wakeLock' in navigator) {
-                try {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Wake Lock ativado - áudio continuará com tela desligada');
-                } catch (err) {
-                    console.log('Wake Lock não suportado:', err);
-                }
-            }
-        }
-        
-        // Liberar WakeLock
-        function releaseWakeLock() {
-            if (wakeLock !== null) {
-                wakeLock.release().then(() => {
-                    wakeLock = null;
-                    console.log('Wake Lock liberado');
-                });
-            }
-        }
+        let shouldResumeMusic = false;
+        let timerInterval = null;
         
         const adsList = [
             { src: 'zzcv.mp3', title: 'Oferta especial' },
@@ -770,7 +734,63 @@
             { src: 'zzcv.mp3', title: 'Novidade imperdível' }
         ];
         
-        // Atualiza playlist filtrada
+        // ==================== MEDIA SESSION API ====================
+        function updateMediaSession(track) {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: track.title,
+                    artist: track.artist,
+                    album: 'Rádio Playlist',
+                    artwork: [{ src: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23e63946"/%3E%3Ctext x="50" y="67" font-size="50" text-anchor="middle" fill="white"%3E🎵%3C/text%3E%3C/svg%3E', sizes: '96x96', type: 'image/svg+xml' }]
+                });
+                navigator.mediaSession.setActionHandler('play', () => playMusic());
+                navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
+                navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
+                navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
+                navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+            }
+        }
+        
+        function updateMediaSessionPlaybackState(playing) {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
+            }
+        }
+        
+        // ==================== TIMER PARA TROCAR MÚSICA ====================
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                if (isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) {
+                    const currentTime = musicPlayer.currentTime;
+                    const duration = musicPlayer.duration;
+                    
+                    // Atualiza barra de progresso
+                    const percent = (currentTime / duration) * 100;
+                    progressFill.style.width = percent + '%';
+                    const mins = Math.floor(currentTime / 60);
+                    const secs = Math.floor(currentTime % 60);
+                    currentTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    
+                    // Se chegou perto do fim (último 0.3 segundo), troca de música
+                    if (duration - currentTime <= 0.3) {
+                        console.log("Música terminou, trocando...");
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        nextTrack();
+                    }
+                }
+            }, 100);
+        }
+        
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+        
         function updateFilteredPlaylist() {
             if(allSongsMode) {
                 filteredPlaylist = [...musicas];
@@ -785,7 +805,6 @@
             renderPlaylist();
         }
         
-        // Renderiza lista de músicas
         function renderPlaylist() {
             let html = '';
             filteredPlaylist.forEach((m, idx) => {
@@ -794,22 +813,15 @@
                 html += `<div class="playlist-item ${isActive ? 'playing' : ''}" onclick="selectSong(${globalIdx})">
                             <div class="music-number">${(idx+1).toString().padStart(2,'0')}</div>
                             <div class="playlist-info">
-                                <div class="playlist-title">${escapeHtml(m.title)}</div>
-                                <div class="playlist-artist">${escapeHtml(m.artist)}</div>
+                                <div class="playlist-title">${m.title}</div>
+                                <div class="playlist-artist">${m.artist}</div>
                             </div>
-                            <div class="playlist-duration">${m.duration || '03:30'}</div>
+                            <div class="playlist-duration">03:30</div>
                         </div>`;
             });
             playlistContainer.innerHTML = html;
         }
         
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // Carrega música
         function loadTrack(index) {
             if(index >= musicas.length) index = 0;
             if(index < 0) index = musicas.length - 1;
@@ -820,6 +832,8 @@
             trackArtist.textContent = `${track.title} - ${track.artist}`;
             currentTimeEl.textContent = '0:00';
             progressFill.style.width = '0%';
+            
+            updateMediaSession(track);
             
             musicPlayer.addEventListener('loadedmetadata', function onMeta() {
                 if(musicPlayer.duration && !isNaN(musicPlayer.duration)) {
@@ -832,55 +846,55 @@
             renderPlaylist();
         }
         
-        // Toca música
         function playMusic() {
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio terminar');
                 return;
             }
-            
-            // Ativar WakeLock para manter áudio com tela desligada
-            if (!wakeLock) {
-                requestWakeLock();
-            }
-            
             musicPlayer.play().then(() => {
                 isPlaying = true;
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                updateMediaSessionPlaybackState(true);
+                startTimer();
                 splash.classList.add('hidden');
                 setTimeout(() => splash.classList.add('display-none'), 500);
                 tapToStart.classList.add('hidden');
                 renderPlaylist();
-                
-                // Atualizar título da aba para mostrar música tocando
-                document.title = `🎵 ${musicas[currentIndex].title} - Rádio Playlist`;
-            }).catch(e => console.log("Erro ao reproduzir:", e));
+                setTimeout(() => {
+                    tipBanner.style.display = 'block';
+                    setTimeout(() => tipBanner.style.display = 'none', 5000);
+                }, 2000);
+            }).catch(e => console.log("Erro:", e));
         }
         
-        // Pausa música
         function pauseMusic() {
             musicPlayer.pause();
             isPlaying = false;
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            updateMediaSessionPlaybackState(false);
+            stopTimer();
             renderPlaylist();
-            document.title = `Rádio Playlist • 173 Músicas`;
         }
         
-        // Alterna play/pause
         function togglePlayPause() {
             if(isAdPlaying) {
                 showNotification('Anúncio tocando...');
                 return;
             }
-            isPlaying ? pauseMusic() : playMusic();
+            if(isPlaying) {
+                pauseMusic();
+            } else {
+                playMusic();
+            }
         }
         
-        // Próxima música
         function nextTrack() {
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio');
                 return;
             }
+            
+            stopTimer();
             
             musicPlayedCount++;
             updateAdTimer();
@@ -901,16 +915,21 @@
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            if(isPlaying) playMusic();
+            
+            if(isPlaying) {
+                playMusic();
+            }
+            
             checkAdInterval();
         }
         
-        // Música anterior
         function prevTrack() {
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio');
                 return;
             }
+            
+            stopTimer();
             
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
@@ -928,10 +947,12 @@
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            if(isPlaying) playMusic();
+            
+            if(isPlaying) {
+                playMusic();
+            }
         }
         
-        // Seleciona música da playlist
         window.selectSong = function(globalIdx) {
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio terminar');
@@ -950,47 +971,20 @@
                 }
             }
             
+            stopTimer();
             currentIndex = globalIdx;
             loadTrack(currentIndex);
             if(isPlaying) playMusic();
             closeDrawer();
         };
         
-        // Atualiza barra de progresso
-        musicPlayer.addEventListener('timeupdate', () => {
-            if(musicPlayer.duration && !isNaN(musicPlayer.duration)) {
-                const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
-                progressFill.style.width = percent + '%';
-                const mins = Math.floor(musicPlayer.currentTime / 60);
-                const secs = Math.floor(musicPlayer.currentTime % 60);
-                currentTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-            }
-        });
-        
-        // Quando a música termina
-        musicPlayer.addEventListener('ended', () => {
-            if(!isAdPlaying) {
-                musicPlayedCount++;
-                updateAdTimer();
-                nextTrack();
-            }
-        });
-        
-        // Barra de progresso clicável
-        document.getElementById('progressBar').addEventListener('click', (e) => {
-            if(isAdPlaying) return;
-            const rect = e.currentTarget.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            musicPlayer.currentTime = percent * musicPlayer.duration;
-        });
-        
         // ==================== ANÚNCIOS ====================
-        let shouldResumeMusic = false;
-        
         function playAd() {
             if(!adsEnabled || isAdPlaying) return;
             const ad = adsList[currentAdIndex];
             if(!ad) return;
+            
+            stopTimer();
             
             if(isPlaying) {
                 musicPlayer.pause();
@@ -1055,10 +1049,10 @@
         
         // ==================== UTILITÁRIOS ====================
         function showNotification(msg) {
-            const notif = document.getElementById('notification');
+            const n = document.getElementById('notification');
             document.getElementById('notificationText').innerText = msg;
-            notif.classList.add('show');
-            setTimeout(() => notif.classList.remove('show'), 2000);
+            n.classList.add('show');
+            setTimeout(() => n.classList.remove('show'), 2000);
         }
         
         function closeDrawer() {
@@ -1080,6 +1074,58 @@
                 if(isPlaying) playMusic();
             }
         }
+        
+        // ==================== MANTER ÁUDIO EM SEGUNDO PLANO ====================
+        let audioContext = null;
+        let isBackgroundActive = false;
+        
+        function startSilentAudio() {
+            if(isBackgroundActive) return;
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const bufferSize = audioContext.sampleRate * 2;
+                const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+                const channelData = buffer.getChannelData(0);
+                for(let i = 0; i < bufferSize; i++) channelData[i] = 0;
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.loop = true;
+                source.connect(audioContext.destination);
+                source.start();
+                isBackgroundActive = true;
+            } catch(e) { console.log("Erro:", e); }
+        }
+        
+        function keepAudioAlive() {
+            if(audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().catch(e => console.log);
+            }
+        }
+        
+        const originalPlayMusic = playMusic;
+        window.playMusic = function() {
+            if(!isBackgroundActive) startSilentAudio();
+            if(audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().catch(e => console.log);
+            }
+            originalPlayMusic();
+        };
+        playMusic = window.playMusic;
+        
+        document.addEventListener('visibilitychange', function() {
+            keepAudioAlive();
+        });
+        
+        setInterval(() => { keepAudioAlive(); }, 5000);
+        
+        document.getElementById('progressBar').addEventListener('click', (e) => {
+            if(isAdPlaying) return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            if(musicPlayer.duration) {
+                musicPlayer.currentTime = percent * musicPlayer.duration;
+            }
+        });
         
         // ==================== EVENT LISTENERS ====================
         playBtn.addEventListener('click', togglePlayPause);
@@ -1111,14 +1157,11 @@
         });
         document.getElementById('carModeDrawerBtn').addEventListener('click', () => {
             document.body.classList.add('car-mode');
-            showNotification('🚗 Modo Carro ATIVO - Áudio continua com tela desligada');
-            // Ativar WakeLock automaticamente no modo carro
-            requestWakeLock();
+            showNotification('🚗 Modo Carro ATIVO');
         });
         document.getElementById('exitCarModeBtn').addEventListener('click', () => {
             document.body.classList.remove('car-mode');
             showNotification('Modo normal');
-            releaseWakeLock();
         });
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
@@ -1167,7 +1210,7 @@
             });
         });
         sendFeedback.addEventListener('click', () => {
-            if(currentRating === 0) { showNotification('⭐ Dê uma nota'); return; }
+            if(currentRating === 0) { showNotification('⭐ Dê uma nota de 1 a 5 estrelas'); return; }
             let msg = `🎵 *Rádio Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`;
             if(feedbackTextarea.value.trim()) msg += `💬 ${feedbackTextarea.value.trim()}\n`;
             window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`, '_blank');
@@ -1181,7 +1224,7 @@
             });
         });
         
-        // ==================== VÍDEOS ====================
+        // Vídeos
         const mainVideo = document.getElementById('mainVideo');
         const extraVideo = document.getElementById('extraVideo');
         const extraOverlay = document.getElementById('extraOverlay');
@@ -1260,18 +1303,6 @@
             setInterval(() => {
                 if(!allSongsMode) updateFilteredPlaylist();
             }, 60000);
-            
-            // Tentar ativar WakeLock automaticamente se o usuário já estiver no modo carro
-            if(localStorage.getItem('autoWakeLock') === 'true') {
-                requestWakeLock();
-            }
-        });
-        
-        // Detectar quando a página está visível novamente e reativar WakeLock se necessário
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && isPlaying && document.body.classList.contains('car-mode')) {
-                requestWakeLock();
-            }
         });
     </script>
 </body>
