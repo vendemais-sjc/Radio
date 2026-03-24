@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Rádio Playlist • Tocando em Segundo Plano BX</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -258,29 +259,58 @@
         .feedback-modal .modal-btn.send:hover { background: #20b859; }
         .feedback-modal .modal-btn.cancel:hover { background: #444; }
 
-        /* Cast to TV Indicator */
-        .cast-indicator {
+        /* Modal de QR Code para TV */
+        .qr-modal {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.8);
-            color: var(--primary-color);
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 0.8rem;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e1e1e;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 20px;
+            z-index: 10002;
             display: none;
-            align-items: center;
-            gap: 8px;
-            z-index: 10001;
-            border: 1px solid var(--primary-color);
-            backdrop-filter: blur(4px);
+            text-align: center;
+            max-width: 90%;
+            width: 320px;
         }
-        .cast-indicator.active {
+        .qr-modal.open {
+            display: block;
+        }
+        .qr-modal h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .qr-modal p {
+            color: #fff;
+            font-size: 0.8rem;
+            margin: 10px 0;
+        }
+        #qrcode {
             display: flex;
+            justify-content: center;
+            margin: 15px 0;
         }
-        .cast-indicator i {
-            font-size: 1rem;
-            animation: pulse 1s infinite;
+        .qr-modal .close-qr {
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .qr-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 10001;
+            display: none;
+        }
+        .qr-overlay.active {
+            display: block;
         }
 
         body.car-mode .extra-video-section,
@@ -412,11 +442,6 @@
     </style>
 </head>
 <body class="theme-red">
-    <div class="cast-indicator" id="castIndicator">
-        <i class="fas fa-tv"></i>
-        <span>Compartilhando tela...</span>
-        <button id="stopCastBtn" style="background:none;border:none;color:white;cursor:pointer;margin-left:8px;"><i class="fas fa-times"></i></button>
-    </div>
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
     <div id="splash">
         <div class="splash-content">
@@ -426,6 +451,16 @@
         </div>
     </div>
     <div id="tap-to-start"><i class="fas fa-play-circle"></i> TOCAR MÚSICA AGORA</div>
+
+    <!-- Modal de QR Code para TV -->
+    <div class="qr-overlay" id="qrOverlay"></div>
+    <div class="qr-modal" id="qrModal">
+        <h3><i class="fas fa-tv"></i> Compartilhar na TV</h3>
+        <p>Escaneie o QR Code com seu celular ou abra no navegador da TV:</p>
+        <div id="qrcode"></div>
+        <p id="castUrl" style="font-size: 0.7rem; word-break: break-all;"></p>
+        <button class="close-qr" id="closeQrModal"><i class="fas fa-check"></i> Entendi</button>
+    </div>
 
     <div class="app">
         <div class="top-bar">
@@ -474,7 +509,7 @@
         <div class="drawer-content">
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
-            <button class="drawer-item" id="castToTvBtn"><i class="fas fa-tv"></i> Compartilhar tela na TV</button>
+            <button class="drawer-item" id="castToTvBtn"><i class="fas fa-tv"></i> Compartilhar na TV</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar link</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
             
@@ -531,7 +566,7 @@
     <script>
         // PLAYLIST COMPLETA 173 MÚSICAS
         const musicas = [
-            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+           { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -703,7 +738,7 @@
             { id: 170, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", periodo: "tarde" },
             { id: 171, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "noite" },
             { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", periodo: "manha" },
-            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" } 
+            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" }  
         ];
         
         // Elementos do player
@@ -724,15 +759,14 @@
         
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [], musicPlayedCount = 0, adsEnabled = true, isAdPlaying = false, adInterval = 30, shouldResumeMusic = false, timerInterval = null;
         
-        // Anúncios corrigidos - usando um URL de áudio de exemplo válido
+        // Anúncios corrigidos
         const adsList = [
-            { src: "zzcv.mp3", title: "Oferta Especial", duration: 10 },
-            { src: "zzcv.mp3", title: "Promoção Imperdível", duration: 12 }
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", title: "Oferta Especial", duration: 10 },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", title: "Promoção Imperdível", duration: 12 }
         ];
         
         let audioCtx = null, silentSource = null;
         
-        // Função para manter áudio em segundo plano
         function setupBackgroundAudio() {
             if (audioCtx) return;
             try {
@@ -889,7 +923,6 @@
             } 
         }
         
-        // Anúncio corrigido
         let currentAdIndex = 0;
         
         function playAd() { 
@@ -902,7 +935,6 @@
                 shouldResumeMusic=true; 
             } 
             
-            // Seleciona um anúncio aleatório
             const randomAd = adsList[Math.floor(Math.random() * adsList.length)];
             
             if(randomAd && randomAd.src){
@@ -916,7 +948,6 @@
                 adStatus.innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${randomAd.title}`;
                 skipAdBtn.style.display = 'inline-block';
                 
-                // Toca o anúncio
                 const playPromise = adPlayer.play();
                 
                 if (playPromise !== undefined) {
@@ -1003,86 +1034,81 @@
             } 
         }
         
-        // ========== FUNÇÃO DE COMPARTILHAMENTO DE TELA PARA TV ==========
-        let mediaStream = null;
-        let mediaRecorder = null;
-        let videoElement = null;
-        let isCasting = false;
+        // ========== FUNÇÃO DE COMPARTILHAMENTO PARA TV (QR CODE) ==========
+        let qrCodeInstance = null;
         
-        async function startScreenShare() {
-            if (isCasting) {
-                showNotification("Já está compartilhando tela");
-                return;
-            }
+        function shareToTV() {
+            // Pega a URL atual da página
+            const currentUrl = window.location.href;
             
+            // Mostra o modal com QR Code
+            const qrModal = document.getElementById('qrModal');
+            const qrOverlay = document.getElementById('qrOverlay');
+            const castUrlElement = document.getElementById('castUrl');
+            
+            // Limpa QR Code anterior
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = '';
+            
+            // Gera novo QR Code
             try {
-                // Solicita permissão para capturar tela
-                const stream = await navigator.mediaDevices.getDisplayMedia({
-                    video: {
-                        cursor: "always",
-                        displaySurface: "monitor"
-                    },
-                    audio: true,
-                    preferCurrentTab: true
+                qrCodeInstance = new QRCode(qrcodeDiv, {
+                    text: currentUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#ffffff",
+                    colorLight: "#000000",
+                    correctLevel: QRCode.CorrectLevel.M
                 });
-                
-                mediaStream = stream;
-                isCasting = true;
-                
-                // Cria um elemento de vídeo para exibir o compartilhamento (opcional)
-                videoElement = document.createElement('video');
-                videoElement.srcObject = stream;
-                videoElement.style.position = 'fixed';
-                videoElement.style.bottom = '10px';
-                videoElement.style.right = '10px';
-                videoElement.style.width = '200px';
-                videoElement.style.borderRadius = '8px';
-                videoElement.style.border = '2px solid var(--primary-color)';
-                videoElement.style.zIndex = '9999';
-                videoElement.style.backgroundColor = '#000';
-                videoElement.autoplay = true;
-                videoElement.muted = true;
-                document.body.appendChild(videoElement);
-                
-                // Mostra indicador
-                const castIndicator = document.getElementById('castIndicator');
-                castIndicator.classList.add('active');
-                
-                // Quando o usuário parar o compartilhamento
-                stream.getVideoTracks()[0].onended = () => {
-                    stopScreenShare();
-                };
-                
-                showNotification("📺 Compartilhando tela! Abra o espelhamento na TV");
-                
-            } catch (error) {
-                console.error("Erro ao compartilhar tela:", error);
-                showNotification("Erro ao compartilhar tela. Verifique as permissões");
+            } catch(e) {
+                // Fallback se a biblioteca não carregar
+                qrcodeDiv.innerHTML = `<canvas id="qrCanvas" width="200" height="200"></canvas>`;
+                const canvas = document.getElementById('qrCanvas');
+                if(canvas) {
+                    // QR Code simples via canvas
+                    const QRCodeGen = (text, canvas) => {
+                        // Implementação simples
+                        canvas.getContext('2d').fillStyle = '#fff';
+                        canvas.fillRect(0, 0, 200, 200);
+                        canvas.getContext('2d').fillStyle = '#000';
+                        canvas.getContext('2d').font = '12px monospace';
+                        canvas.getContext('2d').fillText(text, 10, 100);
+                    };
+                    QRCodeGen(currentUrl, canvas);
+                }
             }
+            
+            castUrlElement.textContent = currentUrl;
+            qrModal.classList.add('open');
+            qrOverlay.classList.add('active');
+            
+            showNotification("📺 Escaneie o QR Code na TV ou Smartphone");
         }
         
-        function stopScreenShare() {
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => {
-                    track.stop();
-                });
-                mediaStream = null;
-            }
-            
-            if (videoElement && videoElement.parentNode) {
-                videoElement.parentNode.removeChild(videoElement);
-                videoElement = null;
-            }
-            
-            isCasting = false;
-            const castIndicator = document.getElementById('castIndicator');
-            castIndicator.classList.remove('active');
-            
-            showNotification("Compartilhamento de tela encerrado");
+        function closeQrModal() {
+            const qrModal = document.getElementById('qrModal');
+            const qrOverlay = document.getElementById('qrOverlay');
+            qrModal.classList.remove('open');
+            qrOverlay.classList.remove('active');
         }
         
-        // Botão para parar compartilhamento
-        document.getElementById('stopCastBtn')?.addEventListener('click', stopScreenShare);
+        // Função de compartilhamento de link
+        function shareLink() {
+            const currentUrl = window.location.href;
+            if(navigator.share) {
+                navigator.share({
+                    title: 'Rádio Playlist',
+                    text: 'Ouça as melhores músicas!',
+                    url: currentUrl
+                }).catch(e => console.log('Erro ao compartilhar:', e));
+            } else {
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    showNotification('✅ Link copiado! Compartilhe com seus amigos');
+                }).catch(() => {
+                    showNotification('📋 ' + currentUrl);
+                });
+            }
+        }
         
         // Event listeners
         document.getElementById('progressBar').addEventListener('click',(e)=>{ 
@@ -1103,8 +1129,10 @@
         document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
         document.getElementById('drawerOverlay').addEventListener('click',closeDrawer);
         document.getElementById('fullscreenDrawerBtn').addEventListener('click',()=>{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
-        document.getElementById('castToTvBtn').addEventListener('click',startScreenShare);
-        document.getElementById('shareDrawerBtn').addEventListener('click',()=>{ if(navigator.share) navigator.share({title:'Rádio Playlist',url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
+        document.getElementById('castToTvBtn').addEventListener('click',shareToTV);
+        document.getElementById('closeQrModal').addEventListener('click',closeQrModal);
+        document.getElementById('qrOverlay').addEventListener('click',closeQrModal);
+        document.getElementById('shareDrawerBtn').addEventListener('click',shareLink);
         document.getElementById('carModeDrawerBtn').addEventListener('click',()=>{ document.body.classList.add('car-mode'); showNotification('🚗 Modo Carro ATIVO'); });
         document.getElementById('exitCarModeBtn').addEventListener('click',()=>{ document.body.classList.remove('car-mode'); showNotification('Modo normal'); });
         toggleAllSongsBtn.addEventListener('click',toggleAllSongsModeFunc);
