@@ -37,12 +37,7 @@
         video, img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .video-menu-btn { position: absolute; top: 12px; right: 12px; background: transparent; color: white; border: none; font-size: 1.6rem; cursor: pointer; z-index: 20; padding: 6px 10px; }
         
-        /* BOTÕES DE MÍDIA - OCULTADOS */
-        .media-selector {
-            display: none !important;
-        }
-        
-        /* Badge de saudação */
+        /* Badge de saudação sobreposta */
         .greeting-badge {
             position: absolute;
             top: 12px;
@@ -58,21 +53,6 @@
             z-index: 25;
             pointer-events: none;
         }
-        
-        /* ========== MODO CARRO ========== */
-        body.car-mode .extra-video-section,
-        body.car-mode .top-bar,
-        body.car-mode .footer,
-        body.car-mode .feedback-btn {
-            display: none !important;
-        }
-        body.car-mode .app { border: none; }
-        body.car-mode .video-container { margin: 0 !important; border-radius: 0 !important; }
-        body.car-mode .controls { padding: 20px; }
-        body.car-mode .control-btn { width: 60px; height: 60px; font-size: 2.2rem; }
-        body.car-mode .play-btn { width: 80px; height: 80px; font-size: 3.5rem; background: var(--primary-color); color: #000 !important; border-radius: 50%; }
-        body.car-mode .track-info p { font-size: 1.3rem; white-space: normal; text-align: center; }
-        body.car-mode .car-exit-btn { display: flex; }
         
         .track-info { padding: 12px 16px 4px; text-align: center; }
         .track-info p { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -132,6 +112,21 @@
         .feedback-modal textarea { width: 100%; height: 70px; background: #2a2a2a; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; color: white; margin-bottom: 10px; resize: none; }
         .modal-btn { padding: 8px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; font-size: 0.8rem; }
         .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
+        
+        /* ========== MODO CARRO ========== */
+        body.car-mode .extra-video-section,
+        body.car-mode .top-bar,
+        body.car-mode .footer,
+        body.car-mode .feedback-btn {
+            display: none !important;
+        }
+        body.car-mode .app { border: none; }
+        body.car-mode .video-container { margin: 0 !important; border-radius: 0 !important; }
+        body.car-mode .controls { padding: 20px; }
+        body.car-mode .control-btn { width: 60px; height: 60px; font-size: 2.2rem; }
+        body.car-mode .play-btn { width: 80px; height: 80px; font-size: 3.5rem; background: var(--primary-color); color: #000 !important; border-radius: 50%; }
+        body.car-mode .track-info p { font-size: 1.3rem; white-space: normal; text-align: center; }
+        body.car-mode .car-exit-btn { display: flex; }
     </style>
 </head>
 <body class="theme-red">
@@ -148,6 +143,9 @@
         
         <div class="player-card">
             <div class="video-container" id="mainMediaContainer">
+                <video autoplay loop muted playsinline id="mainVideo">
+                    <source src="macaco.mp4" type="video/mp4">
+                </video>
                 <div class="greeting-badge" id="greetingBadge">🌞 Bom dia!</div>
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
@@ -163,8 +161,11 @@
         </div>
 
         <div class="extra-video-section">
-            <div class="extra-video-container" id="extraMediaContainer">
-                <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> Carregando...</div>
+            <div class="extra-video-container" id="extraVideoContainer">
+                <video autoplay loop muted playsinline id="extraVideo">
+                    <source src="aluguecopos (1).mp4" type="video/mp4">
+                </video>
+                <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
             </div>
         </div>
         <div class="footer">Rádio Playlist 2025 • 173 músicas • Anúncios alternam a cada 15s</div>
@@ -192,7 +193,7 @@
             </div>
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> 📢 ANÚNCIOS DE ÁUDIO (MP3)</h4>
-                <div class="ad-timer" id="adTimer">30</div>
+                <div class="ad-timer" id="adTimer">25</div>
                 <div class="ad-status" id="adStatus"><i class="fas fa-compact-disc fa-spin"></i> Aguardando...</div>
                 <div class="ad-buttons">
                     <button class="ad-btn" id="toggleAdsBtn">Ativo</button>
@@ -228,7 +229,7 @@
     <script>
         // ==================== PLAYLIST COMPLETA COM 173 MÚSICAS ====================
         const musicas = [
-         { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+ { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -404,55 +405,31 @@
             
         ];
         
+        // Completar até 173 músicas
         for(let i = musicas.length + 1; i <= 173; i++) {
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
         
-        // ==================== MÍDIAS FUNCIONAIS ====================
-        // 🎬 VÍDEOS FUNCIONAIS (Pexels - funcionam 100%)
-        const videosFuncionais = {
-            bomdia: ["https://videos.pexels.com/video-files/2845911/2845911-hd_1920_1080_24fps.mp4"],
-            boatarde: ["https://videos.pexels.com/video-files/2098247/2098247-hd_1920_1080_24fps.mp4"],
-            boanoite: ["https://videos.pexels.com/video-files/2013625/2013625-hd_1920_1080_24fps.mp4"],
-            padrao: ["macaco.mp4"]
+        // ==================== FOTOS DE SAUDAÇÃO ====================
+        // ⚠️ SUBSTITUA PELOS NOMES DOS SEUS ARQUIVOS DE IMAGEM
+        const fotosSaudacao = {
+            bomdia: ["bomdia1.jpg", "bomdia2.jpg", "bomdia3.jpg"],
+            boatarde: ["boatarde1.jpg", "boatarde2.jpg", "boatarde3.jpg"],
+            boanoite: ["boanoite1.jpg", "boanoite2.jpg", "boanoite3.jpg"]
         };
         
-        // 🖼️ IMAGENS FUNCIONAIS (Picsum - funcionam 100%)
-        const imagensFuncionais = {
-            bomdia: ["https://picsum.photos/id/16/1280/720", "https://picsum.photos/id/29/1280/720", "https://picsum.photos/id/96/1280/720"],
-            boatarde: ["https://picsum.photos/id/15/1280/720", "https://picsum.photos/id/30/1280/720", "https://picsum.photos/id/58/1280/720"],
-            boanoite: ["https://picsum.photos/id/42/1280/720", "https://picsum.photos/id/76/1280/720", "https://picsum.photos/id/91/1280/720"],
-            padrao: ["https://picsum.photos/id/100/1280/720", "https://picsum.photos/id/1015/1280/720"]
-        };
+        // ==================== VÍDEOS DOS ANÚNCIOS VISUAIS ====================
+        // ⚠️ SUBSTITUA PELOS SEUS VÍDEOS E LINKS
+        const videosExtra = [
+            { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
+            { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/" }
+        ];
         
-        // 🎞️ GIFs FUNCIONAIS (GIPHY - funcionam 100%)
-        const gifsFuncionais = {
-            bomdia: ["https://media.giphy.com/media/l0MYt5jH6gkWHygDe/giphy.gif", "https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif"],
-            boatarde: ["https://media.giphy.com/media/xT9IgzoKnwFWm9TkH2/giphy.gif", "https://media.giphy.com/media/l0MYEq5BJi4XiLPZ6/giphy.gif"],
-            boanoite: ["https://media.giphy.com/media/26gR2qejcKcgH4tA4/giphy.gif", "https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif"],
-            padrao: ["https://media.giphy.com/media/26tPplGWjN0xLyxUQ/giphy.gif", "https://media.giphy.com/media/l0MYt5jH6gkWHygDe/giphy.gif"]
-        };
-        
-        // ⚙️ CONFIGURAÇÃO: Escolha qual tipo de mídia usar (video, image, gif)
-        const TIPO_MIDIA_PRINCIPAL = "gif";  // pode ser "video", "image" ou "gif"
-        
-        // Mídia do modo carro (GIFs funcionais)
-        const bibliotecaMediaCarro = {
-            gif: ["https://media.giphy.com/media/26tPplGWjN0xLyxUQ/giphy.gif", "https://media.giphy.com/media/l0MYt5jH6gkWHygDe/giphy.gif", "https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif"]
-        };
-        
-        // ==================== ANÚNCIOS ====================
+        // ==================== ANÚNCIOS DE ÁUDIO MP3 ====================
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
             { src: "zzcv.mp3", nome: "Promoção Relâmpago" },
             { src: "zzcv.mp3", nome: "Novidade Imperdível" }
-        ];
-        
-        const anunciosVisuais = [
-            { tipo: "video", src: "https://videos.pexels.com/video-files/855743/855743-hd_1920_1080_25fps.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
-            { tipo: "video", src: "https://videos.pexels.com/video-files/799134/799134-hd_1920_1080_25fps.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
-            { tipo: "imagem", src: "https://picsum.photos/id/104/1280/720", nome: "Promoção", link: "https://www.promocao.com.br/" },
-            { tipo: "gif", src: "https://media.giphy.com/media/26tPplGWjN0xLyxUQ/giphy.gif", nome: "Oferta Relâmpago", link: "https://www.oferta.com.br/" }
         ];
         
         // ==================== ELEMENTOS DOM ====================
@@ -476,13 +453,16 @@
         let isAdPlaying = false;
         let musicPlayedCount = 0;
         let adsEnabled = true;
-        let adInterval = 30;
+        let adInterval = 25;
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
+        let musicPausedTime = 0;
         
-        // ==================== SAUDAÇÃO COM MÍDIA FUNCIONAL ====================
-        let mediaIndex = 0;
-        let rotacaoInterval = null;
+        // ==================== VÍDEO PRINCIPAL COM SAUDAÇÃO ====================
+        let saudacaoIndex = 0;
+        let alternando = false;
+        let saudacaoInterval = null;
+        let isCarModeActive = false;
         
         function getPeriodoAtual() {
             const hora = new Date().getHours();
@@ -498,91 +478,140 @@
             return "🌙 Boa noite!";
         }
         
-        function getMidiaSaudacao() {
+        function getFotoSaudacao() {
             const periodo = getPeriodoAtual();
-            
-            if (TIPO_MIDIA_PRINCIPAL === "video") {
-                const videos = videosFuncionais[periodo] || videosFuncionais.padrao;
-                return { tipo: "video", src: videos[mediaIndex % videos.length] };
-            } else if (TIPO_MIDIA_PRINCIPAL === "image") {
-                const imagens = imagensFuncionais[periodo] || imagensFuncionais.padrao;
-                return { tipo: "image", src: imagens[mediaIndex % imagens.length] };
-            } else {
-                const gifs = gifsFuncionais[periodo] || gifsFuncionais.padrao;
-                return { tipo: "gif", src: gifs[mediaIndex % gifs.length] };
-            }
+            const fotos = fotosSaudacao[periodo];
+            if (!fotos || fotos.length === 0) return null;
+            return fotos[saudacaoIndex % fotos.length];
         }
         
-        function isCarMode() {
-            return document.body.classList.contains('car-mode');
-        }
-        
-        function atualizarMediaPrincipal() {
-            const container = document.getElementById('mainMediaContainer');
-            const oldMedia = document.getElementById('mainMedia');
+        function alternarVideoPrincipal() {
+            if (isCarModeActive) return;
             
-            if (oldMedia) oldMedia.remove();
+            const videoElement = document.getElementById('mainVideo');
+            if (!videoElement) return;
             
-            // No modo carro, usa GIFs
-            if (isCarMode()) {
-                const gifList = bibliotecaMediaCarro.gif;
-                if (gifList && gifList.length > 0) {
-                    const src = gifList[mediaIndex % gifList.length];
-                    const newImg = document.createElement('img');
-                    newImg.id = 'mainMedia';
-                    newImg.src = src;
-                    newImg.style.width = '100%';
-                    newImg.style.height = '100%';
-                    newImg.style.objectFit = 'cover';
-                    container.insertBefore(newImg, container.firstChild);
-                    return;
+            alternando = !alternando;
+            
+            if (alternando) {
+                // Mostra foto de saudação
+                const fotoSrc = getFotoSaudacao();
+                if (fotoSrc) {
+                    // Guarda o vídeo atual para depois voltar
+                    const currentVideoSrc = videoElement.src;
+                    videoElement.style.display = 'none';
+                    
+                    // Cria ou atualiza a imagem
+                    let imgElement = document.getElementById('saudacaoImg');
+                    if (!imgElement) {
+                        imgElement = document.createElement('img');
+                        imgElement.id = 'saudacaoImg';
+                        imgElement.style.width = '100%';
+                        imgElement.style.height = '100%';
+                        imgElement.style.objectFit = 'cover';
+                        videoElement.parentNode.insertBefore(imgElement, videoElement);
+                    }
+                    imgElement.src = fotoSrc;
+                    imgElement.style.display = 'block';
+                    videoElement.style.display = 'none';
+                    
+                    saudacaoIndex++;
+                    showNotification(getMensagemSaudacao());
                 }
-            }
-            
-            // Modo normal: mostra mídia de saudação
-            const midia = getMidiaSaudacao();
-            if (midia.tipo === "video") {
-                const newVideo = document.createElement('video');
-                newVideo.id = 'mainMedia';
-                newVideo.autoplay = true;
-                newVideo.loop = true;
-                newVideo.muted = true;
-                newVideo.playsInline = true;
-                newVideo.src = midia.src;
-                newVideo.style.width = '100%';
-                newVideo.style.height = '100%';
-                newVideo.style.objectFit = 'cover';
-                container.insertBefore(newVideo, container.firstChild);
-                newVideo.play().catch(e => console.log);
             } else {
-                const newImg = document.createElement('img');
-                newImg.id = 'mainMedia';
-                newImg.src = midia.src;
-                newImg.style.width = '100%';
-                newImg.style.height = '100%';
-                newImg.style.objectFit = 'cover';
-                newImg.style.background = '#000';
-                container.insertBefore(newImg, container.firstChild);
+                // Volta para o vídeo
+                const imgElement = document.getElementById('saudacaoImg');
+                if (imgElement) imgElement.style.display = 'none';
+                videoElement.style.display = 'block';
+                videoElement.play().catch(e => console.log);
             }
         }
         
-        function rotacionarMidia() {
-            mediaIndex++;
-            atualizarMediaPrincipal();
+        function iniciarAlternanciaSaudacao() {
+            if (saudacaoInterval) clearInterval(saudacaoInterval);
+            saudacaoInterval = setInterval(alternarVideoPrincipal, 20000);
+            setInterval(() => {
+                const badge = document.getElementById('greetingBadge');
+                if (badge) badge.innerHTML = getMensagemSaudacao();
+            }, 60000);
+            document.getElementById('greetingBadge').innerHTML = getMensagemSaudacao();
         }
         
-        function atualizarBadgeSaudacao() {
-            const badge = document.getElementById('greetingBadge');
-            if (badge) badge.innerHTML = getMensagemSaudacao();
+        function pararAlternanciaSaudacao() {
+            if (saudacaoInterval) {
+                clearInterval(saudacaoInterval);
+                saudacaoInterval = null;
+            }
+            // Volta para o vídeo
+            const videoElement = document.getElementById('mainVideo');
+            const imgElement = document.getElementById('saudacaoImg');
+            if (imgElement) imgElement.style.display = 'none';
+            if (videoElement) {
+                videoElement.style.display = 'block';
+                videoElement.play().catch(e => console.log);
+            }
         }
         
-        function iniciarRotacaoMidia() {
-            if (rotacaoInterval) clearInterval(rotacaoInterval);
-            rotacaoInterval = setInterval(rotacionarMidia, 20000);
-            setInterval(atualizarBadgeSaudacao, 60000);
-            atualizarBadgeSaudacao();
-            atualizarMediaPrincipal();
+        // ==================== VÍDEOS DOS ANÚNCIOS ====================
+        let extraVideoIndex = 0;
+        let extraVideoInterval = null;
+        
+        function alternarVideoExtra() {
+            extraVideoIndex = (extraVideoIndex + 1) % videosExtra.length;
+            const novo = videosExtra[extraVideoIndex];
+            const extraVideo = document.getElementById('extraVideo');
+            const extraOverlay = document.getElementById('extraOverlay');
+            if (extraVideo) {
+                extraVideo.src = novo.src;
+                extraVideo.load();
+                extraVideo.play().catch(e => console.log);
+            }
+            if (extraOverlay) {
+                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novo.nome}`;
+            }
+            const container = document.getElementById('extraVideoContainer');
+            if (container) {
+                container.onclick = () => {
+                    if (novo.link) window.open(novo.link, '_blank');
+                };
+            }
         }
+        
+        function iniciarAlternanciaExtra() {
+            if (extraVideoInterval) clearInterval(extraVideoInterval);
+            extraVideoInterval = setInterval(alternarVideoExtra, 15000);
+        }
+        
+        // ==================== BACKGROUND AUDIO KEEPER ====================
+        let audioCtx = null;
+        let silentSource = null;
+        let isKeeperActive = false;
+        
+        async function startBackgroundKeeper() {
+            if (isKeeperActive) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const bufferSize = audioCtx.sampleRate * 2;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const channelData = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) channelData[i] = 0;
+                silentSource = audioCtx.createBufferSource();
+                silentSource.buffer = buffer;
+                silentSource.loop = true;
+                silentSource.connect(audioCtx.destination);
+                await audioCtx.resume();
+                silentSource.start();
+                isKeeperActive = true;
+                console.log("Background keeper ativo");
+            } catch (e) { console.warn("Erro:", e); }
+        }
+        
+        function keepAudioContextAlive() {
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(e => console.log);
+            }
+        }
+        setInterval(keepAudioContextAlive, 10000);
         
         // ==================== PLAYER ====================
         function updateFilteredPlaylist() {
@@ -633,19 +662,18 @@
         
         function startTimer() {
             if(timerInterval) clearInterval(timerInterval);
-            let startTime = Date.now();
-            const duration = 210;
             timerInterval = setInterval(() => {
                 if(isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) {
-                    const elapsed = (Date.now() - startTime) / 1000;
-                    if(elapsed >= duration || (musicPlayer.currentTime >= musicPlayer.duration - 0.3)) { 
-                        clearInterval(timerInterval); timerInterval = null; nextTrack(); return; 
-                    }
                     const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
                     progressFill.style.width = percent + '%';
                     const mins = Math.floor(musicPlayer.currentTime / 60);
                     const secs = Math.floor(musicPlayer.currentTime % 60);
                     currentTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    if(musicPlayer.currentTime >= musicPlayer.duration - 0.3) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        nextTrack();
+                    }
                 }
             }, 100);
         }
@@ -654,6 +682,7 @@
         
         async function playMusic() {
             if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
+            if (!isKeeperActive) await startBackgroundKeeper();
             const track = musicas[currentIndex];
             musicPlayer.src = track.src;
             musicPlayer.load();
@@ -684,12 +713,16 @@
         
         function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); }
         
-        // ==================== ANÚNCIOS ====================
+        // ==================== ANÚNCIOS DE ÁUDIO ====================
         function playAudioAd() {
             if(!adsEnabled || isAdPlaying) return;
             const ad = anunciosAudio[currentAdIndex];
             if(!ad) return;
-            if(isPlaying) { musicPlayer.pause(); shouldResumeMusic = true; }
+            if(isPlaying) {
+                musicPausedTime = musicPlayer.currentTime;
+                pauseMusic();
+                shouldResumeMusic = true;
+            }
             adPlayer.src = ad.src;
             adPlayer.load();
             isAdPlaying = true;
@@ -704,13 +737,19 @@
             isAdPlaying = false;
             document.getElementById('adStatus').innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
             document.getElementById('skipAdBtn').style.display = 'none';
-            if(shouldResumeMusic && isPlaying) { playMusic(); shouldResumeMusic = false; }
+            if(shouldResumeMusic && isPlaying) {
+                musicPlayer.currentTime = musicPausedTime;
+                playMusic();
+                shouldResumeMusic = false;
+            }
             currentAdIndex = (currentAdIndex + 1) % anunciosAudio.length;
             updateAdTimer();
         }
         
         function checkAdInterval() {
-            if(adsEnabled && musicPlayedCount > 0 && musicPlayedCount % adInterval === 0 && !isAdPlaying) playAudioAd();
+            if(adsEnabled && musicPlayedCount > 0 && musicPlayedCount % adInterval === 0 && !isAdPlaying) {
+                playAudioAd();
+            }
         }
         
         function updateAdTimer() {
@@ -734,7 +773,8 @@
         // ==================== NAVEGAÇÃO ====================
         function nextTrack() {
             if(isAdPlaying) return;
-            stopTimer(); musicPlayer.pause();
+            stopTimer();
+            musicPlayer.pause();
             musicPlayedCount++; updateAdTimer();
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
@@ -752,7 +792,8 @@
         
         function prevTrack() {
             if(isAdPlaying) return;
-            stopTimer(); musicPlayer.pause();
+            stopTimer();
+            musicPlayer.pause();
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
             if(shuffle && filteredPlaylist.length > 1) {
@@ -768,49 +809,13 @@
         
         window.selectSong = function(globalIdx) {
             if(isAdPlaying) return;
-            stopTimer(); musicPlayer.pause();
+            stopTimer();
+            musicPlayer.pause();
             currentIndex = globalIdx;
             loadTrack(currentIndex);
             if(isPlaying) playMusic();
             closeDrawer();
         };
-        
-        // ==================== ANÚNCIOS VISUAIS ====================
-        let extraMediaIndex = 0;
-        
-        function updateExtraMedia() {
-            const anuncio = anunciosVisuais[extraMediaIndex % anunciosVisuais.length];
-            const container = document.getElementById('extraMediaContainer');
-            const oldMedia = document.getElementById('extraMedia');
-            document.getElementById('extraOverlay').innerHTML = `<i class="fas fa-ad"></i> ${anuncio.nome}`;
-            container.onclick = () => { if(anuncio.link) window.open(anuncio.link, '_blank'); showNotification(`🔗 Visitando: ${anuncio.nome}`); };
-            if (oldMedia) oldMedia.remove();
-            
-            if (anuncio.tipo === 'video') {
-                const newVideo = document.createElement('video');
-                newVideo.id = 'extraMedia';
-                newVideo.autoplay = true;
-                newVideo.loop = true;
-                newVideo.muted = true;
-                newVideo.playsInline = true;
-                newVideo.src = anuncio.src;
-                newVideo.style.width = '100%';
-                newVideo.style.height = '100%';
-                newVideo.style.objectFit = 'cover';
-                container.insertBefore(newVideo, container.firstChild);
-                newVideo.play().catch(e => console.log);
-            } else {
-                const newImg = document.createElement('img');
-                newImg.id = 'extraMedia';
-                newImg.src = anuncio.src;
-                newImg.style.width = '100%';
-                newImg.style.height = '100%';
-                newImg.style.objectFit = 'cover';
-                container.insertBefore(newImg, container.firstChild);
-            }
-        }
-        
-        function rotateExtraMedia() { extraMediaIndex++; updateExtraMedia(); }
         
         // ==================== UTILITÁRIOS ====================
         function showNotification(msg) { 
@@ -839,6 +844,21 @@
             }
         }
         
+        // ==================== MODO CARRO ====================
+        function enableCarMode() {
+            isCarModeActive = true;
+            document.body.classList.add('car-mode');
+            pararAlternanciaSaudacao();
+            showNotification('🚗 Modo Carro ATIVO');
+        }
+        
+        function disableCarMode() {
+            isCarModeActive = false;
+            document.body.classList.remove('car-mode');
+            iniciarAlternanciaSaudacao();
+            showNotification('Modo normal');
+        }
+        
         // ==================== EVENTOS ====================
         document.getElementById('progressBar').addEventListener('click', (e) => {
             if(isAdPlaying) return;
@@ -858,18 +878,8 @@
         document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
         document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'Rádio Playlist', url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
-        
-        document.getElementById('carModeDrawerBtn').addEventListener('click', () => { 
-            document.body.classList.add('car-mode'); 
-            mediaIndex = 0;
-            atualizarMediaPrincipal();
-            showNotification('🚗 Modo Carro ATIVO - GIFs'); 
-        });
-        document.getElementById('exitCarModeBtn').addEventListener('click', () => { 
-            document.body.classList.remove('car-mode'); 
-            atualizarMediaPrincipal();
-            showNotification('Modo normal'); 
-        });
+        document.getElementById('carModeDrawerBtn').addEventListener('click', enableCarMode);
+        document.getElementById('exitCarModeBtn').addEventListener('click', disableCarMode);
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
         // ==================== TEMAS ====================
@@ -922,9 +932,8 @@
             tapToStart.style.display = 'block';
             tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
-            setInterval(rotateExtraMedia, 15000);
-            iniciarRotacaoMidia();
-            updateExtraMedia();
+            iniciarAlternanciaSaudacao();
+            iniciarAlternanciaExtra();
         });
     </script>
 </body>
