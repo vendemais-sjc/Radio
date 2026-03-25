@@ -114,7 +114,7 @@
             left: 20px;
         }
         
-        /* ESCONDE OS BOTÕES DE VÍDEO E FOTO NO MODO CARRO */
+        /* ⚠️ ESCONDE OS BOTÕES DE VÍDEO E FOTO NO MODO CARRO */
         body.car-mode .media-btn[data-media-type="video"],
         body.car-mode .media-btn[data-media-type="image"] {
             display: none;
@@ -178,24 +178,6 @@
         .feedback-modal textarea { width: 100%; height: 70px; background: #2a2a2a; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; color: white; margin-bottom: 10px; resize: none; }
         .modal-btn { padding: 8px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; font-size: 0.8rem; }
         .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
-        
-        /* Indicador de saudação no vídeo */
-        .greeting-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(0,0,0,0.7);
-            color: var(--primary-color);
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            border: 1px solid var(--primary-color);
-            backdrop-filter: blur(4px);
-            z-index: 25;
-            pointer-events: none;
-            font-family: monospace;
-        }
     </style>
 </head>
 <body class="theme-red">
@@ -213,8 +195,11 @@
         <div class="player-card">
             <!-- ==================== MÍDIA PRINCIPAL ==================== -->
             <div class="video-container" id="mainMediaContainer">
-                <!-- O conteúdo será gerado dinamicamente pelo JavaScript -->
-                <div class="greeting-badge" id="greetingBadge">🌞 Bom dia!</div>
+                <!-- VÍDEO DO MODO NORMAL -->
+                <video autoplay loop muted playsinline id="mainMedia">
+                    <source src="macaco.mp4" type="video/mp4">
+                </video>
+                <!-- Botões para alternar entre Vídeo, Foto e GIF -->
                 <div class="media-selector" id="mainMediaSelector">
                     <button class="media-btn" data-media-type="video"><i class="fas fa-video"></i> Vídeo</button>
                     <button class="media-btn" data-media-type="image"><i class="fas fa-image"></i> Foto</button>
@@ -317,51 +302,34 @@
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
         
-        // ==================== CONFIGURAÇÕES DE MÍDIA ====================
-        
-        // ⚠️ EDITAR AQUI: SAUDAÇÕES (BOM DIA, BOA TARDE, BOA NOITE)
-        const midiasSaudacao = {
-            bomdia: {
-                tipo: "video",
-                arquivos: ["bomdia.mp4", "bomdia_sol.mp4", "bomdia_praia.mp4"]
-            },
-            boatarde: {
-                tipo: "video",
-                arquivos: ["boatarde.mp4", "boatarde_por_do_sol.mp4", "boatarde_paisagem.mp4"]
-            },
-            boanoite: {
-                tipo: "video",
-                arquivos: ["boanoite.mp4", "boanoite_lua.mp4", "boanoite_estrelas.mp4"]
-            }
-        };
-        
-        // ⚠️ EDITAR AQUI: MÍDIA PRINCIPAL - MODO NORMAL
+        // ==================== MÍDIA PRINCIPAL ====================
+        // ⚠️ MÍDIA DO MODO NORMAL (VÍDEO, FOTO, GIF)
         const bibliotecaMediaNormal = {
             video: ["macaco.mp4", "bomdia.mp4", "boatarde.mp4", "boanoite.mp4"],
             image: ["foto_normal1.jpg", "foto_normal2.jpg", "foto_normal3.jpg"],
             gif: ["gif_normal1.gif", "gif_normal2.gif", "gif_normal3.gif"]
         };
         
-        // ⚠️ EDITAR AQUI: MÍDIA PRINCIPAL - MODO CARRO (APENAS GIFs)
+        // ⚠️ MÍDIA DO MODO CARRO (APENAS GIFs - VÍDEO E FOTO VAZIOS)
         const bibliotecaMediaCarro = {
-            video: [],
-            image: [],
-            gif: ["carro_gif1.gif", "carro_gif2.gif", "carro_gif3.gif"]
+            video: [],  // VAZIO - NÃO USA VÍDEO NO MODO CARRO
+            image: [],  // VAZIO - NÃO USA FOTO NO MODO CARRO
+            gif: ["carro_gif1.gif", "carro_gif2.gif", "carro_gif3.gif"]  // APENAS GIFs
         };
-        
-        // ⚠️ EDITAR AQUI: ANÚNCIOS VISUAIS
-        const anunciosVisuais = [
-            { tipo: "video", src: "zeco.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
-            { tipo: "video", src: "doc.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
-            { tipo: "imagem", src: "boafoto.png", nome: "Promoção", link: "https://www.promocao.com.br/" },
-            { tipo: "gif", src: "boatarde.gif", nome: "Oferta Relâmpago", link: "https://www.oferta.com.br/" }
-        ];
         
         // ==================== ANÚNCIOS DE ÁUDIO MP3 ====================
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
             { src: "zzcv.mp3", nome: "Promoção Relâmpago" },
             { src: "zzcv.mp3", nome: "Novidade Imperdível" }
+        ];
+        
+        // ==================== ANÚNCIOS VISUAIS ====================
+        const anunciosVisuais = [
+            { tipo: "video", src: "zeco.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
+            { tipo: "video", src: "doc.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
+            { tipo: "imagem", src: "boafoto.png", nome: "Promoção", link: "https://www.promocao.com.br/" },
+            { tipo: "gif", src: "boatarde.gif", nome: "Oferta Relâmpago", link: "https://www.oferta.com.br/" }
         ];
         
         // ==================== ELEMENTOS DOM ====================
@@ -389,70 +357,16 @@
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         
-        // ==================== SAUDAÇÃO ====================
-        let saudacaoIndex = 0;
-        let saudacaoInterval = null;
-        
-        function getPeriodoAtual() {
-            const hora = new Date().getHours();
-            if (hora >= 5 && hora < 12) return "bomdia";
-            if (hora >= 12 && hora < 18) return "boatarde";
-            return "boanoite";
-        }
-        
-        function getMensagemSaudacao() {
-            const periodo = getPeriodoAtual();
-            if (periodo === "bomdia") return "🌞 Bom dia!";
-            if (periodo === "boatarde") return "☀️ Boa tarde!";
-            return "🌙 Boa noite!";
-        }
-        
-        function getMediaSaudacao() {
-            const periodo = getPeriodoAtual();
-            const saudacao = midiasSaudacao[periodo];
-            if (!saudacao || !saudacao.arquivos || saudacao.arquivos.length === 0) return null;
-            const src = saudacao.arquivos[saudacaoIndex % saudacao.arquivos.length];
-            return { tipo: saudacao.tipo, src: src };
-        }
-        
-        function atualizarSaudacaoBadge() {
-            const badge = document.getElementById('greetingBadge');
-            if (badge) {
-                badge.innerHTML = getMensagemSaudacao();
-            }
-        }
-        
-        function rotacionarSaudacao() {
-            if (mediaAtual !== "video") return;
-            if (isCarMode()) return;
-            
-            saudacaoIndex++;
-            const mediaSaudacao = getMediaSaudacao();
-            if (!mediaSaudacao) return;
-            
-            const videoElement = document.getElementById('mainMedia');
-            if (videoElement && videoElement.tagName === 'VIDEO' && mediaSaudacao.tipo === 'video') {
-                videoElement.src = mediaSaudacao.src;
-                videoElement.load();
-                videoElement.play().catch(e => console.log);
-            }
-        }
-        
-        function iniciarRotacaoSaudacao() {
-            if (saudacaoInterval) clearInterval(saudacaoInterval);
-            saudacaoInterval = setInterval(rotacionarSaudacao, 20000);
-            setInterval(atualizarSaudacaoBadge, 60000);
-            atualizarSaudacaoBadge();
-        }
-        
-        // ==================== MÍDIA PRINCIPAL ====================
-        let mediaAtual = "video";
+        // ==================== MÍDIA PRINCIPAL COM SUPORTE A MODO CARRO ====================
+        let mediaAtual = "gif"; // Começa com GIF para o modo carro
         let mediaIndex = 0;
         
+        // Verifica se está no modo carro
         function isCarMode() {
             return document.body.classList.contains('car-mode');
         }
         
+        // Pega a biblioteca correta baseado no modo atual
         function getBibliotecaAtual() {
             return isCarMode() ? bibliotecaMediaCarro : bibliotecaMediaNormal;
         }
@@ -462,12 +376,17 @@
             const container = document.getElementById('mainMediaContainer');
             const oldMedia = document.getElementById('mainMedia');
             
-            // Remove qualquer mídia existente
-            if (oldMedia) oldMedia.remove();
-            
+            // Verifica se a lista do tipo atual está vazia
             const mediaList = biblioteca[mediaAtual];
             if (!mediaList || mediaList.length === 0) {
-                // Se a lista está vazia, mostra placeholder
+                // Se estiver vazia, tenta usar GIF
+                if (biblioteca.gif && biblioteca.gif.length > 0) {
+                    mediaAtual = "gif";
+                    mudarTipoMedia("gif");
+                    return;
+                }
+                // Se não tiver nada, mostra placeholder
+                if (oldMedia) oldMedia.remove();
                 const placeholder = document.createElement('div');
                 placeholder.id = 'mainMedia';
                 placeholder.style.width = '100%';
@@ -476,12 +395,13 @@
                 placeholder.style.alignItems = 'center';
                 placeholder.style.justifyContent = 'center';
                 placeholder.style.background = '#000';
-                placeholder.innerHTML = '<i class="fas fa-music" style="font-size:4rem; color:var(--primary-color); opacity:0.5;"></i>';
+                placeholder.innerHTML = '<i class="fas fa-car" style="font-size:4rem; color:var(--primary-color); opacity:0.5;"></i>';
                 container.insertBefore(placeholder, container.firstChild);
                 return;
             }
             
             const src = mediaList[mediaIndex % mediaList.length];
+            if (oldMedia) oldMedia.remove();
             
             if (mediaAtual === "video") {
                 const newVideo = document.createElement('video');
@@ -495,7 +415,7 @@
                 newVideo.style.height = '100%';
                 newVideo.style.objectFit = 'cover';
                 container.insertBefore(newVideo, container.firstChild);
-                newVideo.play().catch(e => console.log);
+                newVideo.play().catch(e => console.log('Erro no vídeo:', e));
             } else {
                 const newImg = document.createElement('img');
                 newImg.id = 'mainMedia';
@@ -509,6 +429,7 @@
         }
         
         function mudarTipoMedia(tipo) {
+            // Se estiver no modo carro e o tipo não for GIF, bloqueia e mostra mensagem
             if (isCarMode() && tipo !== 'gif') {
                 showNotification('🚗 Modo Carro: apenas GIFs disponíveis');
                 return;
@@ -524,6 +445,7 @@
         }
         
         function rotacionarMedia() {
+            // No modo carro, só rotaciona GIFs
             if (isCarMode() && mediaAtual !== 'gif') {
                 mediaAtual = 'gif';
                 mudarTipoMedia('gif');
@@ -533,43 +455,58 @@
             atualizarMediaPrincipal();
         }
         
-        // ==================== ANÚNCIOS VISUAIS ====================
-        let extraMediaIndex = 0;
+        // ==================== SAUDAÇÃO E ALTERNÂNCIA ====================
+        let saudacaoVideoIndex = 0;
+        let saudacaoAlternando = false;
+        let saudacaoInterval = null;
         
-        function updateExtraMedia() {
-            const anuncio = anunciosVisuais[extraMediaIndex % anunciosVisuais.length];
-            const container = document.getElementById('extraMediaContainer');
-            const oldMedia = document.getElementById('extraMedia');
+        function getPeriodoAtual() {
+            const hora = new Date().getHours();
+            if (hora >= 5 && hora < 12) return "bomdia";
+            if (hora >= 12 && hora < 18) return "boatarde";
+            return "boanoite";
+        }
+        
+        function getVideoSaudacao() {
+            const periodo = getPeriodoAtual();
+            if (periodo === "bomdia") return "bomdia.mp4";
+            if (periodo === "boatarde") return "boatarde.mp4";
+            return "boanoite.mp4";
+        }
+        
+        function alternarVideoPrincipal() {
+            if (mediaAtual !== "video") return;
+            if (isCarMode()) return; // No modo carro, não alterna com saudação
             
-            document.getElementById('extraOverlay').innerHTML = `<i class="fas fa-ad"></i> ${anuncio.nome}`;
-            container.onclick = () => { if(anuncio.link) window.open(anuncio.link, '_blank'); showNotification(`🔗 Visitando: ${anuncio.nome}`); };
-            if (oldMedia) oldMedia.remove();
+            saudacaoAlternando = !saudacaoAlternando;
+            let novoSrc;
             
-            if (anuncio.tipo === 'video') {
-                const newVideo = document.createElement('video');
-                newVideo.id = 'extraMedia';
-                newVideo.autoplay = true;
-                newVideo.loop = true;
-                newVideo.muted = true;
-                newVideo.playsInline = true;
-                newVideo.src = anuncio.src;
-                newVideo.style.width = '100%';
-                newVideo.style.height = '100%';
-                newVideo.style.objectFit = 'cover';
-                container.insertBefore(newVideo, container.firstChild);
-                newVideo.play().catch(e => console.log);
+            if (saudacaoAlternando) {
+                novoSrc = getVideoSaudacao();
+                saudacaoVideoIndex++;
             } else {
-                const newImg = document.createElement('img');
-                newImg.id = 'extraMedia';
-                newImg.src = anuncio.src;
-                newImg.style.width = '100%';
-                newImg.style.height = '100%';
-                newImg.style.objectFit = 'cover';
-                container.insertBefore(newImg, container.firstChild);
+                novoSrc = bibliotecaMediaNormal.video[0] || "macaco.mp4";
+            }
+            
+            const videoElement = document.getElementById('mainMedia');
+            if (videoElement && videoElement.tagName === 'VIDEO') {
+                if (videoElement.src && videoElement.src.includes(novoSrc)) return;
+                videoElement.src = novoSrc;
+                videoElement.load();
+                videoElement.play().catch(e => console.log);
+                
+                if (saudacaoAlternando) {
+                    const periodo = getPeriodoAtual();
+                    let mensagem = periodo === "bomdia" ? "🌞 Bom dia!" : (periodo === "boatarde" ? "☀️ Boa tarde!" : "🌙 Boa noite!");
+                    showNotification(mensagem);
+                }
             }
         }
         
-        function rotateExtraMedia() { extraMediaIndex++; updateExtraMedia(); }
+        function iniciarAlternanciaSaudacao() {
+            if (saudacaoInterval) clearInterval(saudacaoInterval);
+            saudacaoInterval = setInterval(alternarVideoPrincipal, 20000);
+        }
         
         // ==================== PLAYER ====================
         function updateFilteredPlaylist() {
@@ -659,7 +596,7 @@
                     tapToStart.classList.add('hidden');
                     renderPlaylist();
                     if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
-                }).catch(e => console.log);
+                }).catch(e => console.log('Erro ao reproduzir:', e));
             };
             
             musicPlayer.onerror = () => {
@@ -794,6 +731,44 @@
             closeDrawer();
         };
         
+        // ==================== ANÚNCIOS VISUAIS ====================
+        let extraMediaIndex = 0;
+        
+        function updateExtraMedia() {
+            const anuncio = anunciosVisuais[extraMediaIndex % anunciosVisuais.length];
+            const container = document.getElementById('extraMediaContainer');
+            const oldMedia = document.getElementById('extraMedia');
+            
+            document.getElementById('extraOverlay').innerHTML = `<i class="fas fa-ad"></i> ${anuncio.nome}`;
+            container.onclick = () => { if(anuncio.link) window.open(anuncio.link, '_blank'); showNotification(`🔗 Visitando: ${anuncio.nome}`); };
+            if (oldMedia) oldMedia.remove();
+            
+            if (anuncio.tipo === 'video') {
+                const newVideo = document.createElement('video');
+                newVideo.id = 'extraMedia';
+                newVideo.autoplay = true;
+                newVideo.loop = true;
+                newVideo.muted = true;
+                newVideo.playsInline = true;
+                newVideo.src = anuncio.src;
+                newVideo.style.width = '100%';
+                newVideo.style.height = '100%';
+                newVideo.style.objectFit = 'cover';
+                container.insertBefore(newVideo, container.firstChild);
+                newVideo.play().catch(e => console.log('Erro no vídeo:', e));
+            } else {
+                const newImg = document.createElement('img');
+                newImg.id = 'extraMedia';
+                newImg.src = anuncio.src;
+                newImg.style.width = '100%';
+                newImg.style.height = '100%';
+                newImg.style.objectFit = 'cover';
+                container.insertBefore(newImg, container.firstChild);
+            }
+        }
+        
+        function rotateExtraMedia() { extraMediaIndex++; updateExtraMedia(); }
+        
         // ==================== UTILITÁRIOS ====================
         function showNotification(msg) { 
             const n = document.getElementById('notification'); 
@@ -841,8 +816,10 @@
         document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'Rádio Playlist', url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
         
+        // Ativa/desativa modo carro com troca de mídia e esconde botões
         document.getElementById('carModeDrawerBtn').addEventListener('click', () => { 
             document.body.classList.add('car-mode'); 
+            // Força para GIF no modo carro
             mediaAtual = "gif";
             mudarTipoMedia("gif");
             atualizarMediaPrincipal();
@@ -850,6 +827,7 @@
         });
         document.getElementById('exitCarModeBtn').addEventListener('click', () => { 
             document.body.classList.remove('car-mode'); 
+            // Volta para o tipo que estava antes (vídeo)
             mediaAtual = "video";
             mudarTipoMedia("video");
             atualizarMediaPrincipal();
@@ -857,6 +835,7 @@
         });
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
+        // Botões de seleção de mídia
         document.querySelectorAll('.media-btn').forEach(btn => {
             btn.addEventListener('click', () => mudarTipoMedia(btn.dataset.mediaType));
         });
@@ -913,9 +892,12 @@
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
             setInterval(rotateExtraMedia, 15000);
             setInterval(rotacionarMedia, 20000);
-            iniciarRotacaoSaudacao();
+            iniciarAlternanciaSaudacao();
             updateExtraMedia();
-            mudarTipoMedia("video");
+            
+            // Começa com vídeo no modo normal
+            mediaAtual = "video";
+            document.querySelector('.media-btn[data-media-type="video"]').classList.add('active');
         });
     </script>
 </body>
