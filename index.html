@@ -213,9 +213,7 @@
         <div class="player-card">
             <!-- ==================== MÍDIA PRINCIPAL ==================== -->
             <div class="video-container" id="mainMediaContainer">
-                <div id="mainMediaPlaceholder" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#000;">
-                    <i class="fas fa-music" style="font-size:4rem; color:var(--primary-color); opacity:0.5;"></i>
-                </div>
+                <!-- O conteúdo será gerado dinamicamente pelo JavaScript -->
                 <div class="greeting-badge" id="greetingBadge">🌞 Bom dia!</div>
                 <div class="media-selector" id="mainMediaSelector">
                     <button class="media-btn" data-media-type="video"><i class="fas fa-video"></i> Vídeo</button>
@@ -322,10 +320,9 @@
         // ==================== CONFIGURAÇÕES DE MÍDIA ====================
         
         // ⚠️ EDITAR AQUI: SAUDAÇÕES (BOM DIA, BOA TARDE, BOA NOITE)
-        // Você pode colocar VÍDEOS, FOTOS ou GIFs para cada período
         const midiasSaudacao = {
             bomdia: {
-                tipo: "video",  // pode ser "video", "image" ou "gif"
+                tipo: "video",
                 arquivos: ["bomdia.mp4", "bomdia_sol.mp4", "bomdia_praia.mp4"]
             },
             boatarde: {
@@ -338,21 +335,21 @@
             }
         };
         
-        // ⚠️ EDITAR AQUI: MÍDIA PRINCIPAL - MODO NORMAL (VÍDEO, FOTO, GIF)
+        // ⚠️ EDITAR AQUI: MÍDIA PRINCIPAL - MODO NORMAL
         const bibliotecaMediaNormal = {
-            video: ["],
-            image: [],
-            gif: [" boatarde.gif"]
+            video: ["macaco.mp4", "bomdia.mp4", "boatarde.mp4", "boanoite.mp4"],
+            image: ["foto_normal1.jpg", "foto_normal2.jpg", "foto_normal3.jpg"],
+            gif: ["gif_normal1.gif", "gif_normal2.gif", "gif_normal3.gif"]
         };
         
         // ⚠️ EDITAR AQUI: MÍDIA PRINCIPAL - MODO CARRO (APENAS GIFs)
         const bibliotecaMediaCarro = {
             video: [],
             image: [],
-            gif: ["boatarde.gif"]
+            gif: ["carro_gif1.gif", "carro_gif2.gif", "carro_gif3.gif"]
         };
         
-        // ⚠️ EDITAR AQUI: ANÚNCIOS VISUAIS (Vídeos, Fotos, GIFs dos anúncios)
+        // ⚠️ EDITAR AQUI: ANÚNCIOS VISUAIS
         const anunciosVisuais = [
             { tipo: "video", src: "zeco.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
             { tipo: "video", src: "doc.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
@@ -465,14 +462,12 @@
             const container = document.getElementById('mainMediaContainer');
             const oldMedia = document.getElementById('mainMedia');
             
+            // Remove qualquer mídia existente
+            if (oldMedia) oldMedia.remove();
+            
             const mediaList = biblioteca[mediaAtual];
             if (!mediaList || mediaList.length === 0) {
-                if (biblioteca.gif && biblioteca.gif.length > 0) {
-                    mediaAtual = "gif";
-                    mudarTipoMedia("gif");
-                    return;
-                }
-                if (oldMedia) oldMedia.remove();
+                // Se a lista está vazia, mostra placeholder
                 const placeholder = document.createElement('div');
                 placeholder.id = 'mainMedia';
                 placeholder.style.width = '100%';
@@ -487,7 +482,6 @@
             }
             
             const src = mediaList[mediaIndex % mediaList.length];
-            if (oldMedia) oldMedia.remove();
             
             if (mediaAtual === "video") {
                 const newVideo = document.createElement('video');
