@@ -69,6 +69,57 @@
             color: #000;
         }
         
+        /* ========== MODO CARRO ========== */
+        body.car-mode .extra-video-section,
+        body.car-mode .top-bar,
+        body.car-mode .footer,
+        body.car-mode .feedback-btn {
+            display: none !important;
+        }
+        body.car-mode .app {
+            border: none;
+        }
+        body.car-mode .video-container {
+            margin: 0 !important;
+            border-radius: 0 !important;
+            border-left: none;
+            border-right: none;
+        }
+        body.car-mode .controls {
+            padding: 20px;
+        }
+        body.car-mode .control-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 2.2rem;
+        }
+        body.car-mode .play-btn {
+            width: 80px;
+            height: 80px;
+            font-size: 3.5rem;
+            background: var(--primary-color);
+            color: #000 !important;
+            border-radius: 50%;
+        }
+        body.car-mode .track-info p {
+            font-size: 1.3rem;
+            white-space: normal;
+            text-align: center;
+        }
+        body.car-mode .car-exit-btn {
+            display: flex;
+        }
+        body.car-mode .media-selector {
+            bottom: 20px;
+            left: 20px;
+        }
+        
+        /* ⚠️ ESCONDE OS BOTÕES DE VÍDEO E FOTO NO MODO CARRO */
+        body.car-mode .media-btn[data-media-type="video"],
+        body.car-mode .media-btn[data-media-type="image"] {
+            display: none;
+        }
+        
         .track-info { padding: 12px 16px 4px; text-align: center; }
         .track-info p { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .progress-area { padding: 0 16px 8px; }
@@ -121,79 +172,6 @@
         .ad-buttons { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
         .ad-btn { background: none; border: 1px solid var(--border-color); color: #ffffff; padding: 4px 10px; border-radius: 12px; cursor: pointer; font-size: 0.7rem; }
         .car-exit-btn { position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; border: 2px solid var(--primary-color); border-radius: 50px; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 10000; }
-        
-        /* ========== MODO CARRO ========== */
-        body.car-mode .extra-video-section,
-        body.car-mode .top-bar,
-        body.car-mode .footer,
-        body.car-mode .feedback-btn {
-            display: none !important;
-        }
-        body.car-mode .app {
-            border: none;
-        }
-        body.car-mode .video-container {
-            margin: 0 !important;
-            border-radius: 0 !important;
-            border-left: none;
-            border-right: none;
-        }
-        body.car-mode .controls {
-            padding: 20px;
-        }
-        body.car-mode .control-btn {
-            width: 60px;
-            height: 60px;
-            font-size: 2.2rem;
-        }
-        body.car-mode .play-btn {
-            width: 80px;
-            height: 80px;
-            font-size: 3.5rem;
-            background: var(--primary-color);
-            color: #000 !important;
-            border-radius: 50%;
-        }
-        body.car-mode .track-info p {
-            font-size: 1.3rem;
-            white-space: normal;
-            text-align: center;
-        }
-        body.car-mode .car-exit-btn {
-            display: flex;
-        }
-        body.car-mode .media-selector {
-            bottom: 20px;
-            left: 20px;
-        }
-        
-        /* FEEDBACK COM LETRAS CLARAS */
-        .feedback-modal h3,
-        .feedback-modal .rating,
-        .feedback-modal textarea,
-        .feedback-modal .modal-btn {
-            color: #ffffff;
-        }
-        .feedback-modal h3 i {
-            color: var(--primary-color);
-        }
-        .feedback-modal textarea {
-            background: #2a2a2a;
-            border: 1px solid var(--border-color);
-            color: #ffffff;
-        }
-        .feedback-modal textarea::placeholder {
-            color: #888;
-        }
-        .feedback-modal .modal-btn {
-            background: #333;
-            color: #fff;
-        }
-        .feedback-modal .modal-btn.send {
-            background: #25D366;
-            color: #000;
-            font-weight: bold;
-        }
         .rating { display: flex; gap: 8px; margin: 10px 0; justify-content: center; }
         .star { color: #555; font-size: 1.5rem; cursor: pointer; transition: all 0.2s; }
         .star.active, .star.fas { color: #ffd700; }
@@ -324,19 +302,19 @@
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
         
-        // ==================== MÍDIA PRINCIPAL (Vídeo, Foto, GIF) ====================
-        // ⚠️ EDITE AQUI: MÍDIA DO MODO NORMAL
+        // ==================== MÍDIA PRINCIPAL ====================
+        // ⚠️ MÍDIA DO MODO NORMAL (VÍDEO, FOTO, GIF)
         const bibliotecaMediaNormal = {
             video: ["macaco.mp4", "bomdia.mp4", "boatarde.mp4", "boanoite.mp4"],
-            image: ["boafoto.png", "foto_normal2.jpg", "foto_normal3.jpg"],
+            image: ["foto_normal1.jpg", "foto_normal2.jpg", "foto_normal3.jpg"],
             gif: ["gif_normal1.gif", "gif_normal2.gif", "gif_normal3.gif"]
         };
         
-        // ⚠️ EDITE AQUI: MÍDIA DO MODO CARRO (VOCÊ PODE COLOCAR VÍDEOS/FOTOS/GIFS DIFERENTES)
+        // ⚠️ MÍDIA DO MODO CARRO (APENAS GIFs - VÍDEO E FOTO VAZIOS)
         const bibliotecaMediaCarro = {
-            video: ["carro.mp4", "carro_video2.mp", "carro_video3.mp4"],
-            image: ["carro_foto1.jpg", "carro_foto2.jpg", "carro_foto3.jpg"],
-            gif: ["carro_gif1.gif", "carro_gif2.gif", "carro_gif3.gif"]
+            video: [],  // VAZIO - NÃO USA VÍDEO NO MODO CARRO
+            image: [],  // VAZIO - NÃO USA FOTO NO MODO CARRO
+            gif: ["carro_gif1.gif", "carro_gif2.gif", "carro_gif3.gif"]  // APENAS GIFs
         };
         
         // ==================== ANÚNCIOS DE ÁUDIO MP3 ====================
@@ -380,7 +358,7 @@
         let shouldResumeMusic = false;
         
         // ==================== MÍDIA PRINCIPAL COM SUPORTE A MODO CARRO ====================
-        let mediaAtual = "video";
+        let mediaAtual = "gif"; // Começa com GIF para o modo carro
         let mediaIndex = 0;
         
         // Verifica se está no modo carro
@@ -397,10 +375,32 @@
             const biblioteca = getBibliotecaAtual();
             const container = document.getElementById('mainMediaContainer');
             const oldMedia = document.getElementById('mainMedia');
-            const src = biblioteca[mediaAtual][mediaIndex % biblioteca[mediaAtual].length];
             
-            if (!src) return;
+            // Verifica se a lista do tipo atual está vazia
+            const mediaList = biblioteca[mediaAtual];
+            if (!mediaList || mediaList.length === 0) {
+                // Se estiver vazia, tenta usar GIF
+                if (biblioteca.gif && biblioteca.gif.length > 0) {
+                    mediaAtual = "gif";
+                    mudarTipoMedia("gif");
+                    return;
+                }
+                // Se não tiver nada, mostra placeholder
+                if (oldMedia) oldMedia.remove();
+                const placeholder = document.createElement('div');
+                placeholder.id = 'mainMedia';
+                placeholder.style.width = '100%';
+                placeholder.style.height = '100%';
+                placeholder.style.display = 'flex';
+                placeholder.style.alignItems = 'center';
+                placeholder.style.justifyContent = 'center';
+                placeholder.style.background = '#000';
+                placeholder.innerHTML = '<i class="fas fa-car" style="font-size:4rem; color:var(--primary-color); opacity:0.5;"></i>';
+                container.insertBefore(placeholder, container.firstChild);
+                return;
+            }
             
+            const src = mediaList[mediaIndex % mediaList.length];
             if (oldMedia) oldMedia.remove();
             
             if (mediaAtual === "video") {
@@ -429,6 +429,11 @@
         }
         
         function mudarTipoMedia(tipo) {
+            // Se estiver no modo carro e o tipo não for GIF, bloqueia e mostra mensagem
+            if (isCarMode() && tipo !== 'gif') {
+                showNotification('🚗 Modo Carro: apenas GIFs disponíveis');
+                return;
+            }
             mediaAtual = tipo;
             mediaIndex = 0;
             atualizarMediaPrincipal();
@@ -440,6 +445,12 @@
         }
         
         function rotacionarMedia() {
+            // No modo carro, só rotaciona GIFs
+            if (isCarMode() && mediaAtual !== 'gif') {
+                mediaAtual = 'gif';
+                mudarTipoMedia('gif');
+                return;
+            }
             mediaIndex++;
             atualizarMediaPrincipal();
         }
@@ -805,15 +816,21 @@
         document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'Rádio Playlist', url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
         
-        // Ativa/desativa modo carro com troca de mídia
+        // Ativa/desativa modo carro com troca de mídia e esconde botões
         document.getElementById('carModeDrawerBtn').addEventListener('click', () => { 
             document.body.classList.add('car-mode'); 
-            atualizarMediaPrincipal(); // Atualiza a mídia para a do modo carro
-            showNotification('🚗 Modo Carro ATIVO - Mídia específica do carro'); 
+            // Força para GIF no modo carro
+            mediaAtual = "gif";
+            mudarTipoMedia("gif");
+            atualizarMediaPrincipal();
+            showNotification('🚗 Modo Carro ATIVO - Apenas GIFs'); 
         });
         document.getElementById('exitCarModeBtn').addEventListener('click', () => { 
             document.body.classList.remove('car-mode'); 
-            atualizarMediaPrincipal(); // Volta para a mídia do modo normal
+            // Volta para o tipo que estava antes (vídeo)
+            mediaAtual = "video";
+            mudarTipoMedia("video");
+            atualizarMediaPrincipal();
             showNotification('Modo normal'); 
         });
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
@@ -878,7 +895,8 @@
             iniciarAlternanciaSaudacao();
             updateExtraMedia();
             
-            // Ativa o botão de vídeo como padrão
+            // Começa com vídeo no modo normal
+            mediaAtual = "video";
             document.querySelector('.media-btn[data-media-type="video"]').classList.add('active');
         });
     </script>
