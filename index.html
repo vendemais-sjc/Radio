@@ -245,24 +245,30 @@
         }
         
         // ==================== BIBLIOTECAS DE MÍDIA ====================
-        // FOTOS PARA SAUDAÇÕES (Bom dia, Boa tarde, Boa noite)
+        // FOTOS PARA SAUDAÇÕES (use fotos que realmente existem ou URLs da internet)
+        // ⚠️ SUBSTITUA PELOS NOMES DOS SEUS ARQUIVOS DE IMAGEM
         const fotosSaudacao = {
-            bomdia: ["bomdia1.jpg", "bomdia2.jpg", "bomdia3.jpg"],
-            boatarde: ["boatarde1.jpg", "boatarde2.jpg", "boatarde3.jpg"],
-            boanoite: ["boanoite1.jpg", "boanoite2.jpg", "boanoite3.jpg"]
+            bomdia: [
+                "https://picsum.photos/id/16/1280/720",   // foto de paisagem (campo)
+                "https://picsum.photos/id/29/1280/720",   // foto de floresta
+                "https://picsum.photos/id/96/1280/720"    // foto de montanha
+            ],
+            boatarde: [
+                "https://picsum.photos/id/15/1280/720",   // foto de estrada
+                "https://picsum.photos/id/30/1280/720",   // foto de cafeteria
+                "https://picsum.photos/id/58/1280/720"    // foto de montanha
+            ],
+            boanoite: [
+                "https://picsum.photos/id/42/1280/720",   // foto de piano
+                "https://picsum.photos/id/76/1280/720",   // foto de estrada noturna
+                "https://picsum.photos/id/91/1280/720"    // foto de lua
+            ]
         };
         
-        // Mídia principal (apenas fotos de saudação)
-        const bibliotecaMediaNormal = {
-            video: [],  // sem vídeo
-            image: [],  // será preenchido dinamicamente
-            gif: []     // sem GIF
-        };
-        
+        // Mídia do modo carro (GIFs)
+        // ⚠️ SUBSTITUA PELOS NOMES DOS SEUS GIFS
         const bibliotecaMediaCarro = {
-            video: [],
-            image: [],
-            gif: ["carro_gif1.gif", "carro_gif2.gif", "carro_gif3.gif"]
+            gif: ["https://media.giphy.com/media/26tPplGWjN0xLyxUQ/giphy.gif", "https://media.giphy.com/media/l0MYt5jH6gkWHygDe/giphy.gif", "https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif"]
         };
         
         const anunciosAudio = [
@@ -328,6 +334,10 @@
             return fotos[fotoIndex % fotos.length];
         }
         
+        function isCarMode() {
+            return document.body.classList.contains('car-mode');
+        }
+        
         function atualizarMediaPrincipal() {
             const container = document.getElementById('mainMediaContainer');
             const oldMedia = document.getElementById('mainMedia');
@@ -358,7 +368,7 @@
                 newImg.src = fotoSrc;
                 newImg.style.width = '100%';
                 newImg.style.height = '100%';
-                newImg.style.objectFit = 'contain';
+                newImg.style.objectFit = 'cover';
                 newImg.style.background = '#000';
                 container.insertBefore(newImg, container.firstChild);
             } else {
@@ -391,10 +401,7 @@
             fotoInterval = setInterval(rotacionarFoto, 20000);
             setInterval(atualizarBadgeSaudacao, 60000);
             atualizarBadgeSaudacao();
-        }
-        
-        function isCarMode() {
-            return document.body.classList.contains('car-mode');
+            atualizarMediaPrincipal();
         }
         
         // ==================== PLAYER ====================
@@ -674,6 +681,7 @@
         
         document.getElementById('carModeDrawerBtn').addEventListener('click', () => { 
             document.body.classList.add('car-mode'); 
+            fotoIndex = 0;
             atualizarMediaPrincipal();
             showNotification('🚗 Modo Carro ATIVO - GIFs'); 
         });
@@ -737,7 +745,6 @@
             setInterval(rotateExtraMedia, 15000);
             iniciarRotacaoFotos();
             updateExtraMedia();
-            atualizarMediaPrincipal();
         });
     </script>
 </body>
