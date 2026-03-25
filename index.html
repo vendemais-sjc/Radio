@@ -35,7 +35,40 @@
         @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         .video-container { aspect-ratio: 16 / 9; background: #000; position: relative; border: 1px solid var(--primary-color); border-radius: 12px; margin: 5px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; }
         video, img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .media-img { object-fit: contain; background: #000; }
         .video-menu-btn { position: absolute; top: 12px; right: 12px; background: transparent; color: white; border: none; font-size: 1.6rem; cursor: pointer; z-index: 20; padding: 6px 10px; }
+        
+        /* Botões de seleção de mídia (Vídeo, Foto, GIF) */
+        .media-selector {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+            background: rgba(0,0,0,0.7);
+            padding: 6px 12px;
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--primary-color);
+        }
+        .media-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 5px 12px;
+            border-radius: 20px;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        .media-btn i { margin-right: 5px; }
+        .media-btn.active {
+            background: var(--primary-color);
+            color: #000;
+        }
+        
         .track-info { padding: 12px 16px 4px; text-align: center; }
         .track-info p { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .progress-area { padding: 0 16px 8px; }
@@ -129,6 +162,10 @@
         body.car-mode .car-exit-btn {
             display: flex;
         }
+        body.car-mode .media-selector {
+            bottom: 20px;
+            left: 20px;
+        }
         
         /* FEEDBACK COM LETRAS CLARAS */
         .feedback-modal h3,
@@ -157,15 +194,6 @@
             color: #000;
             font-weight: bold;
         }
-        .rating .star {
-            color: #555;
-            font-size: 1.5rem;
-        }
-        .rating .star.active,
-        .rating .star.fas {
-            color: #ffd700;
-        }
-        
         .rating { display: flex; gap: 8px; margin: 10px 0; justify-content: center; }
         .star { color: #555; font-size: 1.5rem; cursor: pointer; transition: all 0.2s; }
         .star.active, .star.fas { color: #ffd700; }
@@ -189,9 +217,16 @@
         <div class="player-card">
             <!-- ==================== MÍDIA PRINCIPAL ==================== -->
             <div class="video-container" id="mainMediaContainer">
+                <!-- VÍDEO DO MODO NORMAL -->
                 <video autoplay loop muted playsinline id="mainMedia">
                     <source src="macaco.mp4" type="video/mp4">
                 </video>
+                <!-- Botões para alternar entre Vídeo, Foto e GIF -->
+                <div class="media-selector" id="mainMediaSelector">
+                    <button class="media-btn" data-media-type="video"><i class="fas fa-video"></i> Vídeo</button>
+                    <button class="media-btn" data-media-type="image"><i class="fas fa-image"></i> Foto</button>
+                    <button class="media-btn" data-media-type="gif"><i class="fas fa-file-image"></i> GIF</button>
+                </div>
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             
@@ -235,7 +270,7 @@
                 <div class="color-option pure-black" data-theme="theme-pure-black"></div>
             </div>
             <div class="ad-panel">
-                <h4><i class="fas fa-microphone-alt"></i> Anúncios de Áudio (MP3)</h4>
+                <h4><i class="fas fa-microphone-alt"></i> 📢 ANÚNCIOS DE ÁUDIO (MP3)</h4>
                 <div class="ad-timer" id="adTimer">30</div>
                 <div class="ad-status" id="adStatus"><i class="fas fa-compact-disc fa-spin"></i> Aguardando...</div>
                 <div class="ad-buttons">
@@ -289,7 +324,22 @@
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
         
-        // ==================== ANÚNCIOS DE ÁUDIO (MP3) ====================
+        // ==================== MÍDIA PRINCIPAL (Vídeo, Foto, GIF) ====================
+        // ⚠️ EDITE AQUI: MÍDIA DO MODO NORMAL
+        const bibliotecaMediaNormal = {
+            video: ["macaco.mp4", "bomdia.mp4", "boatarde.mp4", "boanoite.mp4"],
+            image: ["foto_normal1.jpg", "foto_normal2.jpg", "foto_normal3.jpg"],
+            gif: ["gif_normal1.gif", "gif_normal2.gif", "gif_normal3.gif"]
+        };
+        
+        // ⚠️ EDITE AQUI: MÍDIA DO MODO CARRO (VOCÊ PODE COLOCAR VÍDEOS/FOTOS/GIFS DIFERENTES)
+        const bibliotecaMediaCarro = {
+            video: ["", "carro_video2.mp4", "carro_video3.mp4"],
+            image: ["carro_foto1.jpg", "carro_foto2.jpg", "carro_foto3.jpg"],
+            gif: ["carro_gif1.gif", "carro_gif2.gif", "carro_gif3.gif"]
+        };
+        
+        // ==================== ANÚNCIOS DE ÁUDIO MP3 ====================
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
             { src: "zzcv.mp3", nome: "Promoção Relâmpago" },
@@ -303,13 +353,6 @@
             { tipo: "imagem", src: "boafoto.png", nome: "Promoção", link: "https://www.promocao.com.br/" },
             { tipo: "gif", src: "boatarde.gif", nome: "Oferta Relâmpago", link: "https://www.oferta.com.br/" }
         ];
-        
-        // ==================== VÍDEOS DE SAUDAÇÃO ====================
-        const videosSaudacao = {
-            bomdia: ["bomdia.mp4", "bomdia_sol.mp4", "bomdia_praia.mp4"],
-            boatarde: ["boatarde.mp4", "boatarde_por_do_sol.mp4", "boatarde_paisagem.mp4"],
-            boanoite: ["boanoite.mp4", "boanoite_lua.mp4", "boanoite_estrelas.mp4"]
-        };
         
         // ==================== ELEMENTOS DOM ====================
         const musicPlayer = document.getElementById('musicPlayer');
@@ -336,6 +379,71 @@
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         
+        // ==================== MÍDIA PRINCIPAL COM SUPORTE A MODO CARRO ====================
+        let mediaAtual = "video";
+        let mediaIndex = 0;
+        
+        // Verifica se está no modo carro
+        function isCarMode() {
+            return document.body.classList.contains('car-mode');
+        }
+        
+        // Pega a biblioteca correta baseado no modo atual
+        function getBibliotecaAtual() {
+            return isCarMode() ? bibliotecaMediaCarro : bibliotecaMediaNormal;
+        }
+        
+        function atualizarMediaPrincipal() {
+            const biblioteca = getBibliotecaAtual();
+            const container = document.getElementById('mainMediaContainer');
+            const oldMedia = document.getElementById('mainMedia');
+            const src = biblioteca[mediaAtual][mediaIndex % biblioteca[mediaAtual].length];
+            
+            if (!src) return;
+            
+            if (oldMedia) oldMedia.remove();
+            
+            if (mediaAtual === "video") {
+                const newVideo = document.createElement('video');
+                newVideo.id = 'mainMedia';
+                newVideo.autoplay = true;
+                newVideo.loop = true;
+                newVideo.muted = true;
+                newVideo.playsInline = true;
+                newVideo.src = src;
+                newVideo.style.width = '100%';
+                newVideo.style.height = '100%';
+                newVideo.style.objectFit = 'cover';
+                container.insertBefore(newVideo, container.firstChild);
+                newVideo.play().catch(e => console.log('Erro no vídeo:', e));
+            } else {
+                const newImg = document.createElement('img');
+                newImg.id = 'mainMedia';
+                newImg.src = src;
+                newImg.style.width = '100%';
+                newImg.style.height = '100%';
+                newImg.style.objectFit = mediaAtual === "image" ? 'contain' : 'cover';
+                newImg.style.background = '#000';
+                container.insertBefore(newImg, container.firstChild);
+            }
+        }
+        
+        function mudarTipoMedia(tipo) {
+            mediaAtual = tipo;
+            mediaIndex = 0;
+            atualizarMediaPrincipal();
+            document.querySelectorAll('.media-btn').forEach(btn => {
+                if(btn.dataset.mediaType === tipo) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            showNotification(`Modo: ${tipo === 'video' ? 'Vídeo' : tipo === 'image' ? 'Foto' : 'GIF'}`);
+        }
+        
+        function rotacionarMedia() {
+            mediaIndex++;
+            atualizarMediaPrincipal();
+        }
+        
         // ==================== SAUDAÇÃO E ALTERNÂNCIA ====================
         let saudacaoVideoIndex = 0;
         let saudacaoAlternando = false;
@@ -350,13 +458,14 @@
         
         function getVideoSaudacao() {
             const periodo = getPeriodoAtual();
-            const videos = videosSaudacao[periodo];
-            return videos[saudacaoVideoIndex % videos.length];
+            if (periodo === "bomdia") return "bomdia.mp4";
+            if (periodo === "boatarde") return "boatarde.mp4";
+            return "boanoite.mp4";
         }
         
         function alternarVideoPrincipal() {
-            const videoElement = document.getElementById('mainMedia');
-            if (!videoElement) return;
+            if (mediaAtual !== "video") return;
+            if (isCarMode()) return; // No modo carro, não alterna com saudação
             
             saudacaoAlternando = !saudacaoAlternando;
             let novoSrc;
@@ -365,82 +474,27 @@
                 novoSrc = getVideoSaudacao();
                 saudacaoVideoIndex++;
             } else {
-                novoSrc = "macaco.mp4";
+                novoSrc = bibliotecaMediaNormal.video[0] || "macaco.mp4";
             }
             
-            if (videoElement.src && videoElement.src.includes(novoSrc)) return;
-            
-            videoElement.src = novoSrc;
-            videoElement.load();
-            videoElement.play().catch(e => console.log('Erro no vídeo:', e));
-            
-            if (saudacaoAlternando) {
-                const periodo = getPeriodoAtual();
-                let mensagem = periodo === "bomdia" ? "🌞 Bom dia!" : (periodo === "boatarde" ? "☀️ Boa tarde!" : "🌙 Boa noite!");
-                showNotification(mensagem);
+            const videoElement = document.getElementById('mainMedia');
+            if (videoElement && videoElement.tagName === 'VIDEO') {
+                if (videoElement.src && videoElement.src.includes(novoSrc)) return;
+                videoElement.src = novoSrc;
+                videoElement.load();
+                videoElement.play().catch(e => console.log);
+                
+                if (saudacaoAlternando) {
+                    const periodo = getPeriodoAtual();
+                    let mensagem = periodo === "bomdia" ? "🌞 Bom dia!" : (periodo === "boatarde" ? "☀️ Boa tarde!" : "🌙 Boa noite!");
+                    showNotification(mensagem);
+                }
             }
         }
         
         function iniciarAlternanciaSaudacao() {
             if (saudacaoInterval) clearInterval(saudacaoInterval);
             saudacaoInterval = setInterval(alternarVideoPrincipal, 20000);
-        }
-        
-        // ==================== FALLBACK DE ÁUDIO ====================
-        let audioContext = null;
-        let currentOscillators = [];
-        let currentTimeout = null;
-        
-        function stopSynthesizedAudio() {
-            if (currentTimeout) clearTimeout(currentTimeout);
-            currentOscillators.forEach(osc => { try { osc.stop(); } catch(e) {} });
-            currentOscillators = [];
-        }
-        
-        function playSynthesizedAudio(trackId, duration = 30) {
-            if (!audioContext) { audioContext = new (window.AudioContext || window.webkitAudioContext)(); }
-            if (audioContext.state === 'suspended') { audioContext.resume(); }
-            stopSynthesizedAudio();
-            
-            const baseNote = 220 + (trackId % 50) * 2;
-            const notes = [baseNote, baseNote * 1.125, baseNote * 1.25, baseNote * 1.125, baseNote];
-            let timeOffset = 0;
-            const noteDuration = 0.8;
-            const startTime = audioContext.currentTime;
-            
-            for (let i = 0; i < Math.min(duration / noteDuration, 35); i++) {
-                const note = notes[i % notes.length];
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                oscillator.type = i % 2 === 0 ? 'sine' : 'triangle';
-                oscillator.frequency.value = note * (1 + (i % 3) * 0.02);
-                gainNode.gain.value = 0.12;
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.start(startTime + timeOffset);
-                oscillator.stop(startTime + timeOffset + noteDuration * 0.7);
-                currentOscillators.push(oscillator);
-                timeOffset += noteDuration;
-            }
-            currentTimeout = setTimeout(() => { if (isPlaying) nextTrack(); }, duration * 1000);
-            return duration;
-        }
-        
-        async function playAudioWithFallback(src, trackId) {
-            return new Promise((resolve) => {
-                musicPlayer.src = src;
-                musicPlayer.load();
-                const timeoutId = setTimeout(() => {
-                    console.log(`⚠️ Fallback: ${src} não carregou`);
-                    playSynthesizedAudio(trackId);
-                    resolve(false);
-                }, 3000);
-                musicPlayer.oncanplaythrough = () => {
-                    clearTimeout(timeoutId);
-                    musicPlayer.play().then(() => resolve(true)).catch(() => { playSynthesizedAudio(trackId); resolve(false); });
-                };
-                musicPlayer.onerror = () => { clearTimeout(timeoutId); playSynthesizedAudio(trackId); resolve(false); };
-            });
         }
         
         // ==================== PLAYER ====================
@@ -495,13 +549,18 @@
             let startTime = Date.now();
             const duration = 210;
             timerInterval = setInterval(() => {
-                if(isPlaying && !isAdPlaying) {
+                if(isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) {
                     const elapsed = (Date.now() - startTime) / 1000;
-                    if(elapsed >= duration) { clearInterval(timerInterval); timerInterval = null; nextTrack(); return; }
-                    const percent = (elapsed / duration) * 100;
+                    if(elapsed >= duration || (musicPlayer.currentTime >= musicPlayer.duration - 0.3)) { 
+                        clearInterval(timerInterval); 
+                        timerInterval = null; 
+                        nextTrack(); 
+                        return; 
+                    }
+                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
                     progressFill.style.width = percent + '%';
-                    const mins = Math.floor(elapsed / 60);
-                    const secs = Math.floor(elapsed % 60);
+                    const mins = Math.floor(musicPlayer.currentTime / 60);
+                    const secs = Math.floor(musicPlayer.currentTime % 60);
                     currentTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
                 }
             }, 100);
@@ -511,23 +570,31 @@
         
         async function playMusic() {
             if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
-            if (!audioContext) { audioContext = new (window.AudioContext || window.webkitAudioContext)(); }
-            if (audioContext.state === 'suspended') { await audioContext.resume(); }
             const track = musicas[currentIndex];
-            await playAudioWithFallback(track.src, track.id);
-            isPlaying = true;
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            startTimer();
-            splash.classList.add('hidden');
-            setTimeout(() => splash.classList.add('display-none'), 500);
-            tapToStart.classList.add('hidden');
-            renderPlaylist();
-            if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
+            
+            musicPlayer.src = track.src;
+            musicPlayer.load();
+            
+            musicPlayer.oncanplaythrough = () => {
+                musicPlayer.play().then(() => {
+                    isPlaying = true;
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    startTimer();
+                    splash.classList.add('hidden');
+                    setTimeout(() => splash.classList.add('display-none'), 500);
+                    tapToStart.classList.add('hidden');
+                    renderPlaylist();
+                    if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
+                }).catch(e => console.log('Erro ao reproduzir:', e));
+            };
+            
+            musicPlayer.onerror = () => {
+                showNotification(`Erro: Arquivo ${track.src} não encontrado`);
+            };
         }
         
         function pauseMusic() {
             musicPlayer.pause();
-            stopSynthesizedAudio();
             isPlaying = false;
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
             stopTimer();
@@ -600,7 +667,6 @@
         function nextTrack() {
             if(isAdPlaying) return;
             stopTimer();
-            stopSynthesizedAudio();
             musicPlayer.pause();
             
             musicPlayedCount++;
@@ -626,7 +692,6 @@
         function prevTrack() {
             if(isAdPlaying) return;
             stopTimer();
-            stopSynthesizedAudio();
             musicPlayer.pause();
             
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
@@ -648,7 +713,6 @@
         window.selectSong = function(globalIdx) {
             if(isAdPlaying) return;
             stopTimer();
-            stopSynthesizedAudio();
             musicPlayer.pause();
             currentIndex = globalIdx;
             loadTrack(currentIndex);
@@ -722,7 +786,12 @@
         }
         
         // ==================== EVENTOS ====================
-        document.getElementById('progressBar').addEventListener('click', (e) => {});
+        document.getElementById('progressBar').addEventListener('click', (e) => {
+            if(isAdPlaying) return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration;
+        });
         playBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
@@ -735,15 +804,24 @@
         document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
         document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'Rádio Playlist', url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
+        
+        // Ativa/desativa modo carro com troca de mídia
         document.getElementById('carModeDrawerBtn').addEventListener('click', () => { 
             document.body.classList.add('car-mode'); 
-            showNotification('🚗 Modo Carro ATIVO - Interface simplificada'); 
+            atualizarMediaPrincipal(); // Atualiza a mídia para a do modo carro
+            showNotification('🚗 Modo Carro ATIVO - Mídia específica do carro'); 
         });
         document.getElementById('exitCarModeBtn').addEventListener('click', () => { 
             document.body.classList.remove('car-mode'); 
+            atualizarMediaPrincipal(); // Volta para a mídia do modo normal
             showNotification('Modo normal'); 
         });
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
+        
+        // Botões de seleção de mídia
+        document.querySelectorAll('.media-btn').forEach(btn => {
+            btn.addEventListener('click', () => mudarTipoMedia(btn.dataset.mediaType));
+        });
         
         // ==================== TEMAS ====================
         const colorOptions = document.querySelectorAll('.color-option');
@@ -796,8 +874,12 @@
             tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
             setInterval(rotateExtraMedia, 15000);
+            setInterval(rotacionarMedia, 20000);
             iniciarAlternanciaSaudacao();
             updateExtraMedia();
+            
+            // Ativa o botão de vídeo como padrão
+            document.querySelector('.media-btn[data-media-type="video"]').classList.add('active');
         });
     </script>
 </body>
