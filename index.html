@@ -37,8 +37,6 @@
         video, img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .video-menu-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.5); color: white; border: none; font-size: 1.6rem; cursor: pointer; z-index: 20; padding: 6px 10px; border-radius: 30px; }
         
-        /* SAUDAÇÃO OCULTADA - REMOVIDA COMPLETAMENTE */
-        
         .track-info { padding: 12px 16px 4px; text-align: center; }
         .track-info p { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .progress-area { padding: 0 16px 8px; }
@@ -100,6 +98,72 @@
         .modal-btn { padding: 8px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; font-size: 0.8rem; }
         .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
         
+        /* CONTROLES DO MODO CARRO - SOBREPOSTOS AO VÍDEO */
+        .car-mode .car-video-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 30px 20px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            z-index: 1001;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .car-mode .car-video-controls.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .car-mode .car-control-btn {
+            background: rgba(0,0,0,0.7);
+            border: 2px solid var(--primary-color);
+            color: white;
+            font-size: 2rem;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .car-mode .car-control-btn:active {
+            transform: scale(0.95);
+            background: var(--primary-color);
+            color: #000;
+        }
+        .car-mode .car-control-btn.play-pause {
+            background: var(--primary-color);
+            color: #000;
+            font-size: 2.2rem;
+        }
+        .car-mode .car-track-info {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            padding: 15px;
+            z-index: 1001;
+            pointer-events: none;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+        }
+        .car-mode .car-track-info span {
+            background: rgba(0,0,0,0.5);
+            padding: 5px 12px;
+            border-radius: 20px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
         /* MODO CARRO - vídeo extra ocupa tela toda */
         body.car-mode .extra-video-section {
             display: block !important;
@@ -143,6 +207,8 @@
             .extra-video-section { margin: 10px; border-radius: 20px; }
             .top-ticker { font-size: 1.6rem; }
             .drawer { width: 720px; }
+            .car-mode .car-control-btn { width: 90px; height: 90px; font-size: 2.5rem; }
+            .car-mode .car-track-info { font-size: 1.3rem; top: 30px; }
         }
     </style>
 </head>
@@ -154,7 +220,7 @@
     <div class="app">
         <div class="top-bar">
             <div class="top-ticker">
-                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> RáTv - Playlist - As Musicas Tocam e Seus Produtos Aparecem na Tv - Informações - 12 98846-1978 <i class="fas fa-music fa-beat"></i></span>
+                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> MUTV - Playlist - As Musicas Tocam e Seus Produtos Aparecem na Tv - Informações - 12 98846-1978 <i class="fas fa-music fa-beat"></i></span>
             </div>
         </div>
         
@@ -185,6 +251,16 @@
             </div>
         </div>
         <div class="footer">MUTV - Playlist 2023 • Róger Mendes</div>
+    </div>
+
+    <!-- CONTROLES DO MODO CARRO (sobrepostos ao vídeo) -->
+    <div class="car-video-controls" id="carVideoControls">
+        <button class="car-control-btn" id="carPrevBtn"><i class="fas fa-step-backward"></i></button>
+        <button class="car-control-btn play-pause" id="carPlayPauseBtn"><i class="fas fa-play"></i></button>
+        <button class="car-control-btn" id="carNextBtn"><i class="fas fa-step-forward"></i></button>
+    </div>
+    <div class="car-track-info" id="carTrackInfo">
+        <span id="carTrackArtist">🎵 Carregando...</span>
     </div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -243,16 +319,16 @@
     </div>
 
     <script>
-        // ==================== FOTOS DE SAUDAÇÃO (MANTIDAS) ====================
+        // ==================== FOTOS DE SAUDAÇÃO ====================
         const fotosSaudacao = {
             bomdia: ["bomdia1.jpeg", "bomdia2.png", "bomdia3.jpeg"],
             boatarde: ["targif.gif", "tarfoto.jpeg", "tarvideo.mp4"],
             boanoite: ["bnoiteg1.gif", "bnoitefoto.jpeg", "bnoite2.gif"]
         };
         
-        // ==================== PLAYLIST COMPLETA COM 173 MÚSICAS ====================
+        // ==================== PLAYLIST COMPLETA ====================
         const musicas = [
-                    { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+                     { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -424,22 +500,20 @@
             { id: 170, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", periodo: "tarde" },
             { id: 171, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "noite" },
             { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", periodo: "manha" },
-            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" } 
-            
+            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" }    
         ];
         
-        // Adicionar músicas até 173
         for(let i = musicas.length + 1; i <= 173; i++) {
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
         
-        // ==================== VÍDEOS DOS ANÚNCIOS VISUAIS (SEM CARRO.MP4) ====================
+        // ==================== VÍDEOS DOS ANÚNCIOS ====================
         const videosExtra = [
             { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
             { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/" }
         ];
         
-        // ==================== ANÚNCIOS DE ÁUDIO MP3 ====================
+        // ==================== ANÚNCIOS DE ÁUDIO ====================
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
             { src: "zzcv.mp3", nome: "Promoção Relâmpago" },
@@ -463,6 +537,13 @@
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         const feedbackTextarea = document.getElementById('feedbackText');
         
+        // Elementos do modo carro
+        const carVideoControls = document.getElementById('carVideoControls');
+        const carPrevBtn = document.getElementById('carPrevBtn');
+        const carPlayPauseBtn = document.getElementById('carPlayPauseBtn');
+        const carNextBtn = document.getElementById('carNextBtn');
+        const carTrackArtist = document.getElementById('carTrackArtist');
+        
         // CONFIGURAR VOLUME EM 90%
         musicPlayer.volume = 0.9;
         adPlayer.volume = 0.9;
@@ -483,8 +564,9 @@
         let saudacaoIndex = 0;
         let alternando = false;
         let saudacaoInterval = null;
+        let controlsTimeout = null;
         
-        // ==================== FUNÇÕES DE SAUDAÇÃO (MANTIDAS) ====================
+        // ==================== FUNÇÕES DE SAUDAÇÃO ====================
         function getPeriodoAtual() {
             const hora = new Date().getHours();
             if (hora >= 5 && hora < 12) return "bomdia";
@@ -582,6 +664,11 @@
             playlistContainer.innerHTML = html;
         }
         
+        function updateCarTrackInfo() {
+            const track = musicas[currentIndex];
+            carTrackArtist.innerHTML = `🎵 ${track.title} - ${track.artist}`;
+        }
+        
         function loadTrack(index) {
             if(index >= musicas.length) index = 0;
             if(index < 0) index = musicas.length - 1;
@@ -589,6 +676,7 @@
             const track = musicas[currentIndex];
             musicPlayer.src = track.src;
             trackArtist.textContent = `${track.title} - ${track.artist}`;
+            updateCarTrackInfo();
             currentTimeEl.textContent = '0:00';
             totalTimeEl.textContent = '03:30';
             progressFill.style.width = '0%';
@@ -618,6 +706,14 @@
         
         function stopTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
         
+        function updateCarPlayPauseButton() {
+            if(isPlaying && !isAdPlaying) {
+                carPlayPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                carPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        }
+        
         async function playMusic() {
             if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
             const track = musicas[currentIndex];
@@ -628,6 +724,7 @@
                 musicPlayer.play().then(() => {
                     isPlaying = true;
                     playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    updateCarPlayPauseButton();
                     startTimer();
                     splash.classList.add('hidden');
                     setTimeout(() => splash.classList.add('display-none'), 500);
@@ -643,6 +740,7 @@
             musicPlayer.pause();
             isPlaying = false;
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            updateCarPlayPauseButton();
             stopTimer();
             renderPlaylist();
             if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'paused'; }
@@ -677,6 +775,7 @@
             isAdPlaying = false;
             document.getElementById('adStatus').innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
             document.getElementById('skipAdBtn').style.display = 'none';
+            updateCarPlayPauseButton();
             
             if(shouldResumeMusic) {
                 musicPlayer.currentTime = musicPausedTime;
@@ -783,7 +882,25 @@
             }
         }
         
-        // VÍDEO EXTRA NORMAL (apenas anúncios)
+        // ==================== CONTROLES DO MODO CARRO ====================
+        function showCarControls() {
+            if(!isCarModeActive) return;
+            carVideoControls.classList.add('visible');
+            if(controlsTimeout) clearTimeout(controlsTimeout);
+            controlsTimeout = setTimeout(() => {
+                carVideoControls.classList.remove('visible');
+            }, 3000);
+        }
+        
+        function setupCarModeTouchEvents() {
+            const extraSection = document.querySelector('.extra-video-section');
+            if(extraSection) {
+                extraSection.addEventListener('click', showCarControls);
+                extraSection.addEventListener('touchstart', showCarControls);
+            }
+        }
+        
+        // ==================== VÍDEO EXTRA ====================
         function alternarVideoExtra() {
             if(isCarModeActive) return;
             extraVideoIndex = (extraVideoIndex + 1) % videosExtra.length;
@@ -811,7 +928,7 @@
             extraVideoInterval = setInterval(alternarVideoExtra, 15000);
         }
         
-        // MODO CARRO - APENAS VÍDEO CARRO.MP4
+        // ==================== MODO CARRO ====================
         function enableCarMode() {
             if(isCarModeActive) return;
             isCarModeActive = true;
@@ -839,13 +956,26 @@
                 extraOverlay.style.display = 'none';
             }
             
-            showNotification('🚗 Modo Carro ATIVO - Vídeo rodando');
+            // Atualiza info da música
+            updateCarTrackInfo();
+            
+            // Configura eventos de toque para mostrar controles
+            setupCarModeTouchEvents();
+            
+            // Mostra controles ao ativar
+            showCarControls();
+            
+            showNotification('🚗 Modo Carro ATIVO - Toque na tela para controles');
         }
         
         function disableCarMode() {
             if(!isCarModeActive) return;
             isCarModeActive = false;
             document.body.classList.remove('car-mode');
+            
+            // Esconde controles
+            carVideoControls.classList.remove('visible');
+            if(controlsTimeout) clearTimeout(controlsTimeout);
             
             // Restaura o overlay
             const extraOverlay = document.getElementById('extraOverlay');
@@ -873,7 +1003,7 @@
             showNotification('✅ Modo normal restaurado');
         }
         
-        // EVENTOS
+        // ==================== EVENTOS ====================
         document.getElementById('progressBar').addEventListener('click', (e) => {
             if(isAdPlaying) return;
             const rect = e.currentTarget.getBoundingClientRect();
@@ -895,6 +1025,11 @@
         document.getElementById('carModeDrawerBtn').addEventListener('click', enableCarMode);
         document.getElementById('exitCarModeBtn').addEventListener('click', disableCarMode);
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
+        
+        // Eventos dos controles do modo carro
+        carPrevBtn.addEventListener('click', () => { prevTrack(); showCarControls(); });
+        carPlayPauseBtn.addEventListener('click', () => { togglePlayPause(); showCarControls(); });
+        carNextBtn.addEventListener('click', () => { nextTrack(); showCarControls(); });
         
         // TEMAS
         const colorOptions = document.querySelectorAll('.color-option');
