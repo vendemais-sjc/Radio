@@ -163,7 +163,6 @@
                 <video autoplay loop muted playsinline id="mainVideo">
                     <source src="macaco.mp4" type="video/mp4">
                 </video>
-                <!-- BADGE DE SAUDAÇÃO REMOVIDA -->
                 <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             
@@ -180,7 +179,7 @@
         <div class="extra-video-section">
             <div class="extra-video-container" id="extraVideoContainer">
                 <video autoplay loop muted playsinline id="extraVideo">
-                    <source src="carro.mp4" type="video/mp4">
+                    <source src="aluguecopos (1).mp4" type="video/mp4">
                 </video>
                 <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
             </div>
@@ -244,10 +243,16 @@
     </div>
 
     <script>
-        // PLAYLIST COMPLETA COM 173 MÚSICAS
+        // ==================== FOTOS DE SAUDAÇÃO (MANTIDAS) ====================
+        const fotosSaudacao = {
+            bomdia: ["bomdia1.jpeg", "bomdia2.png", "bomdia3.jpeg"],
+            boatarde: ["targif.gif", "tarfoto.jpeg", "tarvideo.mp4"],
+            boanoite: ["bnoiteg1.gif", "bnoitefoto.jpeg", "bnoite2.gif"]
+        };
+        
+        // ==================== PLAYLIST COMPLETA COM 173 MÚSICAS ====================
         const musicas = [
-            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
-                       { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+                    { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -420,29 +425,28 @@
             { id: 171, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "noite" },
             { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", periodo: "manha" },
             { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" } 
+            
         ];
         
-        // Adicionar músicas até 173 se necessário
+        // Adicionar músicas até 173
         for(let i = musicas.length + 1; i <= 173; i++) {
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
         
-        // VÍDEOS DOS ANÚNCIOS
+        // ==================== VÍDEOS DOS ANÚNCIOS VISUAIS (SEM CARRO.MP4) ====================
         const videosExtra = [
             { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
             { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/" }
         ];
         
-        const videoCarro = { src: "carro.mp4", nome: "Modo Carro", link: "" };
-        
-        // ANÚNCIOS DE ÁUDIO MP3
+        // ==================== ANÚNCIOS DE ÁUDIO MP3 ====================
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
             { src: "zzcv.mp3", nome: "Promoção Relâmpago" },
             { src: "zzcv.mp3", nome: "Novidade Imperdível" }
         ];
         
-        // ELEMENTOS DOM
+        // ==================== ELEMENTOS DOM ====================
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -459,6 +463,10 @@
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         const feedbackTextarea = document.getElementById('feedbackText');
         
+        // CONFIGURAR VOLUME EM 90%
+        musicPlayer.volume = 0.9;
+        adPlayer.volume = 0.9;
+        
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [];
         let timerInterval = null;
         let isAdPlaying = false;
@@ -472,8 +480,78 @@
         let extraVideoIndex = 0;
         let extraVideoInterval = null;
         let isCarModeActive = false;
+        let saudacaoIndex = 0;
+        let alternando = false;
+        let saudacaoInterval = null;
         
-        // FUNÇÕES DO PLAYER
+        // ==================== FUNÇÕES DE SAUDAÇÃO (MANTIDAS) ====================
+        function getPeriodoAtual() {
+            const hora = new Date().getHours();
+            if (hora >= 5 && hora < 12) return "bomdia";
+            if (hora >= 12 && hora < 18) return "boatarde";
+            return "boanoite";
+        }
+        
+        function getFotoSaudacao() {
+            const periodo = getPeriodoAtual();
+            const fotos = fotosSaudacao[periodo];
+            if (!fotos || fotos.length === 0) return null;
+            return fotos[saudacaoIndex % fotos.length];
+        }
+        
+        function alternarVideoPrincipal() {
+            if (isCarModeActive) return;
+            const videoElement = document.getElementById('mainVideo');
+            if (!videoElement) return;
+            
+            alternando = !alternando;
+            
+            if (alternando) {
+                const fotoSrc = getFotoSaudacao();
+                if (fotoSrc) {
+                    videoElement.style.display = 'none';
+                    let imgElement = document.getElementById('saudacaoImg');
+                    if (!imgElement) {
+                        imgElement = document.createElement('img');
+                        imgElement.id = 'saudacaoImg';
+                        imgElement.style.width = '100%';
+                        imgElement.style.height = '100%';
+                        imgElement.style.objectFit = 'cover';
+                        videoElement.parentNode.insertBefore(imgElement, videoElement);
+                    }
+                    imgElement.src = fotoSrc;
+                    imgElement.style.display = 'block';
+                    videoElement.style.display = 'none';
+                    saudacaoIndex++;
+                }
+            } else {
+                const imgElement = document.getElementById('saudacaoImg');
+                if (imgElement) imgElement.style.display = 'none';
+                videoElement.style.display = 'block';
+                videoElement.play().catch(e => console.log);
+            }
+        }
+        
+        function iniciarAlternanciaSaudacao() {
+            if (saudacaoInterval) clearInterval(saudacaoInterval);
+            saudacaoInterval = setInterval(alternarVideoPrincipal, 20000);
+        }
+        
+        function pararAlternanciaSaudacao() {
+            if (saudacaoInterval) {
+                clearInterval(saudacaoInterval);
+                saudacaoInterval = null;
+            }
+            const videoElement = document.getElementById('mainVideo');
+            const imgElement = document.getElementById('saudacaoImg');
+            if (imgElement) imgElement.style.display = 'none';
+            if (videoElement) {
+                videoElement.style.display = 'block';
+                videoElement.play().catch(e => console.log);
+            }
+        }
+        
+        // ==================== FUNÇÕES DO PLAYER ====================
         function updateFilteredPlaylist() {
             if(allSongsMode) { filteredPlaylist = [...musicas]; }
             else {
@@ -705,7 +783,7 @@
             }
         }
         
-        // VÍDEO EXTRA NORMAL (anúncios)
+        // VÍDEO EXTRA NORMAL (apenas anúncios)
         function alternarVideoExtra() {
             if(isCarModeActive) return;
             extraVideoIndex = (extraVideoIndex + 1) % videosExtra.length;
@@ -745,6 +823,9 @@
                 extraVideoInterval = null;
             }
             
+            // Para a alternância de saudação
+            pararAlternanciaSaudacao();
+            
             // Configura o vídeo extra para mostrar apenas carro.mp4 em loop
             const extraVideo = document.getElementById('extraVideo');
             const extraOverlay = document.getElementById('extraOverlay');
@@ -772,6 +853,22 @@
             
             // Reinicia a alternância de anúncios normais
             iniciarAlternanciaExtra();
+            
+            // Reinicia a alternância de saudação
+            iniciarAlternanciaSaudacao();
+            
+            // Restaura o vídeo do anúncio atual
+            const extraVideo = document.getElementById('extraVideo');
+            const videoAtual = videosExtra[extraVideoIndex] || videosExtra[0];
+            if(extraVideo && videoAtual) {
+                extraVideo.src = videoAtual.src;
+                extraVideo.load();
+                extraVideo.play().catch(e => console.log);
+                extraVideo.loop = false;
+            }
+            if(extraOverlay && videoAtual) {
+                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${videoAtual.nome}`;
+            }
             
             showNotification('✅ Modo normal restaurado');
         }
@@ -849,6 +946,7 @@
             tapToStart.style.display = 'block';
             tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
+            iniciarAlternanciaSaudacao();
             iniciarAlternanciaExtra();
         });
     </script>
