@@ -98,7 +98,6 @@
         .modal-btn { padding: 8px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; font-size: 0.8rem; }
         .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
         
-        /* CONTROLES DO MODO CARRO - SOBREPOSTOS AO VÍDEO */
         .car-mode .car-video-controls {
             position: fixed;
             bottom: 0;
@@ -164,7 +163,6 @@
             border-left: 3px solid var(--primary-color);
         }
         
-        /* MODO CARRO - vídeo extra ocupa tela toda */
         body.car-mode .extra-video-section {
             display: block !important;
             position: fixed;
@@ -198,7 +196,6 @@
         body.car-mode .car-exit-btn { display: flex; z-index: 10000; }
         body.car-mode .extra-overlay { display: none; }
         
-        /* SMART TV */
         @media (min-width: 1024px) {
             .control-btn { font-size: 2.4rem; width: 64px; height: 64px; }
             .play-btn { font-size: 3.5rem; width: 80px; height: 80px; }
@@ -253,7 +250,6 @@
         <div class="footer">MUTV - Playlist 2023 • Róger Mendes</div>
     </div>
 
-    <!-- CONTROLES DO MODO CARRO (sobrepostos ao vídeo) -->
     <div class="car-video-controls" id="carVideoControls">
         <button class="car-control-btn" id="carPrevBtn"><i class="fas fa-step-backward"></i></button>
         <button class="car-control-btn play-pause" id="carPlayPauseBtn"><i class="fas fa-play"></i></button>
@@ -285,7 +281,7 @@
             </div>
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> 📢 ANÚNCIOS DE ÁUDIO (MP3)</h4>
-                <div class="ad-timer" id="adTimer">25</div>
+                <div class="ad-timer" id="adTimer">15:00</div>
                 <div class="ad-status" id="adStatus"><i class="fas fa-compact-disc fa-spin"></i> Aguardando...</div>
                 <div class="ad-buttons">
                     <button class="ad-btn" id="toggleAdsBtn">Ativo</button>
@@ -525,11 +521,11 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
-
+ 
         ];
         
-        for(let i = musicas.length + 1; i <= 173; i++) {
-            musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
+        for(let i = musicas.length + 1; i <= 196; i++) {
+            musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: "todos" });
         }
         
         // ==================== VÍDEOS DOS ANÚNCIOS ====================
@@ -562,23 +558,22 @@
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         const feedbackTextarea = document.getElementById('feedbackText');
         
-        // Elementos do modo carro
         const carVideoControls = document.getElementById('carVideoControls');
         const carPrevBtn = document.getElementById('carPrevBtn');
         const carPlayPauseBtn = document.getElementById('carPlayPauseBtn');
         const carNextBtn = document.getElementById('carNextBtn');
         const carTrackArtist = document.getElementById('carTrackArtist');
         
-        // CONFIGURAR VOLUME EM 90%
         musicPlayer.volume = 0.9;
         adPlayer.volume = 0.9;
         
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [];
         let timerInterval = null;
         let isAdPlaying = false;
-        let musicPlayedCount = 0;
         let adsEnabled = true;
-        let adInterval = 25;
+        let adIntervalSeconds = 900; // 15 minutos = 900 segundos
+        let musicPlayedSeconds = 0;
+        let adTimerInterval = null;
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         let musicPausedTime = 0;
@@ -659,6 +654,19 @@
         }
         
         // ==================== FUNÇÕES DO PLAYER ====================
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        function formatAdTimer(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+        
         function updateFilteredPlaylist() {
             if(allSongsMode) { filteredPlaylist = [...musicas]; }
             else {
@@ -706,7 +714,7 @@
             totalTimeEl.textContent = '03:30';
             progressFill.style.width = '0%';
             if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist, album: 'Rádio Playlist' });
+                navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist, album: 'MUTV Playlist' });
             }
             renderPlaylist();
         }
@@ -717,9 +725,7 @@
                 if(isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) {
                     const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
                     progressFill.style.width = percent + '%';
-                    const mins = Math.floor(musicPlayer.currentTime / 60);
-                    const secs = Math.floor(musicPlayer.currentTime % 60);
-                    currentTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
                     if(musicPlayer.currentTime >= musicPlayer.duration - 0.3) {
                         clearInterval(timerInterval);
                         timerInterval = null;
@@ -739,26 +745,28 @@
             }
         }
         
-        async function playMusic() {
-            if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
+        function playMusic() {
+            if(isAdPlaying) { showNotification('⏸️ Aguarde o anúncio terminar'); return; }
             const track = musicas[currentIndex];
             musicPlayer.src = track.src;
             musicPlayer.load();
             
-            musicPlayer.oncanplaythrough = () => {
-                musicPlayer.play().then(() => {
+            musicPlayer.play()
+                .then(() => {
                     isPlaying = true;
                     playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     updateCarPlayPauseButton();
                     startTimer();
                     splash.classList.add('hidden');
                     setTimeout(() => splash.classList.add('display-none'), 500);
-                    tapToStart.classList.add('hidden');
+                    if(tapToStart) tapToStart.classList.add('hidden');
                     renderPlaylist();
                     if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
-                }).catch(e => console.log);
-            };
-            musicPlayer.onerror = () => { showNotification(`Erro: Arquivo ${track.src} não encontrado`); };
+                })
+                .catch(e => { 
+                    console.log('Erro ao tocar:', e);
+                    showNotification('⚠️ Erro ao tocar música');
+                });
         }
         
         function pauseMusic() {
@@ -771,19 +779,43 @@
             if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'paused'; }
         }
         
-        function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); }
+        function togglePlayPause() { 
+            if(isAdPlaying) {
+                showNotification('⏸️ Aguarde o anúncio terminar');
+                return;
+            }
+            isPlaying ? pauseMusic() : playMusic(); 
+        }
         
-        // ==================== FUNÇÕES DE ANÚNCIO CORRIGIDAS ====================
+        // ==================== FUNÇÕES DE ANÚNCIO CORRIGIDAS (BASEADO EM TEMPO) ====================
+        function startAdTimer() {
+            if(adTimerInterval) clearInterval(adTimerInterval);
+            adTimerInterval = setInterval(() => {
+                if(!adsEnabled || isAdPlaying) return;
+                if(isPlaying && !isAdPlaying) {
+                    musicPlayedSeconds++;
+                    const remaining = adIntervalSeconds - musicPlayedSeconds;
+                    const adTimerEl = document.getElementById('adTimer');
+                    if(adTimerEl) adTimerEl.textContent = formatAdTimer(remaining);
+                    
+                    if(musicPlayedSeconds >= adIntervalSeconds) {
+                        musicPlayedSeconds = 0;
+                        playAudioAd();
+                    }
+                }
+            }, 1000);
+        }
+        
         function playAudioAd() {
             if(!adsEnabled || isAdPlaying) return;
             const ad = anunciosAudio[currentAdIndex];
             if(!ad) return;
             
-            // SALVA A POSIÇÃO E PAUSA A MÚSICA SE ESTIVER TOCANDO
+            // SALVA A POSIÇÃO E PAUSA A MÚSICA
             if(isPlaying) {
-                musicPausedTime = musicPlayer.currentTime;  // Salva onde parou
-                pauseMusic();  // Pausa a música
-                shouldResumeMusic = true;  // Marca para voltar depois
+                musicPausedTime = musicPlayer.currentTime;
+                pauseMusic();
+                shouldResumeMusic = true;
             } else {
                 shouldResumeMusic = false;
             }
@@ -793,8 +825,12 @@
             adPlayer.load();
             isAdPlaying = true;
             
-            document.getElementById('adStatus').innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.nome}`;
-            document.getElementById('skipAdBtn').style.display = 'inline-block';
+            const adStatus = document.getElementById('adStatus');
+            const skipAdBtn = document.getElementById('skipAdBtn');
+            if(adStatus) adStatus.innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.nome}`;
+            if(skipAdBtn) skipAdBtn.style.display = 'inline-block';
+            
+            showNotification(`📢 Anúncio de áudio: ${ad.nome}`);
             
             adPlayer.play().catch(() => finishAudioAd());
             adPlayer.onended = finishAudioAd;
@@ -803,50 +839,68 @@
         
         function finishAudioAd() {
             isAdPlaying = false;
-            document.getElementById('adStatus').innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
-            document.getElementById('skipAdBtn').style.display = 'none';
+            
+            const adStatus = document.getElementById('adStatus');
+            const skipAdBtn = document.getElementById('skipAdBtn');
+            if(adStatus) adStatus.innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
+            if(skipAdBtn) skipAdBtn.style.display = 'none';
+            
             updateCarPlayPauseButton();
             
             // VOLTA A MÚSICA DE ONDE PAROU
             if(shouldResumeMusic) {
-                musicPlayer.currentTime = musicPausedTime;  // Volta para a posição salva
-                playMusic();  // Toca de novo
+                musicPlayer.currentTime = musicPausedTime;
+                playMusic();
                 shouldResumeMusic = false;
             }
             
             currentAdIndex = (currentAdIndex + 1) % anunciosAudio.length;
-            updateAdTimer();
+            musicPlayedSeconds = 0;
         }
         
-        function checkAdInterval() {
-            if(adsEnabled && musicPlayedCount > 0 && musicPlayedCount % adInterval === 0 && !isAdPlaying) {
+        function toggleAds() {
+            adsEnabled = !adsEnabled;
+            const toggleBtn = document.getElementById('toggleAdsBtn');
+            if(toggleBtn) toggleBtn.innerHTML = adsEnabled ? 'Ativo' : 'Inativo';
+            if(!adsEnabled && isAdPlaying) {
+                adPlayer.pause();
+                finishAudioAd();
+            }
+            if(adsEnabled) {
+                const adTimerEl = document.getElementById('adTimer');
+                if(adTimerEl) adTimerEl.textContent = formatAdTimer(adIntervalSeconds - musicPlayedSeconds);
+            } else {
+                const adTimerEl = document.getElementById('adTimer');
+                if(adTimerEl) adTimerEl.textContent = 'OFF';
+            }
+            showNotification(adsEnabled ? '📢 Anúncios ATIVOS (a cada 15 min)' : '🔇 Anúncios DESATIVADOS');
+        }
+        
+        function testAd() { 
+            if(!isAdPlaying) {
+                musicPlayedSeconds = adIntervalSeconds;
                 playAudioAd();
             }
+            else showNotification('Já tem um anúncio tocando');
         }
         
-        function updateAdTimer() {
-            const el = document.getElementById('adTimer');
-            if(!adsEnabled) { el.textContent = 'OFF'; return; }
-            let songsUntil = adInterval - (musicPlayedCount % adInterval);
-            if(songsUntil === adInterval) songsUntil = 0;
-            el.textContent = songsUntil;
+        function skipAd() { 
+            if(isAdPlaying) { 
+                adPlayer.pause(); 
+                finishAudioAd(); 
+                showNotification('⏭️ Anúncio pulado'); 
+            } 
         }
         
-        function toggleAds() { 
-            adsEnabled = !adsEnabled; 
-            document.getElementById('toggleAdsBtn').innerHTML = adsEnabled ? 'Ativo' : 'Inativo'; 
-            updateAdTimer();
-            if(!adsEnabled && isAdPlaying) { adPlayer.pause(); finishAudioAd(); }
-        }
-        
-        function testAd() { playAudioAd(); }
-        function skipAd() { if(isAdPlaying) { adPlayer.pause(); finishAudioAd(); showNotification('⏭️ Anúncio pulado'); } }
-        
+        // ==================== FUNÇÕES DE NAVEGAÇÃO ====================
         function nextTrack() {
-            if(isAdPlaying) return;
+            if(isAdPlaying) {
+                showNotification('⏸️ Aguarde o anúncio terminar');
+                return;
+            }
             stopTimer();
             musicPlayer.pause();
-            musicPlayedCount++; updateAdTimer();
+            
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(filteredIdx === -1) filteredIdx = 0;
             if(shuffle && filteredPlaylist.length > 1) {
@@ -858,11 +912,13 @@
             currentIndex = newGlobal;
             loadTrack(currentIndex);
             if(isPlaying) playMusic();
-            checkAdInterval();
         }
         
         function prevTrack() {
-            if(isAdPlaying) return;
+            if(isAdPlaying) {
+                showNotification('⏸️ Aguarde o anúncio terminar');
+                return;
+            }
             stopTimer();
             musicPlayer.pause();
             let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
@@ -879,7 +935,10 @@
         }
         
         window.selectSong = function(globalIdx) {
-            if(isAdPlaying) return;
+            if(isAdPlaying) {
+                showNotification('⏸️ Aguarde o anúncio terminar');
+                return;
+            }
             stopTimer();
             musicPlayer.pause();
             currentIndex = globalIdx;
@@ -890,9 +949,12 @@
         
         function showNotification(msg) { 
             const n = document.getElementById('notification'); 
-            document.getElementById('notificationText').innerText = msg; 
-            n.classList.add('show'); 
-            setTimeout(() => n.classList.remove('show'), 2000); 
+            const text = document.getElementById('notificationText');
+            if(text) text.innerText = msg; 
+            if(n) {
+                n.classList.add('show'); 
+                setTimeout(() => n.classList.remove('show'), 2000); 
+            }
         }
         
         function closeDrawer() { 
@@ -966,16 +1028,13 @@
             isCarModeActive = true;
             document.body.classList.add('car-mode');
             
-            // Para a alternância de anúncios normais
             if(extraVideoInterval) {
                 clearInterval(extraVideoInterval);
                 extraVideoInterval = null;
             }
             
-            // Para a alternância de saudação
             pararAlternanciaSaudacao();
             
-            // Configura o vídeo extra para mostrar apenas carro.mp4 em loop
             const extraVideo = document.getElementById('extraVideo');
             const extraOverlay = document.getElementById('extraOverlay');
             if(extraVideo) {
@@ -988,15 +1047,9 @@
                 extraOverlay.style.display = 'none';
             }
             
-            // Atualiza info da música
             updateCarTrackInfo();
-            
-            // Configura eventos de toque para mostrar controles
             setupCarModeTouchEvents();
-            
-            // Mostra controles ao ativar
             showCarControls();
-            
             showNotification('🚗 Modo Carro ATIVO - Toque na tela para controles');
         }
         
@@ -1005,21 +1058,15 @@
             isCarModeActive = false;
             document.body.classList.remove('car-mode');
             
-            // Esconde controles
             carVideoControls.classList.remove('visible');
             if(controlsTimeout) clearTimeout(controlsTimeout);
             
-            // Restaura o overlay
             const extraOverlay = document.getElementById('extraOverlay');
             if(extraOverlay) extraOverlay.style.display = 'block';
             
-            // Reinicia a alternância de anúncios normais
             iniciarAlternanciaExtra();
-            
-            // Reinicia a alternância de saudação
             iniciarAlternanciaSaudacao();
             
-            // Restaura o vídeo do anúncio atual
             const extraVideo = document.getElementById('extraVideo');
             const videoAtual = videosExtra[extraVideoIndex] || videosExtra[0];
             if(extraVideo && videoAtual) {
@@ -1053,12 +1100,11 @@
         document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
         document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
         document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
-        document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'Rádio Playlist', url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
+        document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'MUTV Playlist', url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
         document.getElementById('carModeDrawerBtn').addEventListener('click', enableCarMode);
         document.getElementById('exitCarModeBtn').addEventListener('click', disableCarMode);
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
-        // Eventos dos controles do modo carro
         carPrevBtn.addEventListener('click', () => { prevTrack(); showCarControls(); });
         carPlayPauseBtn.addEventListener('click', () => { togglePlayPause(); showCarControls(); });
         carNextBtn.addEventListener('click', () => { nextTrack(); showCarControls(); });
@@ -1085,7 +1131,7 @@
         document.getElementById('cancelFeedback').addEventListener('click', () => { feedbackModal.classList.remove('open'); feedbackTextarea.value = ''; currentRating = 0; document.querySelectorAll('.star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); }); });
         document.getElementById('sendFeedback').addEventListener('click', () => { 
             if(currentRating === 0) { showNotification('⭐ Selecione uma nota de 1 a 5 estrelas'); return; } 
-            let msg = `🎵 *Rádio Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`; 
+            let msg = `🎵 *MUTV Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`; 
             if(feedbackTextarea.value.trim()) msg += `💬 ${feedbackTextarea.value.trim()}\n`; 
             window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`, '_blank'); 
             showNotification('✅ WhatsApp aberto! Envie sua avaliação'); 
@@ -1109,7 +1155,10 @@
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
             currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
             loadTrack(currentIndex);
-            updateAdTimer();
+            
+            // Inicia o timer do anúncio
+            startAdTimer();
+            
             tapToStart.style.display = 'block';
             tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
