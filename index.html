@@ -98,7 +98,6 @@
         .modal-btn { padding: 8px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; font-size: 0.8rem; }
         .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
         
-        /* CONTROLES DO MODO CARRO */
         .car-mode .car-video-controls {
             position: fixed;
             bottom: 0;
@@ -248,7 +247,7 @@
                 <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
             </div>
         </div>
-        <div class="footer">MUTV - Playlist 2023 • Róger Mendes</div>
+        <div class="footer">MUTV - Playlist 2024 • Róger Mendes</div>
     </div>
 
     <div class="car-video-controls" id="carVideoControls">
@@ -290,7 +289,7 @@
                     <button class="ad-btn" id="skipAdBtn" style="display:none;">Pular</button>
                 </div>
             </div>
-            <h4 style="color: var(--primary-color);">🎵 MUTV Playlist</h4>
+            <h4 style="color: var(--primary-color);">🎵 MUTV Playlist (182 músicas)</h4>
             <div class="playlist-container" id="playlistContainer"></div>
         </div>
     </div>
@@ -316,27 +315,192 @@
     </div>
 
     <script>
-        // ==================== FOTOS DE SAUDAÇÃO ====================
-        const fotosSaudacao = {
-            bomdia: ["bomdia1.jpeg", "bomdia2.png", "bomdia3.jpeg"],
-            boatarde: ["targif.gif", "tarfoto.jpeg", "tarvideo.mp4"],
-            boanoite: ["bnoiteg1.gif", "bnoitefoto.jpeg", "bnoite2.gif"]
-        };
-        
-        // ==================== PLAYLIST COMPLETA ====================
+        // ==================== PLAYLIST COMPLETA (182 MÚSICAS) ====================
         const musicas = [
-            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha", duration: "03:30" },
-            { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite", duration: "03:30" },
-            { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos", duration: "03:30" },
-            { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde", duration: "03:30" },
-            { id: 5, title: "I Love You", artist: "Jim Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", periodo: "noite", duration: "03:30" }
+            { "id": 1, "title": "Flavio Venturini Feat Jota Quest", "artist": "Flavio Venturini & Jota Quest", "src": "Flavio_Venturini_Jota_Quest_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 2, "title": "Me Ensina Me Ensina a Escreve", "artist": "Osvaldo Montenegro", "src": "Me_Ensina_Me_Ensina_a_Escrever_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 3, "title": "Someone Like You", "artist": "Adele", "src": "Adele_Someone_Like_You_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 4, "title": "Esquadros", "artist": "Adriana Calcanhotto", "src": "Adriana_Calcanhotto_Esquadros.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 5, "title": "I Love You", "artist": "Jim Diamond", "src": "Jim_Diamond_Remember_I_Love_You_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 6, "title": "Forever Young", "artist": "Alphaville", "src": "Alphaville_Forever_Young_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 7, "title": "Onde Deus Possa Me Ouvir", "artist": "Ariane Villa Lobos", "src": "Ariane_Villa_Lobos_Onde_Deus_Possa_Me_Ouvir_17.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 8, "title": "What's Up", "artist": "Banda Rock Beats", "src": "Banda_Rock_Beats_What_s_Up_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 9, "title": "More Than A Woman", "artist": "Bee Gees", "src": "Bee_Gees_More_Than_A_Woman_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 10, "title": "Janaína", "artist": "Biquini Cavadão", "src": "Biquini_Cavadao_Jana_na_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 11, "title": "Jura Secreta Revelação", "artist": "Fagner & Zé Ramalho", "src": "Fagner_Z_Ramalho_Jura_Secreta_Revelacao_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 12, "title": "Noite do Prazer", "artist": "Cláudio Zolli", "src": "Brylho_Noite_do_Prazer_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 13, "title": "Fé", "artist": "Caetano Veloso & Maria Bethânia", "src": "Caetano_Veloso_Maria_Bethania.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 14, "title": "Codinome Beija-Flor", "artist": "Cazuza", "src": "Cazuza_Codinome_Beija_Flor.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 15, "title": "Só os Loucos Sabem", "artist": "Charlie Brown Jr.", "src": "Charlie_Brown_Jr_So_os_loucos_sabem_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 16, "title": "Charme do Mundo", "artist": "Marina Lima", "src": "Marina_Lima_Charme_do_Mundo_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 17, "title": "Cheia de Charme", "artist": "Guilherme Arantes", "src": "Guilherme_Arantes_Cheia_de_Charme_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 18, "title": "Sailing", "artist": "Christopher Cross", "src": "Christopher_Cross_Sailing_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 19, "title": "Poeira No Vento", "artist": "Chrystian & Ralf", "src": "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 20, "title": "Easy", "artist": "Commodores", "src": "Commodores_Easy_6.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 21, "title": "Nem Pensar", "artist": "Kleiton & Kledir", "src": "Kleiton_Kledir_nem_pensar_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 22, "title": "Corre Pro Meu Mar", "artist": "Maneva", "src": "Corre_Pro_Meu_Mar_Radio_Edit_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 23, "title": "Time After Time", "artist": "Cyndi Lauper", "src": "Cyndi_Lauper_Time_After_Time_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 24, "title": "Você Sempre Será", "artist": "DINO & Banda Malta", "src": "DINO_Feat_Banda_Malta_Voc_Sempre_Ser_DVD_Barzim_de_Rock.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 25, "title": "Casinha Branca", "artist": "DINO & Renato Vianna", "src": "DINO_feat_Renato_Vianna_Casinha_Branca_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 26, "title": "Send It Back", "artist": "Don West", "src": "Don_West_Send_It_Back_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 27, "title": "Thank You", "artist": "Dido", "src": "Dido_Thank_You_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 28, "title": "Ah! Como eu Amei", "artist": "Alexandre Pires", "src": "Ah_Como_Eu_Amei_Alexandre_Pires_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 29, "title": "Everytime You Go Away", "artist": "Dino Fonseca", "src": "Dino_Fonseca_Everytime_You_Go_Away_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 30, "title": "Correnteza", "artist": "Djavan", "src": "Djavan_Correnteza.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 31, "title": "Pensando Nela", "artist": "Dom Beto", "src": "Dom_Beto_Pensando_Nela_2.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 32, "title": "Hotel California", "artist": "Eagles", "src": "Eagles_Hotel_California_12.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 33, "title": "Sailing", "artist": "Emmerson Nogueira", "src": "Emmerson_Nogueira_Sailing_13.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 34, "title": "Encostar na Tua", "artist": "Anavitória", "src": "Anavitória_Encostar_na_Tua.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 35, "title": "Somos Quem Podemos Ser", "artist": "Engenheiros Do Hawaii", "src": "Engenheiros_Do_Hawaii_Somos_Quem_Podemos_Ser_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 36, "title": "Entre o Céu e o Mar", "artist": "Elba Ramalho", "src": "Elba_Ramalho_Entre_o_Ceu_e_o_Mar.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 37, "title": "Epitáfio", "artist": "Titãs", "src": "Titas_Epitafio_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 38, "title": "Espumas ao Vento", "artist": "Fagner", "src": "Fagner_Espumas_ao_Vento.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 39, "title": "Esquece e Vem", "artist": "Nico Rezende", "src": "Nico_Rezende_Esquece_e_Vem.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 40, "title": "Só pro seu prazer", "artist": "Heróis da Resistência", "src": "Herois_da_Resistencia_So_pro_seu_prazer.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 41, "title": "Skyline Pigeon", "artist": "Elton John", "src": "Elton_John_Skyline_Pigeon_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 42, "title": "Clube da Esquina", "artist": "Flávio Venturini", "src": "Flavio_Venturini_Clube_da_Esquina.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 43, "title": "Noites com Sol", "artist": "Flávio Venturini & Vanessa da Mata", "src": "Flavio_Venturini_Vanessa_da_Mata_Noites_com_Sol.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 44, "title": "I Like Chopin", "artist": "Gazebo", "src": "Gazebo_I_Like_Chopin_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 45, "title": "I Was Born To Love You", "artist": "Freddie Mercury", "src": "Freddie_Mercury_I_Was_Born_To_Love_You_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 46, "title": "Amado", "artist": "Gupe", "src": "Gupe_Amado_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 47, "title": "Careless Whisper", "artist": "George Michael", "src": "George_Michael_Careless_Whisper_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 48, "title": "Dia Branco", "artist": "Geraldo Azevedo", "src": "Geraldo_Azevedo_Dia_Branco.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 49, "title": "Dona Da Minha Cabeça", "artist": "Geraldo Azevedo", "src": "Geraldo_Azevedo_Dona_da_Minha_Cabeca_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 50, "title": "A Noite", "artist": "Gusttavo Lima", "src": "Gusttavo_Lima_A_Noite_67k.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 51, "title": "I Don't Want To", "artist": "Toni Braxton", "src": "I_Don_t_Want_To_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 52, "title": "Ai, Ai, Ai, Ai", "artist": "Ivan Lins", "src": "Ivan_Lins_Ai_Ai_Ai_Ai_Ai.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 53, "title": "Vitoriosa", "artist": "Ivan Lins", "src": "Ivan_Lins_Vitoriosa_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 54, "title": "Ah Como Eu Amei", "artist": "Ivete Sangalo", "src": "Ivete_Sangalo_Ah_Como_Eu_Amei_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 55, "title": "I'm Yours", "artist": "Jason Mraz", "src": "Jason_Mraz_I_m_Yours_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 56, "title": "Million Miles", "artist": "Jason Mraz", "src": "Jason_Mraz_Million_Miles_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 57, "title": "Papel Machê", "artist": "João Bosco", "src": "Joao_Bosco_Papel_Mache.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 58, "title": "P.D.A.", "artist": "John Legend", "src": "John_Legend_P_D_A_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 59, "title": "One", "artist": "Banda Rock Beats", "src": "Banda_Rock_Beats_One_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 60, "title": "Homem Aranha", "artist": "Jorge Vercilo", "src": "Jorge_Vercilo_Homem_Aranha_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 61, "title": "Dentro de um Abraço", "artist": "Jota Quest", "src": "Jota_Quest_Dentro_de_um_Abraco_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 62, "title": "Everybody's Changing", "artist": "Keane", "src": "Keane_Everybody_s_Changing_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 63, "title": "Born Again", "artist": "Lisa", "src": "LISA_Born_Again_feat_Doja_Cat_RAYE_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 64, "title": "Die With A Smile", "artist": "Lady Gaga & Bruno Mars", "src": "Lady_Gaga_Bruno_Mars_Die_With_A_Smile_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 65, "title": "Lanterna dos Afogados", "artist": "Paralamas", "src": "Lanterna_Dos_Afogados_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 66, "title": "Let It Be Music", "artist": "Travel Love Friends", "src": "Let_It_Be_Music_Travel_Love_Friends_20.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 67, "title": "Muito Estranho", "artist": "Liga Joe", "src": "Liga_Joe_Muito_Estranho_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 68, "title": "Mordida de Amor", "artist": "Yahoo", "src": "Yahoo_Mordida_de_Amor_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 69, "title": "Toda Forma de Amor", "artist": "Lulu Santos", "src": "Lulu_Santos_Toda_Forma_de_Amor_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 70, "title": "For Your Babies", "artist": "Simply Red", "src": "Simply_Red_For_Your_Babies_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 71, "title": "Reluz", "artist": "Marcos Sabino", "src": "Marcos_Sabino_Reluz_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 72, "title": "Meu Mundo e Nada Mais", "artist": "Guilherme Arantes", "src": "Guilherme_Arantes_Meu_Mundo_e_Nada_Mais_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 73, "title": "Balada de Gisberta", "artist": "Maria Bethânia", "src": "Maria_Bethania_Balada_de_Gisberta_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 74, "title": "Pra Rua me Levar", "artist": "Maria Bethânia & Ana Carolina", "src": "Maria_Bethania_Ana_Carolina_Pra_Rua_Me_Levar_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 75, "title": "Just Another Day", "artist": "Maurício Manieri feat. Jon Secada", "src": "Mauricio_Manieri_feat_Jon_Secada_Just_Another_Day_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 76, "title": "I've Had The Time Of My Life", "artist": "Mauricio Manieri", "src": "Mauricio_Manieri_I_ve_Had_The_Time_Of_My_Life_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 77, "title": "Billie Jean", "artist": "Michael Jackson", "src": "Michael_Jackson_Billie_Jean_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 78, "title": "The Girl Is Mine", "artist": "Michael Jackson", "src": "Michael_Jackson_The_Girl_Is_Mine_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 79, "title": "Mina do Condomínio", "artist": "Seu Jorge", "src": "Mina_do_Condominio_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 80, "title": "My Sweet Lord", "artist": "George Harrison", "src": "George_Harrison_My_Sweet_Lord_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 81, "title": "Sorri Sou Rei", "artist": "Natiruts", "src": "Natiruts_Sorri_Sou_Rei_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 82, "title": "Lotta Love", "artist": "Nicolette Larson", "src": "Nicolette_Larson_Lotta_Love_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 83, "title": "O Barquinho", "artist": "Naira Leão", "src": "Naira_Leao_O_Barquinho.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 84, "title": "Paisagem da Janela", "artist": "Lô Borges", "src": "Lo_Borges_Paisagem_da_Janela_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 85, "title": "Palco", "artist": "Gilberto Gil & João Gomes", "src": "Gilberto_Gil_Joao_Gomes_Palco_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 86, "title": "Palavras", "artist": "Cassia Eller", "src": "Cassia_Eller_Palavras_Ao_Vento.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 87, "title": "Palpite", "artist": "Vanessa Rangel", "src": "Vanessa_Rangel_Palpite_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 88, "title": "Let Her Go", "artist": "Passenger", "src": "Passenger_Let_Her_Go_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 89, "title": "Mil e Uma Noites de Amor", "artist": "Pepeu Gomes", "src": "Pepeu_Gomes_Mil_e_uma_noites_de_amor_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 90, "title": "Baby Come Back", "artist": "Player", "src": "Player_Baby_Come_Back_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 91, "title": "Lady Lady Lady", "artist": "Joe Esposito", "src": "Joe_Esposito_Lady_Lady_Lady_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 92, "title": "Primavera", "artist": "Cassiano", "src": "Cassiano_Primavera_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 93, "title": "Calm Down", "artist": "Rema & Selena Gomez", "src": "Rema_Selena_Gomez_Calm_Down_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 94, "title": "Coração Pirata", "artist": "Ricky Vallen", "src": "Ricky_Vallen_Coracao_Pirata_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 95, "title": "Casinha Branca", "artist": "Roberta Campos", "src": "Roberta_Campos_Casinha_Branca.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 96, "title": "Furdúncio", "artist": "Roberto Carlos", "src": "Roberto_Carlos_Furduncio.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 97, "title": "Everytime You Go Away", "artist": "Paul Young", "src": "Paul_Young_Everytime_You_Go_Away_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 98, "title": "Róberta Sá", "artist": "Róberta Sá", "src": "Roberta_Sa_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 99, "title": "Sábado à Noite", "artist": "Seu Jorge", "src": "Seu_Jorge_Sabado_a_Noite.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 100, "title": "Samba de Verão", "artist": "Luiza Sonza", "src": "Luiza_Sonza_Samba_de_Verão.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 101, "title": "Sexual Healing", "artist": "Marvin Gaye", "src": "Marvin_Gaye_Sexual_Healing_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 102, "title": "Shake You Down", "artist": "Unknown", "src": "Shake_You_Down_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 103, "title": "Simples Desejo", "artist": "Luciana Mello", "src": "Luciana_Mello_Simples_Desejo_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 104, "title": "Holding Back The Years", "artist": "Simply Red", "src": "Simply_Red_Holding_Back_The_Years_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 105, "title": "Stars", "artist": "Simply Red", "src": "Simply_Red_Stars_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 106, "title": "Sunrise", "artist": "Simply Red", "src": "Simply_Red_Sunrise_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 107, "title": "Queixa", "artist": "Caetano Veloso", "src": "Caetano_Veloso_Queixa_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 108, "title": "Garota Nacional", "artist": "Skank", "src": "Skank_Garota_Nacional_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 109, "title": "Resposta", "artist": "Skank", "src": "Skank_Resposta.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 110, "title": "Vamos Fugir", "artist": "Skank", "src": "Skank_Vamos_Fugir_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 111, "title": "Sorte", "artist": "Caetano Veloso & Gal Costa", "src": "Caetano_Veloso_Gal_Costa_Sorte.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 112, "title": "Stand by Me", "artist": "Ben E. King", "src": "Ben_E_King_Stand_by_Me_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 113, "title": "Fields of Gold", "artist": "Sting", "src": "Sting_Fields_Of_Gold_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 114, "title": "Sultans of Swing", "artist": "Dire Straits", "src": "Dire_Straits_Sultans_of_Swing_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 115, "title": "Remember The Time", "artist": "A Cha", "src": "A_cha_Remember_The_Time_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 116, "title": "Rua Ramalhete", "artist": "Tavito", "src": "Tavito_Rua_Ramalhete.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 117, "title": "Have You Ever Really Loved A Woman", "artist": "Bryan Adams", "src": "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 118, "title": "Get Lucky", "artist": "Daft Punk", "src": "Daft_Punk_Get_Lucky_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 119, "title": "Várias Queixas", "artist": "Gilsons", "src": "Gilsons_Varias_Queixas_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 120, "title": "Evidências", "artist": "Maneva", "src": "Maneva_Evidencias_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 121, "title": "Oração ao Tempo", "artist": "Maria Gadú", "src": "Maria_Gadu_Oracao_ao_Tempo_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 122, "title": "Classic", "artist": "Adrian Gurvitz", "src": "Adrian_Gurvitz_Classic_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 123, "title": "Take On Me", "artist": "a-ha", "src": "a_ha_Take_On_Me_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 124, "title": "Samba de Verão", "artist": "Various", "src": "Samba_de_Verão_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 125, "title": "Não Vá Embora", "artist": "Marisa Montes", "src": "Marisa_Montes_nao_va_embora.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 126, "title": "My Love My Love", "artist": "Little Texas", "src": "Little_Texas_My_Love_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 127, "title": "Um Amor Puro", "artist": "Djavan", "src": "Djavan_Um_Amor_Puro_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 128, "title": "Pra Quem Tem Fé", "artist": "Falcão", "src": "Falcao_pra_quem_tem_fe.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 129, "title": "Linha Do Equador", "artist": "Melim", "src": "Melim_Linha_Do_Equador_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 130, "title": "Na Estrada", "artist": "Marisa Montes", "src": "Marisa_Montes_Na_Estrada_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 131, "title": "Toada", "artist": "Boca Livre", "src": "Boca_Livre_Toada_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 132, "title": "For Whom The Bell Tolls", "artist": "Bee Gees", "src": "Bee_Gees_For_Whom_The_Bell_Tolls_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 133, "title": "Levitating", "artist": "Dua Lipa", "src": "Dua_Lipa_Levitating_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 134, "title": "Eu te Devoro", "artist": "Djavan", "src": "Djavan_Eu_Te_Devoro_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 135, "title": "Knockin On Heaven s Door", "artist": "Guns N Roses", "src": "Guns_N_Roses_Knockin_On_Heaven_s_Door_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 136, "title": "Another Day In Paradise", "artist": "Ivan Barreto", "src": "Ivan_Barreto_Another_Day_In_Paradise_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 137, "title": "Cherish", "artist": "Kool & The Gang", "src": "Kool_The_Gang_Cherish_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 138, "title": "Need You Now", "artist": "Lady Antebellum", "src": "Lady_Antebellum_Need_You_Now_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 139, "title": "Beautiful", "artist": "Marillion", "src": "Marillion_Beautiful_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 140, "title": "Eva", "artist": "Radio Taxi", "src": "Radio_Taxi_Eva_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 141, "title": "Vila do Sossego", "artist": "Chico Chico", "src": "Chico_Chico_Vila_do_Sossego_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 142, "title": "Quanto Amore Sei", "artist": "Eros Ramazzotti", "src": "Eros_Ramazzotti_Quanto_Amore_Sei_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 143, "title": "Legião Urbana", "artist": "Giz", "src": "Giz_Legiao_Urbana_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 144, "title": "Velha Infância", "artist": "Tribalistas", "src": "Tribalistas_Velha_Infancia_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 145, "title": "Fogo", "artist": "Capital Inicial", "src": "Capital_Inicial_Fogo_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 146, "title": "Knife", "artist": "Rockwell", "src": "Rockwell_Knife_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 147, "title": "Linger", "artist": "The Cranberries", "src": "The_Cranberries_Linger_mutv.m4a", "periodo": "noite", "duration": "03:30" },
+            { "id": 148, "title": "Garoto de Aluguel", "artist": "Zé Ramalho", "src": "Ze_Ramalho_Garoto_de_Aluguel_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 149, "title": "Torn", "artist": "Natalie Imbruglia", "src": "Natalie_Imbruglia_Torn_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 150, "title": "Na Estrada", "artist": "Cidade Negra", "src": "Cidade_Negra_Na_Estrada_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 151, "title": "A Namorada", "artist": "Carlinhos Brown", "src": "Carlinhos_Brown_A_Namorada_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 152, "title": "Ainda Bem Que Chegou", "artist": "Vitor Kley", "src": "Vitor_Kley_Ainda_Bem_Que_Chegou_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 153, "title": "A Loba", "artist": "Alcione", "src": "Alcione_A_Loba_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 154, "title": "Verdade Chinesa", "artist": "Emilio Santiago", "src": "Emilio_Santiago_Verdade_Chinesa_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 155, "title": "Problemas", "artist": "Ana Carolina", "src": "Ana_Carolina_Problemas_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 156, "title": "Andança", "artist": "Luana Carvalho e Golden Boys", "src": "Luana_Carvalho_Golden_Boys_Andanca_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 157, "title": "Faz Uma Loucura Por Mim", "artist": "Alcione", "src": "Alcione_Faz_Uma_Loucura_Por_Mim_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 158, "title": "Coisas da Vida", "artist": "Milton Nascimento", "src": "Milton_Nascimento_Coisas_da_Vida_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 159, "title": "Saigon", "artist": "Emilio Santiago", "src": "Emilio_Santiago_Saigon_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 160, "title": "Intriga da Oposição", "artist": "Belo", "src": "Belo_Intriga_Da_Oposicao_mutv.m4a", "periodo": "tarde", "duration": "03:30" },
+            { "id": 161, "title": "Tô Voltando", "artist": "Simone", "src": "Simone_To_Voltando_mutv.m4a", "periodo": "manha", "duration": "03:30" },
+            { "id": 162, "title": "Making Love Out Of Nothing At All", "artist": "Air Supply", "src": "Air_Supply_Making_Love_Out_Of_Nothing_At_All_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 163, "title": "Quem dera eu", "artist": "Ana Carolina", "src": "Ana_Carolina_Quem_dera_eu_Seu_Z_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 164, "title": "Bed Of Roses", "artist": "Bon Jovi", "src": "Bon_Jovi_Bed_Of_Roses_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 165, "title": "Coisas Que Eu Sei", "artist": "Danni Carlos", "src": "Danni_Carlos_Coisas_Que_Eu_Sei_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 166, "title": "Sina", "artist": "Djavan", "src": "Djavan_Sina_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 167, "title": "Dois Beijinhos", "artist": "Dois Beijinhos", "src": "Dois_Beijinhos_Dois_Beijinhos_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 168, "title": "High and Low", "artist": "Executive Funk", "src": "Executive_Funk_ating_High_and_Low_Remaster_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 169, "title": "Diga Sim Pra Mim", "artist": "Isabella Taviani", "src": "Isabella_Taviani_Diga_Sim_Pra_Mim_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 170, "title": "A Lua Que Eu Te Dei", "artist": "Ivete Sangalo", "src": "Ivete_Sangalo_A_Lua_Q_Eu_T_Dei_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 171, "title": "Lágrimas e Chuva", "artist": "Paula Toller", "src": "Paula_Toller_Lagrimas_e_Chuva_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 172, "title": "Apenas Mais uma de Amor", "artist": "Lulu Santos", "src": "Lulu_Santos_Apenas_Mais_uma_de_Amor_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 173, "title": "Cara Valente", "artist": "Maria Rita", "src": "Maria_Rita_Cara_Valente_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 174, "title": "Não Mexe Comigo", "artist": "Alcione", "src": "Alcione_nao_mexe_comigo_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 175, "title": "N", "artist": "Nando Reis e Anavitória", "src": "Nando_Reis_e_Anavitória_N_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 176, "title": "Night Fever", "artist": "Bee Gees", "src": "Bee_Gees_Night_Fever_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 177, "title": "Onde Anda Você", "artist": "Unknown", "src": "Onde_Anda_Voce_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 178, "title": "Back for Good", "artist": "Take That", "src": "Take_That_Back_for_Good_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 179, "title": "Touchy!", "artist": "a-ha", "src": "a_ha_Touchy_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 180, "title": "Woman in Love", "artist": "Unknown", "src": "Woman_in_Love_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 181, "title": "Electric Loco's Hits", "artist": "Electric Loco", "src": "Electric_Loco_s_Hits_mutv.m4a", "periodo": "todos", "duration": "03:30" },
+            { "id": 182, "title": "How Can I Go On", "artist": "Freddie Mercury & Montserrat Caballé", "src": "Freddie_Mercury_Montserrat_Caballe_How_Can_I_Go_On_mutv.m4a", "periodo": "todos", "duration": "03:30" }
         ];
-        
-        // Adicionar mais músicas até 196 (mantendo as originais)
-        for(let i = musicas.length + 1; i <= 196; i++) {
-            musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: "todos", duration: "03:30" });
-        }
-        
+
         // ==================== VÍDEOS DOS ANÚNCIOS ====================
         const videosExtra = [
             { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
@@ -387,7 +551,6 @@
         let isAdPlaying = false;
         let musicPlayedCount = 0;
         let adsEnabled = true;
-        let adInterval = CONFIG.adsInterval;
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         let musicPausedTime = 0;
@@ -410,9 +573,14 @@
         
         function getFotoSaudacao() {
             const periodo = getPeriodoAtual();
-            const fotos = fotosSaudacao[periodo];
-            if (!fotos || fotos.length === 0) return null;
-            return fotos[saudacaoIndex % fotos.length];
+            const fotos = {
+                bomdia: ["bomdia1.jpeg", "bomdia2.png", "bomdia3.jpeg"],
+                boatarde: ["targif.gif", "tarfoto.jpeg", "tarvideo.mp4"],
+                boanoite: ["bnoiteg1.gif", "bnoitefoto.jpeg", "bnoite2.gif"]
+            };
+            const fotosArray = fotos[periodo];
+            if (!fotosArray || fotosArray.length === 0) return null;
+            return fotosArray[saudacaoIndex % fotosArray.length];
         }
         
         function alternarVideoPrincipal() {
@@ -598,7 +766,7 @@
             isPlaying ? pauseMusic() : playMusic(); 
         }
         
-        // ==================== FUNÇÕES DE ANÚNCIO CORRIGIDAS (BASEADO NO EXEMPLO QUE FUNCIONA) ====================
+        // ==================== FUNÇÕES DE ANÚNCIO CORRIGIDAS ====================
         function updateAdTimer() {
             if (!adsEnabled) { 
                 const adTimerEl = document.getElementById('adTimer');
