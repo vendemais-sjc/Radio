@@ -50,8 +50,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 100px;
-            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+            height: 90px;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
             z-index: 2;
             pointer-events: none;
         }
@@ -68,8 +68,8 @@
             white-space: nowrap;
             color: #fff;
             font-weight: 800;
-            font-size: 0.9rem;
-            padding: 10px 0;
+            font-size: 0.85rem;
+            padding: 8px 0;
             z-index: 10;
             border-bottom: 2px solid var(--primary-color);
             pointer-events: none;
@@ -86,36 +86,35 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* Container dos controles de música - linha única */
+        /* Barra de controles - ocupa toda a largura */
         .music-controls-bar {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
+            bottom: 15px;
+            left: 10px;
+            right: 10px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             z-index: 20;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            padding: 8px 16px;
-            border-radius: 50px;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(12px);
+            padding: 6px 12px;
+            border-radius: 40px;
             border: 1px solid rgba(255,255,255,0.2);
-            max-width: 450px;
         }
 
         .buttons-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .tv-control-btn {
             background: rgba(0,0,0,0.6);
             border: none;
             color: rgba(255,255,255,0.9);
-            font-size: 1rem;
-            width: 36px;
-            height: 36px;
+            font-size: 0.9rem;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s;
@@ -138,35 +137,30 @@
         .current-track-info {
             flex: 1;
             background: rgba(0,0,0,0.4);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 30px;
             font-size: 0.7rem;
             color: #fff;
-            border-left: 3px solid var(--primary-color);
+            border-left: 2px solid var(--primary-color);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* Botão tela cheia separado */
+        /* Botão tela cheia integrado na mesma barra */
         .fullscreen-btn {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            font-size: 1.1rem;
-            width: 42px;
-            height: 42px;
+            background: rgba(0,0,0,0.6);
+            border: none;
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
-            z-index: 20;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
         }
 
         .fullscreen-btn:hover {
@@ -174,29 +168,28 @@
             color: #000;
         }
 
-        /* Botão menu */
+        /* Botão menu com 3 pontinhos (sem círculo aparente) */
         .menu-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
+            top: 12px;
+            right: 12px;
+            background: transparent;
             color: white;
-            border: 1px solid var(--primary-color);
-            font-size: 1.1rem;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
+            border: none;
+            font-size: 1.4rem;
             cursor: pointer;
             z-index: 15;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 6px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
         }
 
         .menu-btn:hover {
-            background: var(--primary-color);
-            color: #000;
+            opacity: 1;
+            color: var(--primary-color);
         }
 
         /* Drawer */
@@ -230,14 +223,14 @@
 
         .drawer-header h3 {
             color: var(--primary-color);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .close-drawer {
             background: none;
             border: none;
             color: white;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             cursor: pointer;
         }
 
@@ -249,7 +242,7 @@
         .videos-section h4 {
             color: var(--primary-color);
             margin-bottom: 10px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .video-list {
@@ -281,7 +274,7 @@
 
         .video-name {
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             flex: 1;
         }
 
@@ -290,7 +283,7 @@
             border: none;
             color: #aaa;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             padding: 4px;
         }
 
@@ -308,7 +301,7 @@
             margin-top: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -325,7 +318,7 @@
         .music-section h4 {
             color: var(--primary-color);
             margin-bottom: 10px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .playlist-container {
@@ -351,8 +344,8 @@
         }
 
         .music-number {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background: var(--primary-color);
             color: #000;
@@ -360,7 +353,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
         }
 
         .playlist-info {
@@ -368,12 +361,12 @@
         }
 
         .playlist-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: white;
         }
 
         .playlist-artist {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #aaa;
         }
 
@@ -407,6 +400,7 @@
         .modal-content h3 {
             color: var(--primary-color);
             margin-bottom: 15px;
+            font-size: 1rem;
         }
 
         .modal-content input {
@@ -417,6 +411,7 @@
             border-radius: 25px;
             color: white;
             margin-bottom: 12px;
+            font-size: 0.85rem;
         }
 
         .modal-buttons {
@@ -430,6 +425,7 @@
             border-radius: 25px;
             cursor: pointer;
             border: none;
+            font-size: 0.8rem;
         }
 
         .modal-buttons .confirm {
@@ -445,17 +441,17 @@
 
         .notification {
             position: fixed;
-            bottom: 90px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: rgba(0,0,0,0.85);
             color: #fff;
-            padding: 8px 20px;
+            padding: 6px 18px;
             border-radius: 50px;
             z-index: 2000;
             transition: transform 0.3s;
             border-left: 3px solid var(--primary-color);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             white-space: nowrap;
         }
 
@@ -464,9 +460,10 @@
         }
 
         @media (min-width: 768px) {
-            .tv-control-btn { width: 40px; height: 40px; font-size: 1.1rem; }
-            .current-track-info { font-size: 0.85rem; }
-            .top-ticker { font-size: 1rem; }
+            .tv-control-btn { width: 36px; height: 36px; font-size: 1rem; }
+            .fullscreen-btn { width: 36px; height: 36px; font-size: 1rem; }
+            .current-track-info { font-size: 0.8rem; }
+            .top-ticker { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -479,9 +476,10 @@
             <span><i class="fas fa-headphones-alt fa-spin"></i> MUTV - A MELHOR PLAYLIST • MÚSICAS QUE EMBALAM SEU DIA • INFORMAÇÕES: 12 98846-1978 • SIGA NAS REDES •</span>
         </div>
         
-        <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+        <!-- Botão menu com 3 pontinhos -->
+        <button class="menu-btn" id="menuBtn"><i class="fas fa-ellipsis-v"></i></button>
         
-        <!-- Barra única com botões e nome da música -->
+        <!-- Barra única que vai de ponta a ponta -->
         <div class="music-controls-bar">
             <div class="buttons-group">
                 <button class="tv-control-btn" id="tvPrevBtn"><i class="fas fa-step-backward"></i></button>
@@ -492,11 +490,10 @@
             <div class="current-track-info" id="currentTrackInfo">
                 🎵 Clique no play
             </div>
+            <button class="fullscreen-btn" id="fullscreenBtn">
+                <i class="fas fa-expand"></i>
+            </button>
         </div>
-        
-        <button class="fullscreen-btn" id="fullscreenBtn">
-            <i class="fas fa-expand"></i>
-        </button>
     </div>
 
     <div class="drawer" id="drawer">
@@ -548,7 +545,7 @@
         
         // ==================== PLAYLIST DE MÚSICAS ====================
         const musicas = [
-                  { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+                   { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -745,7 +742,7 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
-   
+  
         ];
         
         // ==================== ELEMENTOS ====================
@@ -837,6 +834,7 @@
         }
         
         function escapeHtml(str) {
+            if(!str) return '';
             return str.replace(/[&<>]/g, function(m) {
                 if(m === '&') return '&amp;';
                 if(m === '<') return '&lt;';
@@ -845,7 +843,7 @@
             });
         }
         
-        // ==================== FUNÇÕES DA MÚSICA (CORRIGIDAS) ====================
+        // ==================== FUNÇÕES DA MÚSICA ====================
         function renderPlaylist() {
             let html = '';
             musicas.forEach((m, idx) => {
@@ -881,7 +879,6 @@
         
         function playMusic() {
             const track = musicas[currentMusicIndex];
-            // Garantir que o src está correto
             if(musicPlayer.src !== track.src) {
                 musicPlayer.src = track.src;
                 musicPlayer.load();
@@ -896,7 +893,7 @@
                 })
                 .catch(e => {
                     console.log('Erro play:', e);
-                    showNotification('⚠️ Erro ao tocar música. Verifique o arquivo.');
+                    showNotification('⚠️ Erro ao tocar música');
                     isPlaying = false;
                     playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 });
@@ -915,7 +912,6 @@
             if(isPlaying) {
                 pauseMusic();
             } else {
-                // Se não tem src carregado ou é diferente, recarrega
                 const track = musicas[currentMusicIndex];
                 if(!musicPlayer.src || musicPlayer.src !== track.src) {
                     musicPlayer.src = track.src;
@@ -1059,7 +1055,7 @@
         document.getElementById('menuBtn').addEventListener('click', openDrawer);
         document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
         
-        // ==================== TEMA (duplo clique no fullscreen) ====================
+        // ==================== TEMA ====================
         const themes = [
             { name: 'theme-red', color: '#e63946' },
             { name: 'theme-blue', color: '#00a8ff' },
@@ -1085,7 +1081,6 @@
             renderVideoList();
             renderPlaylist();
             
-            // Selecionar música aleatória inicial
             const randomIndex = Math.floor(Math.random() * musicas.length);
             currentMusicIndex = randomIndex;
             carregarMusica(currentMusicIndex);
@@ -1093,14 +1088,13 @@
             
             iniciarAlternanciaVideos();
             
-            showNotification('🎬 MUTV - Clique no play para ouvir música');
+            showNotification('🎬 MUTV - Clique no play');
         });
         
         mainVideo.addEventListener('error', () => {
             alternarVideo();
         });
         
-        // Quando a música terminar, tocar próxima
         musicPlayer.addEventListener('ended', () => {
             if(isPlaying) {
                 nextTrack();
