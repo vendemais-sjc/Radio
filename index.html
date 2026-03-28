@@ -33,9 +33,9 @@
         /* CONTÊINER PRINCIPAL COM PROPORÇÃO 16:9 */
         .tv-app {
             width: 100%;
-            max-width: 1920px;     /* limite máximo da largura */
+            max-width: 1920px;
             max-height: 100vh;
-            aspect-ratio: 16 / 9;  /* 1920x1080 = 16:9 */
+            aspect-ratio: 16 / 9;
             background: #000;
             position: relative;
             overflow: hidden;
@@ -63,7 +63,7 @@
             pointer-events: none;
         }
 
-        /* Letreiro superior */
+        /* LETREIRO MAIOR */
         .top-ticker {
             position: absolute;
             top: 0;
@@ -74,18 +74,18 @@
             overflow: hidden;
             white-space: nowrap;
             color: #fff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            padding: 6px 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 10px 0;
             z-index: 10;
-            border-bottom: 1px solid var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
             pointer-events: none;
         }
 
         .top-ticker span {
             display: inline-block;
             padding-left: 100%;
-            animation: ticker-scroll 25s linear infinite;
+            animation: ticker-scroll 20s linear infinite;
         }
 
         @keyframes ticker-scroll {
@@ -93,120 +93,112 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* Barra de controles */
+        /* BARRA DE CONTROLES – FUNDO REMOVIDO, BOTÕES LIVRES */
         .music-controls-bar {
             position: absolute;
-            bottom: 12px;
-            left: 12px;
-            right: 12px;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             z-index: 20;
-            background: rgba(0,0,0,0.35);
-            backdrop-filter: blur(8px);
-            padding: 4px 10px;
-            border-radius: 30px;
-            border: none;
+            background: none;  /* fundo transparente */
+            padding: 0;
+            border-radius: 0;
         }
 
         .buttons-group {
             display: flex;
-            gap: 4px;
+            gap: 8px;
         }
 
+        /* BOTÕES SEM FUNDO, APENAS ÍCONES */
         .tv-control-btn {
-            background: rgba(0,0,0,0.4);
+            background: transparent;
             border: none;
-            color: rgba(255,255,255,0.85);
-            font-size: 0.85rem;
-            width: 28px;
-            height: 28px;
-            border-radius: 0;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-shadow: 0 0 4px rgba(0,0,0,0.5);
         }
 
         .tv-control-btn:hover {
             transform: scale(1.1);
             color: var(--primary-color);
-            background: transparent;
         }
 
         .tv-control-btn.play-pause {
-            background: transparent;
             color: var(--primary-color);
-            font-size: 1rem;
-            width: 30px;
-        }
-
-        .tv-control-btn.play-pause:hover {
-            transform: scale(1.15);
-            color: white;
+            font-size: 1.4rem;
         }
 
         .current-track-info {
             flex: 1;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 0.65rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
             color: rgba(255,255,255,0.9);
-            border-left: 2px solid var(--primary-color);
+            border-left: 3px solid var(--primary-color);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
+        /* BOTÃO TELA CHEIA SEM FUNDO */
         .fullscreen-btn {
-            background: rgba(0,0,0,0.4);
+            background: transparent;
             border: none;
-            color: rgba(255,255,255,0.85);
-            font-size: 0.85rem;
-            width: 28px;
-            height: 28px;
-            border-radius: 0;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-shadow: 0 0 4px rgba(0,0,0,0.5);
         }
 
         .fullscreen-btn:hover {
             transform: scale(1.1);
             color: var(--primary-color);
-            background: transparent;
         }
 
+        /* MENU (3 PONTINHOS) – MANTIDO COM TRANSPARÊNCIA */
         .menu-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 12px;
+            right: 12px;
             background: transparent;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255,255,255,0.8);
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             cursor: pointer;
             z-index: 15;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4px;
-            opacity: 0.6;
-            transition: opacity 0.2s;
+            padding: 6px;
+            transition: all 0.2s;
         }
 
         .menu-btn:hover {
-            opacity: 1;
             color: var(--primary-color);
+            transform: scale(1.05);
         }
 
-        /* Drawer (menu lateral) */
+        /* DRAWER (MENU LATERAL) – MANTIDO */
         .drawer {
             position: fixed;
             top: 0;
@@ -471,32 +463,13 @@
             color: white;
         }
 
-        .notification {
-            position: fixed;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(0,0,0,0.75);
-            color: #fff;
-            padding: 5px 16px;
-            border-radius: 30px;
-            z-index: 2000;
-            transition: transform 0.3s;
-            border-left: 2px solid var(--primary-color);
-            font-size: 0.7rem;
-            white-space: nowrap;
-            backdrop-filter: blur(4px);
-        }
-
-        .notification.show {
-            transform: translateX(-50%) translateY(0);
-        }
+        /* NOTIFICAÇÃO REMOVIDA – NÃO HÁ MAIS .notification */
 
         @media (min-width: 768px) {
-            .tv-control-btn { width: 30px; height: 30px; font-size: 0.9rem; }
-            .fullscreen-btn { width: 30px; height: 30px; font-size: 0.9rem; }
-            .current-track-info { font-size: 0.7rem; }
-            .top-ticker { font-size: 0.85rem; padding: 7px 0; }
+            .tv-control-btn { width: 44px; height: 44px; font-size: 1.3rem; }
+            .fullscreen-btn { width: 44px; height: 44px; font-size: 1.3rem; }
+            .current-track-info { font-size: 0.85rem; }
+            .top-ticker { font-size: 1.2rem; padding: 12px 0; }
         }
     </style>
 </head>
@@ -560,7 +533,7 @@
     </div>
 
     <audio id="musicPlayer" preload="auto"></audio>
-    <div class="notification" id="notification"><span id="notificationText"></span></div>
+    <!-- NOTIFICAÇÃO REMOVIDA -->
 
     <script>
         // ==================== LISTA DE VÍDEOS ====================
@@ -837,30 +810,25 @@
         
         window.selecionarVideo = function(idx) {
             carregarVideo(idx);
-            showNotification(`🎬 Vídeo: ${videosList[idx].nome}`);
             closeDrawer();
         };
         
         window.removerVideo = function(idx) {
             if(videosList.length <= 1) {
-                showNotification('⚠️ Mantenha pelo menos 1 vídeo');
                 return;
             }
             videosList.splice(idx, 1);
             if(currentVideoIndex >= videosList.length) currentVideoIndex = 0;
             carregarVideo(currentVideoIndex);
             renderVideoList();
-            showNotification('🗑️ Vídeo removido');
         };
         
         function adicionarVideo(nome, caminho) {
             if(!nome.trim() || !caminho.trim()) {
-                showNotification('⚠️ Preencha nome e caminho');
                 return false;
             }
             videosList.push({ src: caminho.trim(), nome: nome.trim() });
             renderVideoList();
-            showNotification(`✅ Vídeo "${nome}" adicionado`);
             return true;
         }
         
@@ -920,11 +888,9 @@
                     isPlaying = true;
                     playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     renderPlaylist();
-                    showNotification(`🎵 Tocando: ${track.title}`);
                 })
                 .catch(e => {
                     console.log('Erro play:', e);
-                    showNotification('⚠️ Erro ao tocar música');
                     isPlaying = false;
                     playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 });
@@ -1023,16 +989,6 @@
         });
         
         // ==================== UI ====================
-        function showNotification(msg) {
-            const n = document.getElementById('notification');
-            const text = document.getElementById('notificationText');
-            if(text) text.innerText = msg;
-            if(n) {
-                n.classList.add('show');
-                setTimeout(() => n.classList.remove('show'), 2500);
-            }
-        }
-        
         function openDrawer() {
             document.getElementById('drawer').classList.add('open');
         }
@@ -1078,8 +1034,7 @@
         shuffleBtn.addEventListener('click', () => {
             shuffleActive = !shuffleActive;
             shuffleBtn.style.opacity = shuffleActive ? '1' : '0.7';
-            shuffleBtn.style.color = shuffleActive ? 'var(--primary-color)' : 'rgba(255,255,255,0.85)';
-            showNotification(shuffleActive ? '🔀 Aleatório ON' : '➡️ Sequencial');
+            shuffleBtn.style.color = shuffleActive ? 'var(--primary-color)' : 'rgba(255,255,255,0.9)';
         });
         
         fullscreenBtn.addEventListener('click', toggleFullscreen);
@@ -1097,7 +1052,6 @@
         function mudarTema() {
             currentTheme = (currentTheme + 1) % themes.length;
             document.body.className = themes[currentTheme].name;
-            showNotification(`🎨 Tema: ${themes[currentTheme].name.replace('theme-', '')}`);
         }
         fullscreenBtn.addEventListener('dblclick', mudarTema);
         
@@ -1118,8 +1072,6 @@
             atualizarInfoMusica();
             
             iniciarAlternanciaVideos();
-            
-            showNotification('🎬 MUTV - Clique no play');
         });
         
         mainVideo.addEventListener('error', () => {
