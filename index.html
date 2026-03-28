@@ -718,12 +718,71 @@
             .control-btn { width: 42px; height: 42px; font-size: 1.3rem; }
             .play-btn { width: 56px; height: 56px; font-size: 1.8rem; }
         }
+
+        /* Splash screen */
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        #splash.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #splash.display-none {
+            display: none;
+        }
+        .splash-content {
+            text-align: center;
+            color: #fff;
+        }
+        .splash-content i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.6; transform: scale(1); }
+        }
+        #tap-to-start {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            z-index: 10000;
+            cursor: pointer;
+            display: none;
+            animation: btnPulse 1.5s infinite;
+            white-space: nowrap;
+        }
+        @keyframes btnPulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.03); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
     </style>
 </head>
 <body class="theme-red">
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
-    <div id="splash" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000; display:flex; align-items:center; justify-content:center; z-index:9999; transition:opacity 0.5s;"><div style="text-align:center; color:#fff;"><i class="fas fa-headphones-alt" style="font-size:3rem; color:var(--primary-color); margin-bottom:1rem;"></i><h1>MUTV Playlist</h1><p>Carregando Mídias...</p></div></div>
-    <div id="tap-to-start" style="position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color:white; padding:12px 28px; border-radius:50px; font-weight:bold; font-size:1.1rem; z-index:10000; cursor:pointer; display:none; white-space:nowrap;"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
+    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p>Carregando Mídias...</p></div></div>
+    <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
 
     <div class="app">
         <video id="mainVideo" class="fullscreen-video" autoplay loop muted playsinline></video>
@@ -1041,6 +1100,9 @@
             { src: "chopp.mp4", nome: "Chopp" },
             { src: "Goldem (1).mp4", nome: "Goldem" }
         ];
+        // Fallback: se nenhum vídeo carregar, usar um vídeo de placeholder online (opcional)
+        // Adicione um vídeo de fallback local se desejar
+
         let currentVideoIndex = 0;
         let videoInterval = null;
         const mainVideo = document.getElementById('mainVideo');
@@ -1053,7 +1115,11 @@
             if (mainVideo && video.src) {
                 mainVideo.src = video.src;
                 mainVideo.load();
-                mainVideo.play().catch(e => console.log("erro vídeo:", e));
+                mainVideo.play().catch(e => {
+                    console.warn("Erro ao carregar vídeo:", e);
+                    // Tentar próximo vídeo após erro
+                    setTimeout(() => alternarVideo(), 3000);
+                });
             }
             renderVideoList();
         }
@@ -1108,7 +1174,7 @@
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m){ if (m==='&') return '&amp;'; if (m==='<') return '&lt;'; if (m==='>') return '&gt;'; return m;}); }
 
-        // ==================== PLAYER E ANÚNCIOS (PRIMEIRO CÓDIGO) ====================
+        // ==================== PLAYER E ANÚNCIOS ====================
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -1548,6 +1614,12 @@
             iniciarAlternanciaExtra();
             if (videosList.length) carregarVideo(0);
             iniciarAlternanciaVideos();
+            // Forçar remoção do splash após 2 segundos caso não tenha tocado
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                setTimeout(() => splash.classList.add('display-none'), 500);
+                tapToStart.style.display = 'block';
+            }, 2000);
         });
 
         // MODAL VÍDEO
