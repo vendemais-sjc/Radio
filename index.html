@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Sistema de Vídeos e Músicas para TV</title>
+    <title>Sistema Otimizado para Vídeos Curtos - TV</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Container principal */
         .video-container {
             position: fixed;
             top: 0;
@@ -31,7 +30,6 @@
             z-index: 1;
         }
 
-        /* Estilo dos players de vídeo */
         .video-player {
             position: absolute;
             top: 0;
@@ -39,23 +37,20 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.5s ease-in-out;
             background: #000;
         }
 
         .video-player.active {
             opacity: 1;
             z-index: 2;
-            visibility: visible;
         }
 
         .video-player.inactive {
             opacity: 0;
             z-index: 1;
-            visibility: visible;
         }
 
-        /* Player de áudio (escondido) */
         .audio-player {
             position: fixed;
             bottom: -100px;
@@ -64,10 +59,8 @@
             height: 1px;
             opacity: 0;
             pointer-events: none;
-            z-index: -1;
         }
 
-        /* Informações do conteúdo atual */
         .content-info {
             position: fixed;
             bottom: 30px;
@@ -76,41 +69,33 @@
             background: rgba(0, 0, 0, 0.85);
             padding: 15px 25px;
             border-radius: 12px;
-            font-size: 18px;
-            font-weight: 500;
+            font-size: 16px;
             z-index: 100;
             font-family: monospace;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             pointer-events: none;
-            letter-spacing: 1px;
             min-width: 280px;
         }
 
         .content-info .title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             margin-bottom: 5px;
         }
 
         .content-info .subtitle {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.8;
             margin-top: 5px;
         }
 
-        .content-info .music-icon {
-            display: inline-block;
-            margin-right: 8px;
-            animation: pulse 1s ease-in-out infinite;
+        .content-info .counter {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #ff0;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        /* Indicador de carregamento */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -131,22 +116,14 @@
             height: 60px;
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top-color: #fff;
-            border-right-color: #fff;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-        }
-
-        .loading-text {
-            color: #fff;
-            font-size: 18px;
-            font-family: monospace;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Debug panel */
         .debug-panel {
             position: fixed;
             top: 20px;
@@ -159,70 +136,46 @@
             font-family: monospace;
             z-index: 100;
             border: 1px solid rgba(0, 255, 0, 0.3);
-            backdrop-filter: blur(5px);
             pointer-events: none;
             max-width: 320px;
             text-align: right;
             line-height: 1.5;
         }
 
-        /* Status indicators */
-        .status-indicators {
+        .status-dot {
             position: fixed;
             top: 20px;
             left: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .status-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
             background: #0f0;
+            z-index: 100;
             box-shadow: 0 0 8px currentColor;
+            animation: pulse 1.5s infinite;
         }
 
-        .status-dot.video {
-            background: #00f;
-            box-shadow: 0 0 8px #00f;
-        }
-
-        .status-dot.audio {
-            background: #f0f;
-            box-shadow: 0 0 8px #f0f;
-        }
-
-        .status-dot.active {
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
+        @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.8); }
         }
 
-        /* Responsividade */
         @media (max-width: 768px) {
             .content-info {
                 bottom: 20px;
                 left: 20px;
-                padding: 12px 18px;
-                font-size: 14px;
-                min-width: 220px;
+                padding: 10px 15px;
+                font-size: 12px;
+                min-width: 240px;
             }
-            
             .content-info .title {
-                font-size: 16px;
+                font-size: 14px;
             }
-            
             .debug-panel {
                 font-size: 9px;
                 top: 10px;
                 right: 10px;
                 padding: 6px 10px;
-                max-width: 260px;
             }
         }
     </style>
@@ -232,43 +185,40 @@
     
     <div class="content-info" id="contentInfo">
         <div class="title">
-            <span class="music-icon">🎵</span>
-            <span id="currentMusicName">Carregando...</span>
+            🎵 <span id="currentMusicName">Carregando música...</span>
         </div>
         <div class="subtitle">
             🎬 Vídeo: <span id="currentVideoName">---</span>
+        </div>
+        <div class="counter" id="videoCounter">
+            ⏱️ Próximo vídeo em breve...
         </div>
     </div>
     
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <div class="loading-text">Carregando conteúdo...</div>
+        <div>Carregando...</div>
     </div>
     
     <div class="debug-panel" id="debugPanel">
         Inicializando...
     </div>
     
-    <div class="status-indicators">
-        <div class="status-dot video" id="videoStatus"></div>
-        <div class="status-dot audio" id="audioStatus"></div>
-    </div>
+    <div class="status-dot" id="statusDot"></div>
 
     <script>
         // ==================== LISTA DE VÍDEOS E MÚSICAS ====================
         
-        // Lista de vídeos
         const videosList = [
-            { src: "macoca1.mp4", nome: "Macoca 1" },
-            { src: "aluguecopos (1).mp4", nome: "AlugueCopos" },
-            { src: "Gestão (1).mp4", nome: "Gestão" },
-            { src: "chopp.mp4", nome: "Carro" },
-            { src: "Goldem (1).mp4", nome: "Carro" }
+            { src: "macoca1.mp4", nome: "Macoca 1", duracao: 3 }, // duração em segundos (opcional)
+            { src: "aluguecopos (1).mp4", nome: "AlugueCopos", duracao: 5 },
+            { src: "Gestão (1).mp4", nome: "Gestão", duracao: 4 },
+            { src: "chopp.mp4", nome: "Carro - Chopp", duracao: 3 },
+            { src: "Goldem (1).mp4", nome: "Carro - Goldem", duracao: 4 }
         ];
         
-        // Lista de músicas (adicione suas músicas aqui)
         const musicasList = [
-                 { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+                   { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -465,20 +415,21 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
- 
+
         ];
 
-        // ==================== CONFIGURAÇÕES ====================
+        // ==================== CONFIGURAÇÕES OTIMIZADAS PARA VÍDEOS CURTOS ====================
         const CONFIG = {
-            FADE_DURATION: 800,              // Duração do fade entre vídeos (ms)
-            PRELOAD_NEXT: true,              // Pré-carregar próximo vídeo
-            MAX_RETRIES: 3,                  // Tentativas máximas em caso de erro
-            RETRY_DELAY: 1000,               // Delay entre tentativas (ms)
-            PLAYBACK_CHECK_INTERVAL: 3000,   // Verificar playback a cada X ms
-            SHOW_DEBUG: true,                // Mostrar painel de debug
-            AUTO_PLAY_DELAY: 100,            // Delay inicial para autoplay (ms)
-            MUSIC_VOLUME: 0.5,               // Volume das músicas (0 a 1)
-            SYNC_MUSIC_WITH_VIDEO: true      // Sincronizar música com vídeo (reiniciar música a cada vídeo)
+            FADE_DURATION: 300,              // Fade mais rápido para vídeos curtos (300ms)
+            PRELOAD_ADVANCE: 2000,           // Pré-carrega 2 segundos antes do fim
+            MAX_RETRIES: 5,                  // Mais tentativas para vídeos curtos
+            RETRY_DELAY: 500,                // Delay menor entre tentativas
+            PLAYBACK_CHECK_INTERVAL: 1000,   // Verifica a cada 1 segundo (mais frequente)
+            SHOW_DEBUG: true,
+            AUTO_PLAY_DELAY: 50,             // Delay mínimo para autoplay
+            MUSIC_VOLUME: 0.4,
+            SYNC_MUSIC_WITH_VIDEO: false,    // Não reinicia música a cada vídeo (evita cortes)
+            BUFFER_TIME: 0.5                 // Tempo mínimo de buffer (segundos)
         };
 
         // Variáveis globais
@@ -490,226 +441,111 @@
         let isTransitioning = false;
         let retryCount = 0;
         let playbackCheckInterval = null;
-        let preloadTimeout = null;
+        let preloadTimer = null;
+        let videoEndTimer = null;
         let isMusicPlaying = false;
+        let videoLoadQueue = []; // Fila de pré-carregamento
 
-        // Detecta tipo de dispositivo
-        const userAgent = navigator.userAgent;
-        const isTV = /SmartTV|Tizen|WebOS|AppleTV|CrKey|Xbox|PlayStation|BRAVIA|SMART-TV|LG TV|Samsung|GoogleTV|ANDROID TV/i.test(userAgent);
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-        const isSamsung = /Tizen|Samsung/i.test(userAgent);
-        const isLG = /WebOS|LG TV/i.test(userAgent);
-
-        // Ajusta configurações para TV
+        // Detecta dispositivo
+        const isTV = /SmartTV|Tizen|WebOS|AppleTV|CrKey|Xbox|PlayStation|BRAVIA|SMART-TV|LG TV|Samsung/i.test(navigator.userAgent);
+        
         if (isTV) {
-            CONFIG.FADE_DURATION = 1000;
-            CONFIG.PLAYBACK_CHECK_INTERVAL = 5000;
-            CONFIG.AUTO_PLAY_DELAY = 200;
-            CONFIG.MUSIC_VOLUME = 0.4; // Volume um pouco mais baixo na TV
+            CONFIG.FADE_DURATION = 500;
+            CONFIG.PLAYBACK_CHECK_INTERVAL = 1500;
+            CONFIG.PRELOAD_ADVANCE = 3000;
         }
 
         // ==================== FUNÇÕES DE UTILIDADE ====================
         
-        /**
-         * Atualiza o painel de debug
-         */
         function updateDebug(message) {
             if (!CONFIG.SHOW_DEBUG) return;
-            
             const debugPanel = document.getElementById('debugPanel');
             if (debugPanel) {
                 const time = new Date().toLocaleTimeString('pt-BR');
-                const deviceType = isTV ? '📺 TV' : (isMobile ? '📱 Mobile' : '💻 PC');
-                debugPanel.innerHTML = `${deviceType} | ${time}<br>${message}`;
+                debugPanel.innerHTML = `${isTV ? '📺 TV' : '💻 PC'} | ${time}<br>${message}`;
             }
-            console.log(`[${new Date().toLocaleTimeString()}] ${message}`);
+            console.log(`[${time}] ${message}`);
         }
 
-        /**
-         * Mostra/oculta loading
-         */
         function showLoading(show) {
             const loadingOverlay = document.getElementById('loadingOverlay');
-            if (loadingOverlay) {
-                loadingOverlay.style.display = show ? 'flex' : 'none';
-            }
+            if (loadingOverlay) loadingOverlay.style.display = show ? 'flex' : 'none';
         }
 
-        /**
-         * Atualiza informações na tela
-         */
         function updateDisplayInfo() {
             const currentMusic = musicasList[currentMusicIndex];
             const currentVideo = videosList[currentVideoIndex];
             
-            const musicNameElem = document.getElementById('currentMusicName');
-            const videoNameElem = document.getElementById('currentVideoName');
-            
-            if (musicNameElem) {
-                musicNameElem.innerHTML = `${currentMusic.nome} ${currentMusic.artista ? `- ${currentMusic.artista}` : ''}`;
-            }
-            
-            if (videoNameElem) {
-                videoNameElem.innerHTML = `${currentVideo.nome} (${currentVideoIndex + 1}/${videosList.length})`;
-            }
-            
-            updateDebug(`🎵 Música: ${currentMusic.nome} | 🎬 Vídeo: ${currentVideo.nome}`);
+            document.getElementById('currentMusicName').innerHTML = `${currentMusic.nome}`;
+            document.getElementById('currentVideoName').innerHTML = `${currentVideo.nome} (${currentVideoIndex + 1}/${videosList.length})`;
         }
 
-        /**
-         * Atualiza os status indicators
-         */
-        function updateStatusIndicators(videoPlaying, audioPlaying) {
-            const videoDot = document.getElementById('videoStatus');
-            const audioDot = document.getElementById('audioStatus');
-            
-            if (videoDot) {
-                videoDot.style.opacity = videoPlaying ? '1' : '0.3';
-                if (videoPlaying) videoDot.classList.add('active');
-                else videoDot.classList.remove('active');
-            }
-            
-            if (audioDot) {
-                audioDot.style.opacity = audioPlaying ? '1' : '0.3';
-                if (audioPlaying) audioDot.classList.add('active');
-                else audioDot.classList.remove('active');
-            }
+        function updateCounter(message) {
+            const counter = document.getElementById('videoCounter');
+            if (counter) counter.innerHTML = message;
         }
 
-        // ==================== FUNÇÕES DE ÁUDIO ====================
+        // ==================== SISTEMA DE PRÉ-CARREGAMENTO AVANÇADO ====================
         
         /**
-         * Cria o player de áudio
+         * Pré-carrega múltiplos vídeos (para garantir transição suave)
          */
-        function createAudioPlayer() {
-            audioElement = document.createElement('audio');
-            audioElement.className = 'audio-player';
-            audioElement.setAttribute('preload', 'auto');
-            audioElement.volume = CONFIG.MUSIC_VOLUME;
-            audioElement.loop = false; // Vai tocar uma música por vez
+        function preloadVideosInBackground() {
+            // Pré-carrega os próximos 2 vídeos para garantir
+            const nextIndex1 = (currentVideoIndex + 1) % videosList.length;
+            const nextIndex2 = (currentVideoIndex + 2) % videosList.length;
             
-            // Eventos de áudio
-            audioElement.addEventListener('ended', () => {
-                updateDebug(`🎵 Música terminou, próxima...`);
-                nextMusic();
-            });
+            const preloadPlayers = [0, 1].filter(i => i !== activePlayerIndex);
             
-            audioElement.addEventListener('error', (e) => {
-                updateDebug(`❌ Erro na música: ${audioElement.error ? audioElement.error.message : 'desconhecido'}`);
-                setTimeout(() => nextMusic(), 3000);
-            });
-            
-            audioElement.addEventListener('playing', () => {
-                updateDebug(`🎵 Música reproduzindo: ${musicasList[currentMusicIndex].nome}`);
-                updateStatusIndicators(true, true);
-                isMusicPlaying = true;
-            });
-            
-            audioElement.addEventListener('pause', () => {
-                updateStatusIndicators(true, false);
-                isMusicPlaying = false;
-            });
-            
-            document.body.appendChild(audioElement);
-            updateDebug(`🎵 Player de áudio criado`);
-        }
-        
-        /**
-         * Toca uma música específica
-         */
-        async function playMusic(index) {
-            if (!audioElement) {
-                createAudioPlayer();
-            }
-            
-            const music = musicasList[index];
-            if (!music) {
-                updateDebug(`❌ Música não encontrada no índice ${index}`);
-                return false;
-            }
-            
-            updateDebug(`🎵 Tocando música: ${music.nome}`);
-            
-            try {
-                // Se for a mesma música e já está tocando, não faz nada
-                if (audioElement.src.includes(music.src) && !audioElement.paused && !audioElement.ended) {
-                    return true;
+            preloadPlayers.forEach((playerIdx, idx) => {
+                const videoToLoad = idx === 0 ? nextIndex1 : nextIndex2;
+                const video = videosList[videoToLoad];
+                const player = videoPlayers[playerIdx];
+                
+                if (player && player.src !== video.src) {
+                    updateDebug(`📥 Pré-carregando: ${video.nome} no player ${playerIdx}`);
+                    player.preload = 'auto';
+                    player.src = video.src;
+                    player.load();
                 }
-                
-                audioElement.src = music.src;
-                audioElement.load();
-                
-                return new Promise((resolve) => {
-                    const tryPlay = async () => {
-                        try {
-                            await audioElement.play();
-                            updateDisplayInfo();
-                            resolve(true);
-                        } catch (error) {
-                            updateDebug(`⚠️ Erro ao tocar música: ${error.message}`);
-                            if (error.name === 'NotAllowedError') {
-                                // Aguarda interação do usuário
-                                const playOnInteraction = async () => {
-                                    try {
-                                        await audioElement.play();
-                                        document.removeEventListener('click', playOnInteraction);
-                                        document.removeEventListener('touchstart', playOnInteraction);
-                                        resolve(true);
-                                    } catch (e) {
-                                        resolve(false);
-                                    }
-                                };
-                                document.addEventListener('click', playOnInteraction);
-                                document.addEventListener('touchstart', playOnInteraction);
-                            } else {
-                                resolve(false);
-                            }
-                        }
-                    };
-                    
-                    setTimeout(tryPlay, 500);
-                });
-            } catch (error) {
-                updateDebug(`❌ Erro ao carregar música: ${error.message}`);
-                return false;
-            }
+            });
         }
         
         /**
-         * Avança para a próxima música
+         * Pré-carrega especificamente o próximo vídeo
          */
-        function nextMusic() {
-            const nextIndex = (currentMusicIndex + 1) % musicasList.length;
-            currentMusicIndex = nextIndex;
-            playMusic(currentMusicIndex);
-        }
-        
-        /**
-         * Reinicia a música atual (usado quando troca de vídeo)
-         */
-        function restartCurrentMusic() {
-            if (CONFIG.SYNC_MUSIC_WITH_VIDEO && audioElement) {
-                updateDebug(`🔄 Reiniciando música para sincronizar com vídeo`);
-                const currentMusic = musicasList[currentMusicIndex];
-                audioElement.src = currentMusic.src;
-                audioElement.load();
-                setTimeout(() => {
-                    audioElement.play().catch(e => updateDebug(`Erro ao reiniciar música: ${e.message}`));
-                }, 500);
+        function preloadNextVideo() {
+            const nextIndex = (currentVideoIndex + 1) % videosList.length;
+            const nextVideo = videosList[nextIndex];
+            const preloadPlayerIndex = (activePlayerIndex + 1) % 2;
+            const preloadPlayer = videoPlayers[preloadPlayerIndex];
+            
+            if (preloadPlayer && preloadPlayer.src !== nextVideo.src) {
+                updateDebug(`🎬 Pré-carregando próximo: ${nextVideo.nome}`);
+                preloadPlayer.preload = 'auto';
+                preloadPlayer.src = nextVideo.src;
+                preloadPlayer.load();
             }
+            
+            // Também pré-carrega o segundo próximo
+            setTimeout(() => {
+                const secondNext = (currentVideoIndex + 2) % videosList.length;
+                const secondVideo = videosList[secondNext];
+                const otherPlayer = videoPlayers[activePlayerIndex];
+                if (otherPlayer && otherPlayer.src !== secondVideo.src) {
+                    updateDebug(`📦 Pré-carregando segundo: ${secondVideo.nome}`);
+                    otherPlayer.preload = 'auto';
+                    otherPlayer.src = secondVideo.src;
+                    otherPlayer.load();
+                }
+            }, 500);
         }
 
-        // ==================== FUNÇÕES DE VÍDEO ====================
+        // ==================== FUNÇÕES DE VÍDEO OTIMIZADAS ====================
         
-        /**
-         * Cria os players de vídeo (double buffering)
-         */
         function createVideoPlayers() {
             const container = document.getElementById('videoContainer');
-            if (!container) {
-                console.error('Container não encontrado');
-                return false;
-            }
+            if (!container) return false;
             
             container.innerHTML = '';
             
@@ -717,310 +553,265 @@
                 const video = document.createElement('video');
                 video.id = `videoPlayer${i}`;
                 video.className = `video-player ${i === 0 ? 'active' : 'inactive'}`;
-                
-                // Atributos importantes para TVs e dispositivos móveis
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
-                video.setAttribute('x5-playsinline', '');
                 video.setAttribute('autoplay', '');
                 video.setAttribute('muted', '');
-                video.setAttribute('preload', 'auto');
+                video.preload = 'auto';
                 
-                // Event listeners
+                // Eventos críticos
                 video.addEventListener('error', (e) => handleVideoError(e, i));
-                video.addEventListener('canplay', () => handleVideoCanPlay(i));
+                video.addEventListener('canplaythrough', () => handleVideoReady(i)); // Canplaythrough é mais confiável
                 video.addEventListener('ended', () => handleVideoEnded(i));
                 video.addEventListener('playing', () => handleVideoPlaying(i));
-                video.addEventListener('waiting', () => handleVideoWaiting(i));
                 
                 container.appendChild(video);
                 videoPlayers.push(video);
             }
             
-            updateDebug(`📹 Players de vídeo criados | Modo: ${isTV ? 'TV' : (isMobile ? 'Mobile' : 'Desktop')}`);
+            updateDebug(`✅ Players criados (modo vídeos curtos)`);
             return true;
         }
 
-        /**
-         * Trata erros de vídeo
-         */
         function handleVideoError(event, playerIndex) {
-            const video = event.target;
-            updateDebug(`❌ Erro vídeo player ${playerIndex}: ${video.error ? video.error.message : 'desconhecido'}`);
-            
+            updateDebug(`❌ Erro player ${playerIndex}`);
             if (retryCount < CONFIG.MAX_RETRIES) {
                 retryCount++;
-                updateDebug(`🔄 Tentativa ${retryCount}/${CONFIG.MAX_RETRIES}`);
                 setTimeout(() => {
-                    video.load();
-                    video.play().catch(e => updateDebug(`Falha: ${e.message}`));
+                    videoPlayers[playerIndex].load();
+                    videoPlayers[playerIndex].play().catch(e => {});
                 }, CONFIG.RETRY_DELAY);
             } else {
-                updateDebug(`⚠️ Pulando para próximo vídeo`);
                 retryCount = 0;
                 nextVideo();
             }
         }
 
-        /**
-         * Quando o vídeo está pronto para reproduzir
-         */
-        function handleVideoCanPlay(playerIndex) {
-            updateDebug(`✅ Vídeo player ${playerIndex} pronto`);
-            if (playerIndex === activePlayerIndex) {
+        function handleVideoReady(playerIndex) {
+            updateDebug(`✅ Player ${playerIndex} pronto (canplaythrough)`);
+            if (playerIndex === activePlayerIndex && !isTransitioning) {
                 showLoading(false);
             }
         }
 
-        /**
-         * Quando o vídeo começa a tocar
-         */
         function handleVideoPlaying(playerIndex) {
-            updateDebug(`▶️ Vídeo player ${playerIndex} reproduzindo`);
+            updateDebug(`▶️ Player ${playerIndex} rodando`);
             showLoading(false);
-            updateStatusIndicators(true, isMusicPlaying);
             
-            if (playerIndex === activePlayerIndex) {
-                updateDisplayInfo();
-            }
-        }
-
-        /**
-         * Quando o vídeo está em buffer
-         */
-        function handleVideoWaiting(playerIndex) {
-            updateDebug(`⏳ Vídeo player ${playerIndex} em buffer`);
-            if (playerIndex === activePlayerIndex) {
-                showLoading(true);
-                updateStatusIndicators(false, isMusicPlaying);
-            }
-        }
-
-        /**
-         * Quando o vídeo termina
-         */
-        function handleVideoEnded(playerIndex) {
-            updateDebug(`🏁 Vídeo player ${playerIndex} terminou`);
-            if (playerIndex === activePlayerIndex && !isTransitioning) {
-                nextVideo();
-            }
-        }
-
-        /**
-         * Pré-carrega o próximo vídeo
-         */
-        function preloadNextVideo() {
-            if (!CONFIG.PRELOAD_NEXT) return;
-            
-            if (preloadTimeout) clearTimeout(preloadTimeout);
-            
-            preloadTimeout = setTimeout(() => {
-                const nextIndex = (currentVideoIndex + 1) % videosList.length;
-                const nextVideo = videosList[nextIndex];
-                const preloadPlayerIndex = (activePlayerIndex + 1) % 2;
-                const preloadPlayer = videoPlayers[preloadPlayerIndex];
+            // Configura timer para pré-carregar próximo ANTES do vídeo acabar
+            if (playerIndex === activePlayerIndex && videoPlayers[activePlayerIndex]) {
+                const currentVideo = videoPlayers[activePlayerIndex];
+                const duration = currentVideo.duration;
                 
-                if (preloadPlayer && preloadPlayer.src !== nextVideo.src) {
-                    updateDebug(`📥 Pré-carregando vídeo: ${nextVideo.nome}`);
-                    preloadPlayer.src = nextVideo.src;
-                    preloadPlayer.load();
+                if (duration && duration > 0) {
+                    const preloadTime = Math.max(0, duration - (CONFIG.PRELOAD_ADVANCE / 1000));
+                    if (preloadTime > 0) {
+                        if (preloadTimer) clearTimeout(preloadTimer);
+                        preloadTimer = setTimeout(() => {
+                            updateDebug(`⏰ Pré-carregando (${CONFIG.PRELOAD_ADVANCE/1000}s antes do fim)`);
+                            preloadNextVideo();
+                            updateCounter(`⏳ Preparando próximo vídeo...`);
+                        }, preloadTime * 1000);
+                    }
                 }
-            }, 500);
+            }
         }
 
-        /**
-         * Reproduz um vídeo específico
-         */
+        function handleVideoEnded(playerIndex) {
+            updateDebug(`🏁 Vídeo terminou player ${playerIndex}`);
+            
+            // Limpa timers
+            if (preloadTimer) clearTimeout(preloadTimer);
+            
+            if (playerIndex === activePlayerIndex && !isTransitioning) {
+                // Pequeno delay para garantir que o próximo está pronto
+                setTimeout(() => {
+                    nextVideo();
+                }, 50);
+            }
+        }
+
         async function playVideo(index, playerIndex) {
             const video = videosList[index];
             const player = videoPlayers[playerIndex];
             
-            if (!player || !video) {
-                updateDebug(`❌ Player ou vídeo inválido`);
-                return false;
-            }
+            if (!player || !video) return false;
             
-            updateDebug(`🎬 Reproduzindo vídeo ${video.nome} no player ${playerIndex}`);
+            updateDebug(`🎬 Reproduzindo: ${video.nome}`);
             
-            if (player.src === video.src && !player.ended) {
-                try {
-                    await player.play();
-                    return true;
-                } catch (error) {
-                    updateDebug(`Erro ao reproduzir: ${error.message}`);
-                }
+            // Se já está tocando o mesmo vídeo
+            if (player.src.includes(video.src) && !player.paused && !player.ended) {
+                return true;
             }
             
             player.src = video.src;
             player.load();
             
             return new Promise((resolve) => {
-                const attemptPlay = async () => {
-                    try {
-                        await player.play();
-                        resolve(true);
-                    } catch (error) {
-                        updateDebug(`Erro play vídeo: ${error.message}`);
-                        if (error.name === 'NotAllowedError') {
-                            const playOnInteraction = async () => {
-                                try {
-                                    await player.play();
-                                    document.removeEventListener('click', playOnInteraction);
-                                    document.removeEventListener('touchstart', playOnInteraction);
-                                    resolve(true);
-                                } catch (e) {
-                                    resolve(false);
-                                }
-                            };
-                            document.addEventListener('click', playOnInteraction);
-                            document.addEventListener('touchstart', playOnInteraction);
-                        } else {
-                            resolve(false);
-                        }
-                    }
+                const tryPlay = () => {
+                    player.play()
+                        .then(() => resolve(true))
+                        .catch((error) => {
+                            updateDebug(`Erro: ${error.message}`);
+                            if (error.name === 'NotAllowedError') {
+                                const playOnClick = () => {
+                                    player.play().then(() => resolve(true)).catch(() => resolve(false));
+                                    document.removeEventListener('click', playOnClick);
+                                };
+                                document.addEventListener('click', playOnClick);
+                            } else {
+                                resolve(false);
+                            }
+                        });
                 };
                 
-                setTimeout(attemptPlay, CONFIG.AUTO_PLAY_DELAY);
+                // Aguarda um pouco para o vídeo carregar
+                setTimeout(tryPlay, CONFIG.AUTO_PLAY_DELAY);
             });
         }
 
-        /**
-         * Faz a transição entre vídeos com fade
-         */
         async function transitionToVideo(nextIndex) {
-            if (isTransitioning) {
-                updateDebug(`⏸️ Aguardando transição anterior`);
-                return;
-            }
+            if (isTransitioning) return;
             
             isTransitioning = true;
-            showLoading(true);
+            updateDebug(`🔄 Transição para: ${videosList[nextIndex].nome}`);
             
             const nextPlayerIndex = (activePlayerIndex + 1) % 2;
             const currentPlayer = videoPlayers[activePlayerIndex];
             const nextPlayer = videoPlayers[nextPlayerIndex];
             
-            updateDebug(`🔄 Transição para vídeo: ${videosList[nextIndex].nome}`);
-            
+            // Toca o próximo vídeo
             const success = await playVideo(nextIndex, nextPlayerIndex);
             
             if (!success) {
-                updateDebug(`❌ Falha ao preparar vídeo`);
+                updateDebug(`❌ Falha, tentando novamente...`);
                 isTransitioning = false;
-                showLoading(false);
-                setTimeout(() => transitionToVideo(nextIndex), 2000);
+                setTimeout(() => transitionToVideo(nextIndex), 500);
                 return;
             }
             
+            // Pequeno delay para garantir que o próximo vídeo começou
             setTimeout(() => {
+                // Transição rápida
                 currentPlayer.classList.remove('active');
                 currentPlayer.classList.add('inactive');
                 nextPlayer.classList.remove('inactive');
                 nextPlayer.classList.add('active');
                 
+                // Atualiza após transição
                 setTimeout(() => {
                     currentPlayer.pause();
                     currentPlayer.currentTime = 0;
                     
                     activePlayerIndex = nextPlayerIndex;
                     currentVideoIndex = nextIndex;
-                    
                     isTransitioning = false;
-                    showLoading(false);
                     
-                    updateDebug(`✅ Transição concluída: ${videosList[currentVideoIndex].nome}`);
+                    updateDebug(`✅ Agora: ${videosList[currentVideoIndex].nome}`);
                     updateDisplayInfo();
-                    updateStatusIndicators(true, isMusicPlaying);
+                    updateCounter(`🎬 Reproduzindo...`);
                     
-                    // Reinicia a música se configurado
-                    if (CONFIG.SYNC_MUSIC_WITH_VIDEO) {
-                        restartCurrentMusic();
-                    }
-                    
+                    // Pré-carrega o próximo
                     preloadNextVideo();
                 }, CONFIG.FADE_DURATION);
-            }, 100);
+            }, 50);
         }
 
-        /**
-         * Avança para o próximo vídeo
-         */
         function nextVideo() {
-            if (isTransitioning) {
-                updateDebug(`⏸️ Aguardando transição`);
-                return;
-            }
-            
+            if (isTransitioning) return;
             const nextIndex = (currentVideoIndex + 1) % videosList.length;
-            updateDebug(`⏭️ Avançando para: ${videosList[nextIndex].nome}`);
             transitionToVideo(nextIndex);
         }
 
-        /**
-         * Monitora o playback constantemente
-         */
+        // ==================== SISTEMA DE ÁUDIO ====================
+        
+        function createAudioPlayer() {
+            audioElement = document.createElement('audio');
+            audioElement.className = 'audio-player';
+            audioElement.volume = CONFIG.MUSIC_VOLUME;
+            audioElement.preload = 'auto';
+            
+            audioElement.addEventListener('ended', () => {
+                currentMusicIndex = (currentMusicIndex + 1) % musicasList.length;
+                playMusic(currentMusicIndex);
+            });
+            
+            audioElement.addEventListener('error', () => {
+                setTimeout(() => {
+                    currentMusicIndex = (currentMusicIndex + 1) % musicasList.length;
+                    playMusic(currentMusicIndex);
+                }, 2000);
+            });
+            
+            document.body.appendChild(audioElement);
+            updateDebug(`🎵 Player de áudio criado`);
+        }
+        
+        async function playMusic(index) {
+            if (!audioElement) createAudioPlayer();
+            
+            const music = musicasList[index];
+            if (!music) return;
+            
+            try {
+                audioElement.src = music.src;
+                audioElement.load();
+                await audioElement.play();
+                isMusicPlaying = true;
+                updateDebug(`🎵 Tocando: ${music.nome}`);
+                updateDisplayInfo();
+            } catch (error) {
+                updateDebug(`⚠️ Erro áudio: ${error.message}`);
+            }
+        }
+
+        // ==================== MONITOR DE PLAYBACK ====================
+        
         function startPlaybackMonitor() {
             if (playbackCheckInterval) clearInterval(playbackCheckInterval);
             
             playbackCheckInterval = setInterval(() => {
                 const activePlayer = videoPlayers[activePlayerIndex];
+                const statusDot = document.getElementById('statusDot');
                 
                 if (activePlayer && !isTransitioning) {
                     if (activePlayer.paused && !activePlayer.ended && activePlayer.src) {
                         updateDebug(`⚠️ Vídeo pausado, reiniciando...`);
-                        activePlayer.play().catch(e => updateDebug(`Erro: ${e.message}`));
-                        updateStatusIndicators(false, isMusicPlaying);
+                        activePlayer.play().catch(e => {});
+                        if (statusDot) statusDot.style.background = '#ff0';
+                    } else if (!activePlayer.paused && !activePlayer.ended) {
+                        if (statusDot) statusDot.style.background = '#0f0';
                     }
                     
                     if (activePlayer.ended && !isTransitioning) {
-                        updateDebug(`🏁 Vídeo terminou (monitor)`);
                         nextVideo();
-                    }
-                    
-                    if (!activePlayer.paused && !activePlayer.ended) {
-                        updateStatusIndicators(true, isMusicPlaying);
-                    }
-                }
-                
-                // Verifica áudio
-                if (audioElement && !isTransitioning) {
-                    if (audioElement.paused && !audioElement.ended && audioElement.src) {
-                        updateDebug(`⚠️ Música pausada, reiniciando...`);
-                        audioElement.play().catch(e => updateDebug(`Erro áudio: ${e.message}`));
                     }
                 }
             }, CONFIG.PLAYBACK_CHECK_INTERVAL);
         }
 
-        /**
-         * Inicia o sistema completo
-         */
+        // ==================== INICIALIZAÇÃO ====================
+        
         async function initialize() {
-            updateDebug(`🚀 Inicializando sistema com vídeos e músicas...`);
-            updateDebug(`📺 Dispositivo: ${isTV ? 'Smart TV' : (isMobile ? 'Mobile' : 'Desktop')}`);
-            updateDebug(`🎵 Total de músicas: ${musicasList.length}`);
-            updateDebug(`🎬 Total de vídeos: ${videosList.length}`);
+            updateDebug(`🚀 Iniciando sistema otimizado para vídeos curtos...`);
+            updateDebug(`📊 Total: ${videosList.length} vídeos | ${musicasList.length} músicas`);
             
-            // Cria players de vídeo
             if (!createVideoPlayers()) {
-                updateDebug(`❌ Erro ao criar players de vídeo`);
+                updateDebug(`❌ Erro crítico`);
                 return;
             }
             
-            // Cria player de áudio
             createAudioPlayer();
             
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(r => setTimeout(r, 200));
             
-            // Inicia primeira música
-            currentMusicIndex = 0;
+            // Inicia música
             await playMusic(0);
             
-            // Inicia primeiro vídeo
+            // Inicia vídeo
             const success = await playVideo(0, 0);
             
             if (success) {
-                updateDebug(`✅ Primeiro vídeo iniciado: ${videosList[0].nome}`);
                 videoPlayers[0].classList.add('active');
                 activePlayerIndex = 0;
                 currentVideoIndex = 0;
@@ -1028,63 +819,31 @@
                 preloadNextVideo();
                 startPlaybackMonitor();
                 
-                showLoading(false);
                 updateDisplayInfo();
-                updateStatusIndicators(true, true);
+                showLoading(false);
+                updateDebug(`✅ Sistema pronto!`);
             } else {
-                updateDebug(`❌ Falha ao iniciar primeiro vídeo`);
-                setTimeout(initialize, 3000);
+                updateDebug(`❌ Falha, tentando novamente...`);
+                setTimeout(initialize, 2000);
             }
         }
-
-        // ==================== EVENTOS GLOBAIS ====================
         
-        document.addEventListener('DOMContentLoaded', () => {
-            updateDebug(`📄 DOM carregado`);
-            initialize();
-        });
+        // Inicia tudo
+        document.addEventListener('DOMContentLoaded', initialize);
         
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                updateDebug(`👁️ Página oculta`);
-            } else {
-                updateDebug(`👁️ Página visível`);
-                const activePlayer = videoPlayers[activePlayerIndex];
-                if (activePlayer && activePlayer.paused && !activePlayer.ended && !isTransitioning) {
-                    activePlayer.play().catch(e => updateDebug(`Erro ao retomar vídeo: ${e.message}`));
-                }
-                if (audioElement && audioElement.paused && !audioElement.ended) {
-                    audioElement.play().catch(e => updateDebug(`Erro ao retomar música: ${e.message}`));
-                }
-            }
-        });
-        
-        // ==================== EXPOSIÇÃO PARA DEBUG ====================
-        window.mediaSystem = {
-            nextVideo: () => nextVideo(),
-            nextMusic: () => nextMusic(),
-            current: () => ({
-                video: videosList[currentVideoIndex],
-                music: musicasList[currentMusicIndex],
-                videoIndex: currentVideoIndex,
-                musicIndex: currentMusicIndex
-            }),
-            setMusicVolume: (volume) => {
-                if (audioElement) {
-                    audioElement.volume = Math.max(0, Math.min(1, volume));
-                    updateDebug(`🎵 Volume ajustado para: ${audioElement.volume}`);
-                }
+        // Controles via console
+        window.tvSystem = {
+            next: () => nextVideo(),
+            nextMusic: () => {
+                currentMusicIndex = (currentMusicIndex + 1) % musicasList.length;
+                playMusic(currentMusicIndex);
             },
             status: () => ({
-                videoPlaying: videoPlayers[activePlayerIndex] && !videoPlayers[activePlayerIndex].paused,
-                musicPlaying: audioElement && !audioElement.paused,
-                isTV,
-                isTransitioning
-            }),
-            list: { videos: videosList, musicas: musicasList }
+                video: videosList[currentVideoIndex].nome,
+                music: musicasList[currentMusicIndex].nome,
+                isPlaying: videoPlayers[activePlayerIndex] && !videoPlayers[activePlayerIndex].paused
+            })
         };
-        
-        updateDebug(`✨ Sistema pronto! Use window.mediaSystem no console para controle`);
     </script>
 </body>
 </html>
