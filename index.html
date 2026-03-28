@@ -21,12 +21,11 @@
             height: 100%;
         }
 
-        /* Temas de cor */
         body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
         body.theme-blue { --primary-color: #00a8ff; --primary-dark: #0077be; }
         body.theme-green { --primary-color: #00ff88; --primary-dark: #00cc6a; }
         body.theme-purple { --primary-color: #aa44ff; --primary-dark: #7700cc; }
-        body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; }
+        body { --primary-color: #e63946; --primary-dark: #b71c1c; }
 
         .tv-app {
             width: 100%;
@@ -36,7 +35,6 @@
             overflow: hidden;
         }
 
-        /* Vídeo principal em tela cheia */
         .fullscreen-video {
             position: absolute;
             top: 0;
@@ -47,19 +45,18 @@
             z-index: 1;
         }
 
-        /* Overlay sutil para melhor visibilidade dos controles */
         .overlay-gradient {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 120px;
-            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+            height: 100px;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
             z-index: 2;
             pointer-events: none;
         }
 
-        /* Letreiro superior */
+        /* Letreiro */
         .top-ticker {
             position: absolute;
             top: 0;
@@ -71,8 +68,8 @@
             white-space: nowrap;
             color: #fff;
             font-weight: 800;
-            font-size: 1rem;
-            padding: 12px 0;
+            font-size: 0.9rem;
+            padding: 10px 0;
             z-index: 10;
             border-bottom: 2px solid var(--primary-color);
             pointer-events: none;
@@ -89,28 +86,36 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* Botões de controle de música - pequenos, transparentes */
-        .music-controls {
+        /* Container dos controles de música - linha única */
+        .music-controls-bar {
             position: absolute;
-            bottom: 25px;
+            bottom: 20px;
             left: 20px;
+            right: 20px;
             display: flex;
+            align-items: center;
             gap: 12px;
             z-index: 20;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
             padding: 8px 16px;
             border-radius: 50px;
             border: 1px solid rgba(255,255,255,0.2);
+            max-width: 450px;
+        }
+
+        .buttons-group {
+            display: flex;
+            gap: 8px;
         }
 
         .tv-control-btn {
             background: rgba(0,0,0,0.6);
             border: none;
             color: rgba(255,255,255,0.9);
-            font-size: 1.1rem;
-            width: 38px;
-            height: 38px;
+            font-size: 1rem;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s;
@@ -128,41 +133,33 @@
         .tv-control-btn.play-pause {
             background: var(--primary-color);
             color: #000;
-            font-size: 1rem;
         }
 
-        /* Informação da música atual */
         .current-track-info {
-            position: absolute;
-            bottom: 30px;
-            left: 160px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            padding: 6px 18px;
+            flex: 1;
+            background: rgba(0,0,0,0.4);
+            padding: 6px 12px;
             border-radius: 30px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #fff;
-            z-index: 20;
-            pointer-events: none;
             border-left: 3px solid var(--primary-color);
             white-space: nowrap;
-            max-width: 50%;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* Botão tela cheia */
+        /* Botão tela cheia separado */
         .fullscreen-btn {
             position: absolute;
-            bottom: 25px;
+            bottom: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            font-size: 1.2rem;
-            width: 44px;
-            height: 44px;
+            font-size: 1.1rem;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             cursor: pointer;
             z-index: 20;
@@ -175,10 +172,34 @@
         .fullscreen-btn:hover {
             background: var(--primary-color);
             color: #000;
-            transform: scale(1.05);
         }
 
-        /* Menu lateral para gerenciar vídeos e playlist */
+        /* Botão menu */
+        .menu-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            color: white;
+            border: 1px solid var(--primary-color);
+            font-size: 1.1rem;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+        }
+
+        /* Drawer */
         .drawer {
             position: fixed;
             top: 0;
@@ -202,37 +223,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid #333;
         }
 
         .drawer-header h3 {
             color: var(--primary-color);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .close-drawer {
             background: none;
             border: none;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             cursor: pointer;
         }
 
         /* Seção de vídeos */
         .videos-section {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .videos-section h4 {
             color: var(--primary-color);
-            margin-bottom: 12px;
-            font-size: 1rem;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
         }
 
         .video-list {
-            max-height: 250px;
+            max-height: 220px;
             overflow-y: auto;
         }
 
@@ -240,13 +261,12 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid #333;
             border-radius: 25px;
-            padding: 10px 15px;
-            margin-bottom: 8px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .video-item:hover {
@@ -256,18 +276,13 @@
 
         .video-item.active {
             border-color: var(--primary-color);
-            background: rgba(var(--primary-color), 0.2);
+            background: rgba(220, 20, 60, 0.2);
         }
 
         .video-name {
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             flex: 1;
-        }
-
-        .video-actions {
-            display: flex;
-            gap: 8px;
         }
 
         .video-actions button {
@@ -275,7 +290,7 @@
             border: none;
             color: #aaa;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             padding: 4px;
         }
 
@@ -287,29 +302,30 @@
             background: var(--primary-color);
             color: #000;
             border: none;
-            padding: 10px;
+            padding: 8px;
             border-radius: 25px;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 8px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         /* Playlist de músicas */
         .music-section {
-            margin-top: 20px;
+            margin-top: 15px;
             border-top: 1px solid #333;
-            padding-top: 20px;
+            padding-top: 15px;
         }
 
         .music-section h4 {
             color: var(--primary-color);
-            margin-bottom: 12px;
-            font-size: 1rem;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
         }
 
         .playlist-container {
@@ -324,14 +340,14 @@
             padding: 8px 12px;
             border: 1px solid #333;
             border-radius: 25px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             cursor: pointer;
             background: rgba(255,255,255,0.05);
         }
 
         .playlist-item.playing {
             border-color: var(--primary-color);
-            background: rgba(var(--primary-color), 0.2);
+            background: rgba(220, 20, 60, 0.2);
         }
 
         .music-number {
@@ -361,32 +377,7 @@
             color: #aaa;
         }
 
-        /* Botão menu */
-        .menu-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            color: white;
-            border: 1px solid var(--primary-color);
-            font-size: 1.2rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 15;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-btn:hover {
-            background: var(--primary-color);
-            color: #000;
-        }
-
-        /* Modal para adicionar vídeo */
+        /* Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -408,9 +399,9 @@
             background: #1a1a1a;
             border: 2px solid var(--primary-color);
             border-radius: 20px;
-            padding: 25px;
+            padding: 20px;
             width: 90%;
-            max-width: 400px;
+            max-width: 380px;
         }
 
         .modal-content h3 {
@@ -420,17 +411,12 @@
 
         .modal-content input {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: #2a2a2a;
             border: 1px solid #444;
             border-radius: 25px;
             color: white;
-            margin-bottom: 15px;
-        }
-
-        .modal-content input:focus {
-            outline: none;
-            border-color: var(--primary-color);
+            margin-bottom: 12px;
         }
 
         .modal-buttons {
@@ -440,7 +426,7 @@
         }
 
         .modal-buttons button {
-            padding: 8px 20px;
+            padding: 8px 18px;
             border-radius: 25px;
             cursor: pointer;
             border: none;
@@ -462,14 +448,14 @@
             bottom: 90px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             color: #fff;
-            padding: 10px 24px;
+            padding: 8px 20px;
             border-radius: 50px;
             z-index: 2000;
             transition: transform 0.3s;
             border-left: 3px solid var(--primary-color);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             white-space: nowrap;
         }
 
@@ -478,55 +464,47 @@
         }
 
         @media (min-width: 768px) {
-            .tv-control-btn { width: 44px; height: 44px; font-size: 1.2rem; }
-            .current-track-info { font-size: 0.85rem; left: 180px; }
-            .top-ticker { font-size: 1.1rem; }
+            .tv-control-btn { width: 40px; height: 40px; font-size: 1.1rem; }
+            .current-track-info { font-size: 0.85rem; }
+            .top-ticker { font-size: 1rem; }
         }
     </style>
 </head>
 <body class="theme-red">
     <div class="tv-app">
-        <!-- Vídeo principal -->
         <video id="mainVideo" class="fullscreen-video" autoplay loop muted playsinline></video>
-        
-        <!-- Overlay -->
         <div class="overlay-gradient"></div>
         
-        <!-- Letreiro -->
         <div class="top-ticker">
-            <span id="tickerText"><i class="fas fa-headphones-alt fa-spin"></i> MUTV - A MELHOR PLAYLIST • MÚSICAS QUE EMBALAM SEU DIA • INFORMAÇÕES: 12 98846-1978 • SIGA NAS REDES •</span>
+            <span><i class="fas fa-headphones-alt fa-spin"></i> MUTV - A MELHOR PLAYLIST • MÚSICAS QUE EMBALAM SEU DIA • INFORMAÇÕES: 12 98846-1978 • SIGA NAS REDES •</span>
         </div>
         
-        <!-- Botão menu -->
         <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
         
-        <!-- Controles de música -->
-        <div class="music-controls">
-            <button class="tv-control-btn" id="tvPrevBtn"><i class="fas fa-step-backward"></i></button>
-            <button class="tv-control-btn play-pause" id="tvPlayPauseBtn"><i class="fas fa-play"></i></button>
-            <button class="tv-control-btn" id="tvNextBtn"><i class="fas fa-step-forward"></i></button>
-            <button class="tv-control-btn" id="tvShuffleBtn"><i class="fas fa-random"></i></button>
+        <!-- Barra única com botões e nome da música -->
+        <div class="music-controls-bar">
+            <div class="buttons-group">
+                <button class="tv-control-btn" id="tvPrevBtn"><i class="fas fa-step-backward"></i></button>
+                <button class="tv-control-btn play-pause" id="tvPlayPauseBtn"><i class="fas fa-play"></i></button>
+                <button class="tv-control-btn" id="tvNextBtn"><i class="fas fa-step-forward"></i></button>
+                <button class="tv-control-btn" id="tvShuffleBtn"><i class="fas fa-random"></i></button>
+            </div>
+            <div class="current-track-info" id="currentTrackInfo">
+                🎵 Clique no play
+            </div>
         </div>
         
-        <!-- Info da música -->
-        <div class="current-track-info" id="currentTrackInfo">
-            🎵 Clique no play
-        </div>
-        
-        <!-- Botão tela cheia -->
         <button class="fullscreen-btn" id="fullscreenBtn">
             <i class="fas fa-expand"></i>
         </button>
     </div>
 
-    <!-- Menu lateral -->
     <div class="drawer" id="drawer">
         <div class="drawer-header">
             <h3><i class="fas fa-tv"></i> MUTV Controles</h3>
             <button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button>
         </div>
         
-        <!-- Seção de vídeos - FÁCIL ADIÇÃO -->
         <div class="videos-section">
             <h4><i class="fas fa-video"></i> VÍDEOS EM LOOP</h4>
             <div class="video-list" id="videoList"></div>
@@ -535,14 +513,12 @@
             </button>
         </div>
         
-        <!-- Seção de músicas -->
         <div class="music-section">
             <h4><i class="fas fa-music"></i> PLAYLIST</h4>
             <div class="playlist-container" id="playlistContainer"></div>
         </div>
     </div>
 
-    <!-- Modal para adicionar vídeo -->
     <div class="modal" id="videoModal">
         <div class="modal-content">
             <h3><i class="fas fa-plus-circle"></i> Adicionar Vídeo</h3>
@@ -559,7 +535,7 @@
     <div class="notification" id="notification"><span id="notificationText"></span></div>
 
     <script>
-        // ==================== LISTA DE VÍDEOS (VOCÊ PODE ADICIONAR MAIS AQUI) ====================
+        // ==================== LISTA DE VÍDEOS ====================
         let videosList = [
             { src: "macoca1.mp4", nome: "Macoca 1" },
             { src: "aluguecopos (1).mp4", nome: "AlugueCopos" },
@@ -769,7 +745,7 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
-    
+   
         ];
         
         // ==================== ELEMENTOS ====================
@@ -786,7 +762,7 @@
         
         let currentMusicIndex = 0;
         let isPlaying = false;
-        let shuffle = false;
+        let shuffleActive = false;
         
         // ==================== FUNÇÕES DOS VÍDEOS ====================
         function carregarVideo(index) {
@@ -797,7 +773,7 @@
             if(mainVideo && video.src) {
                 mainVideo.src = video.src;
                 mainVideo.load();
-                mainVideo.play().catch(e => console.log("Erro no vídeo:", e));
+                mainVideo.play().catch(e => console.log("Erro vídeo:", e));
             }
             renderVideoList();
         }
@@ -811,7 +787,7 @@
         
         function iniciarAlternanciaVideos() {
             if(videoInterval) clearInterval(videoInterval);
-            videoInterval = setInterval(alternarVideo, 15000); // Troca a cada 15 segundos
+            videoInterval = setInterval(alternarVideo, 15000);
         }
         
         function renderVideoList() {
@@ -820,10 +796,10 @@
             videosList.forEach((video, idx) => {
                 const isActive = (idx === currentVideoIndex);
                 html += `
-                    <div class="video-item ${isActive ? 'active' : ''}" onclick="selecionarVideo(${idx})">
-                        <span class="video-name"><i class="fas fa-play-circle"></i> ${video.nome}</span>
+                    <div class="video-item ${isActive ? 'active' : ''}" onclick="window.selecionarVideo(${idx})">
+                        <span class="video-name"><i class="fas fa-play-circle"></i> ${escapeHtml(video.nome)}</span>
                         <div class="video-actions">
-                            <button onclick="event.stopPropagation(); removerVideo(${idx})" title="Remover"><i class="fas fa-trash-alt"></i></button>
+                            <button onclick="event.stopPropagation(); window.removerVideo(${idx})" title="Remover"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                 `;
@@ -831,7 +807,6 @@
             videoListContainer.innerHTML = html;
         }
         
-        // Funções globais para os vídeos
         window.selecionarVideo = function(idx) {
             carregarVideo(idx);
             showNotification(`🎬 Vídeo: ${videosList[idx].nome}`);
@@ -852,7 +827,7 @@
         
         function adicionarVideo(nome, caminho) {
             if(!nome.trim() || !caminho.trim()) {
-                showNotification('⚠️ Preencha nome e caminho do vídeo');
+                showNotification('⚠️ Preencha nome e caminho');
                 return false;
             }
             videosList.push({ src: caminho.trim(), nome: nome.trim() });
@@ -861,22 +836,37 @@
             return true;
         }
         
-        // ==================== FUNÇÕES DA PLAYLIST ====================
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if(m === '&') return '&amp;';
+                if(m === '<') return '&lt;';
+                if(m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        // ==================== FUNÇÕES DA MÚSICA (CORRIGIDAS) ====================
         function renderPlaylist() {
             let html = '';
             musicas.forEach((m, idx) => {
-                const isActive = (idx === currentMusicIndex && isPlaying);
+                const isActive = (idx === currentMusicIndex);
                 html += `
                     <div class="playlist-item ${isActive ? 'playing' : ''}" onclick="window.selecionarMusica(${idx})">
                         <div class="music-number">${(idx+1).toString().padStart(2,'0')}</div>
                         <div class="playlist-info">
-                            <div class="playlist-title">${m.title}</div>
-                            <div class="playlist-artist">${m.artist}</div>
+                            <div class="playlist-title">${escapeHtml(m.title)}</div>
+                            <div class="playlist-artist">${escapeHtml(m.artist)}</div>
                         </div>
                     </div>
                 `;
             });
             playlistContainer.innerHTML = html;
+        }
+        
+        function atualizarInfoMusica() {
+            const track = musicas[currentMusicIndex];
+            currentTrackInfo.innerHTML = `🎵 ${track.title} - ${track.artist}`;
+            renderPlaylist();
         }
         
         function carregarMusica(index) {
@@ -885,14 +875,18 @@
             currentMusicIndex = index;
             const track = musicas[currentMusicIndex];
             musicPlayer.src = track.src;
-            currentTrackInfo.innerHTML = `🎵 ${track.title} - ${track.artist}`;
-            renderPlaylist();
+            musicPlayer.load();
+            atualizarInfoMusica();
         }
         
         function playMusic() {
             const track = musicas[currentMusicIndex];
-            musicPlayer.src = track.src;
-            musicPlayer.load();
+            // Garantir que o src está correto
+            if(musicPlayer.src !== track.src) {
+                musicPlayer.src = track.src;
+                musicPlayer.load();
+            }
+            
             musicPlayer.play()
                 .then(() => {
                     isPlaying = true;
@@ -901,8 +895,10 @@
                     showNotification(`🎵 Tocando: ${track.title}`);
                 })
                 .catch(e => {
-                    console.log('Erro:', e);
-                    showNotification('⚠️ Erro ao tocar música');
+                    console.log('Erro play:', e);
+                    showNotification('⚠️ Erro ao tocar música. Verifique o arquivo.');
+                    isPlaying = false;
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 });
         }
         
@@ -914,47 +910,69 @@
         }
         
         function togglePlayPause() {
-            if(!musicPlayer.src || musicPlayer.src === window.location.href) {
-                carregarMusica(currentMusicIndex);
+            if(!musicas[currentMusicIndex]) return;
+            
+            if(isPlaying) {
+                pauseMusic();
+            } else {
+                // Se não tem src carregado ou é diferente, recarrega
+                const track = musicas[currentMusicIndex];
+                if(!musicPlayer.src || musicPlayer.src !== track.src) {
+                    musicPlayer.src = track.src;
+                    musicPlayer.load();
+                }
+                playMusic();
             }
-            isPlaying ? pauseMusic() : playMusic();
         }
         
         function nextTrack() {
+            if(musicas.length === 0) return;
+            
             pauseMusic();
             let nextIndex;
-            if(shuffle) {
+            if(shuffleActive) {
                 let newIdx;
-                do { newIdx = Math.floor(Math.random() * musicas.length); } while(newIdx === currentMusicIndex && musicas.length > 1);
+                do {
+                    newIdx = Math.floor(Math.random() * musicas.length);
+                } while(newIdx === currentMusicIndex && musicas.length > 1);
                 nextIndex = newIdx;
             } else {
                 nextIndex = (currentMusicIndex + 1) % musicas.length;
             }
             currentMusicIndex = nextIndex;
             carregarMusica(currentMusicIndex);
-            if(isPlaying) playMusic();
+            playMusic();
         }
         
         function prevTrack() {
+            if(musicas.length === 0) return;
+            
             pauseMusic();
             let prevIndex;
-            if(shuffle) {
+            if(shuffleActive) {
                 let newIdx;
-                do { newIdx = Math.floor(Math.random() * musicas.length); } while(newIdx === currentMusicIndex && musicas.length > 1);
+                do {
+                    newIdx = Math.floor(Math.random() * musicas.length);
+                } while(newIdx === currentMusicIndex && musicas.length > 1);
                 prevIndex = newIdx;
             } else {
                 prevIndex = (currentMusicIndex - 1 + musicas.length) % musicas.length;
             }
             currentMusicIndex = prevIndex;
             carregarMusica(currentMusicIndex);
-            if(isPlaying) playMusic();
+            playMusic();
         }
         
         window.selecionarMusica = function(idx) {
+            if(currentMusicIndex === idx && isPlaying) {
+                closeDrawer();
+                return;
+            }
+            
             pauseMusic();
             currentMusicIndex = idx;
             carregarMusica(currentMusicIndex);
-            if(isPlaying) playMusic();
+            playMusic();
             closeDrawer();
         };
         
@@ -963,11 +981,9 @@
             if(!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
                 fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
-                showNotification('⛶ Tela cheia ativada');
             } else {
                 document.exitFullscreen();
                 fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
-                showNotification('⬚ Tela normal');
             }
         }
         
@@ -979,7 +995,7 @@
             }
         });
         
-        // ==================== FUNÇÕES UI ====================
+        // ==================== UI ====================
         function showNotification(msg) {
             const n = document.getElementById('notification');
             const text = document.getElementById('notificationText');
@@ -998,7 +1014,7 @@
             document.getElementById('drawer').classList.remove('open');
         }
         
-        // ==================== MODAL DE ADICIONAR VÍDEO ====================
+        // ==================== MODAL VÍDEO ====================
         const modal = document.getElementById('videoModal');
         const addVideoBtn = document.getElementById('addVideoBtn');
         const confirmVideo = document.getElementById('confirmVideo');
@@ -1033,37 +1049,33 @@
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
         shuffleBtn.addEventListener('click', () => {
-            shuffle = !shuffle;
-            shuffleBtn.style.background = shuffle ? 'var(--primary-color)' : 'rgba(0,0,0,0.6)';
-            shuffleBtn.style.color = shuffle ? '#000' : '#fff';
-            showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial');
+            shuffleActive = !shuffleActive;
+            shuffleBtn.style.background = shuffleActive ? 'var(--primary-color)' : 'rgba(0,0,0,0.6)';
+            shuffleBtn.style.color = shuffleActive ? '#000' : '#fff';
+            showNotification(shuffleActive ? '🔀 Aleatório ON' : '➡️ Sequencial');
         });
         
         fullscreenBtn.addEventListener('click', toggleFullscreen);
         document.getElementById('menuBtn').addEventListener('click', openDrawer);
         document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
         
-        // ==================== TEMAS ====================
+        // ==================== TEMA (duplo clique no fullscreen) ====================
         const themes = [
             { name: 'theme-red', color: '#e63946' },
             { name: 'theme-blue', color: '#00a8ff' },
             { name: 'theme-green', color: '#00ff88' },
             { name: 'theme-purple', color: '#aa44ff' }
         ];
-        
         let currentTheme = 0;
         function mudarTema() {
             currentTheme = (currentTheme + 1) % themes.length;
             document.body.className = themes[currentTheme].name;
             showNotification(`🎨 Tema: ${themes[currentTheme].name.replace('theme-', '')}`);
         }
-        
-        // Duplo clique no botão fullscreen muda tema (ou clique longo, mas simples)
         fullscreenBtn.addEventListener('dblclick', mudarTema);
         
         // ==================== INICIALIZAÇÃO ====================
         window.addEventListener('load', () => {
-            // Carregar primeiro vídeo
             if(videosList.length > 0) {
                 mainVideo.src = videosList[0].src;
                 mainVideo.load();
@@ -1073,21 +1085,26 @@
             renderVideoList();
             renderPlaylist();
             
-            // Selecionar música aleatória
+            // Selecionar música aleatória inicial
             const randomIndex = Math.floor(Math.random() * musicas.length);
             currentMusicIndex = randomIndex;
             carregarMusica(currentMusicIndex);
+            atualizarInfoMusica();
             
-            // Iniciar alternância de vídeos
             iniciarAlternanciaVideos();
             
             showNotification('🎬 MUTV - Clique no play para ouvir música');
         });
         
-        // Garantir que vídeos continuem em loop mesmo após erro
         mainVideo.addEventListener('error', () => {
-            console.log('Erro no vídeo, tentando próximo');
             alternarVideo();
+        });
+        
+        // Quando a música terminar, tocar próxima
+        musicPlayer.addEventListener('ended', () => {
+            if(isPlaying) {
+                nextTrack();
+            }
         });
     </script>
 </body>
