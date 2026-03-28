@@ -93,7 +93,7 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* BARRA DE CONTROLES – FUNDO REMOVIDO, BOTÕES LIVRES */
+        /* BARRA DE CONTROLES – APENAS BOTÕES, SEM FUNDO */
         .music-controls-bar {
             position: absolute;
             bottom: 20px;
@@ -101,11 +101,11 @@
             right: 20px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
             z-index: 20;
             background: none;
             padding: 0;
-            border-radius: 0;
         }
 
         .buttons-group {
@@ -139,19 +139,21 @@
             font-size: 1.4rem;
         }
 
-        /* INFORMAÇÃO DA MÚSICA – mesma área e estilo que antes tinha o relógio */
-        .current-track-info {
-            flex: 1;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            padding: 6px 12px;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.9);
-            border-left: 3px solid var(--primary-color);
-            text-align: left;
-            letter-spacing: 0.5px;
+        /* NOME DA MÚSICA – SEM BARRA, APENAS TEXTO COM SOMBRA */
+        .floating-track-info {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
             font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            background: none;
+            padding: 0;
+            z-index: 20;
+            pointer-events: none;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -469,7 +471,7 @@
         @media (min-width: 768px) {
             .tv-control-btn { width: 44px; height: 44px; font-size: 1.3rem; }
             .fullscreen-btn { width: 44px; height: 44px; font-size: 1.3rem; }
-            .current-track-info { font-size: 0.85rem; }
+            .floating-track-info { font-size: 1rem; bottom: 90px; }
             .top-ticker { font-size: 1.2rem; padding: 12px 0; }
         }
     </style>
@@ -492,12 +494,14 @@
                 <button class="tv-control-btn" id="tvNextBtn"><i class="fas fa-step-forward"></i></button>
                 <button class="tv-control-btn" id="tvShuffleBtn"><i class="fas fa-random"></i></button>
             </div>
-            <div class="current-track-info" id="currentTrackInfo">
-                🎵 Clique no play
-            </div>
             <button class="fullscreen-btn" id="fullscreenBtn">
                 <i class="fas fa-expand"></i>
             </button>
+        </div>
+
+        <!-- Nome da música flutuante, sem barra, sem fundo -->
+        <div class="floating-track-info" id="floatingTrackInfo">
+            🎵 Clique no play
         </div>
     </div>
 
@@ -756,7 +760,7 @@
         const prevBtn = document.getElementById('tvPrevBtn');
         const nextBtn = document.getElementById('tvNextBtn');
         const shuffleBtn = document.getElementById('tvShuffleBtn');
-        const currentTrackInfo = document.getElementById('currentTrackInfo');
+        const floatingTrackInfo = document.getElementById('floatingTrackInfo');
         const playlistContainer = document.getElementById('playlistContainer');
         const videoListContainer = document.getElementById('videoList');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -862,7 +866,7 @@
         
         function atualizarInfoMusica() {
             const track = musicas[currentMusicIndex];
-            currentTrackInfo.innerHTML = `🎵 ${track.title} - ${track.artist}`;
+            floatingTrackInfo.innerHTML = `🎵 ${track.title} - ${track.artist}`;
             renderPlaylist();
         }
         
