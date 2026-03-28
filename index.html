@@ -50,8 +50,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 90px;
-            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+            height: 70px;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
             z-index: 2;
             pointer-events: none;
         }
@@ -62,16 +62,16 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(6px);
             overflow: hidden;
             white-space: nowrap;
             color: #fff;
-            font-weight: 800;
-            font-size: 0.85rem;
-            padding: 8px 0;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 6px 0;
             z-index: 10;
-            border-bottom: 2px solid var(--primary-color);
+            border-bottom: 1px solid var(--primary-color);
             pointer-events: none;
         }
 
@@ -86,36 +86,37 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* Barra de controles - ocupa toda a largura */
+        /* Barra de controles - mais fina e transparente */
         .music-controls-bar {
             position: absolute;
-            bottom: 15px;
-            left: 10px;
-            right: 10px;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
             z-index: 20;
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(12px);
-            padding: 6px 12px;
-            border-radius: 40px;
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(8px);
+            padding: 4px 10px;
+            border-radius: 30px;
+            border: none;
         }
 
         .buttons-group {
             display: flex;
-            gap: 6px;
+            gap: 4px;
         }
 
+        /* Botões sem círculo, mais transparentes */
         .tv-control-btn {
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.4);
             border: none;
-            color: rgba(255,255,255,0.9);
-            font-size: 0.9rem;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.85rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 0;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -124,38 +125,48 @@
         }
 
         .tv-control-btn:hover {
-            transform: scale(1.05);
-            background: var(--primary-color);
-            color: #000;
+            transform: scale(1.1);
+            color: var(--primary-color);
+            background: transparent;
         }
 
+        /* Botão play sem círculo */
         .tv-control-btn.play-pause {
-            background: var(--primary-color);
-            color: #000;
+            background: transparent;
+            color: var(--primary-color);
+            font-size: 1rem;
+            width: 30px;
         }
 
+        .tv-control-btn.play-pause:hover {
+            transform: scale(1.15);
+            color: white;
+        }
+
+        /* Informação da música - mais fina */
         .current-track-info {
             flex: 1;
-            background: rgba(0,0,0,0.4);
-            padding: 5px 10px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            color: #fff;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.9);
             border-left: 2px solid var(--primary-color);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            letter-spacing: 0.3px;
         }
 
-        /* Botão tela cheia integrado na mesma barra */
+        /* Botão tela cheia integrado - sem círculo */
         .fullscreen-btn {
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.4);
             border: none;
-            color: rgba(255,255,255,0.9);
-            font-size: 0.9rem;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.85rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 0;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -164,26 +175,27 @@
         }
 
         .fullscreen-btn:hover {
-            background: var(--primary-color);
-            color: #000;
+            transform: scale(1.1);
+            color: var(--primary-color);
+            background: transparent;
         }
 
-        /* Botão menu com 3 pontinhos (sem círculo aparente) */
+        /* Botão menu com 3 pontinhos - mais discreto */
         .menu-btn {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 10px;
+            right: 10px;
             background: transparent;
-            color: white;
+            color: rgba(255,255,255,0.7);
             border: none;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             cursor: pointer;
             z-index: 15;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 6px;
-            opacity: 0.8;
+            padding: 4px;
+            opacity: 0.6;
             transition: opacity 0.2s;
         }
 
@@ -197,15 +209,15 @@
             position: fixed;
             top: 0;
             right: -100%;
-            width: 320px;
+            width: 300px;
             height: 100vh;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(15px);
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(20px);
             transition: right 0.3s ease;
             z-index: 1000;
             padding: 20px;
             overflow-y: auto;
-            border-left: 2px solid var(--primary-color);
+            border-left: 1px solid var(--primary-color);
         }
 
         .drawer.open {
@@ -217,21 +229,27 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding-bottom: 15px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #333;
         }
 
         .drawer-header h3 {
             color: var(--primary-color);
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .close-drawer {
             background: none;
             border: none;
             color: white;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .close-drawer:hover {
+            opacity: 1;
+            color: var(--primary-color);
         }
 
         /* Seção de vídeos */
@@ -242,48 +260,49 @@
         .videos-section h4 {
             color: var(--primary-color);
             margin-bottom: 10px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .video-list {
-            max-height: 220px;
+            max-height: 200px;
             overflow-y: auto;
         }
 
         .video-item {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             border: 1px solid #333;
-            border-radius: 25px;
-            padding: 8px 12px;
+            border-radius: 20px;
+            padding: 7px 12px;
             margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .video-item:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
             border-color: var(--primary-color);
         }
 
         .video-item.active {
             border-color: var(--primary-color);
-            background: rgba(220, 20, 60, 0.2);
+            background: rgba(220, 20, 60, 0.15);
         }
 
         .video-name {
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             flex: 1;
         }
 
         .video-actions button {
             background: none;
             border: none;
-            color: #aaa;
+            color: #888;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             padding: 4px;
         }
 
@@ -295,17 +314,22 @@
             background: var(--primary-color);
             color: #000;
             border: none;
-            padding: 8px;
-            border-radius: 25px;
+            padding: 7px;
+            border-radius: 20px;
             width: 100%;
             margin-top: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            opacity: 0.9;
+        }
+
+        .add-video-btn:hover {
+            opacity: 1;
         }
 
         /* Playlist de músicas */
@@ -318,11 +342,11 @@
         .music-section h4 {
             color: var(--primary-color);
             margin-bottom: 10px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .playlist-container {
-            max-height: 280px;
+            max-height: 260px;
             overflow-y: auto;
         }
 
@@ -330,22 +354,28 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px 12px;
+            padding: 7px 12px;
             border: 1px solid #333;
-            border-radius: 25px;
+            border-radius: 20px;
             margin-bottom: 6px;
             cursor: pointer;
             background: rgba(255,255,255,0.05);
+            transition: all 0.2s;
+        }
+
+        .playlist-item:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--primary-color);
         }
 
         .playlist-item.playing {
             border-color: var(--primary-color);
-            background: rgba(220, 20, 60, 0.2);
+            background: rgba(220, 20, 60, 0.15);
         }
 
         .music-number {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background: var(--primary-color);
             color: #000;
@@ -353,7 +383,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
         }
 
         .playlist-info {
@@ -361,12 +391,12 @@
         }
 
         .playlist-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: white;
         }
 
         .playlist-artist {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #aaa;
         }
 
@@ -377,7 +407,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.85);
             z-index: 2000;
             display: none;
             align-items: center;
@@ -390,28 +420,28 @@
 
         .modal-content {
             background: #1a1a1a;
-            border: 2px solid var(--primary-color);
+            border: 1px solid var(--primary-color);
             border-radius: 20px;
             padding: 20px;
             width: 90%;
-            max-width: 380px;
+            max-width: 360px;
         }
 
         .modal-content h3 {
             color: var(--primary-color);
             margin-bottom: 15px;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .modal-content input {
             width: 100%;
-            padding: 10px;
+            padding: 8px 12px;
             background: #2a2a2a;
             border: 1px solid #444;
-            border-radius: 25px;
+            border-radius: 20px;
             color: white;
             margin-bottom: 12px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .modal-buttons {
@@ -421,11 +451,11 @@
         }
 
         .modal-buttons button {
-            padding: 8px 18px;
-            border-radius: 25px;
+            padding: 6px 16px;
+            border-radius: 20px;
             cursor: pointer;
             border: none;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
 
         .modal-buttons .confirm {
@@ -441,18 +471,19 @@
 
         .notification {
             position: fixed;
-            bottom: 80px;
+            bottom: 70px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.75);
             color: #fff;
-            padding: 6px 18px;
-            border-radius: 50px;
+            padding: 5px 16px;
+            border-radius: 30px;
             z-index: 2000;
             transition: transform 0.3s;
-            border-left: 3px solid var(--primary-color);
-            font-size: 0.75rem;
+            border-left: 2px solid var(--primary-color);
+            font-size: 0.7rem;
             white-space: nowrap;
+            backdrop-filter: blur(4px);
         }
 
         .notification.show {
@@ -460,10 +491,10 @@
         }
 
         @media (min-width: 768px) {
-            .tv-control-btn { width: 36px; height: 36px; font-size: 1rem; }
-            .fullscreen-btn { width: 36px; height: 36px; font-size: 1rem; }
-            .current-track-info { font-size: 0.8rem; }
-            .top-ticker { font-size: 0.9rem; }
+            .tv-control-btn { width: 30px; height: 30px; font-size: 0.9rem; }
+            .fullscreen-btn { width: 30px; height: 30px; font-size: 0.9rem; }
+            .current-track-info { font-size: 0.7rem; }
+            .top-ticker { font-size: 0.85rem; padding: 7px 0; }
         }
     </style>
 </head>
@@ -476,10 +507,8 @@
             <span><i class="fas fa-headphones-alt fa-spin"></i> MUTV - A MELHOR PLAYLIST • MÚSICAS QUE EMBALAM SEU DIA • INFORMAÇÕES: 12 98846-1978 • SIGA NAS REDES •</span>
         </div>
         
-        <!-- Botão menu com 3 pontinhos -->
         <button class="menu-btn" id="menuBtn"><i class="fas fa-ellipsis-v"></i></button>
         
-        <!-- Barra única que vai de ponta a ponta -->
         <div class="music-controls-bar">
             <div class="buttons-group">
                 <button class="tv-control-btn" id="tvPrevBtn"><i class="fas fa-step-backward"></i></button>
@@ -545,7 +574,7 @@
         
         // ==================== PLAYLIST DE MÚSICAS ====================
         const musicas = [
-                   { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+                  { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -742,7 +771,7 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
-  
+   
         ];
         
         // ==================== ELEMENTOS ====================
@@ -1046,8 +1075,8 @@
         nextBtn.addEventListener('click', nextTrack);
         shuffleBtn.addEventListener('click', () => {
             shuffleActive = !shuffleActive;
-            shuffleBtn.style.background = shuffleActive ? 'var(--primary-color)' : 'rgba(0,0,0,0.6)';
-            shuffleBtn.style.color = shuffleActive ? '#000' : '#fff';
+            shuffleBtn.style.opacity = shuffleActive ? '1' : '0.7';
+            shuffleBtn.style.color = shuffleActive ? 'var(--primary-color)' : 'rgba(255,255,255,0.85)';
             showNotification(shuffleActive ? '🔀 Aleatório ON' : '➡️ Sequencial');
         });
         
