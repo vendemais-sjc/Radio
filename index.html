@@ -138,11 +138,24 @@
         .car-mode .car-control-btn:active { transform: scale(0.95); background: var(--primary-color); color: #000; }
         .car-mode .car-control-btn.play-pause { background: var(--primary-color); color: #000; font-size: 2.2rem; }
         .car-mode .car-track-info { position: fixed; top: 20px; left: 0; right: 0; text-align: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); padding: 15px; z-index: 1001; pointer-events: none; color: white; font-size: 1rem; font-weight: bold; text-shadow: 1px 1px 2px black; }
+        /* Responsividade para TV e telas grandes */
         @media (min-width: 1024px) {
             .control-btn { font-size: 2.4rem; width: 64px; height: 64px; }
             .play-btn { font-size: 3.5rem; width: 80px; height: 80px; }
-            .track-info p { font-size: 1.4rem; }
+            .track-info p { font-size: 1.4rem; white-space: normal; word-break: break-word; }
+            .player-card { margin: 20px; border-radius: 32px; }
+            .extra-video-section { margin: 10px 20px 20px; border-radius: 20px; }
+            .top-ticker { font-size: 1.6rem; padding: 18px 20px; }
+            .drawer { width: 400px; }
             .car-mode .car-control-btn { width: 90px; height: 90px; font-size: 2.5rem; }
+            .car-mode .car-track-info { font-size: 1.3rem; top: 30px; }
+        }
+        /* Ajustes para orientação paisagem em dispositivos móveis */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .player-card { margin: 8px; padding: 8px; }
+            .control-btn { width: 40px; height: 40px; font-size: 1.6rem; }
+            .play-btn { width: 56px; height: 56px; font-size: 2.4rem; }
+            .top-ticker { font-size: 1rem; padding: 8px 12px; }
         }
     </style>
 </head>
@@ -462,7 +475,7 @@
             { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
         ];
 
-        // ==================== VÍDEOS PRINCIPAIS (SISTEMA DO SEGUNDO CÓDIGO) ====================
+        // ==================== VÍDEOS PRINCIPAIS ====================
         let videosList = [
             { src: "macoca1.mp4", nome: "Macoca 1" },
             { src: "aluguecopos (1).mp4", nome: "AlugueCopos" },
@@ -537,7 +550,7 @@
 
         function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-        // ==================== TODAS AS FUNÇÕES DO PLAYER (PRIMEIRO CÓDIGO) ====================
+        // ==================== PLAYER E DEMAIS FUNÇÕES ====================
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -554,7 +567,6 @@
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         const feedbackTextarea = document.getElementById('feedbackText');
         
-        // Elementos modo carro
         const carVideoControls = document.getElementById('carVideoControls');
         const carPrevBtn = document.getElementById('carPrevBtn');
         const carPlayPauseBtn = document.getElementById('carPlayPauseBtn');
@@ -578,7 +590,6 @@
         let extraVideoInterval = null;
         let isCarModeActive = false;
         
-        // ==================== FUNÇÕES DO PLAYER ====================
         function updateFilteredPlaylist() {
             if(allSongsMode) { filteredPlaylist = [...musicas]; }
             else {
@@ -891,7 +902,7 @@
             showNotification('✅ Modo normal restaurado');
         }
         
-        // ==================== VÍDEO EXTRA (ANÚNCIOS) ====================
+        // ==================== VÍDEO EXTRA ====================
         const videosExtra = [
             { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
             { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/" }
@@ -918,7 +929,7 @@
             extraVideoInterval = setInterval(alternarVideoExtra, 15000);
         }
         
-        // ==================== EVENTOS GERAIS ====================
+        // ==================== EVENTOS ====================
         document.getElementById('progressBar').addEventListener('click', (e) => {
             if(isAdPlaying) return;
             const rect = e.currentTarget.getBoundingClientRect();
@@ -976,7 +987,6 @@
             document.querySelectorAll('.star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); }); 
         });
         
-        // Media Session
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', () => playMusic());
             navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
@@ -984,7 +994,7 @@
             navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
         }
         
-        // ==================== INICIALIZAÇÃO ====================
+        // Inicialização
         window.addEventListener('load', () => {
             updateFilteredPlaylist();
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
@@ -994,12 +1004,11 @@
             tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
             iniciarAlternanciaExtra();
-            // Inicia vídeos principais
             if(videosList.length) carregarVideo(0);
             iniciarAlternanciaVideos();
         });
         
-        // Adicionar vídeo modal
+        // Modal de adicionar vídeo
         const modal = document.getElementById('videoModal');
         const addVideoBtn = document.getElementById('addVideoBtn');
         const confirmVideo = document.getElementById('confirmVideo');
