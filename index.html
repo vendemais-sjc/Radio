@@ -103,7 +103,7 @@
             align-items: center;
             gap: 12px;
             z-index: 20;
-            background: none;  /* fundo transparente */
+            background: none;
             padding: 0;
             border-radius: 0;
         }
@@ -139,6 +139,7 @@
             font-size: 1.4rem;
         }
 
+        /* RELÓGIO – mesma área e estilo que antes tinha o nome da música */
         .current-track-info {
             flex: 1;
             background: rgba(0,0,0,0.5);
@@ -148,10 +149,9 @@
             font-size: 0.75rem;
             color: rgba(255,255,255,0.9);
             border-left: 3px solid var(--primary-color);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            text-align: center;
             letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         /* BOTÃO TELA CHEIA SEM FUNDO */
@@ -175,7 +175,7 @@
             color: var(--primary-color);
         }
 
-        /* MENU (3 PONTINHOS) – MANTIDO COM TRANSPARÊNCIA */
+        /* MENU (3 PONTINHOS) */
         .menu-btn {
             position: absolute;
             top: 12px;
@@ -198,7 +198,7 @@
             transform: scale(1.05);
         }
 
-        /* DRAWER (MENU LATERAL) – MANTIDO */
+        /* DRAWER (MENU LATERAL) */
         .drawer {
             position: fixed;
             top: 0;
@@ -463,8 +463,6 @@
             color: white;
         }
 
-        /* NOTIFICAÇÃO REMOVIDA – NÃO HÁ MAIS .notification */
-
         @media (min-width: 768px) {
             .tv-control-btn { width: 44px; height: 44px; font-size: 1.3rem; }
             .fullscreen-btn { width: 44px; height: 44px; font-size: 1.3rem; }
@@ -491,8 +489,8 @@
                 <button class="tv-control-btn" id="tvNextBtn"><i class="fas fa-step-forward"></i></button>
                 <button class="tv-control-btn" id="tvShuffleBtn"><i class="fas fa-random"></i></button>
             </div>
-            <div class="current-track-info" id="currentTrackInfo">
-                🎵 Clique no play
+            <div class="current-track-info" id="clockDisplay">
+                --:--
             </div>
             <button class="fullscreen-btn" id="fullscreenBtn">
                 <i class="fas fa-expand"></i>
@@ -533,7 +531,6 @@
     </div>
 
     <audio id="musicPlayer" preload="auto"></audio>
-    <!-- NOTIFICAÇÃO REMOVIDA -->
 
     <script>
         // ==================== LISTA DE VÍDEOS ====================
@@ -756,7 +753,7 @@
         const prevBtn = document.getElementById('tvPrevBtn');
         const nextBtn = document.getElementById('tvNextBtn');
         const shuffleBtn = document.getElementById('tvShuffleBtn');
-        const currentTrackInfo = document.getElementById('currentTrackInfo');
+        const clockDisplay = document.getElementById('clockDisplay');
         const playlistContainer = document.getElementById('playlistContainer');
         const videoListContainer = document.getElementById('videoList');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -764,6 +761,16 @@
         let currentMusicIndex = 0;
         let isPlaying = false;
         let shuffleActive = false;
+        
+        // ==================== FUNÇÕES DO RELÓGIO ====================
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            clockDisplay.textContent = `${hours}:${minutes}`;
+        }
+        updateClock();
+        setInterval(updateClock, 60000); // atualiza a cada minuto
         
         // ==================== FUNÇÕES DOS VÍDEOS ====================
         function carregarVideo(index) {
@@ -860,12 +867,6 @@
             playlistContainer.innerHTML = html;
         }
         
-        function atualizarInfoMusica() {
-            const track = musicas[currentMusicIndex];
-            currentTrackInfo.innerHTML = `🎵 ${track.title} - ${track.artist}`;
-            renderPlaylist();
-        }
-        
         function carregarMusica(index) {
             if(index >= musicas.length) index = 0;
             if(index < 0) index = musicas.length - 1;
@@ -873,7 +874,7 @@
             const track = musicas[currentMusicIndex];
             musicPlayer.src = track.src;
             musicPlayer.load();
-            atualizarInfoMusica();
+            renderPlaylist(); // apenas destaca a música atual na playlist
         }
         
         function playMusic() {
@@ -1069,7 +1070,6 @@
             const randomIndex = Math.floor(Math.random() * musicas.length);
             currentMusicIndex = randomIndex;
             carregarMusica(currentMusicIndex);
-            atualizarInfoMusica();
             
             iniciarAlternanciaVideos();
         });
