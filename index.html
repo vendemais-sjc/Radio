@@ -139,7 +139,7 @@
             font-size: 1.4rem;
         }
 
-        /* RELÓGIO – mesma área e estilo que antes tinha o nome da música */
+        /* INFORMAÇÃO DA MÚSICA – mesma área e estilo que antes tinha o relógio */
         .current-track-info {
             flex: 1;
             background: rgba(0,0,0,0.5);
@@ -149,9 +149,12 @@
             font-size: 0.75rem;
             color: rgba(255,255,255,0.9);
             border-left: 3px solid var(--primary-color);
-            text-align: center;
+            text-align: left;
             letter-spacing: 0.5px;
             font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* BOTÃO TELA CHEIA SEM FUNDO */
@@ -489,8 +492,8 @@
                 <button class="tv-control-btn" id="tvNextBtn"><i class="fas fa-step-forward"></i></button>
                 <button class="tv-control-btn" id="tvShuffleBtn"><i class="fas fa-random"></i></button>
             </div>
-            <div class="current-track-info" id="clockDisplay">
-                --:--
+            <div class="current-track-info" id="currentTrackInfo">
+                🎵 Clique no play
             </div>
             <button class="fullscreen-btn" id="fullscreenBtn">
                 <i class="fas fa-expand"></i>
@@ -753,7 +756,7 @@
         const prevBtn = document.getElementById('tvPrevBtn');
         const nextBtn = document.getElementById('tvNextBtn');
         const shuffleBtn = document.getElementById('tvShuffleBtn');
-        const clockDisplay = document.getElementById('clockDisplay');
+        const currentTrackInfo = document.getElementById('currentTrackInfo');
         const playlistContainer = document.getElementById('playlistContainer');
         const videoListContainer = document.getElementById('videoList');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -761,16 +764,6 @@
         let currentMusicIndex = 0;
         let isPlaying = false;
         let shuffleActive = false;
-        
-        // ==================== FUNÇÕES DO RELÓGIO ====================
-        function updateClock() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            clockDisplay.textContent = `${hours}:${minutes}`;
-        }
-        updateClock();
-        setInterval(updateClock, 60000); // atualiza a cada minuto
         
         // ==================== FUNÇÕES DOS VÍDEOS ====================
         function carregarVideo(index) {
@@ -867,6 +860,12 @@
             playlistContainer.innerHTML = html;
         }
         
+        function atualizarInfoMusica() {
+            const track = musicas[currentMusicIndex];
+            currentTrackInfo.innerHTML = `🎵 ${track.title} - ${track.artist}`;
+            renderPlaylist();
+        }
+        
         function carregarMusica(index) {
             if(index >= musicas.length) index = 0;
             if(index < 0) index = musicas.length - 1;
@@ -874,7 +873,7 @@
             const track = musicas[currentMusicIndex];
             musicPlayer.src = track.src;
             musicPlayer.load();
-            renderPlaylist(); // apenas destaca a música atual na playlist
+            atualizarInfoMusica();
         }
         
         function playMusic() {
