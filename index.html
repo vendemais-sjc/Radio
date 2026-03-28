@@ -90,7 +90,7 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* Barra de controles – apenas botões, sem fundo */
+        /* Barra de controles – sem fundo, apenas botões e texto alinhado */
         .music-controls-bar {
             position: absolute;
             bottom: 20px;
@@ -98,7 +98,6 @@
             right: 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             gap: 12px;
             z-index: 20;
             background: none;
@@ -135,6 +134,24 @@
             font-size: 1.4rem;
         }
 
+        /* Nome da música – limpo e alinhado na barra */
+        .clean-music-name {
+            flex: 1;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            background: none;
+            padding: 0;
+            margin: 0;
+            border: none;
+            backdrop-filter: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+        }
+
         .fullscreen-btn {
             background: transparent;
             border: none;
@@ -153,29 +170,6 @@
         .fullscreen-btn:hover {
             transform: scale(1.1);
             color: var(--primary-color);
-        }
-
-        /* NOME DA MÚSICA – ABSOLUTAMENTE LIMPO */
-        .clean-music-name {
-            position: absolute;
-            bottom: 80px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-            background: none;
-            padding: 0;
-            margin: 0;
-            border: none;
-            backdrop-filter: none;
-            z-index: 20;
-            pointer-events: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .menu-btn {
@@ -200,7 +194,7 @@
             transform: scale(1.05);
         }
 
-        /* Drawer (menu lateral) */
+        /* DRAWER (MENU LATERAL) */
         .drawer {
             position: fixed;
             top: 0;
@@ -465,7 +459,7 @@
         @media (min-width: 768px) {
             .tv-control-btn { width: 44px; height: 44px; font-size: 1.3rem; }
             .fullscreen-btn { width: 44px; height: 44px; font-size: 1.3rem; }
-            .clean-music-name { font-size: 1rem; bottom: 90px; }
+            .clean-music-name { font-size: 1rem; }
             .top-ticker { font-size: 1.2rem; padding: 12px 0; }
         }
     </style>
@@ -488,14 +482,13 @@
                 <button class="tv-control-btn" id="tvNextBtn"><i class="fas fa-step-forward"></i></button>
                 <button class="tv-control-btn" id="tvShuffleBtn"><i class="fas fa-random"></i></button>
             </div>
+            <!-- Nome da música alinhado com os botões -->
+            <div class="clean-music-name" id="musicNameDisplay">
+                🎵 Clique no play
+            </div>
             <button class="fullscreen-btn" id="fullscreenBtn">
                 <i class="fas fa-expand"></i>
             </button>
-        </div>
-
-        <!-- Nome da música completamente limpo: sem fundo, sem borda, sem qualquer elemento visual -->
-        <div class="clean-music-name" id="musicNameDisplay">
-            🎵 Clique no play
         </div>
     </div>
 
