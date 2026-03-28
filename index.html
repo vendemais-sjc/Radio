@@ -2,546 +2,273 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV • Modo TV</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sistema de Vídeos e Músicas para TV</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            height: 100vh;
-            margin: 0;
-        }
-
-        body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
-        body.theme-blue { --primary-color: #00a8ff; --primary-dark: #0077be; }
-        body.theme-green { --primary-color: #00ff88; --primary-dark: #00cc6a; }
-        body.theme-purple { --primary-color: #aa44ff; --primary-dark: #7700cc; }
-        body { --primary-color: #e63946; --primary-dark: #b71c1c; }
-
-        .tv-app {
-            width: 100%;
-            max-width: 1920px;
-            max-height: 100vh;
-            aspect-ratio: 16 / 9;
             background: #000;
-            position: relative;
             overflow: hidden;
-            margin: auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .fullscreen-video {
+        /* Container principal */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Estilo dos players de vídeo */
+        .video-player {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 1;
+            transition: opacity 0.8s ease-in-out;
+            background: #000;
         }
 
-        .overlay-gradient {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+        .video-player.active {
+            opacity: 1;
             z-index: 2;
-            pointer-events: none;
+            visibility: visible;
         }
 
-        .top-ticker {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(6px);
-            overflow: hidden;
-            white-space: nowrap;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.1rem;
-            padding: 10px 0;
-            z-index: 10;
-            border-bottom: 2px solid var(--primary-color);
-            pointer-events: none;
+        .video-player.inactive {
+            opacity: 0;
+            z-index: 1;
+            visibility: visible;
         }
 
-        .top-ticker span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker-scroll 20s linear infinite;
-        }
-
-        @keyframes ticker-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* Barra de controles – sem fundo, apenas botões e texto alinhado */
-        .music-controls-bar {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 20;
-            background: none;
-            padding: 0;
-        }
-
-        .buttons-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .tv-control-btn {
-            background: transparent;
-            border: none;
-            color: rgba(255,255,255,0.9);
-            font-size: 1.2rem;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-shadow: 0 0 4px rgba(0,0,0,0.5);
-        }
-
-        .tv-control-btn:hover {
-            transform: scale(1.1);
-            color: var(--primary-color);
-        }
-
-        .tv-control-btn.play-pause {
-            color: var(--primary-color);
-            font-size: 1.4rem;
-        }
-
-        /* Nome da música – limpo e alinhado na barra */
-        .clean-music-name {
-            flex: 1;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-            background: none;
-            padding: 0;
-            margin: 0;
-            border: none;
-            backdrop-filter: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-align: left;
-        }
-
-        .fullscreen-btn {
-            background: transparent;
-            border: none;
-            color: rgba(255,255,255,0.9);
-            font-size: 1.2rem;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-shadow: 0 0 4px rgba(0,0,0,0.5);
-        }
-
-        .fullscreen-btn:hover {
-            transform: scale(1.1);
-            color: var(--primary-color);
-        }
-
-        .menu-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: transparent;
-            color: rgba(255,255,255,0.8);
-            border: none;
-            font-size: 1.3rem;
-            cursor: pointer;
-            z-index: 15;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px;
-            transition: all 0.2s;
-        }
-
-        .menu-btn:hover {
-            color: var(--primary-color);
-            transform: scale(1.05);
-        }
-
-        /* DRAWER (MENU LATERAL) */
-        .drawer {
+        /* Player de áudio (escondido) */
+        .audio-player {
             position: fixed;
-            top: 0;
-            right: -100%;
-            width: 300px;
-            height: 100vh;
-            background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(20px);
-            transition: right 0.3s ease;
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
-            border-left: 1px solid var(--primary-color);
+            bottom: -100px;
+            left: -100px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .drawer.open {
-            right: 0;
+        /* Informações do conteúdo atual */
+        .content-info {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 500;
+            z-index: 100;
+            font-family: monospace;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+            letter-spacing: 1px;
+            min-width: 280px;
         }
 
-        .drawer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #333;
-        }
-
-        .drawer-header h3 {
-            color: var(--primary-color);
-            font-size: 0.95rem;
-        }
-
-        .close-drawer {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            opacity: 0.7;
-        }
-
-        .close-drawer:hover {
-            opacity: 1;
-            color: var(--primary-color);
-        }
-
-        .videos-section {
-            margin-bottom: 25px;
-        }
-
-        .videos-section h4 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-size: 0.8rem;
-        }
-
-        .video-list {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .video-item {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid #333;
-            border-radius: 20px;
-            padding: 7px 12px;
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .video-item:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: var(--primary-color);
-        }
-
-        .video-item.active {
-            border-color: var(--primary-color);
-            background: rgba(220, 20, 60, 0.15);
-        }
-
-        .video-name {
-            color: white;
-            font-size: 0.7rem;
-            flex: 1;
-        }
-
-        .video-actions button {
-            background: none;
-            border: none;
-            color: #888;
-            cursor: pointer;
-            font-size: 0.7rem;
-            padding: 4px;
-        }
-
-        .video-actions button:hover {
-            color: var(--primary-color);
-        }
-
-        .add-video-btn {
-            background: var(--primary-color);
-            color: #000;
-            border: none;
-            padding: 7px;
-            border-radius: 20px;
-            width: 100%;
-            margin-top: 8px;
-            cursor: pointer;
+        .content-info .title {
+            font-size: 20px;
             font-weight: bold;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            opacity: 0.9;
+            margin-bottom: 5px;
         }
 
-        .add-video-btn:hover {
-            opacity: 1;
+        .content-info .subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
         }
 
-        .music-section {
-            margin-top: 15px;
-            border-top: 1px solid #333;
-            padding-top: 15px;
+        .content-info .music-icon {
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 1s ease-in-out infinite;
         }
 
-        .music-section h4 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-size: 0.8rem;
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
-        .playlist-container {
-            max-height: 260px;
-            overflow-y: auto;
-        }
-
-        .playlist-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 7px 12px;
-            border: 1px solid #333;
-            border-radius: 20px;
-            margin-bottom: 6px;
-            cursor: pointer;
-            background: rgba(255,255,255,0.05);
-            transition: all 0.2s;
-        }
-
-        .playlist-item:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--primary-color);
-        }
-
-        .playlist-item.playing {
-            border-color: var(--primary-color);
-            background: rgba(220, 20, 60, 0.15);
-        }
-
-        .music-number {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: #000;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
-        }
-
-        .playlist-info {
-            flex: 1;
-        }
-
-        .playlist-title {
-            font-size: 0.7rem;
-            color: white;
-        }
-
-        .playlist-artist {
-            font-size: 0.55rem;
-            color: #aaa;
-        }
-
-        .modal {
+        /* Indicador de carregamento */
+        .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 2000;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 200;
             display: none;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .modal.open {
-            display: flex;
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-right-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        .modal-content {
-            background: #1a1a1a;
-            border: 1px solid var(--primary-color);
-            border-radius: 20px;
-            padding: 20px;
-            width: 90%;
-            max-width: 360px;
+        .loading-text {
+            color: #fff;
+            font-size: 18px;
+            font-family: monospace;
         }
 
-        .modal-content h3 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            font-size: 0.95rem;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .modal-content input {
-            width: 100%;
-            padding: 8px 12px;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 20px;
-            color: white;
-            margin-bottom: 12px;
-            font-size: 0.8rem;
+        /* Debug panel */
+        .debug-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #0f0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-family: monospace;
+            z-index: 100;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+            max-width: 320px;
+            text-align: right;
+            line-height: 1.5;
         }
 
-        .modal-buttons {
+        /* Status indicators */
+        .status-indicators {
+            position: fixed;
+            top: 20px;
+            left: 20px;
             display: flex;
             gap: 10px;
-            justify-content: flex-end;
+            z-index: 100;
         }
 
-        .modal-buttons button {
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            border: none;
-            font-size: 0.75rem;
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #0f0;
+            box-shadow: 0 0 8px currentColor;
         }
 
-        .modal-buttons .confirm {
-            background: var(--primary-color);
-            color: #000;
-            font-weight: bold;
+        .status-dot.video {
+            background: #00f;
+            box-shadow: 0 0 8px #00f;
         }
 
-        .modal-buttons .cancel {
-            background: #333;
-            color: white;
+        .status-dot.audio {
+            background: #f0f;
+            box-shadow: 0 0 8px #f0f;
         }
 
-        @media (min-width: 768px) {
-            .tv-control-btn { width: 44px; height: 44px; font-size: 1.3rem; }
-            .fullscreen-btn { width: 44px; height: 44px; font-size: 1.3rem; }
-            .clean-music-name { font-size: 1rem; }
-            .top-ticker { font-size: 1.2rem; padding: 12px 0; }
+        .status-dot.active {
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .content-info {
+                bottom: 20px;
+                left: 20px;
+                padding: 12px 18px;
+                font-size: 14px;
+                min-width: 220px;
+            }
+            
+            .content-info .title {
+                font-size: 16px;
+            }
+            
+            .debug-panel {
+                font-size: 9px;
+                top: 10px;
+                right: 10px;
+                padding: 6px 10px;
+                max-width: 260px;
+            }
         }
     </style>
 </head>
-<body class="theme-red">
-    <div class="tv-app">
-        <video id="mainVideo" class="fullscreen-video" autoplay loop muted playsinline></video>
-        <div class="overlay-gradient"></div>
-        
-        <div class="top-ticker">
-            <span><i class="fas fa-headphones-alt fa-spin"></i> MUTV - PLAYLIST • Enquanto a música toca, sua tv mostra seus produtos • Informações: 12 98846-1978 </span>
+<body>
+    <div class="video-container" id="videoContainer"></div>
+    
+    <div class="content-info" id="contentInfo">
+        <div class="title">
+            <span class="music-icon">🎵</span>
+            <span id="currentMusicName">Carregando...</span>
         </div>
-        
-        <button class="menu-btn" id="menuBtn"><i class="fas fa-ellipsis-v"></i></button>
-        
-        <div class="music-controls-bar">
-            <div class="buttons-group">
-                <button class="tv-control-btn" id="tvPrevBtn"><i class="fas fa-step-backward"></i></button>
-                <button class="tv-control-btn play-pause" id="tvPlayPauseBtn"><i class="fas fa-play"></i></button>
-                <button class="tv-control-btn" id="tvNextBtn"><i class="fas fa-step-forward"></i></button>
-                <button class="tv-control-btn" id="tvShuffleBtn"><i class="fas fa-random"></i></button>
-            </div>
-            <!-- Nome da música alinhado com os botões -->
-            <div class="clean-music-name" id="musicNameDisplay">
-                🎵 Clique no play
-            </div>
-            <button class="fullscreen-btn" id="fullscreenBtn">
-                <i class="fas fa-expand"></i>
-            </button>
+        <div class="subtitle">
+            🎬 Vídeo: <span id="currentVideoName">---</span>
         </div>
     </div>
-
-    <div class="drawer" id="drawer">
-        <div class="drawer-header">
-            <h3><i class="fas fa-tv"></i> MUTV Controles</h3>
-            <button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <div class="videos-section">
-            <h4><i class="fas fa-video"></i> VÍDEOS EM LOOP</h4>
-            <div class="video-list" id="videoList"></div>
-            <button class="add-video-btn" id="addVideoBtn">
-                <i class="fas fa-plus-circle"></i> Adicionar Vídeo
-            </button>
-        </div>
-        
-        <div class="music-section">
-            <h4><i class="fas fa-music"></i> PLAYLIST</h4>
-            <div class="playlist-container" id="playlistContainer"></div>
-        </div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Carregando conteúdo...</div>
     </div>
-
-    <div class="modal" id="videoModal">
-        <div class="modal-content">
-            <h3><i class="fas fa-plus-circle"></i> Adicionar Vídeo</h3>
-            <input type="text" id="videoName" placeholder="Nome do vídeo (ex: Clipe 1)">
-            <input type="text" id="videoPath" placeholder="Caminho do arquivo (ex: video.mp4)">
-            <div class="modal-buttons">
-                <button class="cancel" id="cancelModal">Cancelar</button>
-                <button class="confirm" id="confirmVideo">Adicionar</button>
-            </div>
-        </div>
+    
+    <div class="debug-panel" id="debugPanel">
+        Inicializando...
     </div>
-
-    <audio id="musicPlayer" preload="auto"></audio>
+    
+    <div class="status-indicators">
+        <div class="status-dot video" id="videoStatus"></div>
+        <div class="status-dot audio" id="audioStatus"></div>
+    </div>
 
     <script>
-        // ==================== LISTA DE VÍDEOS ====================
-        let videosList = [
+        // ==================== LISTA DE VÍDEOS E MÚSICAS ====================
+        
+        // Lista de vídeos
+        const videosList = [
             { src: "macoca1.mp4", nome: "Macoca 1" },
             { src: "aluguecopos (1).mp4", nome: "AlugueCopos" },
             { src: "Gestão (1).mp4", nome: "Gestão" },
-            { src: "chopp.mp4", chopp: "Carro" },
-              { src: "Goldem (1).mp4", chopp: "Carro" },
+            { src: "chopp.mp4", nome: "Carro" },
+            { src: "Goldem (1).mp4", nome: "Carro" }
         ];
         
-        let currentVideoIndex = 0;
-        let videoInterval = null;
-        
-        // ==================== PLAYLIST DE MÚSICAS ====================
-        const musicas = [
-                  { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+        // Lista de músicas (adicione suas músicas aqui)
+        const musicasList = [
+                 { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -738,342 +465,626 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
-   
+ 
         ];
-        
-        // ==================== ELEMENTOS ====================
-        const mainVideo = document.getElementById('mainVideo');
-        const musicPlayer = document.getElementById('musicPlayer');
-        const playPauseBtn = document.getElementById('tvPlayPauseBtn');
-        const prevBtn = document.getElementById('tvPrevBtn');
-        const nextBtn = document.getElementById('tvNextBtn');
-        const shuffleBtn = document.getElementById('tvShuffleBtn');
-        const musicNameDisplay = document.getElementById('musicNameDisplay');
-        const playlistContainer = document.getElementById('playlistContainer');
-        const videoListContainer = document.getElementById('videoList');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        
+
+        // ==================== CONFIGURAÇÕES ====================
+        const CONFIG = {
+            FADE_DURATION: 800,              // Duração do fade entre vídeos (ms)
+            PRELOAD_NEXT: true,              // Pré-carregar próximo vídeo
+            MAX_RETRIES: 3,                  // Tentativas máximas em caso de erro
+            RETRY_DELAY: 1000,               // Delay entre tentativas (ms)
+            PLAYBACK_CHECK_INTERVAL: 3000,   // Verificar playback a cada X ms
+            SHOW_DEBUG: true,                // Mostrar painel de debug
+            AUTO_PLAY_DELAY: 100,            // Delay inicial para autoplay (ms)
+            MUSIC_VOLUME: 0.5,               // Volume das músicas (0 a 1)
+            SYNC_MUSIC_WITH_VIDEO: true      // Sincronizar música com vídeo (reiniciar música a cada vídeo)
+        };
+
+        // Variáveis globais
+        let videoPlayers = [];
+        let audioElement = null;
+        let currentVideoIndex = 0;
         let currentMusicIndex = 0;
-        let isPlaying = false;
-        let shuffleActive = false;
+        let activePlayerIndex = 0;
+        let isTransitioning = false;
+        let retryCount = 0;
+        let playbackCheckInterval = null;
+        let preloadTimeout = null;
+        let isMusicPlaying = false;
+
+        // Detecta tipo de dispositivo
+        const userAgent = navigator.userAgent;
+        const isTV = /SmartTV|Tizen|WebOS|AppleTV|CrKey|Xbox|PlayStation|BRAVIA|SMART-TV|LG TV|Samsung|GoogleTV|ANDROID TV/i.test(userAgent);
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+        const isSamsung = /Tizen|Samsung/i.test(userAgent);
+        const isLG = /WebOS|LG TV/i.test(userAgent);
+
+        // Ajusta configurações para TV
+        if (isTV) {
+            CONFIG.FADE_DURATION = 1000;
+            CONFIG.PLAYBACK_CHECK_INTERVAL = 5000;
+            CONFIG.AUTO_PLAY_DELAY = 200;
+            CONFIG.MUSIC_VOLUME = 0.4; // Volume um pouco mais baixo na TV
+        }
+
+        // ==================== FUNÇÕES DE UTILIDADE ====================
         
-        // ==================== FUNÇÕES DOS VÍDEOS ====================
-        function carregarVideo(index) {
-            if(index >= videosList.length) index = 0;
-            if(index < 0) index = videosList.length - 1;
-            currentVideoIndex = index;
-            const video = videosList[currentVideoIndex];
-            if(mainVideo && video.src) {
-                mainVideo.src = video.src;
-                mainVideo.load();
-                mainVideo.play().catch(e => console.log("Erro vídeo:", e));
+        /**
+         * Atualiza o painel de debug
+         */
+        function updateDebug(message) {
+            if (!CONFIG.SHOW_DEBUG) return;
+            
+            const debugPanel = document.getElementById('debugPanel');
+            if (debugPanel) {
+                const time = new Date().toLocaleTimeString('pt-BR');
+                const deviceType = isTV ? '📺 TV' : (isMobile ? '📱 Mobile' : '💻 PC');
+                debugPanel.innerHTML = `${deviceType} | ${time}<br>${message}`;
             }
-            renderVideoList();
+            console.log(`[${new Date().toLocaleTimeString()}] ${message}`);
         }
-        
-        function alternarVideo() {
-            if(videosList.length > 0) {
-                currentVideoIndex = (currentVideoIndex + 1) % videosList.length;
-                carregarVideo(currentVideoIndex);
+
+        /**
+         * Mostra/oculta loading
+         */
+        function showLoading(show) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = show ? 'flex' : 'none';
             }
         }
-        
-        function iniciarAlternanciaVideos() {
-            if(videoInterval) clearInterval(videoInterval);
-            videoInterval = setInterval(alternarVideo, 15000);
+
+        /**
+         * Atualiza informações na tela
+         */
+        function updateDisplayInfo() {
+            const currentMusic = musicasList[currentMusicIndex];
+            const currentVideo = videosList[currentVideoIndex];
+            
+            const musicNameElem = document.getElementById('currentMusicName');
+            const videoNameElem = document.getElementById('currentVideoName');
+            
+            if (musicNameElem) {
+                musicNameElem.innerHTML = `${currentMusic.nome} ${currentMusic.artista ? `- ${currentMusic.artista}` : ''}`;
+            }
+            
+            if (videoNameElem) {
+                videoNameElem.innerHTML = `${currentVideo.nome} (${currentVideoIndex + 1}/${videosList.length})`;
+            }
+            
+            updateDebug(`🎵 Música: ${currentMusic.nome} | 🎬 Vídeo: ${currentVideo.nome}`);
         }
+
+        /**
+         * Atualiza os status indicators
+         */
+        function updateStatusIndicators(videoPlaying, audioPlaying) {
+            const videoDot = document.getElementById('videoStatus');
+            const audioDot = document.getElementById('audioStatus');
+            
+            if (videoDot) {
+                videoDot.style.opacity = videoPlaying ? '1' : '0.3';
+                if (videoPlaying) videoDot.classList.add('active');
+                else videoDot.classList.remove('active');
+            }
+            
+            if (audioDot) {
+                audioDot.style.opacity = audioPlaying ? '1' : '0.3';
+                if (audioPlaying) audioDot.classList.add('active');
+                else audioDot.classList.remove('active');
+            }
+        }
+
+        // ==================== FUNÇÕES DE ÁUDIO ====================
         
-        function renderVideoList() {
-            if(!videoListContainer) return;
-            let html = '';
-            videosList.forEach((video, idx) => {
-                const isActive = (idx === currentVideoIndex);
-                html += `
-                    <div class="video-item ${isActive ? 'active' : ''}" onclick="window.selecionarVideo(${idx})">
-                        <span class="video-name"><i class="fas fa-play-circle"></i> ${escapeHtml(video.nome)}</span>
-                        <div class="video-actions">
-                            <button onclick="event.stopPropagation(); window.removerVideo(${idx})" title="Remover"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-                `;
+        /**
+         * Cria o player de áudio
+         */
+        function createAudioPlayer() {
+            audioElement = document.createElement('audio');
+            audioElement.className = 'audio-player';
+            audioElement.setAttribute('preload', 'auto');
+            audioElement.volume = CONFIG.MUSIC_VOLUME;
+            audioElement.loop = false; // Vai tocar uma música por vez
+            
+            // Eventos de áudio
+            audioElement.addEventListener('ended', () => {
+                updateDebug(`🎵 Música terminou, próxima...`);
+                nextMusic();
             });
-            videoListContainer.innerHTML = html;
+            
+            audioElement.addEventListener('error', (e) => {
+                updateDebug(`❌ Erro na música: ${audioElement.error ? audioElement.error.message : 'desconhecido'}`);
+                setTimeout(() => nextMusic(), 3000);
+            });
+            
+            audioElement.addEventListener('playing', () => {
+                updateDebug(`🎵 Música reproduzindo: ${musicasList[currentMusicIndex].nome}`);
+                updateStatusIndicators(true, true);
+                isMusicPlaying = true;
+            });
+            
+            audioElement.addEventListener('pause', () => {
+                updateStatusIndicators(true, false);
+                isMusicPlaying = false;
+            });
+            
+            document.body.appendChild(audioElement);
+            updateDebug(`🎵 Player de áudio criado`);
         }
         
-        window.selecionarVideo = function(idx) {
-            carregarVideo(idx);
-            closeDrawer();
-        };
-        
-        window.removerVideo = function(idx) {
-            if(videosList.length <= 1) {
-                return;
+        /**
+         * Toca uma música específica
+         */
+        async function playMusic(index) {
+            if (!audioElement) {
+                createAudioPlayer();
             }
-            videosList.splice(idx, 1);
-            if(currentVideoIndex >= videosList.length) currentVideoIndex = 0;
-            carregarVideo(currentVideoIndex);
-            renderVideoList();
-        };
-        
-        function adicionarVideo(nome, caminho) {
-            if(!nome.trim() || !caminho.trim()) {
+            
+            const music = musicasList[index];
+            if (!music) {
+                updateDebug(`❌ Música não encontrada no índice ${index}`);
                 return false;
             }
-            videosList.push({ src: caminho.trim(), nome: nome.trim() });
-            renderVideoList();
+            
+            updateDebug(`🎵 Tocando música: ${music.nome}`);
+            
+            try {
+                // Se for a mesma música e já está tocando, não faz nada
+                if (audioElement.src.includes(music.src) && !audioElement.paused && !audioElement.ended) {
+                    return true;
+                }
+                
+                audioElement.src = music.src;
+                audioElement.load();
+                
+                return new Promise((resolve) => {
+                    const tryPlay = async () => {
+                        try {
+                            await audioElement.play();
+                            updateDisplayInfo();
+                            resolve(true);
+                        } catch (error) {
+                            updateDebug(`⚠️ Erro ao tocar música: ${error.message}`);
+                            if (error.name === 'NotAllowedError') {
+                                // Aguarda interação do usuário
+                                const playOnInteraction = async () => {
+                                    try {
+                                        await audioElement.play();
+                                        document.removeEventListener('click', playOnInteraction);
+                                        document.removeEventListener('touchstart', playOnInteraction);
+                                        resolve(true);
+                                    } catch (e) {
+                                        resolve(false);
+                                    }
+                                };
+                                document.addEventListener('click', playOnInteraction);
+                                document.addEventListener('touchstart', playOnInteraction);
+                            } else {
+                                resolve(false);
+                            }
+                        }
+                    };
+                    
+                    setTimeout(tryPlay, 500);
+                });
+            } catch (error) {
+                updateDebug(`❌ Erro ao carregar música: ${error.message}`);
+                return false;
+            }
+        }
+        
+        /**
+         * Avança para a próxima música
+         */
+        function nextMusic() {
+            const nextIndex = (currentMusicIndex + 1) % musicasList.length;
+            currentMusicIndex = nextIndex;
+            playMusic(currentMusicIndex);
+        }
+        
+        /**
+         * Reinicia a música atual (usado quando troca de vídeo)
+         */
+        function restartCurrentMusic() {
+            if (CONFIG.SYNC_MUSIC_WITH_VIDEO && audioElement) {
+                updateDebug(`🔄 Reiniciando música para sincronizar com vídeo`);
+                const currentMusic = musicasList[currentMusicIndex];
+                audioElement.src = currentMusic.src;
+                audioElement.load();
+                setTimeout(() => {
+                    audioElement.play().catch(e => updateDebug(`Erro ao reiniciar música: ${e.message}`));
+                }, 500);
+            }
+        }
+
+        // ==================== FUNÇÕES DE VÍDEO ====================
+        
+        /**
+         * Cria os players de vídeo (double buffering)
+         */
+        function createVideoPlayers() {
+            const container = document.getElementById('videoContainer');
+            if (!container) {
+                console.error('Container não encontrado');
+                return false;
+            }
+            
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 2; i++) {
+                const video = document.createElement('video');
+                video.id = `videoPlayer${i}`;
+                video.className = `video-player ${i === 0 ? 'active' : 'inactive'}`;
+                
+                // Atributos importantes para TVs e dispositivos móveis
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.setAttribute('x5-playsinline', '');
+                video.setAttribute('autoplay', '');
+                video.setAttribute('muted', '');
+                video.setAttribute('preload', 'auto');
+                
+                // Event listeners
+                video.addEventListener('error', (e) => handleVideoError(e, i));
+                video.addEventListener('canplay', () => handleVideoCanPlay(i));
+                video.addEventListener('ended', () => handleVideoEnded(i));
+                video.addEventListener('playing', () => handleVideoPlaying(i));
+                video.addEventListener('waiting', () => handleVideoWaiting(i));
+                
+                container.appendChild(video);
+                videoPlayers.push(video);
+            }
+            
+            updateDebug(`📹 Players de vídeo criados | Modo: ${isTV ? 'TV' : (isMobile ? 'Mobile' : 'Desktop')}`);
             return true;
         }
-        
-        function escapeHtml(str) {
-            if(!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if(m === '&') return '&amp;';
-                if(m === '<') return '&lt;';
-                if(m === '>') return '&gt;';
-                return m;
-            });
-        }
-        
-        // ==================== FUNÇÕES DA MÚSICA ====================
-        function renderPlaylist() {
-            let html = '';
-            musicas.forEach((m, idx) => {
-                const isActive = (idx === currentMusicIndex);
-                html += `
-                    <div class="playlist-item ${isActive ? 'playing' : ''}" onclick="window.selecionarMusica(${idx})">
-                        <div class="music-number">${(idx+1).toString().padStart(2,'0')}</div>
-                        <div class="playlist-info">
-                            <div class="playlist-title">${escapeHtml(m.title)}</div>
-                            <div class="playlist-artist">${escapeHtml(m.artist)}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            playlistContainer.innerHTML = html;
-        }
-        
-        function atualizarInfoMusica() {
-            const track = musicas[currentMusicIndex];
-            musicNameDisplay.innerHTML = `🎵 ${track.title} - ${track.artist}`;
-            renderPlaylist();
-        }
-        
-        function carregarMusica(index) {
-            if(index >= musicas.length) index = 0;
-            if(index < 0) index = musicas.length - 1;
-            currentMusicIndex = index;
-            const track = musicas[currentMusicIndex];
-            musicPlayer.src = track.src;
-            musicPlayer.load();
-            atualizarInfoMusica();
-        }
-        
-        function playMusic() {
-            const track = musicas[currentMusicIndex];
-            if(musicPlayer.src !== track.src) {
-                musicPlayer.src = track.src;
-                musicPlayer.load();
-            }
+
+        /**
+         * Trata erros de vídeo
+         */
+        function handleVideoError(event, playerIndex) {
+            const video = event.target;
+            updateDebug(`❌ Erro vídeo player ${playerIndex}: ${video.error ? video.error.message : 'desconhecido'}`);
             
-            musicPlayer.play()
-                .then(() => {
-                    isPlaying = true;
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    renderPlaylist();
-                })
-                .catch(e => {
-                    console.log('Erro play:', e);
-                    isPlaying = false;
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                });
-        }
-        
-        function pauseMusic() {
-            musicPlayer.pause();
-            isPlaying = false;
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            renderPlaylist();
-        }
-        
-        function togglePlayPause() {
-            if(!musicas[currentMusicIndex]) return;
-            
-            if(isPlaying) {
-                pauseMusic();
+            if (retryCount < CONFIG.MAX_RETRIES) {
+                retryCount++;
+                updateDebug(`🔄 Tentativa ${retryCount}/${CONFIG.MAX_RETRIES}`);
+                setTimeout(() => {
+                    video.load();
+                    video.play().catch(e => updateDebug(`Falha: ${e.message}`));
+                }, CONFIG.RETRY_DELAY);
             } else {
-                const track = musicas[currentMusicIndex];
-                if(!musicPlayer.src || musicPlayer.src !== track.src) {
-                    musicPlayer.src = track.src;
-                    musicPlayer.load();
+                updateDebug(`⚠️ Pulando para próximo vídeo`);
+                retryCount = 0;
+                nextVideo();
+            }
+        }
+
+        /**
+         * Quando o vídeo está pronto para reproduzir
+         */
+        function handleVideoCanPlay(playerIndex) {
+            updateDebug(`✅ Vídeo player ${playerIndex} pronto`);
+            if (playerIndex === activePlayerIndex) {
+                showLoading(false);
+            }
+        }
+
+        /**
+         * Quando o vídeo começa a tocar
+         */
+        function handleVideoPlaying(playerIndex) {
+            updateDebug(`▶️ Vídeo player ${playerIndex} reproduzindo`);
+            showLoading(false);
+            updateStatusIndicators(true, isMusicPlaying);
+            
+            if (playerIndex === activePlayerIndex) {
+                updateDisplayInfo();
+            }
+        }
+
+        /**
+         * Quando o vídeo está em buffer
+         */
+        function handleVideoWaiting(playerIndex) {
+            updateDebug(`⏳ Vídeo player ${playerIndex} em buffer`);
+            if (playerIndex === activePlayerIndex) {
+                showLoading(true);
+                updateStatusIndicators(false, isMusicPlaying);
+            }
+        }
+
+        /**
+         * Quando o vídeo termina
+         */
+        function handleVideoEnded(playerIndex) {
+            updateDebug(`🏁 Vídeo player ${playerIndex} terminou`);
+            if (playerIndex === activePlayerIndex && !isTransitioning) {
+                nextVideo();
+            }
+        }
+
+        /**
+         * Pré-carrega o próximo vídeo
+         */
+        function preloadNextVideo() {
+            if (!CONFIG.PRELOAD_NEXT) return;
+            
+            if (preloadTimeout) clearTimeout(preloadTimeout);
+            
+            preloadTimeout = setTimeout(() => {
+                const nextIndex = (currentVideoIndex + 1) % videosList.length;
+                const nextVideo = videosList[nextIndex];
+                const preloadPlayerIndex = (activePlayerIndex + 1) % 2;
+                const preloadPlayer = videoPlayers[preloadPlayerIndex];
+                
+                if (preloadPlayer && preloadPlayer.src !== nextVideo.src) {
+                    updateDebug(`📥 Pré-carregando vídeo: ${nextVideo.nome}`);
+                    preloadPlayer.src = nextVideo.src;
+                    preloadPlayer.load();
                 }
-                playMusic();
-            }
+            }, 500);
         }
-        
-        function nextTrack() {
-            if(musicas.length === 0) return;
+
+        /**
+         * Reproduz um vídeo específico
+         */
+        async function playVideo(index, playerIndex) {
+            const video = videosList[index];
+            const player = videoPlayers[playerIndex];
             
-            pauseMusic();
-            let nextIndex;
-            if(shuffleActive) {
-                let newIdx;
-                do {
-                    newIdx = Math.floor(Math.random() * musicas.length);
-                } while(newIdx === currentMusicIndex && musicas.length > 1);
-                nextIndex = newIdx;
-            } else {
-                nextIndex = (currentMusicIndex + 1) % musicas.length;
+            if (!player || !video) {
+                updateDebug(`❌ Player ou vídeo inválido`);
+                return false;
             }
-            currentMusicIndex = nextIndex;
-            carregarMusica(currentMusicIndex);
-            playMusic();
-        }
-        
-        function prevTrack() {
-            if(musicas.length === 0) return;
             
-            pauseMusic();
-            let prevIndex;
-            if(shuffleActive) {
-                let newIdx;
-                do {
-                    newIdx = Math.floor(Math.random() * musicas.length);
-                } while(newIdx === currentMusicIndex && musicas.length > 1);
-                prevIndex = newIdx;
-            } else {
-                prevIndex = (currentMusicIndex - 1 + musicas.length) % musicas.length;
+            updateDebug(`🎬 Reproduzindo vídeo ${video.nome} no player ${playerIndex}`);
+            
+            if (player.src === video.src && !player.ended) {
+                try {
+                    await player.play();
+                    return true;
+                } catch (error) {
+                    updateDebug(`Erro ao reproduzir: ${error.message}`);
+                }
             }
-            currentMusicIndex = prevIndex;
-            carregarMusica(currentMusicIndex);
-            playMusic();
+            
+            player.src = video.src;
+            player.load();
+            
+            return new Promise((resolve) => {
+                const attemptPlay = async () => {
+                    try {
+                        await player.play();
+                        resolve(true);
+                    } catch (error) {
+                        updateDebug(`Erro play vídeo: ${error.message}`);
+                        if (error.name === 'NotAllowedError') {
+                            const playOnInteraction = async () => {
+                                try {
+                                    await player.play();
+                                    document.removeEventListener('click', playOnInteraction);
+                                    document.removeEventListener('touchstart', playOnInteraction);
+                                    resolve(true);
+                                } catch (e) {
+                                    resolve(false);
+                                }
+                            };
+                            document.addEventListener('click', playOnInteraction);
+                            document.addEventListener('touchstart', playOnInteraction);
+                        } else {
+                            resolve(false);
+                        }
+                    }
+                };
+                
+                setTimeout(attemptPlay, CONFIG.AUTO_PLAY_DELAY);
+            });
         }
-        
-        window.selecionarMusica = function(idx) {
-            if(currentMusicIndex === idx && isPlaying) {
-                closeDrawer();
+
+        /**
+         * Faz a transição entre vídeos com fade
+         */
+        async function transitionToVideo(nextIndex) {
+            if (isTransitioning) {
+                updateDebug(`⏸️ Aguardando transição anterior`);
                 return;
             }
             
-            pauseMusic();
-            currentMusicIndex = idx;
-            carregarMusica(currentMusicIndex);
-            playMusic();
-            closeDrawer();
+            isTransitioning = true;
+            showLoading(true);
+            
+            const nextPlayerIndex = (activePlayerIndex + 1) % 2;
+            const currentPlayer = videoPlayers[activePlayerIndex];
+            const nextPlayer = videoPlayers[nextPlayerIndex];
+            
+            updateDebug(`🔄 Transição para vídeo: ${videosList[nextIndex].nome}`);
+            
+            const success = await playVideo(nextIndex, nextPlayerIndex);
+            
+            if (!success) {
+                updateDebug(`❌ Falha ao preparar vídeo`);
+                isTransitioning = false;
+                showLoading(false);
+                setTimeout(() => transitionToVideo(nextIndex), 2000);
+                return;
+            }
+            
+            setTimeout(() => {
+                currentPlayer.classList.remove('active');
+                currentPlayer.classList.add('inactive');
+                nextPlayer.classList.remove('inactive');
+                nextPlayer.classList.add('active');
+                
+                setTimeout(() => {
+                    currentPlayer.pause();
+                    currentPlayer.currentTime = 0;
+                    
+                    activePlayerIndex = nextPlayerIndex;
+                    currentVideoIndex = nextIndex;
+                    
+                    isTransitioning = false;
+                    showLoading(false);
+                    
+                    updateDebug(`✅ Transição concluída: ${videosList[currentVideoIndex].nome}`);
+                    updateDisplayInfo();
+                    updateStatusIndicators(true, isMusicPlaying);
+                    
+                    // Reinicia a música se configurado
+                    if (CONFIG.SYNC_MUSIC_WITH_VIDEO) {
+                        restartCurrentMusic();
+                    }
+                    
+                    preloadNextVideo();
+                }, CONFIG.FADE_DURATION);
+            }, 100);
+        }
+
+        /**
+         * Avança para o próximo vídeo
+         */
+        function nextVideo() {
+            if (isTransitioning) {
+                updateDebug(`⏸️ Aguardando transição`);
+                return;
+            }
+            
+            const nextIndex = (currentVideoIndex + 1) % videosList.length;
+            updateDebug(`⏭️ Avançando para: ${videosList[nextIndex].nome}`);
+            transitionToVideo(nextIndex);
+        }
+
+        /**
+         * Monitora o playback constantemente
+         */
+        function startPlaybackMonitor() {
+            if (playbackCheckInterval) clearInterval(playbackCheckInterval);
+            
+            playbackCheckInterval = setInterval(() => {
+                const activePlayer = videoPlayers[activePlayerIndex];
+                
+                if (activePlayer && !isTransitioning) {
+                    if (activePlayer.paused && !activePlayer.ended && activePlayer.src) {
+                        updateDebug(`⚠️ Vídeo pausado, reiniciando...`);
+                        activePlayer.play().catch(e => updateDebug(`Erro: ${e.message}`));
+                        updateStatusIndicators(false, isMusicPlaying);
+                    }
+                    
+                    if (activePlayer.ended && !isTransitioning) {
+                        updateDebug(`🏁 Vídeo terminou (monitor)`);
+                        nextVideo();
+                    }
+                    
+                    if (!activePlayer.paused && !activePlayer.ended) {
+                        updateStatusIndicators(true, isMusicPlaying);
+                    }
+                }
+                
+                // Verifica áudio
+                if (audioElement && !isTransitioning) {
+                    if (audioElement.paused && !audioElement.ended && audioElement.src) {
+                        updateDebug(`⚠️ Música pausada, reiniciando...`);
+                        audioElement.play().catch(e => updateDebug(`Erro áudio: ${e.message}`));
+                    }
+                }
+            }, CONFIG.PLAYBACK_CHECK_INTERVAL);
+        }
+
+        /**
+         * Inicia o sistema completo
+         */
+        async function initialize() {
+            updateDebug(`🚀 Inicializando sistema com vídeos e músicas...`);
+            updateDebug(`📺 Dispositivo: ${isTV ? 'Smart TV' : (isMobile ? 'Mobile' : 'Desktop')}`);
+            updateDebug(`🎵 Total de músicas: ${musicasList.length}`);
+            updateDebug(`🎬 Total de vídeos: ${videosList.length}`);
+            
+            // Cria players de vídeo
+            if (!createVideoPlayers()) {
+                updateDebug(`❌ Erro ao criar players de vídeo`);
+                return;
+            }
+            
+            // Cria player de áudio
+            createAudioPlayer();
+            
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+            // Inicia primeira música
+            currentMusicIndex = 0;
+            await playMusic(0);
+            
+            // Inicia primeiro vídeo
+            const success = await playVideo(0, 0);
+            
+            if (success) {
+                updateDebug(`✅ Primeiro vídeo iniciado: ${videosList[0].nome}`);
+                videoPlayers[0].classList.add('active');
+                activePlayerIndex = 0;
+                currentVideoIndex = 0;
+                
+                preloadNextVideo();
+                startPlaybackMonitor();
+                
+                showLoading(false);
+                updateDisplayInfo();
+                updateStatusIndicators(true, true);
+            } else {
+                updateDebug(`❌ Falha ao iniciar primeiro vídeo`);
+                setTimeout(initialize, 3000);
+            }
+        }
+
+        // ==================== EVENTOS GLOBAIS ====================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDebug(`📄 DOM carregado`);
+            initialize();
+        });
+        
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                updateDebug(`👁️ Página oculta`);
+            } else {
+                updateDebug(`👁️ Página visível`);
+                const activePlayer = videoPlayers[activePlayerIndex];
+                if (activePlayer && activePlayer.paused && !activePlayer.ended && !isTransitioning) {
+                    activePlayer.play().catch(e => updateDebug(`Erro ao retomar vídeo: ${e.message}`));
+                }
+                if (audioElement && audioElement.paused && !audioElement.ended) {
+                    audioElement.play().catch(e => updateDebug(`Erro ao retomar música: ${e.message}`));
+                }
+            }
+        });
+        
+        // ==================== EXPOSIÇÃO PARA DEBUG ====================
+        window.mediaSystem = {
+            nextVideo: () => nextVideo(),
+            nextMusic: () => nextMusic(),
+            current: () => ({
+                video: videosList[currentVideoIndex],
+                music: musicasList[currentMusicIndex],
+                videoIndex: currentVideoIndex,
+                musicIndex: currentMusicIndex
+            }),
+            setMusicVolume: (volume) => {
+                if (audioElement) {
+                    audioElement.volume = Math.max(0, Math.min(1, volume));
+                    updateDebug(`🎵 Volume ajustado para: ${audioElement.volume}`);
+                }
+            },
+            status: () => ({
+                videoPlaying: videoPlayers[activePlayerIndex] && !videoPlayers[activePlayerIndex].paused,
+                musicPlaying: audioElement && !audioElement.paused,
+                isTV,
+                isTransitioning
+            }),
+            list: { videos: videosList, musicas: musicasList }
         };
         
-        // ==================== TELA CHEIA ====================
-        function toggleFullscreen() {
-            if(!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
-            } else {
-                document.exitFullscreen();
-                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
-            }
-        }
-        
-        document.addEventListener('fullscreenchange', () => {
-            if(document.fullscreenElement) {
-                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
-            } else {
-                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
-            }
-        });
-        
-        // ==================== UI ====================
-        function openDrawer() {
-            document.getElementById('drawer').classList.add('open');
-        }
-        
-        function closeDrawer() {
-            document.getElementById('drawer').classList.remove('open');
-        }
-        
-        // ==================== MODAL VÍDEO ====================
-        const modal = document.getElementById('videoModal');
-        const addVideoBtn = document.getElementById('addVideoBtn');
-        const confirmVideo = document.getElementById('confirmVideo');
-        const cancelModal = document.getElementById('cancelModal');
-        const videoNameInput = document.getElementById('videoName');
-        const videoPathInput = document.getElementById('videoPath');
-        
-        addVideoBtn.addEventListener('click', () => {
-            modal.classList.add('open');
-            videoNameInput.value = '';
-            videoPathInput.value = '';
-        });
-        
-        confirmVideo.addEventListener('click', () => {
-            const nome = videoNameInput.value;
-            const caminho = videoPathInput.value;
-            if(adicionarVideo(nome, caminho)) {
-                modal.classList.remove('open');
-            }
-        });
-        
-        cancelModal.addEventListener('click', () => {
-            modal.classList.remove('open');
-        });
-        
-        modal.addEventListener('click', (e) => {
-            if(e.target === modal) modal.classList.remove('open');
-        });
-        
-        // ==================== EVENTOS ====================
-        playPauseBtn.addEventListener('click', togglePlayPause);
-        prevBtn.addEventListener('click', prevTrack);
-        nextBtn.addEventListener('click', nextTrack);
-        shuffleBtn.addEventListener('click', () => {
-            shuffleActive = !shuffleActive;
-            shuffleBtn.style.opacity = shuffleActive ? '1' : '0.7';
-            shuffleBtn.style.color = shuffleActive ? 'var(--primary-color)' : 'rgba(255,255,255,0.9)';
-        });
-        
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-        document.getElementById('menuBtn').addEventListener('click', openDrawer);
-        document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
-        
-        // ==================== TEMA ====================
-        const themes = [
-            { name: 'theme-red', color: '#e63946' },
-            { name: 'theme-blue', color: '#00a8ff' },
-            { name: 'theme-green', color: '#00ff88' },
-            { name: 'theme-purple', color: '#aa44ff' }
-        ];
-        let currentTheme = 0;
-        function mudarTema() {
-            currentTheme = (currentTheme + 1) % themes.length;
-            document.body.className = themes[currentTheme].name;
-        }
-        fullscreenBtn.addEventListener('dblclick', mudarTema);
-        
-        // ==================== INICIALIZAÇÃO ====================
-        window.addEventListener('load', () => {
-            if(videosList.length > 0) {
-                mainVideo.src = videosList[0].src;
-                mainVideo.load();
-                mainVideo.play().catch(e => console.log);
-            }
-            
-            renderVideoList();
-            renderPlaylist();
-            
-            const randomIndex = Math.floor(Math.random() * musicas.length);
-            currentMusicIndex = randomIndex;
-            carregarMusica(currentMusicIndex);
-            
-            iniciarAlternanciaVideos();
-        });
-        
-        mainVideo.addEventListener('error', () => {
-            alternarVideo();
-        });
-        
-        musicPlayer.addEventListener('ended', () => {
-            if(isPlaying) {
-                nextTrack();
-            }
-        });
+        updateDebug(`✨ Sistema pronto! Use window.mediaSystem no console para controle`);
     </script>
 </body>
 </html>
