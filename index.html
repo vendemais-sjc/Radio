@@ -19,7 +19,7 @@
         body.theme-white { --primary-color: #ffffff; --primary-dark: #cccccc; }
         body.theme-pure-black { --primary-color: #000000; --primary-dark: #000000; }
         body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; }
-        .app { width: 100%; height: 100vh; background: #000000; display: flex; flex-direction: column; border: 1px solid var(--primary-color); overflow-y: auto; overflow-x: hidden; }
+        .app { width: 100%; height: 100vh; background: #000000; display: flex; flex-direction: column; border: 1px solid var(--primary-color); overflow-y: auto; overflow-x: hidden; position: relative; }
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease; }
         #splash.hidden { opacity: 0; pointer-events: none; }
         #splash.display-none { display: none; }
@@ -29,16 +29,92 @@
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
         #tap-to-start { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 12px 28px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; z-index: 10000; cursor: pointer; border: 2px solid rgba(255,255,255,0.5); display: none; animation: btnPulse 1.5s infinite; white-space: nowrap; }
         @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.03); } 100% { transform: translateX(-50%) scale(1); } }
-        .top-bar { background: #000; border-top: 1px solid var(--primary-color); border-bottom: 1px solid var(--primary-color); }
-        .top-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: #000; color: #fff; font-weight: 800; font-size: 1.3rem; padding: 15px 16px; }
-        .top-ticker span { display: inline-block; padding-left: 100%; animation: ticker-scroll 25s linear infinite; }
-        @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        .video-container { aspect-ratio: 16 / 9; background: #000; position: relative; border: 1px solid var(--primary-color); border-radius: 12px; margin: 5px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; }
-        video, img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .video-buttons { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; z-index: 20; }
-        .video-menu-btn, .fullscreen-btn { background: rgba(0,0,0,0.6); color: white; border: none; font-size: 1.3rem; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; backdrop-filter: blur(4px); }
-        .video-menu-btn:hover, .fullscreen-btn:hover { background: var(--primary-color); transform: scale(1.05); }
-        .video-menu-btn:active, .fullscreen-btn:active { transform: scale(0.95); }
+        
+        /* NOVO: Letreiro sobreposto ao vídeo */
+        .video-wrapper {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            margin: 5px;
+            overflow: hidden;
+        }
+        .video-wrapper video, .video-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .overlay-ticker {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4), transparent);
+            padding: 20px 12px 12px 12px;
+            z-index: 15;
+            pointer-events: none;
+        }
+        .ticker-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 10px 0;
+            border-left: 3px solid var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+        .ticker-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker-scroll 25s linear infinite;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+        .ticker-text i {
+            color: var(--primary-color);
+            margin: 0 5px;
+        }
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .video-buttons {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+        }
+        .video-menu-btn, .fullscreen-btn {
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .video-menu-btn:hover, .fullscreen-btn:hover {
+            background: var(--primary-color);
+            transform: scale(1.05);
+        }
+        .video-menu-btn:active, .fullscreen-btn:active {
+            transform: scale(0.95);
+        }
         
         .track-info { padding: 12px 16px 4px; text-align: center; }
         .track-info p { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -194,7 +270,7 @@
         body.car-mode .footer,
         body.car-mode .feedback-btn,
         body.car-mode .player-card,
-        body.car-mode .video-container {
+        body.car-mode .video-wrapper {
             display: none !important;
         }
         body.car-mode .app { border: none; margin: 0; padding: 0; background: #000; }
@@ -206,9 +282,9 @@
             .control-btn { font-size: 2.4rem; width: 64px; height: 64px; }
             .play-btn { font-size: 3.5rem; width: 80px; height: 80px; }
             .track-info p { font-size: 1.4rem; white-space: normal; word-break: break-word; }
-            .video-container { border-radius: 20px; margin: 10px; }
+            .video-wrapper { border-radius: 20px; margin: 10px; }
             .extra-video-section { margin: 10px; border-radius: 20px; }
-            .top-ticker { font-size: 1.6rem; }
+            .ticker-text { font-size: 1.2rem; }
             .drawer { width: 400px; }
             .car-mode .car-control-btn { width: 90px; height: 90px; font-size: 2.5rem; }
             .car-mode .car-track-info { font-size: 1.3rem; top: 30px; }
@@ -222,17 +298,18 @@
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
     
     <div class="app">
-        <div class="top-bar">
-            <div class="top-ticker">
-                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> MUTV - Playlist - As Musicas Tocam e Seus Produtos Aparecem na Tv - Informações - 12 98846-1978 <i class="fas fa-music fa-beat"></i></span>
-            </div>
-        </div>
-        
         <div class="player-card">
-            <div class="video-container">
+            <div class="video-wrapper">
                 <video id="mainVideo" autoplay loop muted playsinline>
                     <source src="carro.mp4" type="video/mp4">
                 </video>
+                <div class="overlay-ticker">
+                    <div class="ticker-container">
+                        <div class="ticker-text" id="overlayTickerText">
+                            <i class="fas fa-headphones-alt fa-spin"></i> MUTV - Playlist - As Musicas Tocam e Seus Produtos Aparecem na Tv - Informações - 12 98846-1978 <i class="fas fa-music fa-beat"></i>
+                        </div>
+                    </div>
+                </div>
                 <div class="video-buttons">
                     <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
                     <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-h"></i></button>
@@ -531,10 +608,9 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
-   
+
         ];
         
-        // Adicionar mais músicas para completar a playlist
         for(let i = musicas.length + 1; i <= 50; i++) {
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
@@ -585,7 +661,7 @@
         let isAdPlaying = false;
         let musicPlayedCount = 0;
         let adsEnabled = true;
-        let adInterval = 15; // ALTERADO: 15 minutos entre anúncios
+        let adInterval = 15;
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         let musicPausedTime = 0;
@@ -819,14 +895,13 @@
             updateAdTimer();
         }
         
-        // Timer para anúncio automático a cada 15 minutos
         function startAdTimer() {
             if(adTimerInterval) clearInterval(adTimerInterval);
             adTimerInterval = setInterval(() => {
                 if(adsEnabled && !isAdPlaying && isPlaying) {
                     playAudioAd();
                 }
-            }, adInterval * 60 * 1000); // 15 minutos em milissegundos
+            }, adInterval * 60 * 1000);
         }
         
         function updateAdTimer() {
@@ -1047,7 +1122,6 @@
         document.getElementById('exitCarModeBtn').addEventListener('click', disableCarMode);
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
-        // Eventos dos controles do modo carro
         carPrevBtn.addEventListener('click', () => { prevTrack(); showCarControls(); });
         carPlayPauseBtn.addEventListener('click', () => { togglePlayPause(); showCarControls(); });
         carNextBtn.addEventListener('click', () => { nextTrack(); showCarControls(); });
@@ -1099,7 +1173,7 @@
             currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
             loadTrack(currentIndex);
             updateAdTimer();
-            startAdTimer(); // Inicia o timer de anúncios a cada 15 minutos
+            startAdTimer();
             tapToStart.style.display = 'block';
             tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
