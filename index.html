@@ -13,7 +13,6 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* CORPO CENTRALIZADO COM FUNDO PRETO */
         body {
             background-color: #000;
             display: flex;
@@ -30,7 +29,6 @@
         body.theme-purple { --primary-color: #aa44ff; --primary-dark: #7700cc; }
         body { --primary-color: #e63946; --primary-dark: #b71c1c; }
 
-        /* CONTÊINER PRINCIPAL COM PROPORÇÃO 16:9 */
         .tv-app {
             width: 100%;
             max-width: 1920px;
@@ -63,7 +61,6 @@
             pointer-events: none;
         }
 
-        /* LETREIRO MAIOR */
         .top-ticker {
             position: absolute;
             top: 0;
@@ -93,7 +90,7 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* BARRA DE CONTROLES – APENAS BOTÕES, SEM FUNDO */
+        /* Barra de controles – apenas botões, sem fundo */
         .music-controls-bar {
             position: absolute;
             bottom: 20px;
@@ -113,7 +110,6 @@
             gap: 8px;
         }
 
-        /* BOTÕES SEM FUNDO, APENAS ÍCONES */
         .tv-control-btn {
             background: transparent;
             border: none;
@@ -139,27 +135,6 @@
             font-size: 1.4rem;
         }
 
-        /* NOME DA MÚSICA – SEM BARRA, APENAS TEXTO COM SOMBRA */
-        .floating-track-info {
-            position: absolute;
-            bottom: 80px;
-            left: 20px;
-            right: 20px;
-            text-align: center;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-            background: none;
-            padding: 0;
-            z-index: 20;
-            pointer-events: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* BOTÃO TELA CHEIA SEM FUNDO */
         .fullscreen-btn {
             background: transparent;
             border: none;
@@ -180,7 +155,29 @@
             color: var(--primary-color);
         }
 
-        /* MENU (3 PONTINHOS) */
+        /* NOME DA MÚSICA – ABSOLUTAMENTE LIMPO */
+        .clean-music-name {
+            position: absolute;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            background: none;
+            padding: 0;
+            margin: 0;
+            border: none;
+            backdrop-filter: none;
+            z-index: 20;
+            pointer-events: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .menu-btn {
             position: absolute;
             top: 12px;
@@ -203,7 +200,7 @@
             transform: scale(1.05);
         }
 
-        /* DRAWER (MENU LATERAL) */
+        /* Drawer (menu lateral) */
         .drawer {
             position: fixed;
             top: 0;
@@ -251,7 +248,6 @@
             color: var(--primary-color);
         }
 
-        /* Seção de vídeos */
         .videos-section {
             margin-bottom: 25px;
         }
@@ -331,7 +327,6 @@
             opacity: 1;
         }
 
-        /* Playlist de músicas */
         .music-section {
             margin-top: 15px;
             border-top: 1px solid #333;
@@ -399,7 +394,6 @@
             color: #aaa;
         }
 
-        /* Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -471,7 +465,7 @@
         @media (min-width: 768px) {
             .tv-control-btn { width: 44px; height: 44px; font-size: 1.3rem; }
             .fullscreen-btn { width: 44px; height: 44px; font-size: 1.3rem; }
-            .floating-track-info { font-size: 1rem; bottom: 90px; }
+            .clean-music-name { font-size: 1rem; bottom: 90px; }
             .top-ticker { font-size: 1.2rem; padding: 12px 0; }
         }
     </style>
@@ -499,8 +493,8 @@
             </button>
         </div>
 
-        <!-- Nome da música flutuante, sem barra, sem fundo -->
-        <div class="floating-track-info" id="floatingTrackInfo">
+        <!-- Nome da música completamente limpo: sem fundo, sem borda, sem qualquer elemento visual -->
+        <div class="clean-music-name" id="musicNameDisplay">
             🎵 Clique no play
         </div>
     </div>
@@ -760,7 +754,7 @@
         const prevBtn = document.getElementById('tvPrevBtn');
         const nextBtn = document.getElementById('tvNextBtn');
         const shuffleBtn = document.getElementById('tvShuffleBtn');
-        const floatingTrackInfo = document.getElementById('floatingTrackInfo');
+        const musicNameDisplay = document.getElementById('musicNameDisplay');
         const playlistContainer = document.getElementById('playlistContainer');
         const videoListContainer = document.getElementById('videoList');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -866,7 +860,7 @@
         
         function atualizarInfoMusica() {
             const track = musicas[currentMusicIndex];
-            floatingTrackInfo.innerHTML = `🎵 ${track.title} - ${track.artist}`;
+            musicNameDisplay.innerHTML = `🎵 ${track.title} - ${track.artist}`;
             renderPlaylist();
         }
         
