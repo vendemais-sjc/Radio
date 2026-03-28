@@ -2,12 +2,26 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV Playlist • Midia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MUTV Playlist • Modo TV</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { min-height: 100vh; background-color: #000000; overflow: hidden; position: fixed; width: 100%; height: 100%; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #000000;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Temas de cor */
         body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
         body.theme-lilac { --primary-color: #b380ff; --primary-dark: #7a4db3; }
         body.theme-blue { --primary-color: #00a8ff; --primary-dark: #0077be; }
@@ -17,56 +31,308 @@
         body.theme-purple { --primary-color: #aa44ff; --primary-dark: #7700cc; }
         body.theme-yellow { --primary-color: #ffdd44; --primary-dark: #ccaa00; }
         body.theme-white { --primary-color: #ffffff; --primary-dark: #cccccc; }
-        body.theme-pure-black { --primary-color: #000000; --primary-dark: #000000; }
-        body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; }
-        .app { width: 100%; height: 100vh; background: #000000; display: flex; flex-direction: column; border: 1px solid var(--primary-color); overflow-y: auto; overflow-x: hidden; }
-        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease; }
-        #splash.hidden { opacity: 0; pointer-events: none; }
-        #splash.display-none { display: none; }
-        .splash-content { text-align: center; color: #fff; }
-        .splash-content i { font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem; animation: pulse 1.5s infinite; }
-        .splash-content h1 { font-size: 1.8rem; }
-        @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
-        #tap-to-start { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 12px 28px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; z-index: 10000; cursor: pointer; border: 2px solid rgba(255,255,255,0.5); display: none; animation: btnPulse 1.5s infinite; white-space: nowrap; }
-        @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.03); } 100% { transform: translateX(-50%) scale(1); } }
-        .top-bar { background: #000; border-top: 1px solid var(--primary-color); border-bottom: 1px solid var(--primary-color); }
-        .top-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: #000; color: #fff; font-weight: 800; font-size: 1.3rem; padding: 15px 16px; }
-        .top-ticker span { display: inline-block; padding-left: 100%; animation: ticker-scroll 25s linear infinite; }
-        @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        .video-container { aspect-ratio: 16 / 9; background: #000; position: relative; border: 1px solid var(--primary-color); border-radius: 12px; margin: 5px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; }
-        video, img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .video-menu-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.5); color: white; border: none; font-size: 1.6rem; cursor: pointer; z-index: 20; padding: 6px 10px; border-radius: 30px; }
-        
-        .track-info { padding: 12px 16px 4px; text-align: center; }
-        .track-info p { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .progress-area { padding: 0 16px 8px; }
-        .progress-time { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; }
-        .progress-bar { height: 4px; background: var(--border-color); cursor: pointer; border-radius: 2px; }
-        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 2px; }
-        .controls { display: flex; align-items: center; justify-content: space-evenly; padding: 12px 20px 20px; }
-        .control-btn { background: none; border: none; color: #ffffff !important; font-size: 2rem; width: 48px; height: 48px; cursor: pointer; border-radius: 50%; transition: all 0.2s; }
-        .control-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.15); }
-        .play-btn { font-size: 3rem; width: 64px; height: 64px; }
-        .extra-video-section { margin: 5px; border: 1px solid var(--primary-color); border-radius: 12px; overflow: hidden; background: #000; }
-        .extra-video-container { width: 100%; background: #000; position: relative; aspect-ratio: 1015 / 512; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #000; }
-        .extra-overlay { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); color: var(--primary-color); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; border: 1px solid var(--primary-color); pointer-events: none; z-index: 10; }
-        .drawer { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #000000; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 2px solid var(--border-color); }
-        .drawer.open { transform: translateX(0); }
-        .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 30px; }
-        .close-drawer { background: none; border: none; color: var(--text-primary); font-size: 1.8rem; cursor: pointer; }
-        .drawer-item { background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 14px; width: 100%; text-align: left; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; }
-        .mode-toggle-btn { background: var(--primary-color); color: #000; font-weight: bold; border: none; padding: 10px; border-radius: 40px; margin: 10px 0; width: 100%; cursor: pointer; }
-        .playlist-container { margin-top: 15px; max-height: 350px; overflow-y: auto; }
-        .playlist-item { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--border-color); border-radius: 30px; margin-bottom: 8px; cursor: pointer; background: #0a0a0a; }
-        .playlist-item.playing { border-color: var(--primary-color); background: #1a1a1a; }
-        .music-number { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color); color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
-        .playlist-info { flex: 1; }
-        .playlist-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 600; }
-        .playlist-artist { font-size: 0.75rem; color: var(--text-secondary); }
-        .playlist-duration { font-size: 0.7rem; color: var(--primary-color); }
-        .color-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; padding: 15px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-        .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-        .color-option.active { border-color: white; }
+        body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; }
+
+        /* Container principal em modo TV - vídeo ocupa toda a tela */
+        .tv-app {
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Vídeo principal em tela cheia */
+        .fullscreen-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        /* Overlay com gradiente para melhor legibilidade */
+        .overlay-gradient {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Rodapé com a frase principal */
+        .footer-tagline {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .footer-tagline p {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+            background: rgba(0,0,0,0.5);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 40px;
+            backdrop-filter: blur(5px);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        @media (min-width: 768px) {
+            .footer-tagline p { font-size: 1.5rem; padding: 12px 30px; }
+        }
+        @media (min-width: 1200px) {
+            .footer-tagline p { font-size: 1.8rem; padding: 15px 40px; }
+        }
+
+        /* Barra superior com ticker (letreiro) */
+        .top-ticker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+            white-space: nowrap;
+            color: #fff;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 10px 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--primary-color);
+            pointer-events: none;
+        }
+
+        .top-ticker span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker-scroll 25s linear infinite;
+        }
+
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Botões de controle de música - pequenos, transparentes, no canto inferior esquerdo */
+        .music-controls {
+            position: absolute;
+            bottom: 80px;
+            left: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+            padding: 8px 12px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: opacity 0.3s;
+        }
+
+        .music-controls:hover {
+            background: rgba(0,0,0,0.6);
+        }
+
+        .tv-control-btn {
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.2rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tv-control-btn:active {
+            transform: scale(0.95);
+            background: var(--primary-color);
+            color: #000;
+        }
+
+        .tv-control-btn.play-pause {
+            background: var(--primary-color);
+            color: #000;
+            font-size: 1.1rem;
+        }
+
+        /* Informação da música atual - pequena e discreta */
+        .current-track-info {
+            position: absolute;
+            bottom: 80px;
+            left: 140px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            color: #fff;
+            z-index: 20;
+            pointer-events: none;
+            border-left: 3px solid var(--primary-color);
+            white-space: nowrap;
+            max-width: 50%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 768px) {
+            .current-track-info { font-size: 0.85rem; bottom: 85px; left: 160px; }
+            .tv-control-btn { width: 42px; height: 42px; font-size: 1.3rem; }
+        }
+
+        /* Menu lateral (drawer) - igual ao original */
+        .drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 2px solid var(--primary-color);
+        }
+
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .close-drawer {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        .drawer-item {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 14px;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .mode-toggle-btn {
+            background: var(--primary-color);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            padding: 10px;
+            border-radius: 40px;
+            margin: 10px 0;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .playlist-container {
+            margin-top: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border: 1px solid #333;
+            border-radius: 30px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            background: rgba(20,20,20,0.8);
+        }
+
+        .playlist-item.playing {
+            border-color: var(--primary-color);
+            background: rgba(var(--primary-color), 0.2);
+        }
+
+        .music-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: #000;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .playlist-info {
+            flex: 1;
+        }
+
+        .playlist-title {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .playlist-artist {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .color-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+            padding: 15px 0;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+        }
+
+        .color-option {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-option.active {
+            border-color: white;
+        }
+
         .color-option.red { background: #e63946; }
         .color-option.lilac { background: #b380ff; }
         .color-option.blue { background: #00a8ff; }
@@ -76,197 +342,133 @@
         .color-option.purple { background: #aa44ff; }
         .color-option.yellow { background: #ffdd44; }
         .color-option.white { background: #ffffff; border: 1px solid #888; }
-        .color-option.pure-black { background: #000000; border: 1px solid #888; }
-        .notification { position: fixed; bottom: 16px; left: 16px; right: 16px; background: #000; color: #fff; padding: 10px 16px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 10px; text-align: center; }
-        .notification.show { transform: translateY(0); }
-        .footer { text-align: center; padding: 10px; font-size: 0.7rem; color: var(--text-secondary); border-top: 2px solid var(--primary-color); margin-top: 5px; }
-        .feedback-btn { position: fixed; bottom: 20px; right: 20px; background: transparent; color: #ffffff !important; font-size: 1.5rem; cursor: pointer; z-index: 2000; }
-        .feedback-modal { position: fixed; bottom: 70px; right: 20px; width: 280px; background: #1a1a1a; border: 2px solid var(--primary-color); border-radius: 15px; padding: 15px; z-index: 2001; display: none; }
-        .feedback-modal.open { display: block; }
-        .ad-panel { background: #0a0a0a; border-radius: 8px; padding: 10px; margin: 15px 0; border: 1px solid var(--border-color); }
-        .ad-panel h4, .ad-panel .ad-status, .ad-panel .ad-timer { color: #ffffff !important; }
-        .ad-timer { font-size: 1.5rem; font-weight: bold; text-align: center; color: var(--primary-color) !important; }
-        .ad-status { font-size: 0.8rem; text-align: center; color: #ffffff !important; margin-top: 5px; }
-        .ad-buttons { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
-        .ad-btn { background: none; border: 1px solid var(--border-color); color: #ffffff !important; padding: 4px 10px; border-radius: 12px; cursor: pointer; font-size: 0.7rem; }
-        .car-exit-btn { position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; border: 2px solid var(--primary-color); border-radius: 50px; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 10000; }
-        .rating { display: flex; gap: 8px; margin: 10px 0; justify-content: center; }
-        .star { color: #555; font-size: 1.5rem; cursor: pointer; transition: all 0.2s; }
-        .star.active, .star.fas { color: #ffd700; }
-        .feedback-modal textarea { width: 100%; height: 70px; background: #2a2a2a; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; color: white; margin-bottom: 10px; resize: none; }
-        .feedback-modal h3 { color: #ffffff; }
-        .modal-btn { padding: 8px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; font-size: 0.8rem; }
-        .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
-        
-        .car-mode .car-video-controls {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            padding: 30px 20px 20px;
+
+        .ad-panel {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+
+        .ad-timer {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .ad-status {
+            font-size: 0.75rem;
+            text-align: center;
+            color: #ccc;
+        }
+
+        .ad-buttons {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            z-index: 1001;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-            pointer-events: none;
+            gap: 8px;
+            margin-top: 8px;
         }
-        .car-mode .car-video-controls.visible {
-            opacity: 1;
-            pointer-events: auto;
+
+        .ad-btn {
+            background: none;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.7rem;
         }
-        .car-mode .car-control-btn {
-            background: rgba(0,0,0,0.7);
-            border: 2px solid var(--primary-color);
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 30px;
+            z-index: 2000;
+            transform: translateX(200px);
+            transition: transform 0.3s;
+            border-left: 3px solid var(--primary-color);
+            font-size: 0.8rem;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .menu-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
             color: white;
-            font-size: 2rem;
-            width: 70px;
-            height: 70px;
+            border: 1px solid var(--primary-color);
+            font-size: 1.3rem;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s;
+            z-index: 15;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .car-mode .car-control-btn:active {
-            transform: scale(0.95);
-            background: var(--primary-color);
-            color: #000;
-        }
-        .car-mode .car-control-btn.play-pause {
-            background: var(--primary-color);
-            color: #000;
-            font-size: 2.2rem;
-        }
-        .car-mode .car-track-info {
-            position: fixed;
-            top: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            padding: 15px;
-            z-index: 1001;
-            pointer-events: none;
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px black;
-        }
-        .car-mode .car-track-info span {
-            background: rgba(0,0,0,0.5);
-            padding: 5px 12px;
-            border-radius: 20px;
-            border-left: 3px solid var(--primary-color);
-        }
-        
-        body.car-mode .extra-video-section {
-            display: block !important;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            border: none;
-            border-radius: 0;
-            z-index: 999;
-        }
-        body.car-mode .extra-video-container {
-            width: 100%;
-            height: 100%;
-            aspect-ratio: auto;
-        }
-        body.car-mode .extra-video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        body.car-mode .top-bar,
-        body.car-mode .footer,
-        body.car-mode .feedback-btn,
-        body.car-mode .player-card,
-        body.car-mode .video-container {
-            display: none !important;
-        }
-        body.car-mode .app { border: none; margin: 0; padding: 0; background: #000; }
-        body.car-mode .car-exit-btn { display: flex; z-index: 10000; }
-        body.car-mode .extra-overlay { display: none; }
-        
-        @media (min-width: 1024px) {
-            .control-btn { font-size: 2.4rem; width: 64px; height: 64px; }
-            .play-btn { font-size: 3.5rem; width: 80px; height: 80px; }
-            .track-info p { font-size: 1.4rem; white-space: normal; word-break: break-word; }
-            .video-container { border-radius: 20px; margin: 10px; }
-            .extra-video-section { margin: 10px; border-radius: 20px; }
-            .top-ticker { font-size: 1.6rem; }
-            .drawer { width: 400px; }
-            .car-mode .car-control-btn { width: 90px; height: 90px; font-size: 2.5rem; }
-            .car-mode .car-track-info { font-size: 1.3rem; top: 30px; }
+
+        /* Esconder elementos não usados no modo TV */
+        .hide-on-tv {
+            display: none;
         }
     </style>
 </head>
 <body class="theme-red">
-    <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
-    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p>Carregando Midias...</p></div></div>
-    <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
-    
-    <div class="app">
-        <div class="top-bar">
-            <div class="top-ticker">
-                <span id="topTickerText"><i class="fas fa-headphones-alt fa-spin"></i> MUTV - Playlist - As Musicas Tocam e Seus Produtos Aparecem na Tv - Informações - 12 98846-1978 <i class="fas fa-music fa-beat"></i></span>
-            </div>
+    <div class="tv-app">
+        <!-- Vídeo principal em tela cheia (vídeos curtos sem áudio em loop) -->
+        <video id="mainVideo" class="fullscreen-video" autoplay loop muted playsinline></video>
+        
+        <!-- Overlay gradiente -->
+        <div class="overlay-gradient"></div>
+        
+        <!-- Letreiro superior -->
+        <div class="top-ticker">
+            <span id="tickerText"><i class="fas fa-headphones-alt fa-spin"></i> MUTV - A MELHOR PLAYLIST • MÚSICAS QUE EMBALAM SEU DIA • INFORMAÇÕES: 12 98846-1978 • ENTREtenimento que gera RENDA <i class="fas fa-chart-line"></i> • SIGA NAS REDES •</span>
         </div>
         
-        <div class="player-card">
-            <div class="video-container" id="mainMediaContainer">
-                <video autoplay loop muted playsinline id="mainVideo">
-                    <source src="macoca1.mp4" type="video/mp4">
-                </video>
-                <button class="video-menu-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-v"></i></button>
-            </div>
-            
-            <div class="track-info"><p id="trackArtist">🎵 Clique em "TOCAR MÚSICA"</p></div>
-            <div class="progress-area"><div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div><div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div></div>
-            <div class="controls">
-                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-                <button class="control-btn play-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
-                <button class="control-btn" id="shufflePlayerBtn"><i class="fas fa-random"></i></button>
-                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
-            </div>
+        <!-- Botão de menu (3 pontinhos) -->
+        <button class="menu-btn" id="menuBtn"><i class="fas fa-ellipsis-v"></i></button>
+        
+        <!-- Controles de música - pequenos, transparentes e discretos -->
+        <div class="music-controls">
+            <button class="tv-control-btn" id="tvPrevBtn"><i class="fas fa-step-backward"></i></button>
+            <button class="tv-control-btn play-pause" id="tvPlayPauseBtn"><i class="fas fa-play"></i></button>
+            <button class="tv-control-btn" id="tvNextBtn"><i class="fas fa-step-forward"></i></button>
+            <button class="tv-control-btn" id="tvShuffleBtn"><i class="fas fa-random"></i></button>
         </div>
-
-        <div class="extra-video-section">
-            <div class="extra-video-container" id="extraVideoContainer">
-                <video autoplay loop muted playsinline id="extraVideo">
-                    <source src="aluguecopos (1).mp4" type="video/mp4">
-                </video>
-                <div class="extra-overlay" id="extraOverlay"><i class="fas fa-ad"></i> AlugueCopos</div>
-            </div>
+        
+        <!-- Informação da música atual -->
+        <div class="current-track-info" id="currentTrackInfo">
+            🎵 Clique em play para ouvir
         </div>
-        <div class="footer">MUTV - Playlist 2023 • Róger Mendes</div>
+        
+        <!-- Rodapé com a frase principal -->
+        <div class="footer-tagline">
+            <p>✨ ENTREtenimento que gera RENDA ✨</p>
+        </div>
     </div>
 
-    <div class="car-video-controls" id="carVideoControls">
-        <button class="car-control-btn" id="carPrevBtn"><i class="fas fa-step-backward"></i></button>
-        <button class="car-control-btn play-pause" id="carPlayPauseBtn"><i class="fas fa-play"></i></button>
-        <button class="car-control-btn" id="carNextBtn"><i class="fas fa-step-forward"></i></button>
-    </div>
-    <div class="car-track-info" id="carTrackInfo">
-        <span id="carTrackArtist">🎵 Carregando...</span>
-    </div>
-
-    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <!-- Menu lateral (drawer) -->
     <div class="drawer" id="drawer">
-        <div class="drawer-header"><button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button></div>
+        <div class="drawer-header">
+            <button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button>
+        </div>
         <div class="drawer-content">
-            <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="fullscreenDrawerBtn"><i class="fas fa-expand"></i> Tela cheia</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
+            
             <div class="color-picker">
                 <div class="color-option red active" data-theme="theme-red"></div>
                 <div class="color-option lilac" data-theme="theme-lilac"></div>
@@ -277,19 +479,19 @@
                 <div class="color-option purple" data-theme="theme-purple"></div>
                 <div class="color-option yellow" data-theme="theme-yellow"></div>
                 <div class="color-option white" data-theme="theme-white"></div>
-                <div class="color-option pure-black" data-theme="theme-pure-black"></div>
             </div>
+            
             <div class="ad-panel">
-                <h4><i class="fas fa-microphone-alt"></i> 📢 ANÚNCIOS DE ÁUDIO (MP3)</h4>
+                <h4 style="color:#fff;"><i class="fas fa-microphone-alt"></i> 📢 ANÚNCIOS</h4>
                 <div class="ad-timer" id="adTimer">15:00</div>
                 <div class="ad-status" id="adStatus"><i class="fas fa-compact-disc fa-spin"></i> Aguardando...</div>
                 <div class="ad-buttons">
                     <button class="ad-btn" id="toggleAdsBtn">Ativo</button>
                     <button class="ad-btn" id="testAdBtn">Testar</button>
-                    <button class="ad-btn" id="skipAdBtn" style="display:none;">Pular</button>
                 </div>
             </div>
-            <h4 style="color: var(--primary-color);">🎵 MUTV Playlist</h4>
+            
+            <h4 style="color: var(--primary-color);">🎵 PLAYLIST COMPLETA</h4>
             <div class="playlist-container" id="playlistContainer"></div>
         </div>
     </div>
@@ -297,34 +499,22 @@
     <audio id="musicPlayer" preload="auto"></audio>
     <audio id="adPlayer" preload="auto"></audio>
     <div class="notification" id="notification"><span id="notificationText"></span></div>
-    <div class="feedback-btn" id="feedbackBtn"><i class="fas fa-comment-dots"></i></div>
-    <div class="feedback-modal" id="feedbackModal">
-        <h3><i class="fas fa-heart"></i> Sua opinião</h3>
-        <div class="rating" id="ratingStars">
-            <i class="far fa-star star" data-rating="1"></i>
-            <i class="far fa-star star" data-rating="2"></i>
-            <i class="far fa-star star" data-rating="3"></i>
-            <i class="far fa-star star" data-rating="4"></i>
-            <i class="far fa-star star" data-rating="5"></i>
-        </div>
-        <textarea id="feedbackText" placeholder="Escreva sua sugestão ou crítica..."></textarea>
-        <div class="modal-buttons">
-            <button class="modal-btn cancel" id="cancelFeedback">Cancelar</button>
-            <button class="modal-btn send" id="sendFeedback"><i class="fab fa-whatsapp"></i> Enviar</button>
-        </div>
-    </div>
 
     <script>
-        // ==================== FOTOS DE SAUDAÇÃO ====================
-        const fotosSaudacao = {
-            bomdia: ["bomdia1.jpeg", "bomdia2.png", "bomdia3.jpeg"],
-            boatarde: ["targif.gif", "tarfoto.jpeg", "tarvideo.mp4"],
-            boanoite: ["bnoiteg1.gif", "bnoitefoto.jpeg", "bnoite2.gif"]
-        };
+        // ==================== VÍDEOS CURTOS SEM ÁUDIO (LOOP) ====================
+        const videosList = [
+            { src: "macoca1.mp4", nome: "Cena 1" },
+            { src: "aluguecopos (1).mp4", nome: "AlugueCopos" },
+            { src: "Gestão (1).mp4", nome: "Destaque" },
+            { src: "carro.mp4", nome: "Carro" }
+        ];
         
-        // ==================== PLAYLIST COMPLETA ====================
+        let currentVideoIndex = 0;
+        let videoInterval = null;
+        
+        // ==================== PLAYLIST DE MÚSICAS ====================
         const musicas = [
-                     { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+                   { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -521,155 +711,77 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
- 
+   
         ];
         
-        for(let i = musicas.length + 1; i <= 196; i++) {
-            musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: "todos" });
+        for(let i = musicas.length + 1; i <= 50; i++) {
+            musicas.push({ id: i, title: `Música Especial ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: "todos" });
         }
-        
-        // ==================== VÍDEOS DOS ANÚNCIOS ====================
-        const videosExtra = [
-            { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
-            { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/" }
-        ];
         
         // ==================== ANÚNCIOS DE ÁUDIO ====================
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
-            { src: "zzcv.mp3", nome: "Promoção Relâmpago" },
-            { src: "zzcv.mp3", nome: "Novidade Imperdível" }
+            { src: "zzcv.mp3", nome: "Promoção Relâmpago" }
         ];
         
-        // ==================== ELEMENTOS DOM ====================
+        // ==================== ELEMENTOS ====================
+        const mainVideo = document.getElementById('mainVideo');
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
-        const playBtn = document.getElementById('playPauseBtn');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const progressFill = document.getElementById('progressFill');
-        const currentTimeEl = document.getElementById('currentTime');
-        const totalTimeEl = document.getElementById('totalTime');
-        const trackArtist = document.getElementById('trackArtist');
-        const splash = document.getElementById('splash');
-        const tapToStart = document.getElementById('tap-to-start');
-        const shuffleBtn = document.getElementById('shufflePlayerBtn');
+        const playPauseBtn = document.getElementById('tvPlayPauseBtn');
+        const prevBtn = document.getElementById('tvPrevBtn');
+        const nextBtn = document.getElementById('tvNextBtn');
+        const shuffleBtn = document.getElementById('tvShuffleBtn');
+        const currentTrackInfo = document.getElementById('currentTrackInfo');
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
-        const feedbackTextarea = document.getElementById('feedbackText');
         
-        const carVideoControls = document.getElementById('carVideoControls');
-        const carPrevBtn = document.getElementById('carPrevBtn');
-        const carPlayPauseBtn = document.getElementById('carPlayPauseBtn');
-        const carNextBtn = document.getElementById('carNextBtn');
-        const carTrackArtist = document.getElementById('carTrackArtist');
-        
-        musicPlayer.volume = 0.9;
-        adPlayer.volume = 0.9;
-        
-        let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [];
-        let timerInterval = null;
+        let currentMusicIndex = 0;
+        let isPlaying = false;
+        let shuffle = false;
+        let allSongsMode = true;
+        let filteredPlaylist = [];
         let isAdPlaying = false;
         let adsEnabled = true;
-        let adIntervalSeconds = 900; // 15 minutos = 900 segundos
+        let adIntervalSeconds = 900;
         let musicPlayedSeconds = 0;
         let adTimerInterval = null;
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         let musicPausedTime = 0;
         
-        let extraVideoIndex = 0;
-        let extraVideoInterval = null;
-        let isCarModeActive = false;
-        let saudacaoIndex = 0;
-        let alternando = false;
-        let saudacaoInterval = null;
-        let controlsTimeout = null;
+        musicPlayer.volume = 0.85;
+        adPlayer.volume = 0.85;
         
-        // ==================== FUNÇÕES DE SAUDAÇÃO ====================
-        function getPeriodoAtual() {
-            const hora = new Date().getHours();
-            if (hora >= 5 && hora < 12) return "bomdia";
-            if (hora >= 12 && hora < 18) return "boatarde";
-            return "boanoite";
-        }
-        
-        function getFotoSaudacao() {
-            const periodo = getPeriodoAtual();
-            const fotos = fotosSaudacao[periodo];
-            if (!fotos || fotos.length === 0) return null;
-            return fotos[saudacaoIndex % fotos.length];
-        }
-        
-        function alternarVideoPrincipal() {
-            if (isCarModeActive) return;
-            const videoElement = document.getElementById('mainVideo');
-            if (!videoElement) return;
-            
-            alternando = !alternando;
-            
-            if (alternando) {
-                const fotoSrc = getFotoSaudacao();
-                if (fotoSrc) {
-                    videoElement.style.display = 'none';
-                    let imgElement = document.getElementById('saudacaoImg');
-                    if (!imgElement) {
-                        imgElement = document.createElement('img');
-                        imgElement.id = 'saudacaoImg';
-                        imgElement.style.width = '100%';
-                        imgElement.style.height = '100%';
-                        imgElement.style.objectFit = 'cover';
-                        videoElement.parentNode.insertBefore(imgElement, videoElement);
-                    }
-                    imgElement.src = fotoSrc;
-                    imgElement.style.display = 'block';
-                    videoElement.style.display = 'none';
-                    saudacaoIndex++;
-                }
-            } else {
-                const imgElement = document.getElementById('saudacaoImg');
-                if (imgElement) imgElement.style.display = 'none';
-                videoElement.style.display = 'block';
-                videoElement.play().catch(e => console.log);
+        // ==================== FUNÇÕES DOS VÍDEOS (alternância automática) ====================
+        function alternarVideo() {
+            currentVideoIndex = (currentVideoIndex + 1) % videosList.length;
+            const novoVideo = videosList[currentVideoIndex];
+            if(mainVideo && novoVideo.src) {
+                const wasPlaying = !mainVideo.paused;
+                mainVideo.src = novoVideo.src;
+                mainVideo.load();
+                mainVideo.play().catch(e => console.log("Vídeo em loop"));
             }
         }
         
-        function iniciarAlternanciaSaudacao() {
-            if (saudacaoInterval) clearInterval(saudacaoInterval);
-            saudacaoInterval = setInterval(alternarVideoPrincipal, 20000);
+        function iniciarAlternanciaVideos() {
+            if(videoInterval) clearInterval(videoInterval);
+            videoInterval = setInterval(alternarVideo, 12000); // Troca a cada 12 segundos
         }
         
-        function pararAlternanciaSaudacao() {
-            if (saudacaoInterval) {
-                clearInterval(saudacaoInterval);
-                saudacaoInterval = null;
-            }
-            const videoElement = document.getElementById('mainVideo');
-            const imgElement = document.getElementById('saudacaoImg');
-            if (imgElement) imgElement.style.display = 'none';
-            if (videoElement) {
-                videoElement.style.display = 'block';
-                videoElement.play().catch(e => console.log);
-            }
+        // Carregar primeiro vídeo
+        if(videosList.length > 0) {
+            mainVideo.src = videosList[0].src;
+            mainVideo.load();
+            mainVideo.play().catch(e => console.log);
         }
         
-        // ==================== FUNÇÕES DO PLAYER ====================
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return '0:00';
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-        
-        function formatAdTimer(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-        }
-        
+        // ==================== FUNÇÕES DA PLAYLIST ====================
         function updateFilteredPlaylist() {
-            if(allSongsMode) { filteredPlaylist = [...musicas]; }
-            else {
+            if(allSongsMode) {
+                filteredPlaylist = [...musicas];
+            } else {
                 const hora = new Date().getHours();
                 let periodo = "manha";
                 if(hora >= 12 && hora < 18) periodo = "tarde";
@@ -684,110 +796,105 @@
             let html = '';
             filteredPlaylist.forEach((m, idx) => {
                 const globalIdx = musicas.findIndex(p => p.id === m.id);
-                const isActive = (globalIdx === currentIndex && isPlaying);
+                const isActive = (globalIdx === currentMusicIndex);
                 html += `<div class="playlist-item ${isActive ? 'playing' : ''}" onclick="window.selectSong(${globalIdx})">
                             <div class="music-number">${(idx+1).toString().padStart(2,'0')}</div>
                             <div class="playlist-info">
                                 <div class="playlist-title">${m.title}</div>
                                 <div class="playlist-artist">${m.artist}</div>
                             </div>
-                            <div class="playlist-duration">03:30</div>
                         </div>`;
             });
             playlistContainer.innerHTML = html;
         }
         
-        function updateCarTrackInfo() {
-            const track = musicas[currentIndex];
-            carTrackArtist.innerHTML = `🎵 ${track.title} - ${track.artist}`;
-        }
-        
-        function loadTrack(index) {
+        function loadMusic(index) {
             if(index >= musicas.length) index = 0;
             if(index < 0) index = musicas.length - 1;
-            currentIndex = index;
-            const track = musicas[currentIndex];
+            currentMusicIndex = index;
+            const track = musicas[currentMusicIndex];
             musicPlayer.src = track.src;
-            trackArtist.textContent = `${track.title} - ${track.artist}`;
-            updateCarTrackInfo();
-            currentTimeEl.textContent = '0:00';
-            totalTimeEl.textContent = '03:30';
-            progressFill.style.width = '0%';
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist, album: 'MUTV Playlist' });
-            }
+            currentTrackInfo.innerHTML = `🎵 ${track.title} - ${track.artist}`;
             renderPlaylist();
         }
         
-        function startTimer() {
-            if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if(isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) {
-                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
-                    progressFill.style.width = percent + '%';
-                    currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
-                    if(musicPlayer.currentTime >= musicPlayer.duration - 0.3) {
-                        clearInterval(timerInterval);
-                        timerInterval = null;
-                        nextTrack();
-                    }
-                }
-            }, 100);
-        }
-        
-        function stopTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
-        
-        function updateCarPlayPauseButton() {
-            if(isPlaying && !isAdPlaying) {
-                carPlayPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                carPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        }
-        
         function playMusic() {
-            if(isAdPlaying) { showNotification('⏸️ Aguarde o anúncio terminar'); return; }
-            const track = musicas[currentIndex];
+            if(isAdPlaying) {
+                showNotification('⏸️ Aguarde o anúncio terminar');
+                return;
+            }
+            const track = musicas[currentMusicIndex];
             musicPlayer.src = track.src;
             musicPlayer.load();
-            
             musicPlayer.play()
                 .then(() => {
                     isPlaying = true;
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    updateCarPlayPauseButton();
-                    startTimer();
-                    splash.classList.add('hidden');
-                    setTimeout(() => splash.classList.add('display-none'), 500);
-                    if(tapToStart) tapToStart.classList.add('hidden');
-                    renderPlaylist();
-                    if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    showNotification(`▶️ Tocando: ${track.title}`);
                 })
-                .catch(e => { 
-                    console.log('Erro ao tocar:', e);
-                    showNotification('⚠️ Erro ao tocar música');
-                });
+                .catch(e => showNotification('⚠️ Erro ao tocar música'));
         }
         
         function pauseMusic() {
             musicPlayer.pause();
             isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            updateCarPlayPauseButton();
-            stopTimer();
-            renderPlaylist();
-            if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'paused'; }
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
         }
         
-        function togglePlayPause() { 
+        function togglePlayPause() {
             if(isAdPlaying) {
-                showNotification('⏸️ Aguarde o anúncio terminar');
+                showNotification('⏸️ Aguarde o anúncio');
                 return;
             }
-            isPlaying ? pauseMusic() : playMusic(); 
+            isPlaying ? pauseMusic() : playMusic();
         }
         
-        // ==================== FUNÇÕES DE ANÚNCIO CORRIGIDAS (BASEADO EM TEMPO) ====================
+        function nextTrack() {
+            if(isAdPlaying) return;
+            pauseMusic();
+            let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentMusicIndex].id);
+            if(filteredIdx === -1) filteredIdx = 0;
+            if(shuffle && filteredPlaylist.length > 1) {
+                let newIdx;
+                do { newIdx = Math.floor(Math.random() * filteredPlaylist.length); } while(newIdx === filteredIdx);
+                filteredIdx = newIdx;
+            } else {
+                filteredIdx = (filteredIdx + 1) % filteredPlaylist.length;
+            }
+            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
+            currentMusicIndex = newGlobal;
+            loadMusic(currentMusicIndex);
+            if(isPlaying) playMusic();
+        }
+        
+        function prevTrack() {
+            if(isAdPlaying) return;
+            pauseMusic();
+            let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentMusicIndex].id);
+            if(filteredIdx === -1) filteredIdx = 0;
+            if(shuffle && filteredPlaylist.length > 1) {
+                let newIdx;
+                do { newIdx = Math.floor(Math.random() * filteredPlaylist.length); } while(newIdx === filteredIdx);
+                filteredIdx = newIdx;
+            } else {
+                filteredIdx = (filteredIdx - 1 + filteredPlaylist.length) % filteredPlaylist.length;
+            }
+            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
+            currentMusicIndex = newGlobal;
+            loadMusic(currentMusicIndex);
+            if(isPlaying) playMusic();
+        }
+        
+        window.selectSong = function(globalIdx) {
+            if(isAdPlaying) return;
+            pauseMusic();
+            currentMusicIndex = globalIdx;
+            loadMusic(currentMusicIndex);
+            if(isPlaying) playMusic();
+            closeDrawer();
+        };
+        
+        // ==================== ANÚNCIOS ====================
         function startAdTimer() {
             if(adTimerInterval) clearInterval(adTimerInterval);
             adTimerInterval = setInterval(() => {
@@ -796,8 +903,7 @@
                     musicPlayedSeconds++;
                     const remaining = adIntervalSeconds - musicPlayedSeconds;
                     const adTimerEl = document.getElementById('adTimer');
-                    if(adTimerEl) adTimerEl.textContent = formatAdTimer(remaining);
-                    
+                    if(adTimerEl) adTimerEl.textContent = formatTime(remaining);
                     if(musicPlayedSeconds >= adIntervalSeconds) {
                         musicPlayedSeconds = 0;
                         playAudioAd();
@@ -806,54 +912,43 @@
             }, 1000);
         }
         
+        function formatTime(seconds) {
+            if(isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+        
         function playAudioAd() {
             if(!adsEnabled || isAdPlaying) return;
             const ad = anunciosAudio[currentAdIndex];
             if(!ad) return;
             
-            // SALVA A POSIÇÃO E PAUSA A MÚSICA
             if(isPlaying) {
                 musicPausedTime = musicPlayer.currentTime;
                 pauseMusic();
                 shouldResumeMusic = true;
-            } else {
-                shouldResumeMusic = false;
             }
             
-            // CARREGA E TOCA O ANÚNCIO
             adPlayer.src = ad.src;
             adPlayer.load();
             isAdPlaying = true;
-            
             const adStatus = document.getElementById('adStatus');
-            const skipAdBtn = document.getElementById('skipAdBtn');
             if(adStatus) adStatus.innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.nome}`;
-            if(skipAdBtn) skipAdBtn.style.display = 'inline-block';
-            
-            showNotification(`📢 Anúncio de áudio: ${ad.nome}`);
-            
+            showNotification(`📢 Anúncio: ${ad.nome}`);
             adPlayer.play().catch(() => finishAudioAd());
             adPlayer.onended = finishAudioAd;
-            adPlayer.onerror = finishAudioAd;
         }
         
         function finishAudioAd() {
             isAdPlaying = false;
-            
             const adStatus = document.getElementById('adStatus');
-            const skipAdBtn = document.getElementById('skipAdBtn');
             if(adStatus) adStatus.innerHTML = '<i class="fas fa-compact-disc fa-spin"></i> Aguardando...';
-            if(skipAdBtn) skipAdBtn.style.display = 'none';
-            
-            updateCarPlayPauseButton();
-            
-            // VOLTA A MÚSICA DE ONDE PAROU
             if(shouldResumeMusic) {
                 musicPlayer.currentTime = musicPausedTime;
                 playMusic();
                 shouldResumeMusic = false;
             }
-            
             currentAdIndex = (currentAdIndex + 1) % anunciosAudio.length;
             musicPlayedSeconds = 0;
         }
@@ -866,304 +961,91 @@
                 adPlayer.pause();
                 finishAudioAd();
             }
-            if(adsEnabled) {
-                const adTimerEl = document.getElementById('adTimer');
-                if(adTimerEl) adTimerEl.textContent = formatAdTimer(adIntervalSeconds - musicPlayedSeconds);
-            } else {
-                const adTimerEl = document.getElementById('adTimer');
-                if(adTimerEl) adTimerEl.textContent = 'OFF';
-            }
-            showNotification(adsEnabled ? '📢 Anúncios ATIVOS (a cada 15 min)' : '🔇 Anúncios DESATIVADOS');
+            showNotification(adsEnabled ? '📢 Anúncios ATIVOS' : '🔇 Anúncios DESATIVADOS');
         }
         
-        function testAd() { 
+        function testAd() {
             if(!isAdPlaying) {
                 musicPlayedSeconds = adIntervalSeconds;
                 playAudioAd();
             }
-            else showNotification('Já tem um anúncio tocando');
-        }
-        
-        function skipAd() { 
-            if(isAdPlaying) { 
-                adPlayer.pause(); 
-                finishAudioAd(); 
-                showNotification('⏭️ Anúncio pulado'); 
-            } 
-        }
-        
-        // ==================== FUNÇÕES DE NAVEGAÇÃO ====================
-        function nextTrack() {
-            if(isAdPlaying) {
-                showNotification('⏸️ Aguarde o anúncio terminar');
-                return;
-            }
-            stopTimer();
-            musicPlayer.pause();
-            
-            let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
-            if(filteredIdx === -1) filteredIdx = 0;
-            if(shuffle && filteredPlaylist.length > 1) {
-                let newIdx;
-                do { newIdx = Math.floor(Math.random() * filteredPlaylist.length); } while(newIdx === filteredIdx);
-                filteredIdx = newIdx;
-            } else { filteredIdx = (filteredIdx + 1) % filteredPlaylist.length; }
-            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
-            currentIndex = newGlobal;
-            loadTrack(currentIndex);
-            if(isPlaying) playMusic();
-        }
-        
-        function prevTrack() {
-            if(isAdPlaying) {
-                showNotification('⏸️ Aguarde o anúncio terminar');
-                return;
-            }
-            stopTimer();
-            musicPlayer.pause();
-            let filteredIdx = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
-            if(filteredIdx === -1) filteredIdx = 0;
-            if(shuffle && filteredPlaylist.length > 1) {
-                let newIdx;
-                do { newIdx = Math.floor(Math.random() * filteredPlaylist.length); } while(newIdx === filteredIdx);
-                filteredIdx = newIdx;
-            } else { filteredIdx = (filteredIdx - 1 + filteredPlaylist.length) % filteredPlaylist.length; }
-            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
-            currentIndex = newGlobal;
-            loadTrack(currentIndex);
-            if(isPlaying) playMusic();
-        }
-        
-        window.selectSong = function(globalIdx) {
-            if(isAdPlaying) {
-                showNotification('⏸️ Aguarde o anúncio terminar');
-                return;
-            }
-            stopTimer();
-            musicPlayer.pause();
-            currentIndex = globalIdx;
-            loadTrack(currentIndex);
-            if(isPlaying) playMusic();
-            closeDrawer();
-        };
-        
-        function showNotification(msg) { 
-            const n = document.getElementById('notification'); 
-            const text = document.getElementById('notificationText');
-            if(text) text.innerText = msg; 
-            if(n) {
-                n.classList.add('show'); 
-                setTimeout(() => n.classList.remove('show'), 2000); 
-            }
-        }
-        
-        function closeDrawer() { 
-            document.getElementById('drawer').classList.remove('open'); 
-            document.getElementById('drawerOverlay').classList.remove('active'); 
         }
         
         function toggleAllSongsMode() {
-            allSongsMode = !allSongsMode; 
+            allSongsMode = !allSongsMode;
             updateFilteredPlaylist();
-            toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
+            toggleAllSongsBtn.innerHTML = allSongsMode ? '🌎 Modo: TODAS as músicas' : '⏰ Modo: Período do dia';
             showNotification(allSongsMode ? "Todas as músicas" : "Modo período");
-            const exists = filteredPlaylist.some(m => m.id === musicas[currentIndex].id);
-            if(!exists && filteredPlaylist.length) { 
-                const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[0].id); 
-                currentIndex = newGlobal; 
-                loadTrack(currentIndex); 
-                if(isPlaying) playMusic(); 
+            const exists = filteredPlaylist.some(m => m.id === musicas[currentMusicIndex].id);
+            if(!exists && filteredPlaylist.length) {
+                const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[0].id);
+                currentMusicIndex = newGlobal;
+                loadMusic(currentMusicIndex);
+                if(isPlaying) playMusic();
             }
         }
         
-        // ==================== CONTROLES DO MODO CARRO ====================
-        function showCarControls() {
-            if(!isCarModeActive) return;
-            carVideoControls.classList.add('visible');
-            if(controlsTimeout) clearTimeout(controlsTimeout);
-            controlsTimeout = setTimeout(() => {
-                carVideoControls.classList.remove('visible');
-            }, 3000);
-        }
-        
-        function setupCarModeTouchEvents() {
-            const extraSection = document.querySelector('.extra-video-section');
-            if(extraSection) {
-                extraSection.addEventListener('click', showCarControls);
-                extraSection.addEventListener('touchstart', showCarControls);
+        function showNotification(msg) {
+            const n = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+            if(text) text.innerText = msg;
+            if(n) {
+                n.classList.add('show');
+                setTimeout(() => n.classList.remove('show'), 2500);
             }
         }
         
-        // ==================== VÍDEO EXTRA ====================
-        function alternarVideoExtra() {
-            if(isCarModeActive) return;
-            extraVideoIndex = (extraVideoIndex + 1) % videosExtra.length;
-            const novo = videosExtra[extraVideoIndex];
-            const extraVideo = document.getElementById('extraVideo');
-            const extraOverlay = document.getElementById('extraOverlay');
-            if (extraVideo) {
-                extraVideo.src = novo.src;
-                extraVideo.load();
-                extraVideo.play().catch(e => console.log);
-            }
-            if (extraOverlay) {
-                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${novo.nome}`;
-            }
-            const container = document.getElementById('extraVideoContainer');
-            if (container) {
-                container.onclick = () => {
-                    if (novo.link) window.open(novo.link, '_blank');
-                };
-            }
-        }
-        
-        function iniciarAlternanciaExtra() {
-            if (extraVideoInterval) clearInterval(extraVideoInterval);
-            extraVideoInterval = setInterval(alternarVideoExtra, 15000);
-        }
-        
-        // ==================== MODO CARRO ====================
-        function enableCarMode() {
-            if(isCarModeActive) return;
-            isCarModeActive = true;
-            document.body.classList.add('car-mode');
-            
-            if(extraVideoInterval) {
-                clearInterval(extraVideoInterval);
-                extraVideoInterval = null;
-            }
-            
-            pararAlternanciaSaudacao();
-            
-            const extraVideo = document.getElementById('extraVideo');
-            const extraOverlay = document.getElementById('extraOverlay');
-            if(extraVideo) {
-                extraVideo.src = "carro.mp4";
-                extraVideo.load();
-                extraVideo.play().catch(e => console.log);
-                extraVideo.loop = true;
-            }
-            if(extraOverlay) {
-                extraOverlay.style.display = 'none';
-            }
-            
-            updateCarTrackInfo();
-            setupCarModeTouchEvents();
-            showCarControls();
-            showNotification('🚗 Modo Carro ATIVO - Toque na tela para controles');
-        }
-        
-        function disableCarMode() {
-            if(!isCarModeActive) return;
-            isCarModeActive = false;
-            document.body.classList.remove('car-mode');
-            
-            carVideoControls.classList.remove('visible');
-            if(controlsTimeout) clearTimeout(controlsTimeout);
-            
-            const extraOverlay = document.getElementById('extraOverlay');
-            if(extraOverlay) extraOverlay.style.display = 'block';
-            
-            iniciarAlternanciaExtra();
-            iniciarAlternanciaSaudacao();
-            
-            const extraVideo = document.getElementById('extraVideo');
-            const videoAtual = videosExtra[extraVideoIndex] || videosExtra[0];
-            if(extraVideo && videoAtual) {
-                extraVideo.src = videoAtual.src;
-                extraVideo.load();
-                extraVideo.play().catch(e => console.log);
-                extraVideo.loop = false;
-            }
-            if(extraOverlay && videoAtual) {
-                extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${videoAtual.nome}`;
-            }
-            
-            showNotification('✅ Modo normal restaurado');
+        function closeDrawer() {
+            document.getElementById('drawer').classList.remove('open');
         }
         
         // ==================== EVENTOS ====================
-        document.getElementById('progressBar').addEventListener('click', (e) => {
-            if(isAdPlaying) return;
-            const rect = e.currentTarget.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration;
-        });
-        playBtn.addEventListener('click', togglePlayPause);
+        playPauseBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
-        shuffleBtn.addEventListener('click', () => { shuffle = !shuffle; shuffleBtn.classList.toggle('active', shuffle); showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial'); });
+        shuffleBtn.addEventListener('click', () => {
+            shuffle = !shuffle;
+            shuffleBtn.style.background = shuffle ? 'var(--primary-color)' : 'rgba(0,0,0,0.5)';
+            showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial');
+        });
+        
+        document.getElementById('menuBtn').addEventListener('click', () => {
+            document.getElementById('drawer').classList.add('open');
+        });
+        document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+        document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => {
+            if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+        });
+        document.getElementById('shareDrawerBtn').addEventListener('click', () => {
+            if(navigator.share) navigator.share({title:'MUTV Playlist', url:location.href});
+            else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); }
+        });
         document.getElementById('toggleAdsBtn').addEventListener('click', toggleAds);
         document.getElementById('testAdBtn').addEventListener('click', testAd);
-        document.getElementById('skipAdBtn').addEventListener('click', skipAd);
-        document.getElementById('videoMenuBtn').addEventListener('click', () => { document.getElementById('drawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('active'); });
-        document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
-        document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
-        document.getElementById('fullscreenDrawerBtn').addEventListener('click', () => { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
-        document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'MUTV Playlist', url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
-        document.getElementById('carModeDrawerBtn').addEventListener('click', enableCarMode);
-        document.getElementById('exitCarModeBtn').addEventListener('click', disableCarMode);
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
-        carPrevBtn.addEventListener('click', () => { prevTrack(); showCarControls(); });
-        carPlayPauseBtn.addEventListener('click', () => { togglePlayPause(); showCarControls(); });
-        carNextBtn.addEventListener('click', () => { nextTrack(); showCarControls(); });
-        
-        // TEMAS
+        // Temas
         const colorOptions = document.querySelectorAll('.color-option');
-        function setTheme(themeClass) { document.body.className = themeClass; localStorage.setItem('radioTheme', themeClass); colorOptions.forEach(opt => opt.classList.toggle('active', opt.dataset.theme === themeClass)); }
-        const savedTheme = localStorage.getItem('radioTheme') || 'theme-red'; setTheme(savedTheme);
+        function setTheme(themeClass) {
+            document.body.className = themeClass;
+            localStorage.setItem('tvTheme', themeClass);
+            colorOptions.forEach(opt => opt.classList.toggle('active', opt.dataset.theme === themeClass));
+        }
+        const savedTheme = localStorage.getItem('tvTheme') || 'theme-red';
+        setTheme(savedTheme);
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
-        // FEEDBACK
-        const feedbackBtn = document.getElementById('feedbackBtn'), feedbackModal = document.getElementById('feedbackModal');
-        let currentRating = 0;
-        document.querySelectorAll('.star').forEach(star => { 
-            star.addEventListener('click', () => { 
-                currentRating = parseInt(star.dataset.rating); 
-                document.querySelectorAll('.star').forEach((s,i) => { 
-                    if(i < currentRating) { s.classList.add('fas','active'); s.classList.remove('far'); } 
-                    else { s.classList.remove('fas','active'); s.classList.add('far'); } 
-                }); 
-            }); 
-        });
-        feedbackBtn.addEventListener('click', () => feedbackModal.classList.toggle('open'));
-        document.getElementById('cancelFeedback').addEventListener('click', () => { feedbackModal.classList.remove('open'); feedbackTextarea.value = ''; currentRating = 0; document.querySelectorAll('.star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); }); });
-        document.getElementById('sendFeedback').addEventListener('click', () => { 
-            if(currentRating === 0) { showNotification('⭐ Selecione uma nota de 1 a 5 estrelas'); return; } 
-            let msg = `🎵 *MUTV Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`; 
-            if(feedbackTextarea.value.trim()) msg += `💬 ${feedbackTextarea.value.trim()}\n`; 
-            window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`, '_blank'); 
-            showNotification('✅ WhatsApp aberto! Envie sua avaliação'); 
-            feedbackModal.classList.remove('open'); 
-            feedbackTextarea.value = ''; 
-            currentRating = 0; 
-            document.querySelectorAll('.star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); }); 
-        });
-        
-        // MEDIA SESSION
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.setActionHandler('play', () => playMusic());
-            navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
-            navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
-            navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
-        }
-        
-        // INICIALIZAÇÃO
+        // ==================== INICIALIZAÇÃO ====================
         window.addEventListener('load', () => {
             updateFilteredPlaylist();
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
-            currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
-            loadTrack(currentIndex);
-            
-            // Inicia o timer do anúncio
+            currentMusicIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
+            loadMusic(currentMusicIndex);
             startAdTimer();
+            iniciarAlternanciaVideos();
             
-            tapToStart.style.display = 'block';
-            tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
-            setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
-            iniciarAlternanciaSaudacao();
-            iniciarAlternanciaExtra();
+            // Auto-play da primeira música após interação? Melhor deixar o usuário clicar
+            showNotification('🎬 Clique no play para iniciar a música');
         });
     </script>
 </body>
