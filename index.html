@@ -46,7 +46,6 @@
             display: block;
         }
         
-        /* LETREIRO MAIS CLARO E TRANSPARENTE */
         .overlay-ticker {
             position: absolute;
             bottom: 0;
@@ -81,7 +80,7 @@
         .ticker-text i { color: var(--primary-color); margin: 0 5px; }
         @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         
-        /* BOTÕES UM EMBAIXO DO OUTRO, SEM SOMBRAS */
+        /* BOTÕES SEM CÍRCULO - APENAS ÍCONES */
         .video-buttons {
             position: absolute;
             top: 12px;
@@ -92,25 +91,47 @@
             z-index: 20;
         }
         .video-menu-btn, .fullscreen-btn {
-            background: rgba(0,0,0,0.5);
+            background: transparent;
             color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            font-size: 1.2rem;
+            border: none;
+            font-size: 1.4rem;
             cursor: pointer;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: auto;
+            height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
             box-shadow: none;
             outline: none;
-            backdrop-filter: blur(2px);
+            padding: 5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
         .video-menu-btn:active, .fullscreen-btn:active { 
-            background: var(--primary-color); 
-            transform: scale(0.95);
+            color: var(--primary-color);
+            transform: scale(0.9);
+        }
+        
+        /* INFO SUPERIOR - HORA E DATA */
+        .top-info {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 20;
+            pointer-events: none;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+        }
+        .top-info i {
+            margin-right: 6px;
+            color: var(--primary-color);
         }
         
         .track-info { padding: 12px 16px 4px; text-align: center; }
@@ -160,6 +181,28 @@
             border: 1px solid var(--primary-color); 
             pointer-events: none; 
             z-index: 10; 
+        }
+        
+        /* CORREÇÃO TELA CHEIA */
+        .app:-webkit-full-screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        .app:fullscreen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        :-webkit-full-screen .video-wrapper {
+            margin: 0;
+            border-radius: 0;
+            height: 100vh;
+        }
+        :fullscreen .video-wrapper {
+            margin: 0;
+            border-radius: 0;
+            height: 100vh;
         }
         
         .drawer { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #000000; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 2px solid var(--border-color); }
@@ -268,7 +311,8 @@
             .control-btn { font-size: 2.4rem; width: 64px; height: 64px; }
             .play-btn { font-size: 3.5rem; width: 80px; height: 80px; }
             .ticker-text { font-size: 1.1rem; }
-            .video-menu-btn, .fullscreen-btn { width: 42px; height: 42px; font-size: 1.3rem; }
+            .video-menu-btn, .fullscreen-btn { font-size: 1.6rem; }
+            .top-info { font-size: 1rem; }
         }
     </style>
 </head>
@@ -283,10 +327,13 @@
                 <video id="mainVideo" autoplay loop muted playsinline>
                     <source src="macoca1.mp4" type="video/mp4">
                 </video>
+                <div class="top-info" id="topInfo">
+                    <i class="fas fa-clock"></i> <span id="currentTimeInfo">--:--</span> | <i class="fas fa-calendar"></i> <span id="currentDateInfo">--/--</span>
+                </div>
                 <div class="overlay-ticker">
                     <div class="ticker-container">
                         <div class="ticker-text" id="overlayTickerText">
-                            <i class="fas fa-headphones-alt fa-spin"></i> MUTV - Playlist - As Musicas Tocam e Seus Produtos Aparecem na Tv - Informações - 12 98846-1978 <i class="fas fa-music fa-beat"></i>
+                            <i class="fas fa-headphones-alt fa-spin"></i> MUTV - Playlist | <i class="fab fa-youtube"></i> youtube.com/@mutvplaylist | <i class="fas fa-newspaper"></i> G1: Últimas notícias - Política, Economia, Esportes, Entretenimento | <i class="fas fa-clock"></i> Informações 12 98846-1978 <i class="fas fa-music fa-beat"></i>
                         </div>
                     </div>
                 </div>
@@ -332,6 +379,7 @@
         <div class="drawer-content">
             <button class="drawer-item" id="carModeDrawerBtn"><i class="fas fa-car"></i> Modo carro</button>
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
+            <button class="drawer-item" id="youtubeBtn"><i class="fab fa-youtube"></i> YouTube Music</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
             
             <div class="saudacao-toggle">
@@ -662,6 +710,20 @@
         let alternando = false;
         let saudacaoInterval = null;
         let controlsTimeout = null;
+        
+        // ==================== FUNÇÕES DE HORA E DATA ====================
+        function updateDateTime() {
+            const now = new Date();
+            const horas = now.getHours().toString().padStart(2, '0');
+            const minutos = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('currentTimeInfo').textContent = `${horas}:${minutos}`;
+            
+            const dia = now.getDate().toString().padStart(2, '0');
+            const mes = (now.getMonth() + 1).toString().padStart(2, '0');
+            document.getElementById('currentDateInfo').textContent = `${dia}/${mes}`;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
         
         // ==================== FUNÇÕES DE SAUDAÇÃO ====================
         function getPeriodoAtual() {
@@ -1144,7 +1206,17 @@
         document.getElementById('testAdBtn').addEventListener('click', testAd);
         document.getElementById('skipAdBtn').addEventListener('click', skipAd);
         document.getElementById('videoMenuBtn').addEventListener('click', () => { document.getElementById('drawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('active'); });
-        document.getElementById('fullscreenBtn').addEventListener('click', () => { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
+        
+        // Botão tela cheia corrigido
+        document.getElementById('fullscreenBtn').addEventListener('click', () => { 
+            const appElement = document.querySelector('.app');
+            if(document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                appElement.requestFullscreen();
+            }
+        });
+        
         document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
         document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'Rádio Playlist', url:location.href}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
@@ -1152,6 +1224,7 @@
         document.getElementById('exitCarModeBtn').addEventListener('click', disableCarMode);
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         document.getElementById('saudacaoToggle').addEventListener('change', toggleSaudacaoTipo);
+        document.getElementById('youtubeBtn').addEventListener('click', () => { window.open('https://music.youtube.com/', '_blank'); });
         
         carPrevBtn.addEventListener('click', () => { prevTrack(); showCarControls(); });
         carPlayPauseBtn.addEventListener('click', () => { togglePlayPause(); showCarControls(); });
