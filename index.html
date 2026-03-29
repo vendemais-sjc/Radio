@@ -86,6 +86,7 @@
             gap: 8px;
             z-index: 20;
         }
+        /* Botões sem sombra */
         .video-menu-btn, .fullscreen-btn {
             background: rgba(0,0,0,0.6);
             color: white;
@@ -99,7 +100,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            backdrop-filter: blur(4px);
+            box-shadow: none;
         }
         .video-menu-btn:hover, .fullscreen-btn:hover { background: var(--primary-color); transform: scale(1.05); }
         
@@ -113,9 +114,46 @@
         .control-btn { background: none; border: none; color: #ffffff !important; font-size: 2rem; width: 48px; height: 48px; cursor: pointer; border-radius: 50%; transition: all 0.2s; }
         .control-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.15); }
         .play-btn { font-size: 3rem; width: 64px; height: 64px; }
-        .extra-video-section { margin: 5px; border: 1px solid var(--primary-color); border-radius: 12px; overflow: hidden; background: #000; }
-        .extra-video-container { width: 100%; background: #000; position: relative; aspect-ratio: 1015 / 512; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #000; }
-        .extra-overlay { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); color: var(--primary-color); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; border: 1px solid var(--primary-color); pointer-events: none; z-index: 10; }
+        
+        /* CORREÇÃO DO VÍDEO EXTRA - ASPECTO CORRETO */
+        .extra-video-section { 
+            margin: 5px; 
+            border: 1px solid var(--primary-color); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            background: #000;
+            aspect-ratio: 16 / 9;
+        }
+        .extra-video-container { 
+            width: 100%; 
+            height: 100%;
+            background: #000; 
+            position: relative; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .extra-video-container video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+        }
+        .extra-overlay { 
+            position: absolute; 
+            bottom: 8px; 
+            left: 8px; 
+            background: rgba(0,0,0,0.7); 
+            color: var(--primary-color); 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            border: 1px solid var(--primary-color); 
+            pointer-events: none; 
+            z-index: 10; 
+        }
+        
         .drawer { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #000000; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 2px solid var(--border-color); }
         .drawer.open { transform: translateX(0); }
         .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 30px; }
@@ -182,22 +220,47 @@
         input:checked + .slider { background-color: var(--primary-color); }
         input:checked + .slider:before { transform: translateX(26px); }
         
+        /* MODO CARRO - VÍDEO EXTRA OCUPA TELA TODA CORRETAMENTE */
+        .car-mode .extra-video-section { 
+            display: block !important; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            margin: 0; 
+            border: none; 
+            border-radius: 0; 
+            z-index: 999;
+            aspect-ratio: auto;
+        }
+        .car-mode .extra-video-container { 
+            width: 100%; 
+            height: 100%; 
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .car-mode .extra-video-container video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+        }
+        .car-mode .top-bar, .car-mode .footer, .car-mode .feedback-btn, .car-mode .player-card, .car-mode .video-wrapper { display: none !important; }
+        .car-mode .app { border: none; margin: 0; padding: 0; background: #000; }
+        .car-mode .car-exit-btn { display: flex; z-index: 10000; }
+        
         .car-mode .car-video-controls { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 30px 20px 20px; display: flex; justify-content: center; gap: 30px; z-index: 1001; transition: opacity 0.3s ease; opacity: 0; pointer-events: none; }
         .car-mode .car-video-controls.visible { opacity: 1; pointer-events: auto; }
-        .car-mode .car-control-btn { background: rgba(0,0,0,0.7); border: 2px solid var(--primary-color); color: white; font-size: 2rem; width: 70px; height: 70px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .car-mode .car-control-btn { background: rgba(0,0,0,0.7); border: 2px solid var(--primary-color); color: white; font-size: 2rem; width: 70px; height: 70px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: none; }
         .car-mode .car-control-btn.play-pause { background: var(--primary-color); color: #000; }
         .car-mode .car-track-info { position: fixed; top: 20px; left: 0; right: 0; text-align: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); padding: 15px; z-index: 1001; pointer-events: none; color: white; }
-        body.car-mode .extra-video-section { display: block !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; margin: 0; border: none; border-radius: 0; z-index: 999; }
-        body.car-mode .extra-video-container { width: 100%; height: 100%; aspect-ratio: auto; }
-        body.car-mode .top-bar, body.car-mode .footer, body.car-mode .feedback-btn, body.car-mode .player-card, body.car-mode .video-wrapper { display: none !important; }
-        body.car-mode .app { border: none; margin: 0; padding: 0; background: #000; }
-        body.car-mode .car-exit-btn { display: flex; z-index: 10000; }
         
         @media (min-width: 1024px) {
             .control-btn { font-size: 2.4rem; width: 64px; height: 64px; }
             .play-btn { font-size: 3.5rem; width: 80px; height: 80px; }
             .ticker-text { font-size: 1.2rem; }
-            .video-menu-btn, .fullscreen-btn { width: 50px; height: 50px; font-size: 1.5rem; }
+            .video-menu-btn, .fullscreen-btn { width: 50px; height: 50px; font-size: 1.5rem; box-shadow: none; }
         }
     </style>
 </head>
@@ -210,12 +273,12 @@
         <div class="player-card">
             <div class="video-wrapper">
                 <video id="mainVideo" autoplay loop muted playsinline>
-                    <source src="mutv.mp4" type="video/mp4">
+                    <source src="macoca1.mp4" type="video/mp4">
                 </video>
                 <div class="overlay-ticker">
                     <div class="ticker-container">
                         <div class="ticker-text" id="overlayTickerText">
-                            <i class="fas fa-headphones-alt fa-spin"></i> MUTV -É uma plataforma que transforma TV do comércio em um canal de vendas, com música e publicidade integrada - Informações - 12 98846-1978 <i class="fas fa-music fa-beat"></i>
+                            <i class="fas fa-headphones-alt fa-spin"></i> MUTV - Playlist - As Musicas Tocam e Seus Produtos Aparecem na Tv - Informações - 12 98846-1978 <i class="fas fa-music fa-beat"></i>
                         </div>
                     </div>
                 </div>
@@ -323,14 +386,14 @@
         const fotosSaudacao = {
             bomdia: ["bomdia1.jpeg", "bomdia2.png", "bomdia3.jpeg"],
             boatarde: ["targif.gif", "tarfoto.jpeg", "tarvideo.mp4"],
-            boanoite: ["chopp.mp4", "por.mp4", "chopp.mp4"]
+            boanoite: ["chopp.mp4", "bnoiteg1.gif", "bnoitefoto.jpeg"]
         };
         
         let saudacaoFotosAtivo = true;
         
         // ==================== PLAYLIST COMPLETA ====================
         const musicas = [
-                  { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+                 { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -527,10 +590,9 @@
 { id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" }
-  
+   
         ];
         
-        // Adicionar mais músicas
         for(let i = musicas.length + 1; i <= 50; i++) {
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
@@ -541,11 +603,11 @@
             { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/" }
         ];
         
-        // ==================== ANÚNCIOS DE ÁUDIO CORRIGIDOS ====================
+        // ==================== ANÚNCIOS DE ÁUDIO ====================
         const anunciosAudio = [
-            { src: "zzcv.mp3", nome: "Oferta Especial" },
-            { src: "zzcv.mp3", nome: "Promoção Relâmpago" },
-            { src: "zzcv.mp3", nome: "Novidade Imperdíve" }
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", nome: "Oferta Especial" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", nome: "Promoção Relâmpago" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", nome: "Novidade Imperdível" }
         ];
         
         // ==================== ELEMENTOS DOM ====================
@@ -592,7 +654,7 @@
         let saudacaoInterval = null;
         let controlsTimeout = null;
         
-        // ==================== FUNÇÕES DE SAUDAÇÃO CORRIGIDAS ====================
+        // ==================== FUNÇÕES DE SAUDAÇÃO ====================
         function getPeriodoAtual() {
             const hora = new Date().getHours();
             if (hora >= 5 && hora < 12) return "bomdia";
@@ -818,7 +880,6 @@
         
         function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); }
         
-        // ==================== ANÚNCIOS DE VOZ ====================
         function playAudioAd() {
             if(!adsEnabled || isAdPlaying) return;
             const ad = anunciosAudio[currentAdIndex];
