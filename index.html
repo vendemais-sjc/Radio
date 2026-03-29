@@ -32,7 +32,7 @@
             position: relative; 
         }
         
-        /* TELA CHEIA - MANTER APENAS VÍDEO E CONTROLES OCULTOS */
+        /* TELA CHEIA */
         .app:fullscreen {
             width: 100% !important;
             height: 100% !important;
@@ -41,7 +41,32 @@
             overflow: hidden;
         }
         
-        :fullscreen .video-wrapper {
+        .app:-webkit-full-screen {
+            width: 100% !important;
+            height: 100% !important;
+            background: #000;
+            border: none;
+        }
+        
+        .app:-moz-full-screen {
+            width: 100% !important;
+            height: 100% !important;
+            background: #000;
+            border: none;
+        }
+        
+        /* ESCONDER ELEMENTOS EM TELA CHEIA */
+        .app:fullscreen .controls,
+        .app:fullscreen .progress-area,
+        .app:fullscreen .track-info,
+        .app:fullscreen .extra-video-section,
+        .app:fullscreen .footer,
+        .app:fullscreen .top-bar,
+        .app:fullscreen .player-card > :not(.video-wrapper) {
+            display: none !important;
+        }
+        
+        .app:fullscreen .video-wrapper {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
@@ -53,23 +78,13 @@
             z-index: 10 !important;
         }
         
-        :fullscreen .video-wrapper video {
+        .app:fullscreen .video-wrapper video {
             width: 100% !important;
             height: 100% !important;
             object-fit: cover !important;
         }
         
-        :fullscreen .controls,
-        :fullscreen .progress-area,
-        :fullscreen .track-info,
-        :fullscreen .extra-video-section,
-        :fullscreen .footer,
-        :fullscreen .top-bar,
-        :fullscreen .player-card > :not(.video-wrapper) {
-            display: none !important;
-        }
-        
-        :fullscreen .overlay-ticker {
+        .app:fullscreen .overlay-ticker {
             display: block !important;
             position: fixed !important;
             bottom: 0 !important;
@@ -78,7 +93,7 @@
             z-index: 20 !important;
         }
         
-        :fullscreen .video-buttons {
+        .app:fullscreen .video-buttons {
             display: flex !important;
             position: fixed !important;
             top: 12px !important;
@@ -86,7 +101,7 @@
             z-index: 30 !important;
         }
         
-        :fullscreen .top-info {
+        .app:fullscreen .top-info {
             display: block !important;
             position: fixed !important;
             top: 12px !important;
@@ -94,39 +109,42 @@
             z-index: 30 !important;
         }
         
-        /* CONTROLES FLUTUANTES EM TELA CHEIA - OCULTOS ATÉ CLICAR */
-        :fullscreen .fullscreen-music-controls {
+        /* CONTROLES FLUTUANTES EM TELA CHEIA */
+        .fullscreen-music-controls {
+            display: none !important;
+        }
+        
+        .app:fullscreen .fullscreen-music-controls {
             display: flex !important;
             position: fixed !important;
             bottom: 80px !important;
-            left: 0 !important;
-            right: 0 !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
             justify-content: center !important;
             gap: 40px !important;
-            z-index: 40 !important;
-            background: rgba(0,0,0,0.5) !important;
+            z-index: 9999 !important;
+            background: rgba(0,0,0,0.6) !important;
             backdrop-filter: blur(10px) !important;
             padding: 15px 25px !important;
             border-radius: 60px !important;
-            width: fit-content !important;
-            margin: 0 auto !important;
+            width: auto !important;
             transition: opacity 0.3s ease !important;
             opacity: 0 !important;
             pointer-events: none !important;
         }
         
-        :fullscreen .fullscreen-music-controls.visible {
+        .app:fullscreen .fullscreen-music-controls.visible {
             opacity: 1 !important;
             pointer-events: auto !important;
         }
         
-        :fullscreen .fs-control-btn {
-            background: rgba(0,0,0,0.6) !important;
+        .app:fullscreen .fs-control-btn {
+            background: rgba(0,0,0,0.7) !important;
             border: none !important;
             color: white !important;
             font-size: 2rem !important;
-            width: 55px !important;
-            height: 55px !important;
+            width: 60px !important;
+            height: 60px !important;
             border-radius: 50% !important;
             cursor: pointer !important;
             display: flex !important;
@@ -135,20 +153,20 @@
             transition: all 0.2s !important;
         }
         
-        :fullscreen .fs-control-btn:active {
+        .app:fullscreen .fs-control-btn:active {
             transform: scale(0.95) !important;
             background: var(--primary-color) !important;
             color: #000 !important;
         }
         
-        :fullscreen .fs-control-btn.play-pause {
+        .app:fullscreen .fs-control-btn.play-pause {
             background: var(--primary-color) !important;
             color: #000 !important;
             font-size: 2.2rem !important;
         }
         
-        /* SEM TEXTO DE MÚSICA NA TELA CHEIA */
-        :fullscreen .fs-track-info {
+        /* ESCONDER TEXTO DE MÚSICA EM TELA CHEIA */
+        .app:fullscreen .fs-track-info {
             display: none !important;
         }
         
@@ -407,7 +425,7 @@
             .control-btn { font-size: 2rem; width: 55px; height: 55px; }
             .play-btn { font-size: 2.8rem; width: 70px; height: 70px; }
             .ticker-text { font-size: 1rem; }
-            :fullscreen .fs-control-btn { width: 70px !important; height: 70px !important; font-size: 2.2rem !important; }
+            .app:fullscreen .fs-control-btn { width: 80px !important; height: 80px !important; font-size: 2.5rem !important; }
         }
     </style>
 </head>
@@ -420,7 +438,7 @@
         <div class="player-card">
             <div class="video-wrapper" id="videoWrapper">
                 <video id="mainVideo" autoplay loop muted playsinline>
-                    <source src="mutv.mp4" type="video/mp4">
+                    <source src="macoca1.mp4" type="video/mp4">
                 </video>
                 <div class="top-info" id="topInfo">
                     <i class="fas fa-clock"></i> <span id="currentTimeInfo">--:--</span> | <i class="fas fa-calendar"></i> <span id="currentDateInfo">--/--</span>
@@ -459,7 +477,7 @@
         <div class="footer">MUTV - Playlist 2025 • Róger Mendes</div>
     </div>
 
-    <!-- CONTROLES FLUTUANTES PARA TELA CHEIA (OCULTOS ATÉ CLICAR) -->
+    <!-- CONTROLES FLUTUANTES PARA TELA CHEIA -->
     <div class="fullscreen-music-controls" id="fullscreenMusicControls">
         <button class="fs-control-btn" id="fsPrevBtn"><i class="fas fa-step-backward"></i></button>
         <button class="fs-control-btn play-pause" id="fsPlayPauseBtn"><i class="fas fa-play"></i></button>
@@ -538,16 +556,16 @@
     <script>
         // ==================== FOTOS DE SAUDAÇÃO ====================
         const fotosSaudacao = {
-            bomdia: ["chopp.mp4", "por.mp4", "chopp.mp4"],
-            boatarde: ["chopp.mp4", "por.mp4", "chopp.mp4"],
-            boanoite: ["chopp.mp4", "por.mp4", "chopp.mp4"]
+            bomdia: ["bomdia1.jpeg", "bomdia2.png", "bomdia3.jpeg"],
+            boatarde: ["targif.gif", "tarfoto.jpeg", "tarvideo.mp4"],
+            boanoite: ["chopp.mp4", "bnoiteg1.gif", "bnoitefoto.jpeg"]
         };
         
         let saudacaoFotosAtivo = true;
         
         // ==================== PLAYLIST COMPLETA ====================
         const musicas = [
-                 { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+               { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -1349,6 +1367,15 @@
             if (document.fullscreenElement) {
                 setupFsTouchEvents();
                 showFsControls();
+                // Força o display dos controles
+                setTimeout(() => {
+                    if (document.fullscreenElement) {
+                        fsControls.classList.add('visible');
+                        setTimeout(() => {
+                            fsControls.classList.remove('visible');
+                        }, 3000);
+                    }
+                }, 100);
             } else {
                 if (fsControlsTimeout) clearTimeout(fsControlsTimeout);
                 fsControls.classList.remove('visible');
