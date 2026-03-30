@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV Playlist • Audio Context</title>
+    <title>MUTV Playlist • Offline Ready</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
@@ -20,6 +21,35 @@
         body.theme-pure-black { --primary-color: #000000; --primary-dark: #000000; }
         body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; }
         .app { width: 100%; height: 100vh; background: #000000; display: flex; flex-direction: column; border: 1px solid var(--primary-color); overflow-y: auto; overflow-x: hidden; position: relative; }
+        
+        /* Offline Status Bar */
+        .offline-status {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ff9800;
+            color: #000;
+            text-align: center;
+            padding: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10001;
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+        }
+        .offline-status.show {
+            transform: translateY(0);
+        }
+        .offline-status.online {
+            background: #4caf50;
+            color: white;
+        }
+        .offline-status.offline {
+            background: #f44336;
+            color: white;
+        }
+        
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease; }
         #splash.hidden { opacity: 0; pointer-events: none; }
         #splash.display-none { display: none; }
@@ -253,7 +283,6 @@
         .car-mode .car-control-btn.play-pause { background: var(--primary-color); color: #000; }
         .car-mode .car-track-info { position: fixed; top: 20px; left: 0; right: 0; text-align: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); padding: 15px; z-index: 1001; pointer-events: none; color: white; }
         
-        /* Badge de status do áudio */
         .audio-status-badge {
             position: fixed;
             bottom: 80px;
@@ -277,8 +306,13 @@
     </style>
 </head>
 <body class="theme-red">
+    <!-- Offline Status Bar -->
+    <div class="offline-status" id="offlineStatus">
+        <i class="fas fa-wifi"></i> <span id="offlineStatusText">Online</span>
+    </div>
+    
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
-    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>RaTv Playlist</h1><p>Carregando Midias...</p></div></div>
+    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>RaTv Playlist</h1><p id="splashStatus">Carregando...</p></div></div>
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
     <div class="audio-status-badge" id="audioStatusBadge">
         <i class="fas fa-microphone-alt"></i> Áudio Context: Aguardando...
@@ -333,7 +367,6 @@
         <span id="carTrackArtist">🎵 Carregando...</span>
     </div>
 
-    <!-- Audio Context Silent Element -->
     <audio id="silentAudio" loop crossorigin="anonymous" style="display: none;"></audio>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -400,44 +433,91 @@
     </div>
 
     <script>
+        // ==================== SERVICE WORKER REGISTRATION ====================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+                    console.log('✅ Service Worker registrado com sucesso:', registration.scope);
+                    
+                    // Atualizar splash screen
+                    const splashStatus = document.getElementById('splashStatus');
+                    if (splashStatus) splashStatus.textContent = 'Service Worker OK';
+                    
+                    // Verificar status do SW
+                    if (registration.installing) {
+                        console.log('Service Worker instalando');
+                    } else if (registration.waiting) {
+                        console.log('Service Worker esperando');
+                    } else if (registration.active) {
+                        console.log('Service Worker ativo');
+                        // Notificar que está pronto para offline
+                        setTimeout(() => {
+                            showNotification('📱 App pronto para uso offline!', 4000);
+                        }, 1000);
+                    }
+                    
+                    // Monitorar mudanças de conexão
+                    window.addEventListener('online', updateOnlineStatus);
+                    window.addEventListener('offline', updateOnlineStatus);
+                    updateOnlineStatus();
+                    
+                } catch (error) {
+                    console.error('❌ Falha ao registrar Service Worker:', error);
+                    const splashStatus = document.getElementById('splashStatus');
+                    if (splashStatus) splashStatus.textContent = 'Modo online apenas';
+                }
+            });
+        } else {
+            console.warn('⚠️ Service Worker não suportado neste navegador');
+            const splashStatus = document.getElementById('splashStatus');
+            if (splashStatus) splashStatus.textContent = 'Modo online apenas';
+        }
+        
+        // Função para atualizar status de conexão
+        function updateOnlineStatus() {
+            const offlineStatus = document.getElementById('offlineStatus');
+            const offlineStatusText = document.getElementById('offlineStatusText');
+            
+            if (navigator.onLine) {
+                offlineStatus.className = 'offline-status online show';
+                offlineStatusText.innerHTML = '<i class="fas fa-wifi"></i> Online';
+                setTimeout(() => {
+                    offlineStatus.classList.remove('show');
+                }, 3000);
+                console.log('🌐 Conexão restaurada - Online');
+            } else {
+                offlineStatus.className = 'offline-status offline show';
+                offlineStatusText.innerHTML = '<i class="fas fa-plug"></i> Offline - Modo off-line ativo';
+                console.log('📴 Conexão perdida - Modo offline');
+                showNotification('📴 Modo offline ativo! Músicas do cache serão reproduzidas', 5000);
+            }
+        }
+        
         // ==================== WEB AUDIO API E BACKGROUND PLAYBACK ====================
         let audioContext = null;
         let silentSource = null;
         let isAudioContextRunning = false;
         let audioContextInitiated = false;
         
-        // Função para inicializar o AudioContext (deve ser chamada após interação do usuário)
         async function initAudioContext() {
             if (audioContextInitiated) return true;
             
             try {
-                // Criar AudioContext
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Criar buffer de silêncio (1 segundo de silêncio)
                 const sampleRate = audioContext.sampleRate;
-                const bufferSize = sampleRate * 1; // 1 segundo
+                const bufferSize = sampleRate * 1;
                 const silentBuffer = audioContext.createBuffer(1, bufferSize, sampleRate);
-                
-                // Preencher com zeros (silêncio)
                 const channelData = silentBuffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    channelData[i] = 0;
-                }
+                for (let i = 0; i < bufferSize; i++) channelData[i] = 0;
                 
-                // Criar fonte de áudio para manter o contexto ativo
                 silentSource = audioContext.createBufferSource();
                 silentSource.buffer = silentBuffer;
                 silentSource.loop = true;
                 silentSource.connect(audioContext.destination);
-                
-                // Iniciar o som silencioso
                 silentSource.start();
                 
-                // Garantir que o AudioContext está rodando
-                if (audioContext.state === 'suspended') {
-                    await audioContext.resume();
-                }
+                if (audioContext.state === 'suspended') await audioContext.resume();
                 
                 isAudioContextRunning = true;
                 audioContextInitiated = true;
@@ -454,7 +534,6 @@
             }
         }
         
-        // Função para manter o contexto ativo (chamar periodicamente)
         async function keepAudioContextAlive() {
             if (audioContext && audioContext.state === 'suspended') {
                 await audioContext.resume();
@@ -462,21 +541,21 @@
             }
         }
         
-        // Estratégia alternativa: elemento de áudio silencioso para iOS
         function setupSilentAudioWorkaround() {
             const silentAudio = document.getElementById('silentAudio');
             if (!silentAudio) return;
             
-            // Criar um blob de áudio silencioso em base64 (1 segundo de silêncio em WAV)
             const createSilentWAV = () => {
-                // WAV header para 1 segundo de silêncio (44100Hz, mono, 16-bit)
                 const sampleRate = 44100;
-                const duration = 2; // 2 segundos
+                const duration = 2;
                 const numSamples = sampleRate * duration;
                 const buffer = new ArrayBuffer(44 + numSamples * 2);
                 const view = new DataView(buffer);
                 
-                // RIFF chunk
+                function writeString(view, offset, str) {
+                    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+                }
+                
                 writeString(view, 0, 'RIFF');
                 view.setUint32(4, 36 + numSamples * 2, true);
                 writeString(view, 8, 'WAVE');
@@ -491,67 +570,49 @@
                 writeString(view, 36, 'data');
                 view.setUint32(40, numSamples * 2, true);
                 
-                // Dados de áudio (silêncio)
                 let offset = 44;
                 for (let i = 0; i < numSamples; i++) {
                     view.setInt16(offset, 0, true);
                     offset += 2;
                 }
-                
                 return new Blob([buffer], { type: 'audio/wav' });
             };
-            
-            function writeString(view, offset, str) {
-                for (let i = 0; i < str.length; i++) {
-                    view.setUint8(offset + i, str.charCodeAt(i));
-                }
-            }
             
             try {
                 const silentBlob = createSilentWAV();
                 const silentUrl = URL.createObjectURL(silentBlob);
                 silentAudio.src = silentUrl;
                 silentAudio.loop = true;
-                silentAudio.volume = 0.001; // Volume muito baixo (praticamente inaudível)
-                
-                // Tentar tocar o áudio silencioso
+                silentAudio.volume = 0.001;
                 silentAudio.play().catch(e => console.log('Silent audio workaround:', e));
             } catch (e) {
                 console.log('Erro no workaround de áudio:', e);
             }
         }
         
-        // Monitorar visibilidade da página para retomar áudio
         function setupVisibilityHandler() {
             document.addEventListener('visibilitychange', async () => {
                 if (!document.hidden && isPlaying && !isAdPlaying) {
-                    // Página voltou a ficar visível, garantir que o áudio está tocando
                     setTimeout(() => {
                         if (musicPlayer.paused && isPlaying) {
                             musicPlayer.play().catch(e => console.log('Retomada automática:', e));
                         }
                     }, 100);
                 }
-                
-                // Manter AudioContext ativo
                 await keepAudioContextAlive();
             });
         }
         
-        // Prevenir suspensão do áudio em dispositivos móveis
         function preventAudioSuspension() {
-            // Recriar o contexto periodicamente
             setInterval(async () => {
                 if (isPlaying && audioContext) {
                     await keepAudioContextAlive();
-                    
-                    // Verificar se o musicPlayer ainda está tocando
                     if (musicPlayer.paused && isPlaying && !isAdPlaying) {
                         console.log('🔄 Detectado pausa inesperada, retomando...');
                         musicPlayer.play().catch(e => console.log('Erro ao retomar:', e));
                     }
                 }
-            }, 30000); // A cada 30 segundos
+            }, 30000);
         }
         
         // ==================== FOTOS DE SAUDAÇÃO ====================
@@ -565,7 +626,7 @@
         
         // ==================== PLAYLIST COMPLETA ====================
         const musicas = [
-                 { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+                { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Me Ensina Me Ensina a Escreve", artist: "Osvaldo Montenegro", src: "Me_Ensina_Me_Ensina_a_Escrever_muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -763,8 +824,10 @@
 { id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
 { id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" },
   { id: 197, title: "Sem_radar_Sem_radar", artist: "Ls jack", src: "Sem_radar_Sem_radar_Vers_o_ac_stica__muzzik.m4a", periodo: "todos" }, 
+            // ... (restante da playlist mantida)
         ];
         
+        // Adicionar músicas restantes (simplificado para brevidade)
         for(let i = musicas.length + 1; i <= 50; i++) {
             musicas.push({ id: i, title: `Música ${i}`, artist: `Artista ${i}`, src: `track${i}.m4a`, periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha") });
         }
@@ -826,11 +889,8 @@
         let saudacaoInterval = null;
         let controlsTimeout = null;
         
-        // Função principal de play modificada para integrar Web Audio
         async function playMusicWithAudioContext() {
-            // Inicializar AudioContext se necessário
             await initAudioContext();
-            
             if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
             
             const track = musicas[currentIndex];
@@ -848,133 +908,25 @@
                 tapToStart.classList.add('hidden');
                 renderPlaylist();
                 if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
-                
-                // Garantir que o AudioContext está ativo
                 await keepAudioContextAlive();
             };
-            
-            musicPlayer.onerror = () => { showNotification(`Erro: Arquivo não encontrado`); };
+            musicPlayer.onerror = () => { showNotification(`⚠️ Erro: Arquivo não encontrado. Modo offline?`); };
         }
         
-        // Função para ativar background playback no primeiro toque
         async function activateBackgroundPlayback() {
             await initAudioContext();
             setupSilentAudioWorkaround();
             playMusicWithAudioContext();
         }
         
-        // ==================== FUNÇÕES DE SAUDAÇÃO ====================
-        function getPeriodoAtual() {
-            const hora = new Date().getHours();
-            if (hora >= 5 && hora < 12) return "bomdia";
-            if (hora >= 12 && hora < 18) return "boatarde";
-            return "boanoite";
+        function showNotification(msg, duration = 3000) { 
+            const n = document.getElementById('notification'); 
+            document.getElementById('notificationText').innerText = msg; 
+            n.classList.add('show'); 
+            setTimeout(() => n.classList.remove('show'), duration); 
         }
         
-        function getMidiaSaudacao() {
-            const periodo = getPeriodoAtual();
-            const midias = fotosSaudacao[periodo];
-            if (!midias || midias.length === 0) return null;
-            return midias[saudacaoIndex % midias.length];
-        }
-        
-        function alternarVideoPrincipal() {
-            if (isCarModeActive) return;
-            
-            const videoElement = document.getElementById('mainVideo');
-            if (!videoElement) return;
-            
-            alternando = !alternando;
-            
-            const existingElement = document.getElementById('saudacaoMidia');
-            if (existingElement) {
-                existingElement.remove();
-            }
-            
-            if (alternando && saudacaoFotosAtivo) {
-                const midiaSrc = getMidiaSaudacao();
-                if (midiaSrc) {
-                    const isVideo = midiaSrc.endsWith('.mp4') || midiaSrc.endsWith('.mov') || midiaSrc.endsWith('.webm');
-                    
-                    let newElement;
-                    if (isVideo) {
-                        newElement = document.createElement('video');
-                        newElement.id = 'saudacaoMidia';
-                        newElement.autoplay = true;
-                        newElement.loop = true;
-                        newElement.muted = true;
-                        newElement.playsInline = true;
-                        newElement.style.objectFit = 'cover';
-                        newElement.style.width = '100%';
-                        newElement.style.height = '100%';
-                        newElement.src = midiaSrc;
-                        newElement.load();
-                        
-                        newElement.addEventListener('canplay', () => {
-                            newElement.play().catch(e => console.log('Erro ao tocar vídeo:', e));
-                        });
-                    } else {
-                        newElement = document.createElement('img');
-                        newElement.id = 'saudacaoMidia';
-                        newElement.style.width = '100%';
-                        newElement.style.height = '100%';
-                        newElement.style.objectFit = 'cover';
-                        newElement.src = midiaSrc;
-                    }
-                    
-                    videoElement.style.display = 'none';
-                    videoElement.parentNode.insertBefore(newElement, videoElement);
-                    saudacaoIndex++;
-                }
-            } else {
-                videoElement.style.display = 'block';
-                videoElement.play().catch(e => console.log('Erro ao tocar vídeo principal:', e));
-            }
-        }
-        
-        function iniciarAlternanciaSaudacao() {
-            if (saudacaoInterval) clearInterval(saudacaoInterval);
-            saudacaoInterval = setInterval(alternarVideoPrincipal, 20000);
-        }
-        
-        function pararAlternanciaSaudacao() {
-            if (saudacaoInterval) {
-                clearInterval(saudacaoInterval);
-                saudacaoInterval = null;
-            }
-            const videoElement = document.getElementById('mainVideo');
-            const existingElement = document.getElementById('saudacaoMidia');
-            if (existingElement) existingElement.remove();
-            if (videoElement) {
-                videoElement.style.display = 'block';
-                videoElement.play().catch(e => console.log('Erro ao tocar vídeo principal:', e));
-            }
-        }
-        
-        function toggleSaudacaoTipo() {
-            saudacaoFotosAtivo = !saudacaoFotosAtivo;
-            const toggle = document.getElementById('saudacaoToggle');
-            if (toggle) toggle.checked = saudacaoFotosAtivo;
-            
-            const existingElement = document.getElementById('saudacaoMidia');
-            if (existingElement) existingElement.remove();
-            
-            const videoElement = document.getElementById('mainVideo');
-            if (videoElement) {
-                videoElement.style.display = 'block';
-                videoElement.play().catch(e => console.log);
-            }
-            
-            if (!saudacaoFotosAtivo) {
-                showNotification('📹 Modo: Vídeo padrão');
-            } else {
-                showNotification('🖼️ Modo: Fotos/Vídeos de saudação');
-                alternando = false;
-                setTimeout(() => alternarVideoPrincipal(), 100);
-            }
-        }
-        
-        // ==================== FUNÇÕES DO PLAYER ====================
+        // Funções principais (mantidas do código anterior)
         function updateFilteredPlaylist() {
             if(allSongsMode) { filteredPlaylist = [...musicas]; }
             else {
@@ -1177,13 +1129,6 @@
             closeDrawer();
         };
         
-        function showNotification(msg) { 
-            const n = document.getElementById('notification'); 
-            document.getElementById('notificationText').innerText = msg; 
-            n.classList.add('show'); 
-            setTimeout(() => n.classList.remove('show'), 3000); 
-        }
-        
         function closeDrawer() { 
             document.getElementById('drawer').classList.remove('open'); 
             document.getElementById('drawerOverlay').classList.remove('active'); 
@@ -1307,6 +1252,116 @@
             showNotification('✅ Modo normal restaurado');
         }
         
+        function getPeriodoAtual() {
+            const hora = new Date().getHours();
+            if (hora >= 5 && hora < 12) return "bomdia";
+            if (hora >= 12 && hora < 18) return "boatarde";
+            return "boanoite";
+        }
+        
+        function getMidiaSaudacao() {
+            const periodo = getPeriodoAtual();
+            const midias = fotosSaudacao[periodo];
+            if (!midias || midias.length === 0) return null;
+            return midias[saudacaoIndex % midias.length];
+        }
+        
+        function alternarVideoPrincipal() {
+            if (isCarModeActive) return;
+            
+            const videoElement = document.getElementById('mainVideo');
+            if (!videoElement) return;
+            
+            alternando = !alternando;
+            
+            const existingElement = document.getElementById('saudacaoMidia');
+            if (existingElement) {
+                existingElement.remove();
+            }
+            
+            if (alternando && saudacaoFotosAtivo) {
+                const midiaSrc = getMidiaSaudacao();
+                if (midiaSrc) {
+                    const isVideo = midiaSrc.endsWith('.mp4') || midiaSrc.endsWith('.mov') || midiaSrc.endsWith('.webm');
+                    
+                    let newElement;
+                    if (isVideo) {
+                        newElement = document.createElement('video');
+                        newElement.id = 'saudacaoMidia';
+                        newElement.autoplay = true;
+                        newElement.loop = true;
+                        newElement.muted = true;
+                        newElement.playsInline = true;
+                        newElement.style.objectFit = 'cover';
+                        newElement.style.width = '100%';
+                        newElement.style.height = '100%';
+                        newElement.src = midiaSrc;
+                        newElement.load();
+                        
+                        newElement.addEventListener('canplay', () => {
+                            newElement.play().catch(e => console.log('Erro ao tocar vídeo:', e));
+                        });
+                    } else {
+                        newElement = document.createElement('img');
+                        newElement.id = 'saudacaoMidia';
+                        newElement.style.width = '100%';
+                        newElement.style.height = '100%';
+                        newElement.style.objectFit = 'cover';
+                        newElement.src = midiaSrc;
+                    }
+                    
+                    videoElement.style.display = 'none';
+                    videoElement.parentNode.insertBefore(newElement, videoElement);
+                    saudacaoIndex++;
+                }
+            } else {
+                videoElement.style.display = 'block';
+                videoElement.play().catch(e => console.log('Erro ao tocar vídeo principal:', e));
+            }
+        }
+        
+        function iniciarAlternanciaSaudacao() {
+            if (saudacaoInterval) clearInterval(saudacaoInterval);
+            saudacaoInterval = setInterval(alternarVideoPrincipal, 20000);
+        }
+        
+        function pararAlternanciaSaudacao() {
+            if (saudacaoInterval) {
+                clearInterval(saudacaoInterval);
+                saudacaoInterval = null;
+            }
+            const videoElement = document.getElementById('mainVideo');
+            const existingElement = document.getElementById('saudacaoMidia');
+            if (existingElement) existingElement.remove();
+            if (videoElement) {
+                videoElement.style.display = 'block';
+                videoElement.play().catch(e => console.log('Erro ao tocar vídeo principal:', e));
+            }
+        }
+        
+        function toggleSaudacaoTipo() {
+            saudacaoFotosAtivo = !saudacaoFotosAtivo;
+            const toggle = document.getElementById('saudacaoToggle');
+            if (toggle) toggle.checked = saudacaoFotosAtivo;
+            
+            const existingElement = document.getElementById('saudacaoMidia');
+            if (existingElement) existingElement.remove();
+            
+            const videoElement = document.getElementById('mainVideo');
+            if (videoElement) {
+                videoElement.style.display = 'block';
+                videoElement.play().catch(e => console.log);
+            }
+            
+            if (!saudacaoFotosAtivo) {
+                showNotification('📹 Modo: Vídeo padrão');
+            } else {
+                showNotification('🖼️ Modo: Fotos/Vídeos de saudação');
+                alternando = false;
+                setTimeout(() => alternarVideoPrincipal(), 100);
+            }
+        }
+        
         // ==================== EVENTOS ====================
         document.getElementById('progressBar').addEventListener('click', (e) => {
             if(isAdPlaying) return;
@@ -1372,7 +1427,6 @@
             navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
         }
         
-        // Setup do background playback
         setupVisibilityHandler();
         preventAudioSuspension();
         
@@ -1393,8 +1447,8 @@
             iniciarAlternanciaSaudacao();
             iniciarAlternanciaExtra();
             
-            console.log('✅ Sistema inicializado com Web Audio API!');
-            console.log('🎵 Áudio agora toca com tela bloqueada!');
+            console.log('✅ Sistema inicializado com Service Worker e Web Audio API!');
+            console.log('🎵 Áudio toca com tela bloqueada e funciona offline!');
             console.log('📢 Anúncios de voz ativados a cada 15 minutos');
             console.log('🖼️ Fotos de saudação ativadas');
         });
