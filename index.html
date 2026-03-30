@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV Playlist • Midia</title>
+    <title>MUTV Playlist • Audio Context</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
@@ -86,7 +86,6 @@
             gap: 8px;
             z-index: 20;
         }
-        /* Botões sem sombra */
         .video-menu-btn, .fullscreen-btn {
             background: rgba(0,0,0,0.6);
             color: white;
@@ -115,7 +114,6 @@
         .control-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.15); }
         .play-btn { font-size: 3rem; width: 64px; height: 64px; }
         
-        /* CORREÇÃO DO VÍDEO EXTRA - ASPECTO CORRETO */
         .extra-video-section { 
             margin: 5px; 
             border: 1px solid var(--primary-color); 
@@ -220,7 +218,6 @@
         input:checked + .slider { background-color: var(--primary-color); }
         input:checked + .slider:before { transform: translateX(26px); }
         
-        /* MODO CARRO - VÍDEO EXTRA OCUPA TELA TODA CORRETAMENTE */
         .car-mode .extra-video-section { 
             display: block !important; 
             position: fixed; 
@@ -256,6 +253,21 @@
         .car-mode .car-control-btn.play-pause { background: var(--primary-color); color: #000; }
         .car-mode .car-track-info { position: fixed; top: 20px; left: 0; right: 0; text-align: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); padding: 15px; z-index: 1001; pointer-events: none; color: white; }
         
+        /* Badge de status do áudio */
+        .audio-status-badge {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            border-left: 3px solid var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            z-index: 2000;
+            pointer-events: none;
+        }
+        
         @media (min-width: 1024px) {
             .control-btn { font-size: 2.4rem; width: 64px; height: 64px; }
             .play-btn { font-size: 3.5rem; width: 80px; height: 80px; }
@@ -268,6 +280,9 @@
     <div class="car-exit-btn" id="exitCarModeBtn"><i class="fas fa-times"></i></div>
     <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>RaTv Playlist</h1><p>Carregando Midias...</p></div></div>
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
+    <div class="audio-status-badge" id="audioStatusBadge">
+        <i class="fas fa-microphone-alt"></i> Áudio Context: Aguardando...
+    </div>
     
     <div class="app">
         <div class="player-card">
@@ -317,6 +332,9 @@
     <div class="car-track-info" id="carTrackInfo">
         <span id="carTrackArtist">🎵 Carregando...</span>
     </div>
+
+    <!-- Audio Context Silent Element -->
+    <audio id="silentAudio" loop crossorigin="anonymous" style="display: none;"></audio>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <div class="drawer" id="drawer">
@@ -382,6 +400,160 @@
     </div>
 
     <script>
+        // ==================== WEB AUDIO API E BACKGROUND PLAYBACK ====================
+        let audioContext = null;
+        let silentSource = null;
+        let isAudioContextRunning = false;
+        let audioContextInitiated = false;
+        
+        // Função para inicializar o AudioContext (deve ser chamada após interação do usuário)
+        async function initAudioContext() {
+            if (audioContextInitiated) return true;
+            
+            try {
+                // Criar AudioContext
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Criar buffer de silêncio (1 segundo de silêncio)
+                const sampleRate = audioContext.sampleRate;
+                const bufferSize = sampleRate * 1; // 1 segundo
+                const silentBuffer = audioContext.createBuffer(1, bufferSize, sampleRate);
+                
+                // Preencher com zeros (silêncio)
+                const channelData = silentBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    channelData[i] = 0;
+                }
+                
+                // Criar fonte de áudio para manter o contexto ativo
+                silentSource = audioContext.createBufferSource();
+                silentSource.buffer = silentBuffer;
+                silentSource.loop = true;
+                silentSource.connect(audioContext.destination);
+                
+                // Iniciar o som silencioso
+                silentSource.start();
+                
+                // Garantir que o AudioContext está rodando
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+                
+                isAudioContextRunning = true;
+                audioContextInitiated = true;
+                
+                document.getElementById('audioStatusBadge').innerHTML = '<i class="fas fa-check-circle"></i> Áudio Context: Ativo (tela bloqueada OK)';
+                document.getElementById('audioStatusBadge').style.borderLeftColor = '#00ff88';
+                
+                console.log('✅ Web Audio API inicializada - Background playback ativado');
+                return true;
+            } catch (error) {
+                console.error('❌ Erro ao inicializar AudioContext:', error);
+                document.getElementById('audioStatusBadge').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Modo normal (sem background)';
+                return false;
+            }
+        }
+        
+        // Função para manter o contexto ativo (chamar periodicamente)
+        async function keepAudioContextAlive() {
+            if (audioContext && audioContext.state === 'suspended') {
+                await audioContext.resume();
+                console.log('🔄 AudioContext retomado');
+            }
+        }
+        
+        // Estratégia alternativa: elemento de áudio silencioso para iOS
+        function setupSilentAudioWorkaround() {
+            const silentAudio = document.getElementById('silentAudio');
+            if (!silentAudio) return;
+            
+            // Criar um blob de áudio silencioso em base64 (1 segundo de silêncio em WAV)
+            const createSilentWAV = () => {
+                // WAV header para 1 segundo de silêncio (44100Hz, mono, 16-bit)
+                const sampleRate = 44100;
+                const duration = 2; // 2 segundos
+                const numSamples = sampleRate * duration;
+                const buffer = new ArrayBuffer(44 + numSamples * 2);
+                const view = new DataView(buffer);
+                
+                // RIFF chunk
+                writeString(view, 0, 'RIFF');
+                view.setUint32(4, 36 + numSamples * 2, true);
+                writeString(view, 8, 'WAVE');
+                writeString(view, 12, 'fmt ');
+                view.setUint32(16, 16, true);
+                view.setUint16(20, 1, true);
+                view.setUint16(22, 1, true);
+                view.setUint32(24, sampleRate, true);
+                view.setUint32(28, sampleRate * 2, true);
+                view.setUint16(32, 2, true);
+                view.setUint16(34, 16, true);
+                writeString(view, 36, 'data');
+                view.setUint32(40, numSamples * 2, true);
+                
+                // Dados de áudio (silêncio)
+                let offset = 44;
+                for (let i = 0; i < numSamples; i++) {
+                    view.setInt16(offset, 0, true);
+                    offset += 2;
+                }
+                
+                return new Blob([buffer], { type: 'audio/wav' });
+            };
+            
+            function writeString(view, offset, str) {
+                for (let i = 0; i < str.length; i++) {
+                    view.setUint8(offset + i, str.charCodeAt(i));
+                }
+            }
+            
+            try {
+                const silentBlob = createSilentWAV();
+                const silentUrl = URL.createObjectURL(silentBlob);
+                silentAudio.src = silentUrl;
+                silentAudio.loop = true;
+                silentAudio.volume = 0.001; // Volume muito baixo (praticamente inaudível)
+                
+                // Tentar tocar o áudio silencioso
+                silentAudio.play().catch(e => console.log('Silent audio workaround:', e));
+            } catch (e) {
+                console.log('Erro no workaround de áudio:', e);
+            }
+        }
+        
+        // Monitorar visibilidade da página para retomar áudio
+        function setupVisibilityHandler() {
+            document.addEventListener('visibilitychange', async () => {
+                if (!document.hidden && isPlaying && !isAdPlaying) {
+                    // Página voltou a ficar visível, garantir que o áudio está tocando
+                    setTimeout(() => {
+                        if (musicPlayer.paused && isPlaying) {
+                            musicPlayer.play().catch(e => console.log('Retomada automática:', e));
+                        }
+                    }, 100);
+                }
+                
+                // Manter AudioContext ativo
+                await keepAudioContextAlive();
+            });
+        }
+        
+        // Prevenir suspensão do áudio em dispositivos móveis
+        function preventAudioSuspension() {
+            // Recriar o contexto periodicamente
+            setInterval(async () => {
+                if (isPlaying && audioContext) {
+                    await keepAudioContextAlive();
+                    
+                    // Verificar se o musicPlayer ainda está tocando
+                    if (musicPlayer.paused && isPlaying && !isAdPlaying) {
+                        console.log('🔄 Detectado pausa inesperada, retomando...');
+                        musicPlayer.play().catch(e => console.log('Erro ao retomar:', e));
+                    }
+                }
+            }, 30000); // A cada 30 segundos
+        }
+        
         // ==================== FOTOS DE SAUDAÇÃO ====================
         const fotosSaudacao = {
             bomdia: ["chopp.mp4", "por.mp4", "cama.mp4"],
@@ -654,6 +826,43 @@
         let saudacaoInterval = null;
         let controlsTimeout = null;
         
+        // Função principal de play modificada para integrar Web Audio
+        async function playMusicWithAudioContext() {
+            // Inicializar AudioContext se necessário
+            await initAudioContext();
+            
+            if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
+            
+            const track = musicas[currentIndex];
+            musicPlayer.src = track.src;
+            musicPlayer.load();
+            
+            musicPlayer.oncanplaythrough = async () => {
+                await musicPlayer.play();
+                isPlaying = true;
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                updateCarPlayPauseButton();
+                startTimer();
+                splash.classList.add('hidden');
+                setTimeout(() => splash.classList.add('display-none'), 500);
+                tapToStart.classList.add('hidden');
+                renderPlaylist();
+                if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
+                
+                // Garantir que o AudioContext está ativo
+                await keepAudioContextAlive();
+            };
+            
+            musicPlayer.onerror = () => { showNotification(`Erro: Arquivo não encontrado`); };
+        }
+        
+        // Função para ativar background playback no primeiro toque
+        async function activateBackgroundPlayback() {
+            await initAudioContext();
+            setupSilentAudioWorkaround();
+            playMusicWithAudioContext();
+        }
+        
         // ==================== FUNÇÕES DE SAUDAÇÃO ====================
         function getPeriodoAtual() {
             const hora = new Date().getHours();
@@ -846,28 +1055,6 @@
             }
         }
         
-        async function playMusic() {
-            if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
-            const track = musicas[currentIndex];
-            musicPlayer.src = track.src;
-            musicPlayer.load();
-            
-            musicPlayer.oncanplaythrough = () => {
-                musicPlayer.play().then(() => {
-                    isPlaying = true;
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    updateCarPlayPauseButton();
-                    startTimer();
-                    splash.classList.add('hidden');
-                    setTimeout(() => splash.classList.add('display-none'), 500);
-                    tapToStart.classList.add('hidden');
-                    renderPlaylist();
-                    if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'playing'; }
-                }).catch(e => console.log);
-            };
-            musicPlayer.onerror = () => { showNotification(`Erro: Arquivo não encontrado`); };
-        }
-        
         function pauseMusic() {
             musicPlayer.pause();
             isPlaying = false;
@@ -878,7 +1065,7 @@
             if ('mediaSession' in navigator) { navigator.mediaSession.playbackState = 'paused'; }
         }
         
-        function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); }
+        function togglePlayPause() { isPlaying ? pauseMusic() : playMusicWithAudioContext(); }
         
         function playAudioAd() {
             if(!adsEnabled || isAdPlaying) return;
@@ -914,7 +1101,7 @@
             
             if(shouldResumeMusic) {
                 musicPlayer.currentTime = musicPausedTime;
-                playMusic();
+                playMusicWithAudioContext();
                 shouldResumeMusic = false;
             }
             currentAdIndex = (currentAdIndex + 1) % anunciosAudio.length;
@@ -946,7 +1133,7 @@
         function testAd() { playAudioAd(); }
         function skipAd() { if(isAdPlaying) { adPlayer.pause(); finishAudioAd(); showNotification('⏭️ Anúncio pulado'); } }
         
-        function nextTrack() {
+        async function nextTrack() {
             if(isAdPlaying) return;
             stopTimer();
             musicPlayer.pause();
@@ -960,10 +1147,10 @@
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            if(isPlaying) playMusic();
+            if(isPlaying) await playMusicWithAudioContext();
         }
         
-        function prevTrack() {
+        async function prevTrack() {
             if(isAdPlaying) return;
             stopTimer();
             musicPlayer.pause();
@@ -977,16 +1164,16 @@
             const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[filteredIdx].id);
             currentIndex = newGlobal;
             loadTrack(currentIndex);
-            if(isPlaying) playMusic();
+            if(isPlaying) await playMusicWithAudioContext();
         }
         
-        window.selectSong = function(globalIdx) {
+        window.selectSong = async function(globalIdx) {
             if(isAdPlaying) return;
             stopTimer();
             musicPlayer.pause();
             currentIndex = globalIdx;
             loadTrack(currentIndex);
-            if(isPlaying) playMusic();
+            if(isPlaying) await playMusicWithAudioContext();
             closeDrawer();
         };
         
@@ -1012,7 +1199,7 @@
                 const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[0].id); 
                 currentIndex = newGlobal; 
                 loadTrack(currentIndex); 
-                if(isPlaying) playMusic(); 
+                if(isPlaying) playMusicWithAudioContext(); 
             }
         }
         
@@ -1128,8 +1315,8 @@
             if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration;
         });
         playBtn.addEventListener('click', togglePlayPause);
-        prevBtn.addEventListener('click', prevTrack);
-        nextBtn.addEventListener('click', nextTrack);
+        prevBtn.addEventListener('click', () => prevTrack());
+        nextBtn.addEventListener('click', () => nextTrack());
         shuffleBtn.addEventListener('click', () => { shuffle = !shuffle; shuffleBtn.classList.toggle('active', shuffle); showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial'); });
         document.getElementById('toggleAdsBtn').addEventListener('click', toggleAds);
         document.getElementById('testAdBtn').addEventListener('click', testAd);
@@ -1179,11 +1366,15 @@
         });
         
         if ('mediaSession' in navigator) {
-            navigator.mediaSession.setActionHandler('play', () => playMusic());
+            navigator.mediaSession.setActionHandler('play', () => playMusicWithAudioContext());
             navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
             navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
             navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
         }
+        
+        // Setup do background playback
+        setupVisibilityHandler();
+        preventAudioSuspension();
         
         window.addEventListener('load', () => {
             updateFilteredPlaylist();
@@ -1193,12 +1384,17 @@
             updateAdTimer();
             startAdTimer();
             tapToStart.style.display = 'block';
-            tapToStart.addEventListener('click', (e) => { e.stopPropagation(); playMusic(); tapToStart.style.display = 'none'; });
+            tapToStart.addEventListener('click', async (e) => { 
+                e.stopPropagation(); 
+                await activateBackgroundPlayback();
+                tapToStart.style.display = 'none'; 
+            });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
             iniciarAlternanciaSaudacao();
             iniciarAlternanciaExtra();
             
-            console.log('✅ Sistema inicializado com sucesso!');
+            console.log('✅ Sistema inicializado com Web Audio API!');
+            console.log('🎵 Áudio agora toca com tela bloqueada!');
             console.log('📢 Anúncios de voz ativados a cada 15 minutos');
             console.log('🖼️ Fotos de saudação ativadas');
         });
