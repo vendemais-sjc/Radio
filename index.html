@@ -123,44 +123,36 @@
             background-color: #000;
         }
 
-        /* Botão flutuante para link do anúncio */
+        /* Botão flutuante menor */
         .floating-ad-btn {
             position: absolute;
             bottom: 100px;
-            right: 15px;
+            right: 12px;
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             border: none;
-            border-radius: 50px;
-            padding: 12px 20px;
-            font-size: 0.9rem;
+            border-radius: 40px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
             font-weight: bold;
             cursor: pointer;
             z-index: 35;
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
-            animation: btnPulse 2s infinite;
+            gap: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
             backdrop-filter: blur(4px);
         }
 
         .floating-ad-btn i {
-            font-size: 1.2rem;
+            font-size: 0.9rem;
         }
 
         .floating-ad-btn:active {
             transform: scale(0.95);
         }
 
-        @keyframes btnPulse {
-            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-            50% { transform: scale(1.02); box-shadow: 0 4px 20px rgba(var(--primary-color), 0.4); }
-            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        }
-
-        /* Botão de WhatsApp no anúncio quando é número de telefone */
         .floating-ad-btn.whatsapp-link {
             background: linear-gradient(135deg, #25D366, #128C7E);
         }
@@ -262,6 +254,7 @@
             color: #000 !important;
         }
 
+        /* Botões do vídeo principal - todos juntos */
         .video-buttons {
             position: absolute;
             top: 12px;
@@ -286,6 +279,7 @@
             transition: all 0.2s;
         }
 
+        /* DRAWER - letras e ícones mais claros */
         .drawer {
             position: fixed;
             top: 0;
@@ -293,7 +287,7 @@
             width: 85%;
             max-width: 320px;
             height: 100vh;
-            background: #000000;
+            background: #0a0a0a;
             transform: translateX(-100%);
             transition: transform 0.3s ease;
             z-index: 2000;
@@ -304,24 +298,28 @@
         .drawer.open { transform: translateX(0); }
         .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 20px; }
         .close-drawer { background: none; border: none; color: var(--text-primary); font-size: 1.8rem; cursor: pointer; }
-        .drawer-item { background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 14px; width: 100%; text-align: left; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
-        .drawer-item:active { background: var(--primary-color); color: #000; }
+        .drawer-item { background: #1a1a1a; border: 1px solid var(--border-color); color: #ffffff !important; padding: 12px 14px; width: 100%; text-align: left; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+        .drawer-item i { color: var(--primary-color); font-size: 1.2rem; }
+        .drawer-item:active { background: var(--primary-color); color: #000 !important; }
+        .drawer-item:active i { color: #000; }
         .mode-toggle-btn { background: var(--primary-color); color: #000; font-weight: bold; border: none; padding: 10px; border-radius: 40px; margin: 10px 0; width: 100%; cursor: pointer; }
+        .mode-toggle-btn i { color: #000; }
         .playlist-container { margin-top: 15px; max-height: 350px; overflow-y: auto; }
-        .playlist-item { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--border-color); border-radius: 30px; margin-bottom: 8px; cursor: pointer; background: #0a0a0a; transition: all 0.2s; }
+        .playlist-item { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--border-color); border-radius: 30px; margin-bottom: 8px; cursor: pointer; background: #1a1a1a; transition: all 0.2s; }
         .playlist-item:active { background: var(--primary-color); transform: scale(0.98); }
-        .playlist-item.playing { border-color: var(--primary-color); background: #1a1a1a; }
+        .playlist-item.playing { border-color: var(--primary-color); background: #2a2a2a; }
         .music-number { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color); color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center; }
         .playlist-info { flex: 1; }
-        .playlist-title { font-size: 0.85rem; color: var(--text-primary); font-weight: 600; }
-        .playlist-artist { font-size: 0.7rem; color: var(--text-secondary); }
+        .playlist-title { font-size: 0.85rem; color: #ffffff; font-weight: 600; }
+        .playlist-artist { font-size: 0.7rem; color: #cccccc; }
         .color-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; padding: 15px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
         .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .color-option:active { transform: scale(0.9); }
         .color-option.active { border-color: white; }
         .notification { position: fixed; bottom: 20px; left: 16px; right: 16px; background: #000; color: #fff; padding: 10px 16px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 10px; text-align: center; font-size: 0.85rem; }
         .notification.show { transform: translateY(0); }
-        .ad-panel { background: #0a0a0a; border-radius: 8px; padding: 10px; margin: 15px 0; border: 1px solid var(--border-color); }
+        .ad-panel { background: #1a1a1a; border-radius: 8px; padding: 10px; margin: 15px 0; border: 1px solid var(--border-color); }
+        .ad-panel h4 { color: #ffffff; }
         .ad-timer { font-size: 1.3rem; font-weight: bold; text-align: center; color: var(--primary-color); }
         .ad-btn { background: #333; color: white; border: none; padding: 4px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
         .ad-btn:active { transform: scale(0.95); background: var(--primary-color); color: #000; }
@@ -374,9 +372,8 @@
                 <source src="betania.mp4" type="video/mp4">
             </video>
             
-            <!-- BOTÃO FLUTUANTE DO ANÚNCIO -->
             <button class="floating-ad-btn" id="floatingAdBtn">
-                <i class="fas fa-link"></i>
+                <i class="fas fa-store"></i>
                 <span id="floatingAdText">AlugueCopos</span>
             </button>
             
@@ -644,11 +641,11 @@
             
         ];
 
-        // VÍDEOS DO SEGUNDO PLAYER COM LINKS CORRETOS
+        // VÍDEOS DO SEGUNDO PLAYER
         const videosExtra = [
-            { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", tipo: "link", icone: "fa-store" },
-            { src: "loja.mp4", nome: "Destaque", link: "https://wa.me/5512988461978?text=Olá! Vi o anúncio no MUTV e gostaria de mais informações.", tipo: "whatsapp", icone: "fab fa-whatsapp", texto: "📞 Informações: 12 98846-1978" },
-            { src: "pizza12.mp4", nome: "Pizza12", link: "https://pizzariadompepe.pedido.app.br/", tipo: "link", icone: "fa-pizza-slice", texto: "🍕 Peça Agora!" }
+            { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", tipo: "link", icone: "fa-store", texto: "AlugueCopos" },
+            { src: "loja.mp4", nome: "Destaque", link: "https://wa.me/5512988461978?text=Olá! Vi o anúncio no MUTV e gostaria de mais informações.", tipo: "whatsapp", icone: "fab fa-whatsapp", texto: "📞 12 98846-1978" },
+            { src: "pizza12.mp4", nome: "Pizza12", link: "https://pizzariadompepe.pedido.app.br/", tipo: "link", icone: "fa-pizza-slice", texto: "🍕 Peça Agora" }
         ];
 
         const anunciosAudio = [
@@ -679,23 +676,12 @@
         let currentAdIndex = 0, shouldResumeMusic = false, musicPausedTime = 0;
         let extraVideoIndex = 0, extraVideoInterval = null;
 
-        // Atualizar botão flutuante com as informações do vídeo atual
         function updateFloatingButton() {
             const video = videosExtra[extraVideoIndex];
             if (!video) return;
             
-            // Atualizar texto do botão
-            let buttonText = video.nome;
-            if (video.texto) {
-                buttonText = video.texto;
-            } else if (video.tipo === 'whatsapp') {
-                buttonText = `📞 ${video.link.match(/phone=([^&]+)/)?.[1] || 'WhatsApp'}`;
-            } else {
-                buttonText = `🔗 ${video.nome}`;
-            }
-            floatingAdText.textContent = buttonText;
+            floatingAdText.textContent = video.texto || video.nome;
             
-            // Atualizar ícone
             const iconElement = floatingAdBtn.querySelector('i');
             if (video.tipo === 'whatsapp') {
                 iconElement.className = 'fab fa-whatsapp';
@@ -705,14 +691,9 @@
                 floatingAdBtn.classList.remove('whatsapp-link');
             }
             
-            // Atualizar ação do clique
             floatingAdBtn.onclick = () => {
                 if (video.link) {
-                    if (video.tipo === 'whatsapp') {
-                        window.open(video.link, '_blank');
-                    } else {
-                        window.open(video.link, '_blank');
-                    }
+                    window.open(video.link, '_blank');
                     showNotification(`Abrindo: ${video.nome}`);
                 }
             };
@@ -897,8 +878,7 @@
         function showNotification(msg) { const n = document.getElementById('notification'); document.getElementById('notificationText').innerText = msg; n.classList.add('show'); setTimeout(() => n.classList.remove('show'), 3000); }
         
         function toggleFullscreen() {
-            const elem = document.documentElement;
-            if (!document.fullscreenElement) { elem.requestFullscreen().catch(err => console.log(err)); } 
+            if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } 
             else { document.exitFullscreen(); }
         }
         
@@ -929,8 +909,18 @@
         const savedTheme = localStorage.getItem('radioTheme') || 'theme-red'; setTheme(savedTheme);
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
-        window.addEventListener('load', () => {
+        // INICIALIZAÇÃO
+        window.addEventListener('load', async () => {
             console.log('✅ MUTV Player inicializado com sucesso!');
+            
+            // TELA CHEIA AUTOMÁTICA
+            try {
+                await document.documentElement.requestFullscreen();
+                console.log('🎬 Tela cheia ativada automaticamente');
+            } catch (err) {
+                console.log('⚠️ Tela cheia automática não permitida:', err);
+            }
+            
             updateFilteredPlaylist();
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
             currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
@@ -938,7 +928,7 @@
             loadTrack(currentIndex);
             startAdTimer();
             iniciarAlternanciaExtra();
-            updateFloatingButton(); // Inicializar botão
+            updateFloatingButton();
             
             document.getElementById('tap-to-start').style.display = 'block';
             document.getElementById('tap-to-start').addEventListener('click', async () => {
@@ -951,7 +941,6 @@
             extraVideo.play().catch(e => console.log('Erro no vídeo extra:', e));
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
             console.log('✅ Projeto finalizado com sucesso!');
-            console.log('📱 Botão flutuante de anúncio ativo');
         });
     </script>
 </body>
