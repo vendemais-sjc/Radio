@@ -22,6 +22,7 @@
             height: 100%;
         }
 
+        /* Temas de cor */
         body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
         body.theme-lilac { --primary-color: #b380ff; --primary-dark: #7a4db3; }
         body.theme-blue { --primary-color: #00a8ff; --primary-dark: #0077be; }
@@ -50,6 +51,7 @@
             position: relative;
         }
 
+        /* VÍDEO PRINCIPAL */
         .video-principal-wrapper {
             position: relative;
             width: 100%;
@@ -67,6 +69,7 @@
             background-color: #000;
         }
 
+        /* Overlay do ticker */
         .overlay-ticker {
             position: absolute;
             bottom: 0;
@@ -105,6 +108,7 @@
             100% { transform: translateX(-100%); }
         }
 
+        /* SEGUNDO VÍDEO */
         .video-secundario-wrapper {
             position: relative;
             flex: 1;
@@ -157,16 +161,17 @@
             background: linear-gradient(135deg, #25D366, #128C7E);
         }
 
+        /* CONTROLES DE MÚSICA - ESTILO DO SEU EXEMPLO */
         .music-controls-overlay {
             position: absolute;
-            bottom: 20px;
+            bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.6), transparent);
-            padding: 15px 20px 25px;
-            z-index: 30;
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px);
             border-top: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 16px;
+            z-index: 30;
             pointer-events: auto;
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -182,79 +187,88 @@
         }
 
         .track-info p {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-shadow: 1px 1px 0 #000;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
 
         .progress-area {
-            padding: 0 10px 5px;
+            margin-bottom: 8px;
         }
 
         .progress-time {
             display: flex;
             justify-content: space-between;
             font-size: 0.7rem;
-            color: var(--text-secondary);
+            color: #ccc;
             margin-bottom: 4px;
         }
 
         .progress-bar {
-            height: 4px;
+            height: 3px;
             background: rgba(255,255,255,0.3);
             cursor: pointer;
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
         .progress-fill {
             height: 100%;
             background: var(--primary-color);
             width: 0%;
-            border-radius: 2px;
+            border-radius: 3px;
+            box-shadow: 0 0 5px var(--primary-color);
         }
 
-        .controls {
+        /* BOTÕES NO ESTILO QUE VOCÊ QUER */
+        .control-buttons {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
-            margin-top: 8px;
+            gap: 20px;
         }
 
         .control-btn {
-            background: rgba(0,0,0,0.6);
-            border: none;
-            color: #ffffff !important;
-            font-size: 1.8rem;
-            width: 48px;
-            height: 48px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 1.2rem;
+            width: 44px;
+            height: 44px;
             cursor: pointer;
             border-radius: 50%;
-            transition: all 0.2s;
+            transition: all 0.1s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(4px);
         }
 
         .control-btn:active {
-            transform: scale(0.92);
+            transform: scale(0.9);
             background: var(--primary-color);
+            color: #000;
         }
 
         .play-btn {
-            font-size: 2.4rem;
-            width: 64px;
-            height: 64px;
+            font-size: 1.6rem;
+            width: 54px;
+            height: 54px;
             background: var(--primary-color);
-            color: #000 !important;
+            color: #000;
+            border: none;
         }
 
-        /* Botões do vídeo principal - todos juntos */
+        .play-btn:active {
+            transform: scale(0.9);
+            background: var(--primary-dark);
+            color: #fff;
+        }
+
+        /* Botões do vídeo principal */
         .video-buttons {
             position: absolute;
             top: 12px;
@@ -266,8 +280,9 @@
 
         .video-menu-btn, .fullscreen-btn {
             background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
             color: white;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.2);
             font-size: 1.2rem;
             cursor: pointer;
             width: 38px;
@@ -279,7 +294,13 @@
             transition: all 0.2s;
         }
 
-        /* DRAWER - letras e ícones mais claros */
+        .video-menu-btn:active, .fullscreen-btn:active {
+            transform: scale(0.9);
+            background: var(--primary-color);
+            color: #000;
+        }
+
+        /* DRAWER - segunda página com letras claras */
         .drawer {
             position: fixed;
             top: 0;
@@ -347,9 +368,10 @@
 </head>
 <body class="theme-red">
     <div id="splash"><div style="text-align:center; color:#fff;"><i class="fas fa-headphones-alt" style="font-size:4rem; color:var(--primary-color);"></i><h1>MUTV Player</h1><p>Carregando...</p></div></div>
-    <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA</div>
+    <div id="tap-to-start"><i class="fas fa-play"></i> 🎵 TOCAR MÚSICA</div>
 
     <div class="app">
+        <!-- VÍDEO PRINCIPAL -->
         <div class="video-principal-wrapper">
             <video id="mainVideo" autoplay loop muted playsinline>
                 <source src="mutv.mp4" type="video/mp4">
@@ -367,6 +389,7 @@
             </div>
         </div>
 
+        <!-- SEGUNDO VÍDEO + CONTROLES -->
         <div class="video-secundario-wrapper">
             <video id="extraVideo" autoplay loop muted playsinline>
                 <source src="betania.mp4" type="video/mp4">
@@ -377,13 +400,14 @@
                 <span id="floatingAdText">AlugueCopos</span>
             </button>
             
+            <!-- CONTROLES DE MÚSICA - ESTILO DO SEU EXEMPLO -->
             <div class="music-controls-overlay" id="musicControls">
                 <div class="track-info"><p id="trackArtist">🎵 Selecione uma música</p></div>
                 <div class="progress-area">
                     <div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
                     <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
                 </div>
-                <div class="controls">
+                <div class="control-buttons">
                     <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
                     <button class="control-btn play-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
                     <button class="control-btn" id="shufflePlayerBtn"><i class="fas fa-random"></i></button>
@@ -437,7 +461,7 @@
     <script>
         // PLAYLIST COMPLETA
         const musicas = [
-           { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+  { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True_True_Remaster_", artist: "True_True_Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -641,7 +665,6 @@
             
         ];
 
-        // VÍDEOS DO SEGUNDO PLAYER
         const videosExtra = [
             { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", tipo: "link", icone: "fa-store", texto: "AlugueCopos" },
             { src: "loja.mp4", nome: "Destaque", link: "https://wa.me/5512988461978?text=Olá! Vi o anúncio no MUTV e gostaria de mais informações.", tipo: "whatsapp", icone: "fab fa-whatsapp", texto: "📞 12 98846-1978" },
@@ -676,12 +699,16 @@
         let currentAdIndex = 0, shouldResumeMusic = false, musicPausedTime = 0;
         let extraVideoIndex = 0, extraVideoInterval = null;
 
+        function formatTime(sec) { 
+            if (isNaN(sec)) return "0:00"; 
+            const m = Math.floor(sec / 60), s = Math.floor(sec % 60); 
+            return `${m}:${s<10?'0':''}${s}`; 
+        }
+
         function updateFloatingButton() {
             const video = videosExtra[extraVideoIndex];
             if (!video) return;
-            
             floatingAdText.textContent = video.texto || video.nome;
-            
             const iconElement = floatingAdBtn.querySelector('i');
             if (video.tipo === 'whatsapp') {
                 iconElement.className = 'fab fa-whatsapp';
@@ -690,13 +717,7 @@
                 iconElement.className = 'fas ' + (video.icone || 'fa-link');
                 floatingAdBtn.classList.remove('whatsapp-link');
             }
-            
-            floatingAdBtn.onclick = () => {
-                if (video.link) {
-                    window.open(video.link, '_blank');
-                    showNotification(`Abrindo: ${video.nome}`);
-                }
-            };
+            floatingAdBtn.onclick = () => { if (video.link) { window.open(video.link, '_blank'); showNotification(`Abrindo: ${video.nome}`); } };
         }
 
         function showMusicControls() { musicControls.classList.add('visible'); }
@@ -741,7 +762,7 @@
             musicPlayer.src = track.src;
             trackArtist.textContent = `${track.title} - ${track.artist}`;
             currentTimeEl.textContent = '0:00';
-            totalTimeEl.textContent = '03:30';
+            totalTimeEl.textContent = '0:00';
             progressFill.style.width = '0%';
             renderPlaylist();
         }
@@ -752,9 +773,7 @@
                 if(isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) {
                     const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
                     progressFill.style.width = percent + '%';
-                    const mins = Math.floor(musicPlayer.currentTime / 60);
-                    const secs = Math.floor(musicPlayer.currentTime % 60);
-                    currentTimeEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
                     if(musicPlayer.currentTime >= musicPlayer.duration - 0.3) nextTrack();
                 }
             }, 100);
@@ -774,6 +793,8 @@
                 showMusicControls();
                 startTimer();
                 renderPlaylist();
+                if (musicPlayer.duration) totalTimeEl.textContent = formatTime(musicPlayer.duration);
+                else musicPlayer.addEventListener('loadedmetadata', () => { totalTimeEl.textContent = formatTime(musicPlayer.duration); }, { once: true });
             };
             musicPlayer.onerror = () => showNotification('Erro: Arquivo não encontrado');
         }
@@ -917,9 +938,7 @@
             try {
                 await document.documentElement.requestFullscreen();
                 console.log('🎬 Tela cheia ativada automaticamente');
-            } catch (err) {
-                console.log('⚠️ Tela cheia automática não permitida:', err);
-            }
+            } catch (err) { console.log('⚠️ Tela cheia automática:', err); }
             
             updateFilteredPlaylist();
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
