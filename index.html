@@ -152,6 +152,13 @@
             background: #000;
             aspect-ratio: 16 / 9;
         }
+        
+        /* Estilo horizontal para o segundo vídeo */
+        .extra-video-section.horizontal {
+            aspect-ratio: 4 / 3;
+            max-height: 280px;
+        }
+        
         .extra-video-container { 
             width: 100%; 
             height: 100%;
@@ -347,7 +354,7 @@
             </div>
         </div>
 
-        <div class="extra-video-section">
+        <div class="extra-video-section" id="extraVideoSection">
             <div class="extra-video-container" id="extraVideoContainer">
                 <video autoplay loop muted playsinline id="extraVideo">
                     <source src="aluguecopos (1).mp4" type="video/mp4">
@@ -838,8 +845,8 @@
         
         // ==================== VÍDEOS DOS ANÚNCIOS ====================
         const videosExtra = [
-            { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
-            { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/" }
+            { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", isHorizontal: false },
+            { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/", isHorizontal: true }
         ];
         
         // ==================== ANÚNCIOS DE ÁUDIO ====================
@@ -865,6 +872,7 @@
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         const feedbackTextarea = document.getElementById('feedbackText');
+        const extraVideoSection = document.getElementById('extraVideoSection');
         
         const carVideoControls = document.getElementById('carVideoControls');
         const carPrevBtn = document.getElementById('carPrevBtn');
@@ -892,6 +900,15 @@
         let alternando = false;
         let saudacaoInterval = null;
         let controlsTimeout = null;
+        
+        // Função para atualizar o estilo do segundo vídeo baseado no tipo
+        function updateExtraVideoStyle(isHorizontal) {
+            if (isHorizontal) {
+                extraVideoSection.classList.add('horizontal');
+            } else {
+                extraVideoSection.classList.remove('horizontal');
+            }
+        }
         
         async function playMusicWithAudioContext() {
             await initAudioContext();
@@ -1175,6 +1192,10 @@
             const novo = videosExtra[extraVideoIndex];
             const extraVideo = document.getElementById('extraVideo');
             const extraOverlay = document.getElementById('extraOverlay');
+            
+            // Atualizar estilo do container baseado no tipo do vídeo
+            updateExtraVideoStyle(novo.isHorizontal);
+            
             if (extraVideo) {
                 extraVideo.src = novo.src;
                 extraVideo.load();
@@ -1251,6 +1272,11 @@
             }
             if(extraOverlay && videoAtual) {
                 extraOverlay.innerHTML = `<i class="fas fa-ad"></i> ${videoAtual.nome}`;
+            }
+            
+            // Restaurar estilo do vídeo
+            if (videoAtual) {
+                updateExtraVideoStyle(videoAtual.isHorizontal);
             }
             
             showNotification('✅ Modo normal restaurado');
@@ -1451,10 +1477,14 @@
             iniciarAlternanciaSaudacao();
             iniciarAlternanciaExtra();
             
+            // Inicializar estilo do primeiro vídeo (não horizontal)
+            updateExtraVideoStyle(false);
+            
             console.log('✅ Sistema inicializado com Service Worker e Web Audio API!');
             console.log('🎵 Áudio toca com tela bloqueada e funciona offline!');
             console.log('📢 Anúncios de voz ativados a cada 15 minutos');
             console.log('🖼️ Fotos de saudação ativadas');
+            console.log('📺 Segundo vídeo de anúncio em formato HORIZONTAL!');
         });
     </script>
 </body>
