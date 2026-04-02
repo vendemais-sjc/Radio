@@ -123,6 +123,48 @@
             background-color: #000;
         }
 
+        /* Botão flutuante para link do anúncio */
+        .floating-ad-btn {
+            position: absolute;
+            bottom: 100px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 35;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            animation: btnPulse 2s infinite;
+            backdrop-filter: blur(4px);
+        }
+
+        .floating-ad-btn i {
+            font-size: 1.2rem;
+        }
+
+        .floating-ad-btn:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes btnPulse {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+            50% { transform: scale(1.02); box-shadow: 0 4px 20px rgba(var(--primary-color), 0.4); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        }
+
+        /* Botão de WhatsApp no anúncio quando é número de telefone */
+        .floating-ad-btn.whatsapp-link {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+
         .music-controls-overlay {
             position: absolute;
             bottom: 20px;
@@ -329,8 +371,15 @@
 
         <div class="video-secundario-wrapper">
             <video id="extraVideo" autoplay loop muted playsinline>
-                <source src="aluguecopos.mp4" type="video/mp4">
+                <source src="betania.mp4" type="video/mp4">
             </video>
+            
+            <!-- BOTÃO FLUTUANTE DO ANÚNCIO -->
+            <button class="floating-ad-btn" id="floatingAdBtn">
+                <i class="fas fa-link"></i>
+                <span id="floatingAdText">AlugueCopos</span>
+            </button>
+            
             <div class="music-controls-overlay" id="musicControls">
                 <div class="track-info"><p id="trackArtist">🎵 Selecione uma música</p></div>
                 <div class="progress-area">
@@ -391,7 +440,7 @@
     <script>
         // PLAYLIST COMPLETA
         const musicas = [
-          { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+           { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True_True_Remaster_", artist: "True_True_Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -595,10 +644,11 @@
             
         ];
 
+        // VÍDEOS DO SEGUNDO PLAYER COM LINKS CORRETOS
         const videosExtra = [
-            { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
-            { src: "nova.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
-            { src: "pizza12.mp4", nome: "Pizza12", link: "#" }
+            { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", tipo: "link", icone: "fa-store" },
+            { src: "loja.mp4", nome: "Destaque", link: "https://wa.me/5512988461978?text=Olá! Vi o anúncio no MUTV e gostaria de mais informações.", tipo: "whatsapp", icone: "fab fa-whatsapp", texto: "📞 Informações: 12 98846-1978" },
+            { src: "pizza12.mp4", nome: "Pizza12", link: "https://pizzariadompepe.pedido.app.br/", tipo: "link", icone: "fa-pizza-slice", texto: "🍕 Peça Agora!" }
         ];
 
         const anunciosAudio = [
@@ -621,11 +671,52 @@
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         const extraVideo = document.getElementById('extraVideo');
         const musicControls = document.getElementById('musicControls');
+        const floatingAdBtn = document.getElementById('floatingAdBtn');
+        const floatingAdText = document.getElementById('floatingAdText');
         
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [];
         let timerInterval = null, isAdPlaying = false, adsEnabled = true, adInterval = 15;
         let currentAdIndex = 0, shouldResumeMusic = false, musicPausedTime = 0;
         let extraVideoIndex = 0, extraVideoInterval = null;
+
+        // Atualizar botão flutuante com as informações do vídeo atual
+        function updateFloatingButton() {
+            const video = videosExtra[extraVideoIndex];
+            if (!video) return;
+            
+            // Atualizar texto do botão
+            let buttonText = video.nome;
+            if (video.texto) {
+                buttonText = video.texto;
+            } else if (video.tipo === 'whatsapp') {
+                buttonText = `📞 ${video.link.match(/phone=([^&]+)/)?.[1] || 'WhatsApp'}`;
+            } else {
+                buttonText = `🔗 ${video.nome}`;
+            }
+            floatingAdText.textContent = buttonText;
+            
+            // Atualizar ícone
+            const iconElement = floatingAdBtn.querySelector('i');
+            if (video.tipo === 'whatsapp') {
+                iconElement.className = 'fab fa-whatsapp';
+                floatingAdBtn.classList.add('whatsapp-link');
+            } else {
+                iconElement.className = 'fas ' + (video.icone || 'fa-link');
+                floatingAdBtn.classList.remove('whatsapp-link');
+            }
+            
+            // Atualizar ação do clique
+            floatingAdBtn.onclick = () => {
+                if (video.link) {
+                    if (video.tipo === 'whatsapp') {
+                        window.open(video.link, '_blank');
+                    } else {
+                        window.open(video.link, '_blank');
+                    }
+                    showNotification(`Abrindo: ${video.nome}`);
+                }
+            };
+        }
 
         function showMusicControls() { musicControls.classList.add('visible'); }
         function hideMusicControls() { if (!isPlaying) musicControls.classList.remove('visible'); }
@@ -769,7 +860,12 @@
         function alternarVideoExtra() {
             extraVideoIndex = (extraVideoIndex + 1) % videosExtra.length;
             const novo = videosExtra[extraVideoIndex];
-            if (extraVideo && novo.src) { extraVideo.src = novo.src; extraVideo.load(); extraVideo.play().catch(e => console.log('Erro no vídeo:', e)); }
+            if (extraVideo && novo.src) { 
+                extraVideo.src = novo.src; 
+                extraVideo.load(); 
+                extraVideo.play().catch(e => console.log('Erro no vídeo:', e));
+                updateFloatingButton();
+            }
         }
 
         function iniciarAlternanciaExtra() { if (extraVideoInterval) clearInterval(extraVideoInterval); extraVideoInterval = setInterval(alternarVideoExtra, 15000); }
@@ -842,6 +938,7 @@
             loadTrack(currentIndex);
             startAdTimer();
             iniciarAlternanciaExtra();
+            updateFloatingButton(); // Inicializar botão
             
             document.getElementById('tap-to-start').style.display = 'block';
             document.getElementById('tap-to-start').addEventListener('click', async () => {
@@ -854,6 +951,7 @@
             extraVideo.play().catch(e => console.log('Erro no vídeo extra:', e));
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
             console.log('✅ Projeto finalizado com sucesso!');
+            console.log('📱 Botão flutuante de anúncio ativo');
         });
     </script>
 </body>
