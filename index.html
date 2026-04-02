@@ -127,7 +127,7 @@
             background-color: #000;
         }
 
-        /* Botão flutuante menor */
+        /* Botão flutuante */
         .floating-ad-btn {
             position: absolute;
             bottom: 100px;
@@ -161,7 +161,7 @@
             background: linear-gradient(135deg, #25D366, #128C7E);
         }
 
-        /* CONTROLES DE MÚSICA - ESTILO DO SEU EXEMPLO */
+        /* CONTROLES DE MÚSICA - INICIALMENTE OCULTOS */
         .music-controls-overlay {
             position: absolute;
             bottom: 0;
@@ -173,11 +173,13 @@
             padding: 10px 16px;
             z-index: 30;
             pointer-events: auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(100%);
             opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .music-controls-overlay.visible {
+            transform: translateY(0);
             opacity: 1;
         }
 
@@ -223,7 +225,6 @@
             box-shadow: 0 0 5px var(--primary-color);
         }
 
-        /* BOTÕES NO ESTILO QUE VOCÊ QUER */
         .control-buttons {
             display: flex;
             align-items: center;
@@ -300,7 +301,7 @@
             color: #000;
         }
 
-        /* DRAWER - segunda página com letras claras */
+        /* DRAWER - cores dos círculos MAIS CLAROS */
         .drawer {
             position: fixed;
             top: 0;
@@ -333,10 +334,44 @@
         .playlist-info { flex: 1; }
         .playlist-title { font-size: 0.85rem; color: #ffffff; font-weight: 600; }
         .playlist-artist { font-size: 0.7rem; color: #cccccc; }
-        .color-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; padding: 15px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-        .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        
+        /* CÍRCULOS DE CORES - MAIS CLAROS E VISÍVEIS */
+        .color-picker { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            margin: 15px 0; 
+            padding: 15px 0; 
+            border-top: 1px solid var(--border-color); 
+            border-bottom: 1px solid var(--border-color); 
+        }
+        .color-option { 
+            width: 42px; 
+            height: 42px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
         .color-option:active { transform: scale(0.9); }
-        .color-option.active { border-color: white; }
+        .color-option.active { 
+            border: 3px solid white; 
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            transform: scale(1.05);
+        }
+        /* Cores mais vibrantes e claras */
+        .color-option.red { background: #e63946; box-shadow: 0 0 5px #e63946; }
+        .color-option.lilac { background: #c084fc; box-shadow: 0 0 5px #c084fc; }
+        .color-option.blue { background: #38bdf8; box-shadow: 0 0 5px #38bdf8; }
+        .color-option.green { background: #4ade80; box-shadow: 0 0 5px #4ade80; }
+        .color-option.orange { background: #fb923c; box-shadow: 0 0 5px #fb923c; }
+        .color-option.pink { background: #f472b6; box-shadow: 0 0 5px #f472b6; }
+        .color-option.purple { background: #a855f7; box-shadow: 0 0 5px #a855f7; }
+        .color-option.yellow { background: #facc15; box-shadow: 0 0 5px #facc15; }
+        .color-option.white { background: #ffffff; box-shadow: 0 0 5px #ffffff; border: 1px solid #888; }
+        .color-option.pure-black { background: #1a1a1a; box-shadow: 0 0 5px #666; border: 1px solid #555; }
+        
         .notification { position: fixed; bottom: 20px; left: 16px; right: 16px; background: #000; color: #fff; padding: 10px 16px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 10px; text-align: center; font-size: 0.85rem; }
         .notification.show { transform: translateY(0); }
         .ad-panel { background: #1a1a1a; border-radius: 8px; padding: 10px; margin: 15px 0; border: 1px solid var(--border-color); }
@@ -390,7 +425,7 @@
         </div>
 
         <!-- SEGUNDO VÍDEO + CONTROLES -->
-        <div class="video-secundario-wrapper">
+        <div class="video-secundario-wrapper" id="secondVideoWrapper">
             <video id="extraVideo" autoplay loop muted playsinline>
                 <source src="betania.mp4" type="video/mp4">
             </video>
@@ -400,7 +435,7 @@
                 <span id="floatingAdText">AlugueCopos</span>
             </button>
             
-            <!-- CONTROLES DE MÚSICA - ESTILO DO SEU EXEMPLO -->
+            <!-- CONTROLES DE MÚSICA - APENAS APARECEM AO TOCAR NA TELA -->
             <div class="music-controls-overlay" id="musicControls">
                 <div class="track-info"><p id="trackArtist">🎵 Selecione uma música</p></div>
                 <div class="progress-area">
@@ -693,17 +728,38 @@
         const musicControls = document.getElementById('musicControls');
         const floatingAdBtn = document.getElementById('floatingAdBtn');
         const floatingAdText = document.getElementById('floatingAdText');
+        const secondVideoWrapper = document.getElementById('secondVideoWrapper');
         
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [];
         let timerInterval = null, isAdPlaying = false, adsEnabled = true, adInterval = 15;
         let currentAdIndex = 0, shouldResumeMusic = false, musicPausedTime = 0;
         let extraVideoIndex = 0, extraVideoInterval = null;
+        let controlsHideTimeout = null;
 
         function formatTime(sec) { 
             if (isNaN(sec)) return "0:00"; 
             const m = Math.floor(sec / 60), s = Math.floor(sec % 60); 
             return `${m}:${s<10?'0':''}${s}`; 
         }
+
+        // MOSTRA OS CONTROLES AO TOCAR NA TELA
+        function showControls() {
+            if (isPlaying) {
+                musicControls.classList.add('visible');
+                clearTimeout(controlsHideTimeout);
+                controlsHideTimeout = setTimeout(() => {
+                    musicControls.classList.remove('visible');
+                }, 3000);
+            }
+        }
+
+        function hideControls() {
+            musicControls.classList.remove('visible');
+        }
+
+        // Evento de toque/clique no segundo vídeo para mostrar controles
+        secondVideoWrapper.addEventListener('click', showControls);
+        secondVideoWrapper.addEventListener('touchstart', showControls);
 
         function updateFloatingButton() {
             const video = videosExtra[extraVideoIndex];
@@ -719,9 +775,6 @@
             }
             floatingAdBtn.onclick = () => { if (video.link) { window.open(video.link, '_blank'); showNotification(`Abrindo: ${video.nome}`); } };
         }
-
-        function showMusicControls() { musicControls.classList.add('visible'); }
-        function hideMusicControls() { if (!isPlaying) musicControls.classList.remove('visible'); }
 
         function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 
@@ -790,16 +843,17 @@
                 await musicPlayer.play();
                 isPlaying = true;
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                showMusicControls();
                 startTimer();
                 renderPlaylist();
                 if (musicPlayer.duration) totalTimeEl.textContent = formatTime(musicPlayer.duration);
                 else musicPlayer.addEventListener('loadedmetadata', () => { totalTimeEl.textContent = formatTime(musicPlayer.duration); }, { once: true });
+                // Mostra controles ao iniciar música
+                showControls();
             };
             musicPlayer.onerror = () => showNotification('Erro: Arquivo não encontrado');
         }
 
-        function pauseMusic() { musicPlayer.pause(); isPlaying = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; stopTimer(); renderPlaylist(); hideMusicControls(); }
+        function pauseMusic() { musicPlayer.pause(); isPlaying = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; stopTimer(); renderPlaylist(); hideControls(); }
         function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); }
         
         async function nextTrack() {
@@ -904,11 +958,11 @@
         }
         
         // Eventos
-        document.getElementById('progressBar').addEventListener('click', (e) => { if(isAdPlaying) return; const rect = e.currentTarget.getBoundingClientRect(); const percent = (e.clientX - rect.left) / rect.width; if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration; });
-        playBtn.addEventListener('click', togglePlayPause);
-        prevBtn.addEventListener('click', prevTrack);
-        nextBtn.addEventListener('click', nextTrack);
-        shuffleBtn.addEventListener('click', () => { shuffle = !shuffle; showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial'); });
+        document.getElementById('progressBar').addEventListener('click', (e) => { if(isAdPlaying) return; const rect = e.currentTarget.getBoundingClientRect(); const percent = (e.clientX - rect.left) / rect.width; if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration; showControls(); });
+        playBtn.addEventListener('click', () => { togglePlayPause(); showControls(); });
+        prevBtn.addEventListener('click', () => { prevTrack(); showControls(); });
+        nextBtn.addEventListener('click', () => { nextTrack(); showControls(); });
+        shuffleBtn.addEventListener('click', () => { shuffle = !shuffle; showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial'); showControls(); });
         document.getElementById('toggleAdsBtn').addEventListener('click', toggleAds);
         document.getElementById('testAdBtn').addEventListener('click', testAd);
         document.getElementById('videoMenuBtn').addEventListener('click', () => { document.getElementById('drawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('active'); });
@@ -955,6 +1009,7 @@
                 document.getElementById('tap-to-start').style.display = 'none';
                 document.getElementById('splash').classList.add('hidden');
                 setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
+                showControls();
             });
             
             extraVideo.play().catch(e => console.log('Erro no vídeo extra:', e));
