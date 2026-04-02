@@ -42,7 +42,7 @@
             --border-color: #333333;
         }
 
-        /* Layout principal: dois vídeos ocupando 100% da tela */
+        /* Layout principal: dois vídeos ocupando metade da tela cada */
         .app {
             width: 100%;
             height: 100vh;
@@ -52,12 +52,11 @@
             position: relative;
         }
 
-        /* VÍDEO PRINCIPAL - mantém proporção 1080x1920 */
+        /* VÍDEO PRINCIPAL - 1920x1080 (horizontal) - parte superior */
         .video-principal-wrapper {
             position: relative;
             width: 100%;
-            flex: 1.2;
-            min-height: 0;
+            height: 50%;
             background: #000;
             overflow: hidden;
             border-bottom: 2px solid var(--primary-color);
@@ -69,7 +68,7 @@
         #mainVideo {
             width: 100%;
             height: 100%;
-            object-fit: contain;  /* Mantém proporção original, sem cortar */
+            object-fit: cover;
             background-color: #000;
         }
 
@@ -112,11 +111,11 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* SEGUNDO VÍDEO - mantém proporção original */
+        /* SEGUNDO VÍDEO - 1080x1920 (vertical) - parte inferior */
         .video-secundario-wrapper {
             position: relative;
-            flex: 1;
-            min-height: 0;
+            width: 100%;
+            height: 50%;
             background: #000;
             overflow: hidden;
             border-top: 1px solid rgba(255,255,255,0.2);
@@ -126,9 +125,10 @@
         }
 
         #extraVideo {
-            width: 100%;
             height: 100%;
-            object-fit: contain;  /* Mantém proporção original, sem cortar */
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
             background-color: #000;
         }
 
@@ -296,7 +296,7 @@
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA</div>
 
     <div class="app">
-        <!-- VÍDEO PRINCIPAL (1080x1920) -->
+        <!-- VÍDEO PRINCIPAL (1920x1080 - HORIZONTAL) -->
         <div class="video-principal-wrapper">
             <video id="mainVideo" autoplay loop muted playsinline>
                 <source src="mutv.mp4" type="video/mp4">
@@ -314,12 +314,12 @@
             </div>
         </div>
 
-        <!-- SEGUNDO VÍDEO + CONTROLES DE MÚSICA SOBREPOSTOS -->
+        <!-- SEGUNDO VÍDEO (1080x1920 - VERTICAL) + CONTROLES SOBREPOSTOS -->
         <div class="video-secundario-wrapper">
             <video id="extraVideo" autoplay loop muted playsinline>
                 <source src="aluguecopos.mp4" type="video/mp4">
             </video>
-            <!-- TODOS OS CONTROLES DE MÚSICA FICAM AQUI, SOBRE O SEGUNDO VÍDEO -->
+            <!-- CONTROLES DE MÚSICA SOBRE O SEGUNDO VÍDEO -->
             <div class="music-controls-overlay">
                 <div class="track-info"><p id="trackArtist">🎵 Clique em "TOCAR MÚSICA"</p></div>
                 <div class="progress-area">
@@ -336,7 +336,7 @@
         </div>
     </div>
 
-    <!-- Elementos de áudio e demais componentes -->
+    <!-- Elementos de áudio -->
     <audio id="musicPlayer" preload="auto"></audio>
     <audio id="adPlayer" preload="auto"></audio>
     <div class="notification" id="notification"><span id="notificationText"></span></div>
@@ -373,7 +373,7 @@
     </div>
 
     <script>
-        // ==================== PLAYLIST COMPLETA ====================
+        // ==================== PLAYLIST ====================
         const musicas = [
            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True_True_Remaster_", artist: "True_True_Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
@@ -579,7 +579,7 @@
             
         ];
 
-        // Vídeos do segundo player (substitua pelos seus vídeos)
+        // Vídeos do segundo player (formato vertical 1080x1920)
         const videosExtra = [
             { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
             { src: "loja.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
@@ -612,7 +612,6 @@
         let currentAdIndex = 0, shouldResumeMusic = false, musicPausedTime = 0;
         let extraVideoIndex = 0, extraVideoInterval = null;
 
-        // Filtrar playlist
         function updateFilteredPlaylist() {
             if(allSongsMode) {
                 filteredPlaylist = [...musicas];
@@ -832,7 +831,7 @@
             setTimeout(() => n.classList.remove('show'), 3000); 
         }
         
-        // Eventos e inicialização
+        // Eventos
         document.getElementById('progressBar').addEventListener('click', (e) => { 
             if(isAdPlaying) return; 
             const rect = e.currentTarget.getBoundingClientRect(); 
@@ -862,7 +861,6 @@
         
         document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
         document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
-        
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { 
             if(navigator.share) {
                 navigator.share({title:'MUTV', url:location.href});
@@ -886,7 +884,7 @@
         setTheme(savedTheme);
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
-        // Feedback WhatsApp
+        // Feedback
         document.getElementById('feedbackBtn').addEventListener('click', () => { 
             window.open('https://wa.me/5512988461978?text=Feedback%20MUTV', '_blank'); 
         });
@@ -908,7 +906,6 @@
                 setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
             });
             
-            // Forçar o segundo vídeo a tocar
             extraVideo.play().catch(e => console.log('Erro no vídeo extra:', e));
             setInterval(() => { 
                 if(!allSongsMode) updateFilteredPlaylist(); 
