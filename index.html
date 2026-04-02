@@ -182,7 +182,7 @@
         .play-btn { font-size: 1.6rem; width: 54px; height: 54px; background: var(--primary-color); color: #000; border: none; }
         .play-btn:active { transform: scale(0.9); background: var(--primary-dark); color: #fff; }
 
-        /* Botão menu flutuante - igual ao seu exemplo */
+        /* Botão menu (3 pontinhos) */
         .menu-button {
             position: absolute;
             top: 12px;
@@ -205,6 +205,7 @@
         }
         .menu-button:active { transform: scale(0.9); background: var(--primary-color); color: #000; }
         
+        /* Menu popup - BOTÃO TELA CHEIA AQUI DENTRO */
         .menu-popup {
             position: absolute;
             top: 65px;
@@ -241,7 +242,7 @@
         }
         .menu-popup i { width: 24px; text-align: center; }
 
-        /* DRAWER */
+        /* DRAWER - SEGUNDA TELA */
         .drawer {
             position: fixed;
             top: 0;
@@ -353,10 +354,12 @@
         </div>
     </div>
 
-    <!-- Botão de menu flutuante - igual ao seu exemplo -->
+    <!-- Botão menu (3 pontinhos) -->
     <div class="menu-button" id="menuButton">
         <i class="fas fa-ellipsis-v"></i>
     </div>
+    
+    <!-- Menu popup - BOTÃO TELA CHEIA AQUI DENTRO -->
     <div class="menu-popup" id="menuPopup">
         <button id="fullscreenMenuBtn"><i class="fas fa-expand"></i> Tela cheia</button>
         <button id="shareMenuBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
@@ -367,6 +370,7 @@
     <audio id="adPlayer" preload="auto"></audio>
     <div class="notification" id="notification"><span id="notificationText"></span></div>
 
+    <!-- DRAWER - SEGUNDA TELA -->
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <div class="drawer" id="drawer">
         <div class="drawer-header"><button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button></div>
@@ -407,7 +411,7 @@
     <script>
         // PLAYLIST COMPLETA
         const musicas = [
-         { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+{ id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True_True_Remaster_", artist: "True_True_Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -611,11 +615,21 @@
             
         ];
 
+        // VÍDEOS DO SEGUNDO PLAYER
         const videosExtra = [
             { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", tipo: "link", icone: "fa-store", texto: "AlugueCopos" },
             { src: "loja.mp4", nome: "Destaque", link: "https://wa.me/5512988461978?text=Olá! Vi o anúncio no MUTV e gostaria de mais informações.", tipo: "whatsapp", icone: "fab fa-whatsapp", texto: "📞 12 98846-1978" },
             { src: "pizza12.mp4", nome: "Pizza12", link: "https://pizzariadompepe.pedido.app.br/", tipo: "link", icone: "fa-pizza-slice", texto: "🍕 Peça Agora" }
         ];
+
+        // VÍDEOS DO VÍDEO PRINCIPAL (SAUDAÇÃO POR PERÍODO)
+        const videosSaudacao = {
+            bomdia: ["chopp.mp4", "por.mp4", "cama.mp4"],
+            boatarde: ["chopp.mp4", "por.mp4", "cama.mp4"],
+            boanoite: ["chopp.mp4", "por.mp4", "cama.mp4"]
+        };
+
+        const VIDEO_PRINCIPAL_FIXO = "mutv.mp4";
 
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
@@ -636,12 +650,12 @@
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         const extraVideo = document.getElementById('extraVideo');
+        const mainVideo = document.getElementById('mainVideo');
         const musicControls = document.getElementById('musicControls');
         const floatingAdBtn = document.getElementById('floatingAdBtn');
         const floatingAdText = document.getElementById('floatingAdText');
         const secondVideoWrapper = document.getElementById('secondVideoWrapper');
         
-        // Menu elements
         const menuButton = document.getElementById('menuButton');
         const menuPopup = document.getElementById('menuPopup');
         const fullscreenMenuBtn = document.getElementById('fullscreenMenuBtn');
@@ -652,7 +666,46 @@
         let timerInterval = null, isAdPlaying = false, adsEnabled = true, adInterval = 15;
         let currentAdIndex = 0, shouldResumeMusic = false, musicPausedTime = 0;
         let extraVideoIndex = 0, extraVideoInterval = null;
+        let mainVideoIndex = 0, mainVideoInterval = null;
         let controlsHideTimeout = null;
+
+        function getPeriodoAtual() {
+            const hora = new Date().getHours();
+            if (hora >= 5 && hora < 12) return "bomdia";
+            if (hora >= 12 && hora < 18) return "boatarde";
+            return "boanoite";
+        }
+
+        function alternarVideoPrincipal() {
+            const periodo = getPeriodoAtual();
+            const videosDoPeriodo = videosSaudacao[periodo];
+            
+            if (videosDoPeriodo && videosDoPeriodo.length > 0) {
+                mainVideoIndex = (mainVideoIndex + 1) % videosDoPeriodo.length;
+                const novoSrc = videosDoPeriodo[mainVideoIndex];
+                
+                if (mainVideo && novoSrc) {
+                    const wasPlaying = !mainVideo.paused;
+                    mainVideo.pause();
+                    mainVideo.src = novoSrc;
+                    mainVideo.load();
+                    mainVideo.play().catch(e => console.log('Erro ao trocar vídeo principal:', e));
+                    if (!wasPlaying) mainVideo.pause();
+                    console.log(`🔄 Vídeo principal alterado: ${novoSrc} (${periodo})`);
+                }
+            } else {
+                if (mainVideo && mainVideo.src !== VIDEO_PRINCIPAL_FIXO) {
+                    mainVideo.src = VIDEO_PRINCIPAL_FIXO;
+                    mainVideo.load();
+                    mainVideo.play().catch(e => console.log('Erro no vídeo fixo:', e));
+                }
+            }
+        }
+
+        function iniciarAlternanciaVideoPrincipal() {
+            if (mainVideoInterval) clearInterval(mainVideoInterval);
+            mainVideoInterval = setInterval(alternarVideoPrincipal, 15000);
+        }
 
         function formatTime(sec) { 
             if (isNaN(sec)) return "0:00"; 
@@ -671,14 +724,14 @@
         secondVideoWrapper.addEventListener('click', showControls);
         secondVideoWrapper.addEventListener('touchstart', showControls);
 
-        // MENU POPUP FUNCTIONS
+        // MENU POPUP
         function toggleMenu() { menuPopup.classList.toggle('open'); }
         function closeMenu() { menuPopup.classList.remove('open'); }
         
         menuButton.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
         document.addEventListener('click', (e) => { if (!menuButton.contains(e.target) && !menuPopup.contains(e.target)) closeMenu(); });
         
-        // TELA CHEIA pelo menu
+        // TELA CHEIA dentro do menu popup
         fullscreenMenuBtn.addEventListener('click', () => {
             if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); }
             else { document.exitFullscreen(); }
@@ -854,7 +907,7 @@
             if (extraVideo && novo.src) { 
                 extraVideo.src = novo.src; 
                 extraVideo.load(); 
-                extraVideo.play().catch(e => console.log('Erro no vídeo:', e));
+                extraVideo.play().catch(e => console.log('Erro no vídeo extra:', e));
                 updateFloatingButton();
             }
         }
@@ -905,9 +958,12 @@
         const savedTheme = localStorage.getItem('radioTheme') || 'theme-red'; setTheme(savedTheme);
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
-        // INICIALIZAÇÃO - TELA CHEIA SÓ DEPOIS DO CLIQUE (igual seu exemplo)
+        // INICIALIZAÇÃO
         window.addEventListener('load', () => {
             console.log('✅ MUTV Player inicializado com sucesso!');
+            
+            iniciarAlternanciaVideoPrincipal();
+            
             updateFilteredPlaylist();
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
             currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
@@ -924,7 +980,6 @@
                 document.getElementById('splash').classList.add('hidden');
                 setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
                 showControls();
-                // TELA CHEIA SÓ APÓS O CLIQUE (igual seu exemplo)
                 try { await document.documentElement.requestFullscreen(); } catch(e) { console.log('Fullscreen:', e); }
             });
             
