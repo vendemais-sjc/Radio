@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -328,11 +329,29 @@
         .whatsapp-pesquisa { background: #25D366; color: #000; font-weight: bold; }
         .whatsapp-pesquisa i { color: #fff; font-size: 1.3rem; }
         .whatsapp-pesquisa:active { background: #128C7E; color: #fff; }
+        
+        /* Badge de status do áudio */
+        .audio-status-badge {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            border-left: 3px solid var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            z-index: 2000;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="theme-red">
     <div id="splash"><div style="text-align:center; color:#fff;"><i class="fas fa-headphones-alt" style="font-size:4rem; color:var(--primary-color);"></i><h1>MUTV Player</h1><p>Clique no botão para ativar</p></div></div>
     <div id="tap-to-start"><i class="fas fa-play-circle"></i> ATIVAR ÁUDIO</div>
+    <div class="audio-status-badge" id="audioStatusBadge">
+        <i class="fas fa-microphone-alt"></i> Áudio Context: Aguardando...
+    </div>
 
     <div class="app">
         <div class="video-principal-wrapper">
@@ -383,8 +402,9 @@
         <button id="feedbackMenuBtn"><i class="fab fa-whatsapp"></i> Feedback</button>
     </div>
 
-    <audio id="musicPlayer" preload="auto"></audio>
-    <audio id="adPlayer" preload="auto"></audio>
+    <audio id="musicPlayer" preload="auto" crossorigin="anonymous"></audio>
+    <audio id="adPlayer" preload="auto" crossorigin="anonymous"></audio>
+    <audio id="silentAudio" loop crossorigin="anonymous" style="display: none;"></audio>
     <div class="notification" id="notification"><span id="notificationText"></span></div>
 
     <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -425,7 +445,142 @@
     </div>
 
     <script>
-        // PLAYLIST COMPLETA ATÉ MÚSICA 200
+        // ==================== AUDIO CONTEXT (BACKGROUND LOCK) ====================
+        let audioCtx = null;
+        let silentSourceNode = null;
+        let musicSourceNode = null;
+        let adSourceNode = null;
+        let musicGain = null;
+        let adGain = null;
+        let audioActive = false;
+        let keepAliveInterval = null;
+        
+        async function initAudioContext() {
+            if (audioActive && audioCtx && audioCtx.state === 'running') return true;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') await audioCtx.resume();
+                
+                const sampleRate = audioCtx.sampleRate;
+                const bufferLen = sampleRate * 4;
+                const silentBuffer = audioCtx.createBuffer(1, bufferLen, sampleRate);
+                const data = silentBuffer.getChannelData(0);
+                for (let i = 0; i < bufferLen; i++) data[i] = 0;
+                
+                if (silentSourceNode) {
+                    try { silentSourceNode.stop(); silentSourceNode.disconnect(); } catch(e) {}
+                }
+                silentSourceNode = audioCtx.createBufferSource();
+                silentSourceNode.buffer = silentBuffer;
+                silentSourceNode.loop = true;
+                silentSourceNode.connect(audioCtx.destination);
+                silentSourceNode.start();
+                
+                if (musicSourceNode) {
+                    try { musicSourceNode.disconnect(); } catch(e) {}
+                    musicSourceNode = null;
+                }
+                musicSourceNode = audioCtx.createMediaElementSource(musicPlayer);
+                musicGain = audioCtx.createGain();
+                musicGain.gain.value = 0.9;
+                musicSourceNode.connect(musicGain);
+                musicGain.connect(audioCtx.destination);
+                
+                if (adSourceNode) {
+                    try { adSourceNode.disconnect(); } catch(e) {}
+                }
+                adSourceNode = audioCtx.createMediaElementSource(adPlayer);
+                adGain = audioCtx.createGain();
+                adGain.gain.value = 0.9;
+                adSourceNode.connect(adGain);
+                adGain.connect(audioCtx.destination);
+                
+                audioActive = true;
+                document.getElementById('audioStatusBadge').innerHTML = '<i class="fas fa-check-circle"></i> Áudio Context: Ativo (tela bloqueada OK)';
+                document.getElementById('audioStatusBadge').style.borderLeftColor = '#00ff88';
+                console.log('✅ AudioContext ativo - Background playback OK');
+                return true;
+            } catch (err) {
+                console.error('Erro AudioContext:', err);
+                document.getElementById('audioStatusBadge').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Modo normal (sem background)';
+                return false;
+            }
+        }
+        
+        function startKeepAliveService() {
+            if (keepAliveInterval) clearInterval(keepAliveInterval);
+            keepAliveInterval = setInterval(async () => {
+                if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+                if (audioCtx && silentSourceNode && silentSourceNode.buffer && silentSourceNode.playbackState === 'finished') {
+                    try { silentSourceNode.start(); } catch(e) {}
+                }
+                if (isPlaying && !isAdPlaying && musicPlayer.paused && audioActive) {
+                    console.log('🔄 KeepAlive: retomando música pausada');
+                    await musicPlayer.play().catch(e => console.log);
+                }
+            }, 4000);
+        }
+        
+        function setupVisibilityHandler() {
+            document.addEventListener('visibilitychange', async () => {
+                if (!document.hidden && isPlaying && !isAdPlaying) {
+                    setTimeout(() => {
+                        if (musicPlayer.paused && isPlaying) {
+                            musicPlayer.play().catch(e => console.log('Retomada automática:', e));
+                        }
+                    }, 100);
+                }
+                if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+            });
+        }
+        
+        function setupSilentAudioWorkaround() {
+            const silentAudio = document.getElementById('silentAudio');
+            if (!silentAudio) return;
+            const createSilentWAV = () => {
+                const sampleRate = 44100;
+                const duration = 2;
+                const numSamples = sampleRate * duration;
+                const buffer = new ArrayBuffer(44 + numSamples * 2);
+                const view = new DataView(buffer);
+                function writeString(view, offset, str) {
+                    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+                }
+                writeString(view, 0, 'RIFF');
+                view.setUint32(4, 36 + numSamples * 2, true);
+                writeString(view, 8, 'WAVE');
+                writeString(view, 12, 'fmt ');
+                view.setUint32(16, 16, true);
+                view.setUint16(20, 1, true);
+                view.setUint16(22, 1, true);
+                view.setUint32(24, sampleRate, true);
+                view.setUint32(28, sampleRate * 2, true);
+                view.setUint16(32, 2, true);
+                view.setUint16(34, 16, true);
+                writeString(view, 36, 'data');
+                view.setUint32(40, numSamples * 2, true);
+                let offset = 44;
+                for (let i = 0; i < numSamples; i++) {
+                    view.setInt16(offset, 0, true);
+                    offset += 2;
+                }
+                return new Blob([buffer], { type: 'audio/wav' });
+            };
+            try {
+                const silentBlob = createSilentWAV();
+                const silentUrl = URL.createObjectURL(silentBlob);
+                silentAudio.src = silentUrl;
+                silentAudio.loop = true;
+                silentAudio.volume = 0.001;
+                silentAudio.play().catch(e => console.log('Silent audio workaround:', e));
+            } catch (e) {
+                console.log('Erro no workaround de áudio:', e);
+            }
+        }
+
+        // ==================== PLAYLIST ====================
         const musicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
@@ -447,7 +602,7 @@
             { id: 18, title: "Sailing", artist: "Christopher Cross", src: "Christopher_Cross_Sailing_muzzik.m4a", periodo: "noite" },
             { id: 19, title: "Poeira No Vento", artist: "Chrystian & Ralf", src: "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", periodo: "noite" },
             { id: 20, title: "Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", periodo: "noite" },
-            { id: 21, title: "Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", periodo: "tarde" },
+             { id: 21, title: "Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", periodo: "tarde" },
             { id: 22, title: "Corre Pro Meu Mar", artist: "Maneva", src: "Corre_Pro_Corre_Pro_Meu_Mar_Radio_Edit__muzzik.m4a", periodo: "manha" },
             { id: 23, title: "Time After Time", artist: "Cyndi Lauper", src: "Cyndi_Lauper_Time_after_time_muzzik.m4a", periodo: "noite" },
             { id: 24, title: "Você Sempre Será", artist: "DINO & Banda Malta", src: "DINO_Feat_Banda_Malta_Voc_Sempre_Ser_DVD_Barzim_de_Rock.m4a", periodo: "tarde" },
@@ -457,7 +612,7 @@
             { id: 28, title: "Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", periodo: "noite" },
             { id: 29, title: "Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", periodo: "todos" },
             { id: 30, title: "Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", periodo: "noite" },
-            { id: 31, title: "La Belle de Jour", artist: "Paulinho Mosca", src: "La_Belle_La_Belle_de_Jour_muzzik.m4a", periodo: "noite" },
+            { id: 31, title: "La Belle de_our", artist: "Paulinho mosca", src: "La_Belle_La_Belle_de_Jour_muzzik.m4a", periodo: "noite" },
             { id: 32, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" },
             { id: 33, title: "Sailing", artist: "Emmerson Nogueira", src: "Emmerson_Nogueira_Sailing_13.m4a", periodo: "todos" },
             { id: 34, title: "Encostar na Tua", artist: "Anavitória", src: "Encostar_na_Encostar_na_Tua.m4a", periodo: "todos" },
@@ -628,10 +783,12 @@
      { id: 198, title: "Liga_Joe_A_Little_Respect", artist: "Liga_Joe_A_Little_Respect_", src: "Liga_Joe_A_Little_Respect_muzzik.m4a", periodo: "todos" },
        { id: 199, title: "Barbra_Streisand_Guilty", artist: "Barbra_Streisand_Guilty", src: "Barbra_Streisand_Guilty_muzzik.m4a", periodo: "todos" }, 
          { id: 200, title: "Never_Love_Again", artist: "I_ll_Never_I_ll_Never_Love_Again", src: "I_ll_Never_I_ll_Never_Love_Again_muzzik.m4a", periodo: "todos" },    
+            
+            
         ];
 
-        // Adicionar músicas 51 a 200
-        for (let i = 51; i <= 200; i++) {
+        // Adicionar músicas 21 a 200
+        for (let i = 21; i <= 200; i++) {
             musicas.push({
                 id: i,
                 title: `Música ${i}`,
@@ -643,7 +800,7 @@
 
         const videosExtra = [
             { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", tipo: "link", icone: "fa-store", texto: "AlugueCopos" },
-            { src: "nova.mp4", nome: "Destaque", link: "https://wa.me/5512988461978?text=Olá! Vi o anúncio no MUTV e gostaria de mais informações.", tipo: "whatsapp", icone: "fab fa-whatsapp", texto: "📞 12 98846-1978" },
+            { src: "loja.mp4", nome: "Destaque", link: "https://wa.me/5512988461978?text=Olá! Vi o anúncio no MUTV e gostaria de mais informações.", tipo: "whatsapp", icone: "fab fa-whatsapp", texto: "📞 12 98846-1978" },
             { src: "pizza12.mp4", nome: "Pizza12", link: "https://pizzariadompepe.pedido.app.br/", tipo: "link", icone: "fa-pizza-slice", texto: "🍕 Peça Agora" }
         ];
 
@@ -659,6 +816,7 @@
             { src: "zzcv.mp3", nome: "Promoção Relâmpago" }
         ];
 
+        // DOM Elements
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -836,18 +994,22 @@
         function stopTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = null; }
         
         async function playMusic() {
-            if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
+            if(!audioActive) { showNotification('⚠️ Clique no botão "ATIVAR ÁUDIO" primeiro!', 3000); return false; }
+            if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return false; }
             const track = musicas[currentIndex];
             musicPlayer.src = track.src;
             musicPlayer.load();
             musicPlayer.oncanplaythrough = async () => {
-                await musicPlayer.play();
-                isPlaying = true;
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                startTimer();
-                renderPlaylist();
-                if (musicPlayer.duration) totalTimeEl.textContent = formatTime(musicPlayer.duration);
-                showControls();
+                try {
+                    if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+                    await musicPlayer.play();
+                    isPlaying = true;
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    startTimer();
+                    renderPlaylist();
+                    if (musicPlayer.duration) totalTimeEl.textContent = formatTime(musicPlayer.duration);
+                    showControls();
+                } catch(e) { console.error(e); }
             };
             musicPlayer.onerror = () => showNotification('Erro: Arquivo não encontrado');
         }
@@ -980,17 +1142,26 @@
             document.getElementById('tap-to-start').style.display = 'block';
             
             document.getElementById('tap-to-start').addEventListener('click', async () => {
-                await playMusic();
-                document.getElementById('tap-to-start').style.display = 'none';
-                document.getElementById('splash').classList.add('hidden');
-                setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
-                showControls();
-                try { await document.documentElement.requestFullscreen(); } catch(e) {}
+                const ok = await initAudioContext();
+                if(ok) {
+                    startKeepAliveService();
+                    setupVisibilityHandler();
+                    setupSilentAudioWorkaround();
+                    await playMusic();
+                    document.getElementById('tap-to-start').style.display = 'none';
+                    document.getElementById('splash').classList.add('hidden');
+                    setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
+                    showControls();
+                    try { await document.documentElement.requestFullscreen(); } catch(e) {}
+                } else {
+                    showNotification('❌ Erro ao ativar áudio. Tente novamente.', 3000);
+                }
             });
             
             extraVideo.play().catch(e => console.log('Erro no vídeo extra:', e));
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
             console.log('✅ Projeto finalizado com sucesso!');
+            console.log('🎵 Áudio toca com TELA BLOQUEADA ativado!');
         });
     </script>
 </body>
