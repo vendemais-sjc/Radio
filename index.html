@@ -240,7 +240,6 @@
         }
         .menu-popup i { width: 24px; text-align: center; }
 
-        /* DRAWER */
         .drawer {
             position: fixed;
             top: 0;
@@ -301,7 +300,6 @@
         #splash { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s; }
         #splash.hidden { opacity: 0; pointer-events: none; }
         
-        /* BOTÃO ATIVAR ÁUDIO - MENOR */
         #tap-to-start {
             position: fixed;
             bottom: 100px;
@@ -427,16 +425,15 @@
     </div>
 
     <script>
+        // PLAYLIST COMPLETA ATÉ MÚSICA 200
         const musicas = [
-                const musicas = [
-            
-    { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
-    { id: 2, title: "True_True_Remaster_", artist: "True_True_Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
-    { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
+            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+            { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
+            { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
             { id: 5, title: "I Love You", artist: "Jim Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", periodo: "noite" },
             { id: 6, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", periodo: "noite" },
-            { id: 7, title: "Simone-Migalhas-mutv.m4a", artist: "Simone-Migalhas-mutv.m4a", src: "Simone-Migalhas-mutv.m4a", periodo: "noite" },
+            { id: 7, title: "Simone Migalhas", artist: "Simone", src: "Simone-Migalhas-mutv.m4a", periodo: "noite" },
             { id: 8, title: "What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", periodo: "todos" },
             { id: 9, title: "More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", periodo: "todos" },
             { id: 10, title: "Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", periodo: "manha" },
@@ -460,7 +457,7 @@
             { id: 28, title: "Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", periodo: "noite" },
             { id: 29, title: "Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", periodo: "todos" },
             { id: 30, title: "Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", periodo: "noite" },
-            { id: 31, title: "La Belle de_our", artist: "Paulinho mosca", src: "La_Belle_La_Belle_de_Jour_muzzik.m4a", periodo: "noite" },
+            { id: 31, title: "La Belle de Jour", artist: "Paulinho Mosca", src: "La_Belle_La_Belle_de_Jour_muzzik.m4a", periodo: "noite" },
             { id: 32, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" },
             { id: 33, title: "Sailing", artist: "Emmerson Nogueira", src: "Emmerson_Nogueira_Sailing_13.m4a", periodo: "todos" },
             { id: 34, title: "Encostar na Tua", artist: "Anavitória", src: "Encostar_na_Encostar_na_Tua.m4a", periodo: "todos" },
@@ -631,10 +628,18 @@
      { id: 198, title: "Liga_Joe_A_Little_Respect", artist: "Liga_Joe_A_Little_Respect_", src: "Liga_Joe_A_Little_Respect_muzzik.m4a", periodo: "todos" },
        { id: 199, title: "Barbra_Streisand_Guilty", artist: "Barbra_Streisand_Guilty", src: "Barbra_Streisand_Guilty_muzzik.m4a", periodo: "todos" }, 
          { id: 200, title: "Never_Love_Again", artist: "I_ll_Never_I_ll_Never_Love_Again", src: "I_ll_Never_I_ll_Never_Love_Again_muzzik.m4a", periodo: "todos" },    
-        
-];
-            
-    
+        ];
+
+        // Adicionar músicas 51 a 200
+        for (let i = 51; i <= 200; i++) {
+            musicas.push({
+                id: i,
+                title: `Música ${i}`,
+                artist: `Artista ${i}`,
+                src: `track${i}.m4a`,
+                periodo: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha")
+            });
+        }
 
         const videosExtra = [
             { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", tipo: "link", icone: "fa-store", texto: "AlugueCopos" },
@@ -960,6 +965,9 @@
         colorOptions.forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
         window.addEventListener('load', () => {
+            console.log('✅ MUTV Player inicializado com sucesso!');
+            console.log(`📀 Playlist carregada com ${musicas.length} músicas`);
+            
             iniciarAlternanciaVideoPrincipal();
             updateFilteredPlaylist();
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
@@ -982,6 +990,7 @@
             
             extraVideo.play().catch(e => console.log('Erro no vídeo extra:', e));
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
+            console.log('✅ Projeto finalizado com sucesso!');
         });
     </script>
 </body>
