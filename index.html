@@ -10,7 +10,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { min-height: 100vh; background-color: #000000; overflow: hidden; position: fixed; width: 100%; height: 100%; }
         
-        /* ===== CORES TEMÁTICAS ===== */
         body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
         body.theme-lilac { --primary-color: #b380ff; --primary-dark: #7a4db3; }
         body.theme-blue { --primary-color: #00a8ff; --primary-dark: #0077be; }
@@ -37,7 +36,6 @@
         .video-secundario-wrapper { position: relative; flex: 1; min-height: 0; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         #extraVideo { width: 100%; height: 100%; object-fit: cover; background-color: #000; }
         
-        /* ===== MODO CARRO ===== */
         .car-mode-active .video-principal-wrapper { display: none; }
         .car-mode-active .video-secundario-wrapper { display: none; }
         .car-mode-active .overlay-ticker { display: none; }
@@ -188,7 +186,6 @@
         .tap-instruction { position: fixed; bottom: 30%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 30px; color: white; font-size: 0.7rem; z-index: 202; pointer-events: none; opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
         .car-mode-active .tap-instruction.visible { opacity: 1; }
         
-        /* ANÚNCIOS */
         .video-ad-overlay { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); width: 320px; max-width: 90vw; z-index: 1000; pointer-events: auto; cursor: pointer; border-radius: 16px; overflow: hidden; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid var(--primary-color); opacity: 0.95; }
         .video-ad-overlay video { width: 100%; height: auto; display: block; }
         .close-video-ad { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.7); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; z-index: 1001; font-weight: bold; border: 1px solid white; }
@@ -245,7 +242,6 @@
             </div>
         </div>
         
-        <!-- MODO CARRO -->
         <div class="car-mode-video"><video id="carVideo" autoplay loop muted playsinline><source src="carro.mp4" type="video/mp4"></video></div>
         <div class="car-overlay-controls" id="carOverlayControls">
             <div class="car-buttons-container">
@@ -263,7 +259,6 @@
         <div class="car-indicator" id="carIndicator"><i class="fas fa-car"></i> MODO CARRO ATIVO</div>
         <button class="exit-car-btn" id="exitCarBtn">✕ SAIR DO MODO CARRO</button>
         
-        <!-- Botões like/dislike -->
         <div class="feedback-buttons">
             <button class="feedback-btn like" id="likeBtn"><i class="fas fa-thumbs-up"></i></button>
             <button class="feedback-btn dislike" id="dislikeBtn"><i class="fas fa-thumbs-down"></i></button>
@@ -273,7 +268,6 @@
         <div class="visualizer" id="visualizer"><div class="visualizer-bar" id="bar1"></div><div class="visualizer-bar" id="bar2"></div><div class="visualizer-bar" id="bar3"></div><div class="visualizer-bar" id="bar4"></div></div>
         <div class="loading-spinner" id="loadingSpinner"><i class="fas fa-circle-notch fa-spin"></i><span>Carregando música...</span></div>
         
-        <!-- ANÚNCIOS -->
         <div class="video-ad-overlay" id="videoAdOverlay"><span class="close-video-ad" id="closeVideoAdBtn">✕</span><video id="adVideo" autoplay muted playsinline loop><source src="anu.mp4" type="video/mp4"></video></div>
         <audio id="adAudio" preload="auto" style="display: none;"></audio>
         <div class="audio-ad-container" id="audioAdToast"><i class="fas fa-volume-up"></i><span id="audioAdText">🎧 Anúncio</span></div>
@@ -322,7 +316,6 @@
     <div class="notification" id="notification"><span id="notificationText"></span></div>
     <div class="swipe-indicator" id="swipeIndicator">👉 Deslize para próxima música</div>
 
-    <!-- MODAIS -->
     <div class="ai-modal" id="aiModal">
         <h3><i class="fas fa-brain"></i> Inteligência Artificial</h3>
         <div class="ai-stat"><span>🎯 Músicas que você curtiu:</span><span class="stat-value" id="aiLikedCount">0</span></div>
@@ -385,9 +378,10 @@
         const VOLUME_PLAYER = 0.9;
         const NUMERO_WHATSAPP = "5512988461978";
         
-        // ==================== PLAYLIST CORRIGIDA (usando "genero") ====================
+        // ==================== PLAYLIST SIMPLIFICADA (APENAS MÚSICAS QUE EXISTEM) ====================
+        // ⚠️ IMPORTANTE: Substitua os caminhos abaixo pelos arquivos de música que você realmente tem!
         const musicas = [
-          { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+         { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -588,20 +582,9 @@
      { id: 198, title: "Liga_Joe_A_Little_Respect", artist: "Liga_Joe_A_Little_Respect_", src: "Liga_Joe_A_Little_Respect_muzzik.m4a", periodo: "todos" },
        { id: 199, title: "Barbra_Streisand_Guilty", artist: "Barbra_Streisand_Guilty", src: "Barbra_Streisand_Guilty_muzzik.m4a", periodo: "todos" }, 
          { id: 200, title: "Never_Love_Again", artist: "I_ll_Never_I_ll_Never_Love_Again", src: "I_ll_Never_I_ll_Never_Love_Again_muzzik.m4a", periodo: "todos" },    
-             { id: 201, title: "Haven_t_Met_You_Yet", artist: "Michael Bubl", src: "Michael_Bubl_Haven_t_Met_You_Yet_muzzik.m4a", periodo: "todos" },
+             { id: 201, title: "Haven_t_Met_You_Yet", artist: "Michael Bubl", src: "Michael_Bubl_Haven_t_Met_You_Yet_muzzik.m4a", periodo: "todos" }
             
         ];
-        
-        // Adicionar músicas 11 a 200 com "genero"
-        for (let i = 11; i <= 200; i++) {
-            musicas.push({
-                id: i,
-                title: `Música ${i}`,
-                artist: `Artista ${i}`,
-                src: `track${i}.m4a`,
-                genero: i % 3 === 0 ? "tarde" : (i % 2 === 0 ? "noite" : "manha")
-            });
-        }
         
         // ==================== VÍDEOS ====================
         const videosExtra = [
