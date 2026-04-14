@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV Player • Smart TV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MUTV Player • Full Screen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -13,31 +13,29 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000000;
-            overflow: hidden;
             width: 100vw;
             height: 100vh;
-        }
-
-        /* LAYOUT HORIZONTAL PARA SMART TV */
-        .tv-container {
-            display: flex;
-            width: 100%;
-            height: 100vh;
-            flex-direction: row;
-            background: #000;
-        }
-
-        /* LADO ESQUERDO - VÍDEO PRINCIPAL (MAIOR) */
-        .video-main {
-            flex: 2;
-            position: relative;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             overflow: hidden;
+            background: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* CONTAINER PRINCIPAL - TELA CHEIA */
+        .tv-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        /* VÍDEO PRINCIPAL (TELA INTEIRA) */
+        .video-fullscreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
         #mainVideo {
@@ -46,24 +44,25 @@
             object-fit: cover;
         }
 
-        /* LADO DIREITO - VÍDEO SECUNDÁRIO + PLAYER */
-        .video-side {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #0a0a0a;
-            border-left: 2px solid #e63946;
+        /* VÍDEO SECUNDÁRIO (PEQUENO NO CANTO) */
+        .video-mini {
+            position: absolute;
+            bottom: 120px;
+            right: 20px;
+            width: 320px;
+            height: 180px;
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 10;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .video-secondary {
-            flex: 1;
-            position: relative;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border-bottom: 2px solid #e63946;
+        .video-mini:hover {
+            transform: scale(1.02);
+            border-color: #e63946;
         }
 
         #extraVideo {
@@ -72,54 +71,73 @@
             object-fit: cover;
         }
 
-        /* PLAYER DE MÚSICA - BOTÕES GRANDES */
-        .music-player {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .mini-overlay {
+            position: absolute;
+            bottom: 5px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            color: white;
+            font-weight: bold;
         }
 
+        /* ==================== PLAYER DE MÚSICA (INFERIOR) ==================== */
+        .music-player {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(15px);
+            padding: 15px 30px;
+            z-index: 20;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            transition: all 0.3s ease;
+        }
+
+        /* OCULTAR PLAYER AUTOMATICAMENTE */
+        .music-player.hide {
+            transform: translateY(100%);
+        }
+
+        /* INFORMAÇÕES DA MÚSICA */
         .track-info {
             text-align: center;
-            padding: 15px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 20px;
-            border-left: 4px solid #e63946;
+            margin-bottom: 12px;
         }
 
         .track-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
         }
 
         .track-artist {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: #ccc;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
-        /* PROGRESS BAR */
+        /* BARRA DE PROGRESSO */
         .progress-area {
-            margin: 10px 0;
+            margin-bottom: 12px;
         }
 
         .progress-time {
             display: flex;
             justify-content: space-between;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #aaa;
             margin-bottom: 5px;
         }
 
         .progress-bar-bg {
-            height: 6px;
-            background: rgba(255,255,255,0.2);
+            height: 3px;
+            background: rgba(255,255,255,0.3);
             border-radius: 3px;
             cursor: pointer;
         }
@@ -132,177 +150,107 @@
             transition: width 0.1s linear;
         }
 
-        /* BOTÕES GRANDES (PARA CONTROLE REMOTO) */
+        /* BOTÕES DE CONTROLE - TRANSPARENTES */
         .control-buttons {
             display: flex;
             justify-content: center;
-            gap: 25px;
-            margin: 10px 0;
+            gap: 30px;
         }
 
         .ctrl-btn {
-            background: rgba(230,57,70,0.9);
-            border: none;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            font-size: 1.8rem;
-            width: 70px;
-            height: 70px;
+            font-size: 1.4rem;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
         }
 
-        .ctrl-btn:active, .ctrl-btn:focus {
-            transform: scale(0.95);
-            background: #ff6b6b;
-            outline: 3px solid #ffd700;
-        }
-
-        .ctrl-btn.small {
-            width: 55px;
-            height: 55px;
-            font-size: 1.4rem;
-            background: rgba(255,255,255,0.2);
-        }
-
-        /* PLAYLIST LATERAL */
-        .playlist-section {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-top: 10px;
-            border-top: 1px solid #333;
-            padding-top: 10px;
-        }
-
-        .playlist-title {
-            color: #e63946;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .playlist-items {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .playlist-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #333;
-        }
-
-        .playlist-item:active, .playlist-item:focus {
+        .ctrl-btn:hover, .ctrl-btn:focus {
             background: #e63946;
-            outline: 2px solid #ffd700;
-            transform: scale(1.02);
-        }
-
-        .playlist-item.active {
-            background: #e63946;
+            transform: scale(1.05);
+            outline: none;
             border-color: #ffd700;
         }
 
-        .playlist-number {
-            width: 32px;
-            height: 32px;
+        .ctrl-btn:active {
+            transform: scale(0.95);
+        }
+
+        .ctrl-btn.play {
+            width: 65px;
+            height: 65px;
+            font-size: 1.8rem;
             background: #e63946;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #000;
+            border: none;
+            box-shadow: 0 0 15px rgba(230,57,70,0.5);
         }
 
-        .playlist-info {
-            flex: 1;
+        .ctrl-btn.play:hover, .ctrl-btn.play:focus {
+            background: #ff6b6b;
+            transform: scale(1.05);
         }
 
-        .playlist-name {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .playlist-artist {
-            font-size: 0.65rem;
-            color: #aaa;
-        }
-
-        /* BOTÕES FLUTUANTES */
-        .floating-buttons {
-            position: fixed;
+        /* BOTÃO PARA MOSTAR/OCULTAR CONTROLES */
+        .toggle-controls {
+            position: absolute;
             bottom: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .float-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid #e63946;
+            left: 20px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.3);
             color: white;
-            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
+            z-index: 25;
+            font-size: 1rem;
             transition: all 0.2s;
         }
 
-        .float-btn:active, .float-btn:focus {
-            transform: scale(0.95);
+        .toggle-controls:hover, .toggle-controls:focus {
             background: #e63946;
-            outline: 2px solid #ffd700;
+            outline: none;
         }
 
         /* BOTÃO DE TELA CHEIA */
         .fullscreen-btn {
-            position: fixed;
+            position: absolute;
             top: 20px;
             right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid #e63946;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.3);
             color: white;
-            font-size: 1.2rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             cursor: pointer;
-            z-index: 100;
+            z-index: 25;
+            font-size: 1.2rem;
+            transition: all 0.2s;
         }
 
-        .fullscreen-btn:active, .fullscreen-btn:focus {
+        .fullscreen-btn:hover, .fullscreen-btn:focus {
             background: #e63946;
-            outline: 2px solid #ffd700;
+            outline: none;
         }
 
         /* NOTIFICAÇÃO */
         .notification {
             position: fixed;
-            bottom: 30px;
+            bottom: 30%;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 0.9rem;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
             z-index: 1000;
             border-left: 3px solid #e63946;
             opacity: 0;
@@ -315,103 +263,202 @@
             opacity: 1;
         }
 
-        /* SCROLL PERSONALIZADO */
-        .playlist-section::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .playlist-section::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-
-        .playlist-section::-webkit-scrollbar-thumb {
+        /* BOTÃO DO VÍDEO MINI */
+        .mini-ad-btn {
+            position: absolute;
+            bottom: 5px;
+            left: 8px;
             background: #e63946;
-            border-radius: 3px;
+            border: none;
+            border-radius: 20px;
+            padding: 4px 12px;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 15;
         }
 
-        /* RESPONSIVIDADE */
-        @media (max-width: 1024px) {
-            .ctrl-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 1.4rem;
-            }
-            .track-title {
-                font-size: 0.9rem;
-            }
+        /* SCROLL DA PLAYLIST */
+        .playlist-container {
+            position: absolute;
+            bottom: 100%;
+            left: 20px;
+            width: 300px;
+            max-height: 300px;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 10px;
+            z-index: 20;
+            display: none;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .playlist-container.open {
+            display: block;
+        }
+
+        .playlist-title {
+            color: #e63946;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .playlist-item:hover, .playlist-item:focus {
+            background: #e63946;
+            outline: none;
+        }
+
+        .playlist-item.active {
+            background: #e63946;
+        }
+
+        .playlist-number {
+            width: 28px;
+            height: 28px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .playlist-info {
+            flex: 1;
+        }
+
+        .playlist-name {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .playlist-artist {
+            font-size: 0.6rem;
+            color: #aaa;
+        }
+
+        /* BOTÃO ABRIR PLAYLIST */
+        .playlist-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 80px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 25;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .playlist-btn:hover, .playlist-btn:focus {
+            background: #e63946;
+            outline: none;
+        }
+
+        /* SCROLL */
+        .playlist-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .playlist-container::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 2px;
+        }
+
+        .playlist-container::-webkit-scrollbar-thumb {
+            background: #e63946;
+            border-radius: 2px;
         }
     </style>
 </head>
 <body>
     <div class="tv-container">
-        <!-- VÍDEO PRINCIPAL (LADO ESQUERDO) -->
-        <div class="video-main">
+        <!-- VÍDEO PRINCIPAL - TELA CHEIA -->
+        <div class="video-fullscreen">
             <video id="mainVideo" autoplay loop muted playsinline>
-                <source src="mutv.mp4" type="video/mp4">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
             </video>
         </div>
 
-        <!-- LADO DIREITO -->
-        <div class="video-side">
-            <!-- VÍDEO SECUNDÁRIO -->
-            <div class="video-secondary">
-                <video id="extraVideo" autoplay loop muted playsinline>
-                    <source src="betania.mp4" type="video/mp4">
-                </video>
-                <button class="floating-ad-btn" id="floatingAdBtn" style="position:absolute; bottom:10px; right:10px; background:#e63946; border:none; border-radius:30px; padding:8px 15px; color:white; font-size:0.7rem; cursor:pointer; z-index:10;">
-                    <i class="fas fa-store"></i> AlugueCopos
-                </button>
+        <!-- VÍDEO MINI (CANTO INFERIOR DIREITO) -->
+        <div class="video-mini" id="miniVideo">
+            <video id="extraVideo" autoplay loop muted playsinline>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFunflies.mp4" type="video/mp4">
+            </video>
+            <div class="mini-overlay"><i class="fas fa-ad"></i> Anúncio</div>
+            <button class="mini-ad-btn" id="miniAdBtn">AlugueCopos</button>
+        </div>
+
+        <!-- PLAYER DE MÚSICA (INFERIOR) -->
+        <div class="music-player" id="musicPlayerBar">
+            <div class="track-info">
+                <div class="track-title" id="trackTitle">🎵 Carregando...</div>
+                <div class="track-artist" id="trackArtist">MUTV Playlist</div>
             </div>
 
-            <!-- PLAYER DE MÚSICA -->
-            <div class="music-player">
-                <div class="track-info">
-                    <div class="track-title" id="trackTitle">🎵 Selecione uma música</div>
-                    <div class="track-artist" id="trackArtist">MUTV Playlist</div>
+            <div class="progress-area">
+                <div class="progress-time">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime">0:00</span>
                 </div>
+                <div class="progress-bar-bg" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
 
-                <div class="progress-area">
-                    <div class="progress-time">
-                        <span id="currentTime">0:00</span>
-                        <span id="totalTime">0:00</span>
-                    </div>
-                    <div class="progress-bar-bg" id="progressBar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                </div>
-
-                <div class="control-buttons">
-                    <button class="ctrl-btn small" id="prevBtn" tabindex="0"><i class="fas fa-step-backward"></i></button>
-                    <button class="ctrl-btn" id="playPauseBtn" tabindex="0"><i class="fas fa-play"></i></button>
-                    <button class="ctrl-btn small" id="shuffleBtn" tabindex="0"><i class="fas fa-random"></i></button>
-                    <button class="ctrl-btn small" id="nextBtn" tabindex="0"><i class="fas fa-step-forward"></i></button>
-                </div>
-
-                <!-- PLAYLIST -->
-                <div class="playlist-section">
-                    <div class="playlist-title"><i class="fas fa-music"></i> PLAYLIST MUTV</div>
-                    <div class="playlist-items" id="playlistContainer"></div>
-                </div>
+            <div class="control-buttons">
+                <button class="ctrl-btn" id="prevBtn" tabindex="0"><i class="fas fa-step-backward"></i></button>
+                <button class="ctrl-btn play" id="playPauseBtn" tabindex="0"><i class="fas fa-play"></i></button>
+                <button class="ctrl-btn" id="shuffleBtn" tabindex="0"><i class="fas fa-random"></i></button>
+                <button class="ctrl-btn" id="nextBtn" tabindex="0"><i class="fas fa-step-forward"></i></button>
             </div>
         </div>
-    </div>
 
-    <!-- BOTÕES FLUTUANTES -->
-    <div class="floating-buttons">
-        <button class="float-btn" id="toggleShuffleBtn" tabindex="0"><i class="fas fa-random"></i></button>
-        <button class="float-btn" id="shareBtn" tabindex="0"><i class="fas fa-share-alt"></i></button>
-    </div>
+        <!-- BOTÕES DE CONTROLE -->
+        <button class="toggle-controls" id="toggleControlsBtn" tabindex="0"><i class="fas fa-chevron-up"></i></button>
+        <button class="playlist-btn" id="playlistBtn" tabindex="0"><i class="fas fa-list-ul"></i></button>
+        <button class="fullscreen-btn" id="fullscreenBtn" tabindex="0"><i class="fas fa-expand"></i></button>
 
-    <button class="fullscreen-btn" id="fullscreenBtn" tabindex="0"><i class="fas fa-expand"></i></button>
+        <!-- PLAYLIST FLUTUANTE -->
+        <div class="playlist-container" id="playlistContainer">
+            <div class="playlist-title"><i class="fas fa-music"></i> PLAYLIST MUTV</div>
+            <div id="playlistItems"></div>
+        </div>
+    </div>
 
     <div class="notification" id="notification"><span id="notificationText"></span></div>
 
     <audio id="musicPlayer" preload="auto"></audio>
 
     <script>
-        // ==================== PLAYLIST COMPLETA ====================
+        // ==================== PLAYLIST COM MÚSICAS FUNCIONAIS ====================
         const musicas = [
-          { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+           { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -618,9 +665,10 @@
 
         // ==================== VÍDEOS EXTRA ====================
         const videosExtra = [
-            { src: "betania.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", texto: "AlugueCopos" },
-            { src: "loja.mp4", nome: "Destaque", link: "https://wa.me/5512988461978", texto: "📞 12 98846-1978" },
-            { src: "pizza12.mp4", nome: "Pizza12", link: "https://pizzariadompepe.pedido.app.br/", texto: "🍕 Peça Agora" }
+            { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/", texto: "AlugueCopos" },
+            { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFunflies.mp4", nome: "Destaque", link: "https://wa.me/5512988461978", texto: "📞 12 98846-1978" },
+            { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", nome: "Pizza12", link: "https://pizzariadompepe.pedido.app.br/", texto: "🍕 Peça Agora" },
+            { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", nome: "Oferta", link: "https://wa.me/5512988461978", texto: "🎁 Oferta" }
         ];
 
         // ==================== DOM Elements ====================
@@ -629,7 +677,6 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const shuffleBtn = document.getElementById('shuffleBtn');
-        const toggleShuffleBtn = document.getElementById('toggleShuffleBtn');
         const progressFill = document.getElementById('progressFill');
         const currentTimeEl = document.getElementById('currentTime');
         const totalTimeEl = document.getElementById('totalTime');
@@ -637,10 +684,13 @@
         const trackArtistEl = document.getElementById('trackArtist');
         const progressBar = document.getElementById('progressBar');
         const playlistContainer = document.getElementById('playlistContainer');
-        const extraVideo = document.getElementById('extraVideo');
-        const floatingAdBtn = document.getElementById('floatingAdBtn');
+        const playlistItems = document.getElementById('playlistItems');
+        const playlistBtn = document.getElementById('playlistBtn');
+        const toggleControlsBtn = document.getElementById('toggleControlsBtn');
+        const musicPlayerBar = document.getElementById('musicPlayerBar');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const shareBtn = document.getElementById('shareBtn');
+        const extraVideo = document.getElementById('extraVideo');
+        const miniAdBtn = document.getElementById('miniAdBtn');
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
 
@@ -651,6 +701,8 @@
         let timerInterval = null;
         let extraVideoIndex = 0;
         let extraVideoInterval = null;
+        let controlsVisible = true;
+        let controlsTimeout = null;
 
         // ==================== Funções Auxiliares ====================
         function formatTime(sec) {
@@ -682,13 +734,46 @@
             }, 200);
         }
 
+        // Ocultar controles automaticamente
+        function resetControlsTimer() {
+            if (controlsTimeout) clearTimeout(controlsTimeout);
+            if (controlsVisible) {
+                controlsTimeout = setTimeout(() => {
+                    musicPlayerBar.classList.add('hide');
+                    controlsVisible = false;
+                    toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+                }, 5000);
+            }
+        }
+
+        function showControls() {
+            musicPlayerBar.classList.remove('hide');
+            controlsVisible = true;
+            toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+            resetControlsTimer();
+        }
+
+        function toggleControls() {
+            if (controlsVisible) {
+                musicPlayerBar.classList.add('hide');
+                controlsVisible = false;
+                toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+                if (controlsTimeout) clearTimeout(controlsTimeout);
+            } else {
+                musicPlayerBar.classList.remove('hide');
+                controlsVisible = true;
+                toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+                resetControlsTimer();
+            }
+        }
+
         // ==================== Playlist Render ====================
         function renderPlaylist() {
             let html = '';
             musicas.forEach((music, idx) => {
                 const isActive = (idx === currentIndex);
                 html += `
-                    <div class="playlist-item ${isActive ? 'active' : ''}" data-index="${idx}">
+                    <div class="playlist-item ${isActive ? 'active' : ''}" data-index="${idx}" tabindex="0">
                         <div class="playlist-number">${(idx+1).toString().padStart(2,'0')}</div>
                         <div class="playlist-info">
                             <div class="playlist-name">${escapeHtml(music.title)}</div>
@@ -697,19 +782,20 @@
                     </div>
                 `;
             });
-            playlistContainer.innerHTML = html;
+            playlistItems.innerHTML = html;
             
-            // Adicionar eventos
             document.querySelectorAll('.playlist-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const index = parseInt(item.dataset.index);
                     selectSong(index);
+                    playlistContainer.classList.remove('open');
                 });
                 item.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         const index = parseInt(item.dataset.index);
                         selectSong(index);
+                        playlistContainer.classList.remove('open');
                     }
                 });
             });
@@ -747,9 +833,10 @@
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 startTimer();
                 renderPlaylist();
+                showControls();
             } catch(e) {
-                console.log('Erro ao tocar:', e);
-                showMessage('⚠️ Clique no botão play novamente', 2000);
+                console.log('Erro:', e);
+                showMessage('⚠️ Clique no play para iniciar', 2000);
             }
         }
 
@@ -767,6 +854,7 @@
             } else {
                 playMusic();
             }
+            showControls();
         }
 
         function nextTrack() {
@@ -783,6 +871,7 @@
             loadTrack(currentIndex);
             if (isPlaying) playMusic();
             showMessage(`⏭️ ${musicas[currentIndex].title}`);
+            showControls();
         }
 
         function prevTrack() {
@@ -799,6 +888,7 @@
             loadTrack(currentIndex);
             if (isPlaying) playMusic();
             showMessage(`⏮️ ${musicas[currentIndex].title}`);
+            showControls();
         }
 
         function selectSong(index) {
@@ -807,13 +897,14 @@
             loadTrack(currentIndex);
             if (isPlaying) playMusic();
             showMessage(`🎵 ${musicas[currentIndex].title}`);
+            showControls();
         }
 
         function toggleShuffleMode() {
             shuffle = !shuffle;
             showMessage(shuffle ? '🔀 Aleatório ATIVADO' : '➡️ Sequencial');
-            shuffleBtn.style.background = shuffle ? '#ff6b6b' : '';
-            toggleShuffleBtn.style.background = shuffle ? '#ff6b6b' : '';
+            shuffleBtn.style.background = shuffle ? '#e63946' : '';
+            showControls();
         }
 
         // ==================== Vídeos ====================
@@ -824,8 +915,9 @@
                 extraVideo.src = novo.src;
                 extraVideo.load();
                 extraVideo.play().catch(e => console.log);
-                floatingAdBtn.innerHTML = `<i class="fas fa-store"></i> ${novo.texto}`;
-                floatingAdBtn.onclick = () => {
+                miniAdBtn.innerHTML = novo.texto;
+                miniAdBtn.onclick = (e) => {
+                    e.stopPropagation();
                     if (novo.link) window.open(novo.link, '_blank');
                 };
             }
@@ -835,27 +927,26 @@
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
-                showMessage('🖥️ Tela cheia ativada');
+                showMessage('🖥️ Tela cheia');
             } else {
                 document.exitFullscreen();
                 showMessage('⬛ Modo janela');
             }
+            showControls();
         }
 
-        // ==================== Compartilhar ====================
-        function shareApp() {
-            const link = window.location.href;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'MUTV Playlist',
-                    text: '🎵 A melhor playlist para sua TV!',
-                    url: link
-                });
-            } else {
-                navigator.clipboard.writeText(link);
-                showMessage('🔗 Link copiado! Compartilhe com amigos!');
-            }
+        // ==================== Playlist Toggle ====================
+        function togglePlaylist() {
+            playlistContainer.classList.toggle('open');
+            showControls();
         }
+
+        // Fechar playlist ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!playlistContainer.contains(e.target) && e.target !== playlistBtn) {
+                playlistContainer.classList.remove('open');
+            }
+        });
 
         // ==================== Progress Bar ====================
         progressBar.addEventListener('click', (e) => {
@@ -864,6 +955,7 @@
             if (musicPlayer.duration) {
                 musicPlayer.currentTime = percent * musicPlayer.duration;
             }
+            showControls();
         });
 
         // ==================== Eventos ====================
@@ -871,12 +963,22 @@
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
         shuffleBtn.addEventListener('click', toggleShuffleMode);
-        toggleShuffleBtn.addEventListener('click', toggleShuffleMode);
+        toggleControlsBtn.addEventListener('click', toggleControls);
+        playlistBtn.addEventListener('click', togglePlaylist);
         fullscreenBtn.addEventListener('click', toggleFullscreen);
-        shareBtn.addEventListener('click', shareApp);
 
-        // Teclado para TV (controle remoto)
+        // Mostrar controles ao mover o mouse
+        document.addEventListener('mousemove', () => {
+            if (!controlsVisible) {
+                showControls();
+            } else {
+                resetControlsTimer();
+            }
+        });
+
+        // Teclado para TV
         document.addEventListener('keydown', (e) => {
+            showControls();
             switch(e.key) {
                 case ' ':
                 case 'Space':
@@ -890,8 +992,7 @@
                     nextTrack();
                     break;
                 case 'ArrowUp':
-                case 'ArrowDown':
-                    // Navegação na playlist
+                    toggleControls();
                     break;
                 case 'f':
                 case 'F':
@@ -901,6 +1002,10 @@
                 case 'S':
                     toggleShuffleMode();
                     break;
+                case 'p':
+                case 'P':
+                    togglePlaylist();
+                    break;
             }
         });
 
@@ -909,21 +1014,23 @@
             nextTrack();
         };
 
+        musicPlayer.onerror = () => {
+            showMessage('⚠️ Erro ao carregar música, pulando...', 1500);
+            setTimeout(() => nextTrack(), 1500);
+        };
+
         // ==================== Inicialização ====================
         function init() {
-            // Carregar primeira música
             loadTrack(0);
-            
-            // Iniciar rotação de vídeos
             alternarVideoExtra();
             extraVideoInterval = setInterval(alternarVideoExtra, 15000);
             
-            // Botão flutuante inicial
-            floatingAdBtn.onclick = () => {
-                window.open('https://www.aluguecopos.com.br/', '_blank');
-            };
+            setTimeout(() => {
+                playMusic();
+            }, 500);
             
-            showMessage('✅ MUTV Player pronto! Use as setas do controle', 3000);
+            resetControlsTimer();
+            showMessage('✅ MUTV Player | Setas do teclado', 3000);
         }
 
         init();
