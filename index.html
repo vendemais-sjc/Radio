@@ -27,7 +27,6 @@
             background: #000;
         }
 
-        /* VÍDEO DE FUNDO - YOUTUBE */
         .video-fullscreen {
             position: absolute;
             top: 0;
@@ -44,7 +43,6 @@
             object-fit: cover;
         }
 
-        /* OVERLAY DE SAUDAÇÃO */
         .welcome-overlay {
             position: absolute;
             top: 0;
@@ -144,7 +142,7 @@
             font-size: 0.9rem;
         }
 
-        /* ==================== CARD COM FOTO POR TRÁS DO BALÃO ==================== */
+        /* CARD COM FOTO POR TRÁS DO BALÃO */
         .specialty-card-overlay {
             position: absolute;
             right: 40px;
@@ -160,7 +158,6 @@
             opacity: 1;
         }
 
-        /* Container da foto (por trás do balão) */
         .specialty-image-behind {
             position: absolute;
             top: -30px;
@@ -172,6 +169,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: transparent;
+            border-radius: 50%;
         }
 
         .specialty-image-behind img {
@@ -181,20 +180,30 @@
             filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
         }
 
-        /* BALÃO (na frente da foto) */
+        .specialty-image-behind .fallback-icon {
+            font-size: 80px;
+            color: #4ecdc4;
+            background: rgba(0,0,0,0.5);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .specialty-bubble-front {
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(24px);
             border-radius: 32px;
             padding: 60px 24px 28px 24px;
             text-align: center;
-            border: 1px solid rgba(44,125,160,0.5);
+            border: 1px solid rgba(78,205,196,0.5);
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             position: relative;
             z-index: 2;
         }
 
-        /* ESTILOS DAS LETRAS - MUITO NÍTIDAS */
         .specialty-name {
             font-size: 1.5rem;
             font-weight: 700;
@@ -202,7 +211,6 @@
             margin-bottom: 8px;
             letter-spacing: 1px;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         .specialty-desc {
@@ -211,7 +219,6 @@
             letter-spacing: 1px;
             margin-bottom: 16px;
             font-weight: 500;
-            text-shadow: 0 0 5px rgba(78,205,196,0.3);
         }
 
         .specialty-features {
@@ -237,7 +244,6 @@
             font-size: 0.65rem;
             color: rgba(255,255,255,0.85);
             font-weight: 500;
-            letter-spacing: 0.5px;
         }
 
         .specialty-badge {
@@ -253,7 +259,6 @@
             border: 1px solid rgba(78,205,196,0.3);
         }
 
-        /* Timer do próximo ciclo */
         .next-cycle-timer {
             position: absolute;
             bottom: 12%;
@@ -271,7 +276,6 @@
         .next-cycle-timer span {
             color: rgba(255,255,255,0.8);
             font-size: 0.7rem;
-            letter-spacing: 1px;
         }
 
         .next-cycle-timer .timer-value {
@@ -295,11 +299,6 @@
             font-weight: 600;
         }
 
-        .cycle-indicator i {
-            margin-right: 5px;
-        }
-
-        /* LETREIRO SUPERIOR */
         .ticker-moderno {
             position: absolute;
             top: 0;
@@ -336,7 +335,6 @@
             color: #fff;
         }
 
-        /* PLAYER DE MÚSICA */
         .music-player {
             position: absolute;
             bottom: 0;
@@ -441,10 +439,6 @@
             z-index: 25;
         }
 
-        .toggle-controls:hover {
-            background: #4ecdc4;
-        }
-
         .fullscreen-btn {
             position: absolute;
             top: 70px;
@@ -459,10 +453,6 @@
             z-index: 25;
         }
 
-        .fullscreen-btn:hover {
-            background: #4ecdc4;
-        }
-
         .playlist-btn {
             position: absolute;
             bottom: 15px;
@@ -475,10 +465,6 @@
             border-radius: 50%;
             cursor: pointer;
             z-index: 25;
-        }
-
-        .playlist-btn:hover {
-            background: #4ecdc4;
         }
 
         .notification {
@@ -531,8 +517,6 @@
             margin-bottom: 10px;
             text-align: center;
             font-weight: bold;
-            padding-bottom: 6px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .playlist-item {
@@ -544,7 +528,6 @@
             border-radius: 10px;
             margin-bottom: 6px;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .playlist-item:hover, .playlist-item.active {
@@ -597,42 +580,30 @@
             .specialty-name {
                 font-size: 1.2rem;
             }
-            .welcome-message h1 {
-                font-size: 1.2rem;
-            }
-            .logo-text {
-                font-size: 1.3rem;
-            }
         }
     </style>
 </head>
 <body>
     <div class="tv-container">
-        <!-- VÍDEO DE FUNDO - YOUTUBE -->
         <div class="video-fullscreen">
-            <iframe id="youtubeFrame" 
-                    src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
-                    frameborder="0" 
+            <iframe src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    referrerpolicy="strict-origin-when-cross-origin" 
                     allowfullscreen>
             </iframe>
         </div>
 
-        <!-- OVERLAY DE SAUDAÇÃO -->
         <div class="welcome-overlay" id="welcomeOverlay">
             <div class="logo-container">
-                <img src="ver.png" alt="Clínica Versalis" class="logo-img" id="logoImg" onerror="this.style.display='none'">
+                <img src="ver.png" alt="Clínica Versalis" class="logo-img" id="logoImg" 
+                     onerror="this.style.display='none'; this.parentElement.innerHTML+='<div class=\'logo-icon\' style=\'font-size:60px; color:#4ecdc4;\'><i class=\'fas fa-heartbeat\'></i></div>'">
                 <div class="logo-text">CLÍNICA VERSALIS</div>
                 <div class="logo-sub">Cuidando da sua saúde e bem-estar</div>
             </div>
-            
             <div class="welcome-message">
                 <h1><i class="fas fa-hand-peace"></i> SEJA BEM-VINDO(A)!</h1>
                 <p><i class="fas fa-clock"></i> Em breve você será atendido(a)</p>
                 <p><i class="fas fa-heartbeat"></i> Excelência em cuidados com a saúde</p>
             </div>
-
             <div class="waiting-status">
                 <i class="fas fa-circle fa-pulse"></i>
                 <span>AGUARDE UM MOMENTO</span>
@@ -640,79 +611,51 @@
             </div>
         </div>
 
-        <!-- CARD COM FOTO POR TRÁS DO BALÃO -->
         <div class="specialty-card-overlay" id="specialtyCard">
-            <!-- FOTO - por trás do balão -->
-            <div class="specialty-image-behind">
-                <img id="specialtyImg" src="gino.png" alt="Especialidade">
+            <div class="specialty-image-behind" id="specialtyImageContainer">
+                <img id="specialtyImg" src="gino.png" alt="Especialidade"
+                     onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'fallback-icon\'><i class=\'fas fa-stethoscope\'></i></div>'">
             </div>
-            
-            <!-- BALÃO - na frente da foto -->
             <div class="specialty-bubble-front">
                 <div class="specialty-name" id="specialtyName">Ginecologia & Obstetrícia</div>
                 <div class="specialty-desc" id="specialtyDesc">Saúde integral da mulher</div>
                 <div class="specialty-features">
-                    <div class="feature">
-                        <i class="fas fa-calendar-check"></i>
-                        <span>Agende sua consulta</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-clock"></i>
-                        <span>Atendimento humanizado</span>
-                    </div>
+                    <div class="feature"><i class="fas fa-calendar-check"></i><span>Agende sua consulta</span></div>
+                    <div class="feature"><i class="fas fa-clock"></i><span>Atendimento humanizado</span></div>
                 </div>
                 <div class="specialty-badge" id="specialtyBadge">💙 Cuidado e Excelência</div>
             </div>
         </div>
 
-        <!-- Timer do próximo ciclo -->
-        <div class="next-cycle-timer" id="nextCycleTimer">
-            <span><i class="fas fa-hourglass-half"></i> Próximo ciclo de especialidades</span>
-            <span class="timer-value" id="timerValue">3:00</span>
-        </div>
+        <div class="next-cycle-timer"><span><i class="fas fa-hourglass-half"></i> Próximo ciclo</span><span class="timer-value" id="timerValue">3:00</span></div>
+        <div class="cycle-indicator"><i class="fas fa-play-circle"></i> <span id="cycleStatus">Próximo ciclo em breve</span></div>
 
-        <div class="cycle-indicator" id="cycleIndicator">
-            <i class="fas fa-play-circle"></i> <span id="cycleStatus">Próximo ciclo em breve</span>
-        </div>
-
-        <!-- LETREIRO SUPERIOR -->
         <div class="ticker-moderno">
             <div class="ticker-content">
                 <div class="ticker-text">
                     <i class="fas fa-heartbeat fa-beat"></i>
                     <span>CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE E BEM-ESTAR</span>
-                    <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
+                    <i class="fas fa-circle"></i>
                     <span>👩‍⚕️ GINECOLOGIA & OBSTETRÍCIA</span>
-                    <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
+                    <i class="fas fa-circle"></i>
                     <span>🧠 PSIQUIATRIA</span>
-                    <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
+                    <i class="fas fa-circle"></i>
                     <span>🦴 ORTOPEDIA</span>
-                    <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
+                    <i class="fas fa-circle"></i>
                     <span>✨ DERMATOLOGIA</span>
-                    <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
-                    <span>📞 AGENDAMENTOS: (12) 98846-1978</span>
-                    <i class="fas fa-heartbeat fa-beat"></i>
+                    <i class="fas fa-circle"></i>
+                    <span>📞 (12) 98846-1978</span>
                 </div>
             </div>
         </div>
 
-        <!-- RELÓGIO -->
         <div class="clock" id="clock">--:--</div>
 
-        <!-- PLAYER DE MÚSICA -->
         <div class="music-player" id="musicPlayerBar">
-            <div class="track-info">
-                <div class="track-title" id="trackTitle">🎵 Carregando...</div>
-                <div class="track-artist" id="trackArtist">Música ambiente</div>
-            </div>
+            <div class="track-info"><div class="track-title" id="trackTitle">🎵 Carregando...</div><div class="track-artist" id="trackArtist">Música ambiente</div></div>
             <div class="progress-area">
-                <div class="progress-time">
-                    <span id="currentTime">0:00</span>
-                    <span id="totalTime">0:00</span>
-                </div>
-                <div class="progress-bar-bg" id="progressBar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
+                <div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
+                <div class="progress-bar-bg" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
             </div>
             <div class="control-buttons">
                 <button class="ctrl-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
@@ -722,12 +665,10 @@
             </div>
         </div>
 
-        <!-- BOTÕES -->
         <button class="toggle-controls" id="toggleControlsBtn"><i class="fas fa-chevron-up"></i></button>
         <button class="playlist-btn" id="playlistBtn"><i class="fas fa-list-ul"></i></button>
         <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
 
-        <!-- PLAYLIST -->
         <div class="playlist-container" id="playlistContainer">
             <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST AMBIENTE</div>
             <div id="playlistItems"></div>
@@ -738,41 +679,15 @@
     <audio id="musicPlayer" preload="auto"></audio>
 
     <script>
-        // ==================== CONFIGURAÇÃO DAS ESPECIALIDADES ====================
         const especialidadesConfig = [
-            { 
-                id: 'gino', 
-                name: 'Ginecologia & Obstetrícia', 
-                desc: 'Saúde integral da mulher',
-                badge: '👩‍⚕️ Cuidado e Excelência',
-                img: 'gino.png'
-            },
-            { 
-                id: 'psic', 
-                name: 'Psiquiatria', 
-                desc: 'Saúde mental e bem-estar',
-                badge: '🧠 Cuidamos da sua mente',
-                img: 'psic.png'
-            },
-            { 
-                id: 'derm', 
-                name: 'Dermatologia', 
-                desc: 'Cuidados com sua pele',
-                badge: '✨ Beleza e Saúde',
-                img: 'derm.png'
-            },
-            { 
-                id: 'orto', 
-                name: 'Ortopedia', 
-                desc: 'Movimento e qualidade de vida',
-                badge: '🦴 Reabilitação e conforto',
-                img: 'orto.png'
-            }
+            { name: 'Ginecologia & Obstetrícia', desc: 'Saúde integral da mulher', badge: '👩‍⚕️ Cuidado e Excelência', img: 'gini.png' },
+            { name: 'Psiquiatria', desc: 'Saúde mental e bem-estar', badge: '🧠 Cuidamos da sua mente', img: 'psic.png' },
+            { name: 'Dermatologia', desc: 'Cuidados com sua pele', badge: '✨ Beleza e Saúde', img: 'derm.png' },
+            { name: 'Ortopedia', desc: 'Movimento e qualidade de vida', badge: '🦴 Reabilitação e conforto', img: 'orto.png' }
         ];
 
-        // ==================== PLAYLIST MÚSICA ====================
         const musicas = [
-         { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+          { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -977,7 +892,7 @@
             
         ];
 
-        // ==================== DOM Elements ====================
+        // DOM Elements
         const musicPlayer = document.getElementById('musicPlayer');
         const playBtn = document.getElementById('playPauseBtn');
         const prevBtn = document.getElementById('prevBtn');
@@ -1001,14 +916,13 @@
         const welcomeOverlay = document.getElementById('welcomeOverlay');
         const timerValueEl = document.getElementById('timerValue');
         const cycleStatusEl = document.getElementById('cycleStatus');
-        
         const specialtyCard = document.getElementById('specialtyCard');
         const specialtyImg = document.getElementById('specialtyImg');
         const specialtyName = document.getElementById('specialtyName');
         const specialtyDesc = document.getElementById('specialtyDesc');
         const specialtyBadge = document.getElementById('specialtyBadge');
+        const specialtyImageContainer = document.getElementById('specialtyImageContainer');
 
-        // ==================== Variáveis ====================
         let currentMusicIndex = 0;
         let isPlaying = false;
         let shuffle = false;
@@ -1017,159 +931,120 @@
         let controlsTimeout = null;
         let saudacaoVisivel = false;
         let saudacaoInterval = null;
-        
         let especialidadeAtual = 0;
         let cicloAtivo = false;
         let cicloTimer = null;
         let nextCycleSeconds = 180;
         let countdownInterval = null;
 
-        // ==================== FUNÇÕES DAS ESPECIALIDADES ====================
-        
-        function hideSpecialty() {
-            specialtyCard.classList.remove('active');
-        }
-        
+        function hideSpecialty() { specialtyCard.classList.remove('active'); }
         function showSpecialty(index) {
             const esp = especialidadesConfig[index];
             if (!esp) return;
             
-            specialtyImg.src = esp.img;
-            specialtyImg.alt = esp.name;
+            // Recria a imagem para evitar cache
+            const newImg = document.createElement('img');
+            newImg.id = 'specialtyImg';
+            newImg.src = esp.img;
+            newImg.alt = esp.name;
+            newImg.style.width = '100%';
+            newImg.style.height = '100%';
+            newImg.style.objectFit = 'contain';
+            newImg.onerror = function() {
+                this.style.display = 'none';
+                this.parentElement.innerHTML = '<div class="fallback-icon"><i class="fas fa-stethoscope"></i></div>';
+            };
+            
+            specialtyImageContainer.innerHTML = '';
+            specialtyImageContainer.appendChild(newImg);
+            
             specialtyName.textContent = esp.name;
             specialtyDesc.textContent = esp.desc;
             specialtyBadge.innerHTML = esp.badge;
-            
             specialtyCard.classList.add('active');
-        }
-        
-        function preloadImages() {
-            especialidadesConfig.forEach(esp => {
-                const img = new Image();
-                img.src = esp.img;
-            });
         }
 
         function iniciarCicloEspecialidades() {
             if (cicloAtivo) return;
-            
             cicloAtivo = true;
             especialidadeAtual = 0;
             cycleStatusEl.innerHTML = '<i class="fas fa-play-circle"></i> Apresentando especialidades';
             
-            function mostrarProximaEspecialidade() {
-                if (especialidadeAtual >= especialidadesConfig.length) {
-                    finalizarCiclo();
-                    return;
-                }
-                
+            function mostrarProxima() {
+                if (especialidadeAtual >= especialidadesConfig.length) { finalizarCiclo(); return; }
                 showSpecialty(especialidadeAtual);
-                showMessage(`🏥 ${especialidadesConfig[especialidadeAtual].name} - ${especialidadesConfig[especialidadeAtual].desc}`, 2500);
-                
                 especialidadeAtual++;
-                
-                if (especialidadeAtual < especialidadesConfig.length) {
-                    setTimeout(mostrarProximaEspecialidade, 20000);
-                } else {
-                    setTimeout(finalizarCiclo, 20000);
-                }
+                if (especialidadeAtual < especialidadesConfig.length) setTimeout(mostrarProxima, 20000);
+                else setTimeout(finalizarCiclo, 20000);
             }
-            
-            mostrarProximaEspecialidade();
+            mostrarProxima();
         }
-        
+
         function finalizarCiclo() {
             hideSpecialty();
             cicloAtivo = false;
             cycleStatusEl.innerHTML = '<i class="fas fa-hourglass-half"></i> Aguardando próximo ciclo';
-            
             nextCycleSeconds = 180;
             atualizarTimerDisplay();
-            iniciarCountdown();
-            
             if (cicloTimer) clearTimeout(cicloTimer);
-            cicloTimer = setTimeout(() => {
-                iniciarCicloEspecialidades();
-            }, 180000);
+            cicloTimer = setTimeout(() => iniciarCicloEspecialidades(), 180000);
         }
-        
+
         function iniciarCountdown() {
             if (countdownInterval) clearInterval(countdownInterval);
-            
             countdownInterval = setInterval(() => {
                 if (!cicloAtivo && nextCycleSeconds > 0) {
                     nextCycleSeconds--;
                     atualizarTimerDisplay();
-                    
-                    if (nextCycleSeconds <= 0) {
-                        clearInterval(countdownInterval);
-                    }
+                    if (nextCycleSeconds <= 0) clearInterval(countdownInterval);
                 }
             }, 1000);
         }
-        
+
         function atualizarTimerDisplay() {
             const minutos = Math.floor(nextCycleSeconds / 60);
             const segundos = nextCycleSeconds % 60;
             timerValueEl.textContent = `${minutos}:${segundos.toString().padStart(2, '0')}`;
         }
 
-        // ==================== RELÓGIO ====================
         function updateClock() {
             const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            clockEl.textContent = `${hours}:${minutes}`;
+            clockEl.textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
         }
-        updateClock();
-        setInterval(updateClock, 60000);
 
-        // ==================== SAUDAÇÃO ====================
         function mostrarSaudacao() {
             if (saudacaoVisivel) return;
             saudacaoVisivel = true;
             welcomeOverlay.classList.add('show');
-            
             setTimeout(() => {
                 welcomeOverlay.classList.remove('show');
-                setTimeout(() => {
-                    saudacaoVisivel = false;
-                }, 500);
+                setTimeout(() => { saudacaoVisivel = false; }, 500);
             }, 30000);
         }
 
         function iniciarCicloSaudacao() {
             setTimeout(() => mostrarSaudacao(), 1000);
-            saudacaoInterval = setInterval(() => {
-                mostrarSaudacao();
-            }, 180000);
+            saudacaoInterval = setInterval(() => mostrarSaudacao(), 180000);
         }
 
-        // ==================== FUNÇÕES DO PLAYER ====================
         function formatTime(sec) {
-            if (isNaN(sec) || !isFinite(sec)) return "0:00";
+            if (isNaN(sec)) return "0:00";
             const m = Math.floor(sec / 60);
             const s = Math.floor(sec % 60);
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        function showMessage(msg, duration = 2000) {
+        function showMessage(msg) {
             notificationText.innerText = msg;
             notification.classList.add('show');
-            setTimeout(() => notification.classList.remove('show'), duration);
-        }
-
-        function stopTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = null;
+            setTimeout(() => notification.classList.remove('show'), 2000);
         }
 
         function startTimer() {
-            stopTimer();
+            if (timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                if (isPlaying && musicPlayer.duration && !musicPlayer.paused) {
-                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
-                    progressFill.style.width = percent + '%';
+                if (isPlaying && musicPlayer.duration) {
+                    progressFill.style.width = (musicPlayer.currentTime / musicPlayer.duration) * 100 + '%';
                     currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
                 }
             }, 200);
@@ -1194,52 +1069,27 @@
         }
 
         function renderPlaylist() {
-            let html = '';
-            musicas.forEach((music, idx) => {
-                const isActive = (idx === currentMusicIndex);
-                html += `
-                    <div class="playlist-item ${isActive ? 'active' : ''}" data-index="${idx}">
-                        <div class="playlist-number">${(idx+1).toString().padStart(2,'0')}</div>
-                        <div class="playlist-info">
-                            <div class="playlist-name">${music.title}</div>
-                            <div class="playlist-artist">${music.artist}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            playlistItems.innerHTML = html;
-            
+            playlistItems.innerHTML = musicas.map((m, idx) => `
+                <div class="playlist-item ${idx === currentMusicIndex ? 'active' : ''}" data-index="${idx}">
+                    <div class="playlist-number">${(idx+1).toString().padStart(2,'0')}</div>
+                    <div class="playlist-info"><div class="playlist-name">${m.title}</div><div class="playlist-artist">${m.artist}</div></div>
+                </div>
+            `).join('');
             document.querySelectorAll('.playlist-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectSong(parseInt(item.dataset.index));
-                    playlistContainer.classList.remove('open');
-                });
+                item.addEventListener('click', () => { selectSong(parseInt(item.dataset.index)); playlistContainer.classList.remove('open'); });
             });
         }
 
         function loadTrack(index) {
-            if (index >= musicas.length) index = 0;
-            if (index < 0) index = musicas.length - 1;
             currentMusicIndex = index;
             const track = musicas[currentMusicIndex];
             musicPlayer.src = track.src;
             trackTitleEl.textContent = track.title;
             trackArtistEl.textContent = track.artist;
-            currentTimeEl.textContent = '0:00';
-            totalTimeEl.textContent = '0:00';
             progressFill.style.width = '0%';
+            currentTimeEl.textContent = '0:00';
             renderPlaylist();
-            
-            musicPlayer.onloadedmetadata = () => {
-                totalTimeEl.textContent = formatTime(musicPlayer.duration);
-            };
-        }
-
-        function iniciarMusicaAleatoria() {
-            const randomIndex = Math.floor(Math.random() * musicas.length);
-            currentMusicIndex = randomIndex;
-            loadTrack(currentMusicIndex);
-            if (isPlaying) playMusic();
+            musicPlayer.onloadedmetadata = () => totalTimeEl.textContent = formatTime(musicPlayer.duration);
         }
 
         async function playMusic() {
@@ -1248,94 +1098,34 @@
                 isPlaying = true;
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 startTimer();
-                renderPlaylist();
                 showControls();
-            } catch(e) {
-                setTimeout(() => playMusic(), 1000);
-            }
+            } catch(e) { setTimeout(() => playMusic(), 1000); }
         }
 
         function pauseMusic() {
             musicPlayer.pause();
             isPlaying = false;
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            stopTimer();
-            renderPlaylist();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = null;
         }
 
-        function togglePlayPause() {
-            if (isPlaying) pauseMusic();
-            else playMusic();
-            showControls();
-        }
-
-        function nextTrack() {
-            stopTimer();
-            let nextIndex = (currentMusicIndex + 1) % musicas.length;
-            if (shuffle) nextIndex = Math.floor(Math.random() * musicas.length);
-            currentMusicIndex = nextIndex;
-            loadTrack(currentMusicIndex);
-            if (isPlaying) playMusic();
-            showMessage(`⏭️ ${musicas[currentMusicIndex].title}`);
-            showControls();
-        }
-
-        function prevTrack() {
-            stopTimer();
-            let prevIndex = (currentMusicIndex - 1 + musicas.length) % musicas.length;
-            if (shuffle) prevIndex = Math.floor(Math.random() * musicas.length);
-            currentMusicIndex = prevIndex;
-            loadTrack(currentMusicIndex);
-            if (isPlaying) playMusic();
-            showMessage(`⏮️ ${musicas[currentMusicIndex].title}`);
-            showControls();
-        }
-
-        function selectSong(index) {
-            stopTimer();
-            currentMusicIndex = index;
-            loadTrack(currentMusicIndex);
-            if (isPlaying) playMusic();
-            showMessage(`🎵 ${musicas[currentMusicIndex].title}`);
-            showControls();
-        }
-
-        function toggleShuffleMode() {
-            shuffle = !shuffle;
-            showMessage(shuffle ? '🔀 Aleatório ATIVADO' : '➡️ Sequencial');
-            shuffleBtn.style.background = shuffle ? '#4ecdc4' : '';
-            showControls();
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-            showControls();
-        }
-
-        function togglePlaylist() {
-            playlistContainer.classList.toggle('open');
-            showControls();
-        }
-
+        function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); showControls(); }
+        function nextTrack() { loadTrack((currentMusicIndex + 1) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏭️ ${musicas[currentMusicIndex].title}`); showControls(); }
+        function prevTrack() { loadTrack((currentMusicIndex - 1 + musicas.length) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏮️ ${musicas[currentMusicIndex].title}`); showControls(); }
+        function selectSong(index) { loadTrack(index); if (isPlaying) playMusic(); showMessage(`🎵 ${musicas[currentMusicIndex].title}`); showControls(); }
+        function toggleShuffleMode() { shuffle = !shuffle; showMessage(shuffle ? '🔀 Aleatório ATIVADO' : '➡️ Sequencial'); shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; showControls(); }
+        function toggleFullscreen() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); showControls(); }
+        function togglePlaylist() { playlistContainer.classList.toggle('open'); showControls(); }
         function toggleControls() {
             if (controlsVisible) {
                 musicPlayerBar.classList.add('hide');
                 controlsVisible = false;
                 toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
                 if (controlsTimeout) clearTimeout(controlsTimeout);
-            } else {
-                musicPlayerBar.classList.remove('hide');
-                controlsVisible = true;
-                toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
-                resetControlsTimer();
-            }
+            } else { showControls(); }
         }
 
-        // ==================== EVENTOS ====================
         playBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
@@ -1343,64 +1133,26 @@
         toggleControlsBtn.addEventListener('click', toggleControls);
         playlistBtn.addEventListener('click', togglePlaylist);
         fullscreenBtn.addEventListener('click', toggleFullscreen);
-
         progressBar.addEventListener('click', (e) => {
-            const rect = progressBar.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            if (musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration;
+            if (musicPlayer.duration) musicPlayer.currentTime = (e.clientX - progressBar.getBoundingClientRect().left) / progressBar.clientWidth * musicPlayer.duration;
             showControls();
         });
-
-        document.addEventListener('mousemove', () => {
-            if (!controlsVisible) showControls();
-            else resetControlsTimer();
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!playlistContainer.contains(e.target) && e.target !== playlistBtn) {
-                playlistContainer.classList.remove('open');
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            showControls();
-            switch(e.key) {
-                case ' ': case 'Space': e.preventDefault(); togglePlayPause(); break;
-                case 'ArrowLeft': prevTrack(); break;
-                case 'ArrowRight': nextTrack(); break;
-                case 'ArrowUp': toggleControls(); break;
-                case 'f': case 'F': toggleFullscreen(); break;
-                case 's': case 'S': toggleShuffleMode(); break;
-                case 'p': case 'P': togglePlaylist(); break;
-            }
-        });
-
+        document.addEventListener('mousemove', () => { if (!controlsVisible) showControls(); else resetControlsTimer(); });
+        document.addEventListener('click', (e) => { if (!playlistContainer.contains(e.target) && e.target !== playlistBtn) playlistContainer.classList.remove('open'); });
         musicPlayer.onended = () => nextTrack();
-        musicPlayer.onerror = () => setTimeout(() => nextTrack(), 1000);
 
-        // ==================== INICIALIZAÇÃO ====================
-        function init() {
-            preloadImages();
-            hideSpecialty();
-            
-            iniciarMusicaAleatoria();
-            iniciarCicloSaudacao();
-            
-            setTimeout(() => {
-                iniciarCicloEspecialidades();
-            }, 5000);
-            
-            atualizarTimerDisplay();
-            iniciarCountdown();
-            
-            setTimeout(() => playMusic(), 500);
-            setTimeout(() => document.documentElement.requestFullscreen(), 1000);
-            
-            resetControlsTimer();
-            showMessage('✅ Clínica Versalis | Especialidades médicas | Seja bem-vindo!', 4000);
-        }
-
-        init();
+        updateClock();
+        setInterval(updateClock, 60000);
+        
+        hideSpecialty();
+        loadTrack(Math.floor(Math.random() * musicas.length));
+        iniciarCicloSaudacao();
+        setTimeout(() => playMusic(), 500);
+        setTimeout(() => iniciarCicloEspecialidades(), 5000);
+        iniciarCountdown();
+        setTimeout(() => document.documentElement.requestFullscreen(), 1000);
+        resetControlsTimer();
+        showMessage('✅ Clínica Versalis | Seja bem-vindo!');
     </script>
 </body>
 </html>
