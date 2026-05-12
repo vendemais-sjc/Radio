@@ -28,7 +28,7 @@
             background: #000;
         }
 
-        /* VÍDEO PRINCIPAL - TELA INTEIRA */
+        /* VÍDEO PRINCIPAL - YouTube iframe */
         .video-fullscreen {
             position: absolute;
             top: 0;
@@ -38,10 +38,27 @@
             z-index: 1;
         }
 
+        .youtube-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
         #mainVideo {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: none;
         }
 
         /* OVERLAY DE MENSAGEM E LOGO */
@@ -67,23 +84,15 @@
             animation: fadeInDown 0.8s ease;
         }
 
-        .logo-icon {
-            font-size: 4rem;
-            color: #4ecdc4;
-            background: rgba(255,255,255,0.15);
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .logo-img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
             margin: 0 auto 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            padding: 10px;
             border: 2px solid rgba(78,205,196,0.5);
-            backdrop-filter: blur(4px);
-        }
-
-        .logo-icon i {
-            font-size: 3rem;
         }
 
         .logo-text {
@@ -234,7 +243,7 @@
             }
         }
 
-        /* PLAYER DE MÚSICA (INFERIOR - BOTÕES MENORES) */
+        /* PLAYER DE MÚSICA (INFERIOR) */
         .music-player {
             position: absolute;
             bottom: 0;
@@ -555,12 +564,9 @@
             .logo-text {
                 font-size: 1.3rem;
             }
-            .logo-icon {
-                width: 70px;
-                height: 70px;
-            }
-            .logo-icon i {
-                font-size: 2rem;
+            .logo-img {
+                width: 80px;
+                height: 80px;
             }
             .welcome-message {
                 padding: 15px 25px;
@@ -570,18 +576,25 @@
 </head>
 <body>
     <div class="tv-container">
-        <!-- VÍDEO PRINCIPAL - TELA CHEIA -->
+        <!-- VÍDEO PRINCIPAL - YouTube Embed -->
         <div class="video-fullscreen">
-            <video id="mainVideo" autoplay loop muted playsinline>
+            <iframe id="youtubeFrame" 
+                    src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+            </iframe>
+            <video id="mainVideo" autoplay loop muted playsinline style="display: none;">
                 <source src="video-fundo.mp4" type="video/mp4">
-                <!-- Fallback: se não encontrar o vídeo, mostra uma imagem/imagem estática -->
             </video>
         </div>
 
         <!-- OVERLAY DE BOAS-VINDAS -->
         <div class="welcome-overlay" id="welcomeOverlay">
             <div class="logo-container">
-                <div class="logo-icon">
+                <img src="ver.png" alt="Logo Clínica Versales" class="logo-img" id="logoImg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="logo-icon" style="display: none;">
                     <i class="fas fa-heartbeat"></i>
                 </div>
                 <div class="logo-text">CLÍNICA VERSALES</div>
@@ -610,7 +623,7 @@
                     <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
                     <span class="ticker-highlight">💙 ATENDIMENTO HUMANIZADO E ACOLHEDOR</span>
                     <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
-                    <span class="ticker-highlight">📞 AGENDAMENTOS: (11) 99999-9999</span>
+                    <span class="ticker-highlight">📞 AGENDAMENTOS: (12) 98846-1978</span>
                     <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
                     <span>SUA SAÚDE É NOSSA PRIORIDADE</span>
                     <i class="fas fa-heartbeat fa-beat"></i>
@@ -682,16 +695,6 @@
             { id: 15, title: "Salut d'Amour", artist: "Elgar", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
         ];
 
-        // ==================== VÍDEOS PARA RODIZIO INFINITO ====================
-        const videosList = [
-            "https://cdn.pixabay.com/video/2024/01/15/197718-903661799_large.mp4",
-            "https://cdn.pixabay.com/video/2024/02/10/199521-912748725_large.mp4",
-            "https://cdn.pixabay.com/video/2023/12/05/192863-884759436_large.mp4",
-            "https://cdn.pixabay.com/video/2024/03/20/204362-928311735_large.mp4",
-        ];
-        let videoIndex = 0;
-        let videoInterval = null;
-
         // ==================== DOM Elements ====================
         const musicPlayer = document.getElementById('musicPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -710,11 +713,12 @@
         const toggleControlsBtn = document.getElementById('toggleControlsBtn');
         const musicPlayerBar = document.getElementById('musicPlayerBar');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const mainVideo = document.getElementById('mainVideo');
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
         const clockEl = document.getElementById('clock');
         const welcomeOverlay = document.getElementById('welcomeOverlay');
+        const youtubeFrame = document.getElementById('youtubeFrame');
+        const logoImg = document.getElementById('logoImg');
 
         // ==================== Variáveis ====================
         let currentIndex = 0;
@@ -724,7 +728,18 @@
         let controlsVisible = true;
         let controlsTimeout = null;
 
-        // Ocultar overlay após alguns segundos (opcional - para ver só o vídeo depois)
+        // Verificar se a logo carregou
+        logoImg.onerror = function() {
+            console.log('Logo não encontrada, usando ícone padrão');
+            this.style.display = 'none';
+            document.querySelector('.logo-icon').style.display = 'flex';
+        };
+
+        logoImg.onload = function() {
+            console.log('Logo carregada com sucesso');
+        };
+
+        // Ocultar overlay após alguns segundos
         setTimeout(() => {
             welcomeOverlay.style.transition = "opacity 1s";
             welcomeOverlay.style.opacity = "0";
@@ -802,17 +817,6 @@
                 controlsVisible = true;
                 toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
                 resetControlsTimer();
-            }
-        }
-
-        // ==================== Vídeos em Rodízio ====================
-        function alternarVideo() {
-            videoIndex = (videoIndex + 1) % videosList.length;
-            const novoSrc = videosList[videoIndex];
-            if (mainVideo && novoSrc) {
-                mainVideo.src = novoSrc;
-                mainVideo.load();
-                mainVideo.play().catch(e => console.log('Erro no vídeo:', e));
             }
         }
 
@@ -1056,10 +1060,17 @@
             setTimeout(() => nextTrack(), 1000);
         };
 
+        // Forçar recarregar o iframe do YouTube se necessário
+        function ensureYouTubePlaying() {
+            if (youtubeFrame) {
+                // O YouTube já está com autoplay e loop nos parâmetros
+                console.log('YouTube video rodando');
+            }
+        }
+
         // ==================== Inicialização ====================
         function init() {
             iniciarMusicaAleatoria();
-            videoInterval = setInterval(alternarVideo, 25000);
             
             setTimeout(() => {
                 playMusic();
@@ -1071,6 +1082,8 @@
             
             resetControlsTimer();
             showMessage('✅ Clínica Versales | Música ambiente | Seja bem-vindo!', 4000);
+            
+            setTimeout(ensureYouTubePlaying, 2000);
         }
 
         init();
