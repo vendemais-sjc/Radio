@@ -41,6 +41,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            object-fit: cover;
         }
 
         /* OVERLAY DE SAUDAÇÃO PROFISSIONAL */
@@ -143,58 +144,117 @@
             font-size: 0.9rem;
         }
 
-        /* CARD DE ESPECIALIDADES - PROFISSIONAL */
-        .specialties-card {
+        /* ==================== CARDS DE ESPECIALIDADES - DESIGN PREMIUM ==================== */
+        .specialties-grid {
             position: absolute;
-            bottom: 20%;
-            right: 20px;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(15px);
-            border-radius: 16px;
-            padding: 20px;
-            min-width: 260px;
+            bottom: 15%;
+            right: 2%;
+            left: 2%;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
             z-index: 12;
-            border-left: 4px solid #2c7da0;
-            border-right: 4px solid #2c7da0;
-            animation: slideInRight 0.5s ease;
-            transform: translateX(0);
-            transition: transform 0.5s ease;
+            flex-wrap: wrap;
+            pointer-events: none;
+        }
+
+        .specialty-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 20px 25px;
+            min-width: 200px;
             text-align: center;
+            border: 1px solid rgba(44,125,160,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+            pointer-events: auto;
         }
 
-        .specialties-card.hide {
-            transform: translateX(120%);
+        .specialty-card.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            border-color: rgba(44,125,160,0.8);
+            box-shadow: 0 25px 50px rgba(44,125,160,0.2);
         }
 
-        .specialty-icon {
-            font-size: 2rem;
-            color: #2c7da0;
-            margin-bottom: 10px;
+        .specialty-card.hide {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
         }
 
-        .specialty-title {
-            font-size: 1rem;
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 2px;
-            margin-bottom: 8px;
+        .specialty-image {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .specialty-card.active .specialty-image {
+            transform: scale(1.05);
+        }
+
+        .specialty-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .specialty-name {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: #fff;
             margin-bottom: 8px;
+            letter-spacing: 1px;
         }
 
         .specialty-desc {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #2c7da0;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
 
-        .specialty-timer {
-            margin-top: 12px;
+        .specialty-badge {
+            display: inline-block;
+            background: rgba(44,125,160,0.3);
+            border-radius: 20px;
+            padding: 4px 12px;
             font-size: 0.7rem;
-            color: rgba(255,255,255,0.5);
+            color: #2c7da0;
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        /* Timer do próximo ciclo */
+        .next-cycle-timer {
+            position: absolute;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 30px;
+            z-index: 13;
+            text-align: center;
+            border: 1px solid rgba(44,125,160,0.4);
+        }
+
+        .next-cycle-timer span {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        .next-cycle-timer .timer-value {
+            color: #2c7da0;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-left: 8px;
         }
 
         /* LETREIRO SUPERIOR */
@@ -479,22 +539,31 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
         @media (max-width: 768px) {
-            .specialties-card {
-                bottom: 15%;
-                right: 10px;
-                min-width: 200px;
-                padding: 15px;
+            .specialty-card {
+                min-width: 160px;
+                padding: 12px 18px;
             }
-            .specialty-name { font-size: 1rem; }
-            .welcome-message { padding: 15px 25px; }
-            .welcome-message h1 { font-size: 1.2rem; }
-            .logo-text { font-size: 1.3rem; }
+            .specialty-image {
+                width: 70px;
+                height: 70px;
+            }
+            .specialty-name {
+                font-size: 1rem;
+            }
+            .specialty-desc {
+                font-size: 0.65rem;
+            }
+            .specialties-grid {
+                gap: 15px;
+                bottom: 18%;
+            }
+            .welcome-message h1 {
+                font-size: 1.2rem;
+            }
+            .logo-text {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -522,7 +591,7 @@
             <div class="welcome-message">
                 <h1><i class="fas fa-hand-peace"></i> SEJA BEM-VINDO(A)!</h1>
                 <p><i class="fas fa-clock"></i> Em breve você será atendido(a)</p>
-                <p><i class="fas fa-heartbeat"></i>Excelência em cuidados com a saúde</p>
+                <p><i class="fas fa-heartbeat"></i> Excelência em cuidados com a saúde</p>
             </div>
 
             <div class="waiting-status">
@@ -532,15 +601,53 @@
             </div>
         </div>
 
-        <!-- CARD DE ESPECIALIDADES - PROFISSIONAL -->
-        <div class="specialties-card" id="specialtiesCard">
-            <div class="specialty-icon" id="specialtyIcon">
-                <i class="fas fa-stethoscope"></i>
+        <!-- CARDS DE ESPECIALIDADES COM IMAGENS PNG -->
+        <div class="specialties-grid" id="specialtiesGrid">
+            <!-- Ginecologia e Obstetrícia -->
+            <div class="specialty-card" data-specialty="gino" id="cardGino">
+                <div class="specialty-image">
+                    <img src="gino.png" alt="Ginecologia e Obstetrícia">
+                </div>
+                <div class="specialty-name">Ginecologia<br>& Obstetrícia</div>
+                <div class="specialty-desc">Saúde integral da mulher</div>
+                <div class="specialty-badge">Consulte já</div>
             </div>
-            <div class="specialty-title">ESPECIALIDADE</div>
-            <div class="specialty-name" id="specialtyName">Dermatologia</div>
-            <div class="specialty-desc" id="specialtyDesc">Cuidados com a pele e estética</div>
-            <div class="specialty-timer" id="specialtyTimer">Próxima em 4:00</div>
+
+            <!-- Psiquiatria -->
+            <div class="specialty-card" data-specialty="psic" id="cardPsic">
+                <div class="specialty-image">
+                    <img src="psic.png" alt="Psiquiatria">
+                </div>
+                <div class="specialty-name">Psiquiatria</div>
+                <div class="specialty-desc">Saúde mental e bem-estar</div>
+                <div class="specialty-badge">Consulte já</div>
+            </div>
+
+            <!-- Dermatologia -->
+            <div class="specialty-card" data-specialty="derm" id="cardDerm">
+                <div class="specialty-image">
+                    <img src="derm.png" alt="Dermatologia">
+                </div>
+                <div class="specialty-name">Dermatologia</div>
+                <div class="specialty-desc">Cuidados com sua pele</div>
+                <div class="specialty-badge">Consulte já</div>
+            </div>
+
+            <!-- Ortopedia -->
+            <div class="specialty-card" data-specialty="orto" id="cardOrto">
+                <div class="specialty-image">
+                    <img src="orto.png" alt="Ortopedia">
+                </div>
+                <div class="specialty-name">Ortopedia</div>
+                <div class="specialty-desc">Movimento e qualidade de vida</div>
+                <div class="specialty-badge">Consulte já</div>
+            </div>
+        </div>
+
+        <!-- Timer do próximo ciclo -->
+        <div class="next-cycle-timer" id="nextCycleTimer">
+            <span><i class="fas fa-hourglass-half"></i> Próximo ciclo de especialidades</span>
+            <span class="timer-value" id="timerValue">3:00</span>
         </div>
 
         <!-- LETREIRO SUPERIOR -->
@@ -550,13 +657,13 @@
                     <i class="fas fa-heartbeat fa-beat"></i>
                     <span>CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE E BEM-ESTAR</span>
                     <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
-                    <span>🏥 DERMATOLOGIA</span>
+                    <span>👩‍⚕️ GINECOLOGIA & OBSTETRÍCIA</span>
                     <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
                     <span>🧠 PSIQUIATRIA</span>
                     <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
                     <span>🦴 ORTOPEDIA</span>
                     <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
-                    <span>⚕️ GINECOLOGIA & OBSTETRÍCIA</span>
+                    <span>✨ DERMATOLOGIA</span>
                     <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
                     <span>📞 AGENDAMENTOS: (12) 98846-1978</span>
                     <i class="fas fa-heartbeat fa-beat"></i>
@@ -606,244 +713,29 @@
     <audio id="musicPlayer" preload="auto"></audio>
 
     <script>
-        // ==================== ESPECIALIDADES MÉDICAS ====================
-        const especialidades = [
-            { 
-                name: "Dermatologia", 
-                icon: "fa-skin", 
-                desc: "Cuidados com a pele, cabelos e unhas",
-                fullIcon: "fa-hand-sparkles"
-            },
-            { 
-                name: "Psiquiatria", 
-                icon: "fa-brain", 
-                desc: "Saúde mental e bem-estar emocional",
-                fullIcon: "fa-brain"
-            },
-            { 
-                name: "Ortopedia", 
-                icon: "fa-bone", 
-                desc: "Tratamento do sistema locomotor",
-                fullIcon: "fa-bone"
-            },
-            { 
-                name: "Ginecologia", 
-                icon: "fa-female", 
-                desc: "Saúde da mulher",
-                fullIcon: "fa-female"
-            },
-            { 
-                name: "Obstetrícia", 
-                icon: "fa-baby", 
-                desc: "Acompanhamento gestacional e parto",
-                fullIcon: "fa-baby-carriage"
-            }
+        // ==================== CONFIGURAÇÃO DAS ESPECIALIDADES ====================
+        const especialidadesConfig = [
+            { id: 'gino', name: 'Ginecologia & Obstetrícia', desc: 'Saúde integral da mulher', icon: 'gino.png' },
+            { id: 'psic', name: 'Psiquiatria', desc: 'Saúde mental e bem-estar', icon: 'psic.png' },
+            { id: 'derm', name: 'Dermatologia', desc: 'Cuidados com sua pele', icon: 'derm.png' },
+            { id: 'orto', name: 'Ortopedia', desc: 'Movimento e qualidade de vida', icon: 'orto.png' }
         ];
+
+        // Mapeamento dos elementos dos cards
+        const cards = {
+            gino: document.getElementById('cardGino'),
+            psic: document.getElementById('cardPsic'),
+            derm: document.getElementById('cardDerm'),
+            orto: document.getElementById('cardOrto')
+        };
 
         // ==================== PLAYLIST MÚSICA AMBIENTE ====================
         const musicas = [
-            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
-            { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
-            { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
-            { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
-            { id: 5, title: "I Love You", artist: "Jim Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", periodo: "noite" },
-            { id: 6, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", periodo: "noite" },
-            { id: 7, title: "Simone Migalhas", artist: "Simone", src: "Simone-Migalhas-mutv.m4a", periodo: "noite" },
-            { id: 8, title: "What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", periodo: "todos" },
-            { id: 9, title: "More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", periodo: "todos" },
-            { id: 10, title: "Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", periodo: "manha" },
-            { id: 11, title: "Jura Secreta Revelação", artist: "Fagner & Zé Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", periodo: "noite" },
-            { id: 12, title: "Noite do Prazer", artist: "Cláudio Zolli", src: "Brylho_Noite_do_Prazer_muzzik.m4a", periodo: "noite" },
-            { id: 13, title: "Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", periodo: "tarde" },
-            { id: 14, title: "Codinome Beija-Flor", artist: "Cazuza", src: "Cazuza_Codinome_Beija_Flor.m4a", periodo: "todos" },
-            { id: 15, title: "Só os Loucos Sabem", artist: "Charlie Brown Jr.", src: "Charlie_Brown_Jr_S_os_loucos_sabem_muzzik.m4a", periodo: "manha" },
-            { id: 16, title: "Charme do Mundo", artist: "Marina Lima", src: "Charme_do_Charme_do_Mundo_muzzik.m4a", periodo: "manha" },
-            { id: 17, title: "Cheia de Charme", artist: "Guilherme Arantes", src: "Cheia_de_Cheia_de_Charme_muzzik.m4a", periodo: "manha" },
-            { id: 18, title: "Sailing", artist: "Christopher Cross", src: "Christopher_Cross_Sailing_muzzik.m4a", periodo: "noite" },
-            { id: 19, title: "Poeira No Vento", artist: "Chrystian & Ralf", src: "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", periodo: "noite" },
-            { id: 20, title: "Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", periodo: "noite" },
-             { id: 21, title: "Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", periodo: "tarde" },
-            { id: 22, title: "Corre Pro Meu Mar", artist: "Maneva", src: "Corre_Pro_Corre_Pro_Meu_Mar_Radio_Edit__muzzik.m4a", periodo: "manha" },
-            { id: 23, title: "Time After Time", artist: "Cyndi Lauper", src: "Cyndi_Lauper_Time_after_time_muzzik.m4a", periodo: "noite" },
-            { id: 24, title: "Você Sempre Será", artist: "DINO & Banda Malta", src: "DINO_Feat_Banda_Malta_Voc_Sempre_Ser_DVD_Barzim_de_Rock.m4a", periodo: "tarde" },
-            { id: 25, title: "Casinha Branca", artist: "DINO & Renato Vianna", src: "DINO_feat_Renato_Vianna_Casinha_Branca_DVD_Barzim_de_Rock_muzzik (1).m4a", periodo: "manha" },
-            { id: 26, title: "Send It Back", artist: "Don West", src: "DON_WEST_Send_It_Back_muzzik.m4a", periodo: "manha" },
-            { id: 27, title: "Thank You", artist: "Dido", src: "Dido_Thank_You_muzzik.m4a", periodo: "todos" },
-            { id: 28, title: "Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", periodo: "noite" },
-            { id: 29, title: "Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", periodo: "todos" },
-            { id: 30, title: "Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", periodo: "noite" },
-            { id: 31, title: "La Belle de_our", artist: "Paulinho mosca", src: "La_Belle_La_Belle_de_Jour_muzzik.m4a", periodo: "noite" },
-            { id: 32, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" },
-            { id: 33, title: "Sailing", artist: "Emmerson Nogueira", src: "Emmerson_Nogueira_Sailing_13.m4a", periodo: "todos" },
-            { id: 34, title: "Encostar na Tua", artist: "Anavitória", src: "Encostar_na_Encostar_na_Tua.m4a", periodo: "todos" },
-            { id: 35, title: "Somos Quem Podemos Ser", artist: "Engenheiros Do Hawaii", src: "Engenheiros_Do_Hawaii_Somos_Quem_Podemos_Ser_muzzik.m4a", periodo: "manha" },
-            { id: 36, title: "Entre o Céu e o Mar", artist: "Elba Ramalho", src: "Entre_O_Entre o Ceu e o Mar.m4a", periodo: "noite" },
-            { id: 37, title: "Epitáfio", artist: "Titãs", src: "Epit_fio_Epit_fio_muzzik.m4a", periodo: "todos" },
-            { id: 38, title: "Espumas ao Vento", artist: "Fagner", src: "Espumas_ao_Espumas_ao_Vento.m4a", periodo: "noite" },
-            { id: 39, title: "Esquece e Vem", artist: "Nico Rezende", src: "Esquece_e_Esquece_e_vem_Nico_5.m4a", periodo: "noite" },
-            { id: 40, title: "Só pro seu prazer", artist: "Heróis da Resistência", src: "so proseu pazer.m4a", periodo: "todos" },
-            { id: 41, title: "Skyline Pigeon", artist: "Elton John", src: "Elton_John_Skyline_Pigeon_muzzik.m4a", periodo: "noite" },
-            { id: 42, title: "Clube da Esquina", artist: "Flávio Venturini", src: "Fl_vio_Venturini_Clube_da_esquina.m4a", periodo: "tarde" },
-            { id: 43, title: "Noites com Sol", artist: "Flávio Venturini & Vanessa da Mata", src: "Flavio venturininoitescom sol.m4a", periodo: "noite" },
-            { id: 44, title: "I Like Chopin", artist: "Gazebo", src: "Gazebo_I_Like_Chopin_muzzik.m4a", periodo: "todos" },
-            { id: 45, title: "I Was Born To Love You", artist: "Freddie Mercury", src: "Freddie_Mercury_I_Was_Born_To_Love_You_muzzik.m4a", periodo: "manha" },
-            { id: 46, title: "Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", periodo: "tarde" },
-            { id: 47, title: "Careless Whisper", artist: "George Michael", src: "George_Michael_Careless_Whisper_muzzik.m4a", periodo: "noite" },
-            { id: 48, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "tarde" },
-            { id: 49, title: "Dona Da Minha Cabeça", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dona_da_Minha_Cabe_a_muzzik.m4a", periodo: "manha" },
-            { id: 50, title: "A Noite", artist: "Gusttavo Lima", src: "Gusttavo_Lima_A_Noite_67k.m4a", periodo: "noite" },
-            { id: 51, title: "I Don't Want To", artist: "Toni Braxton", src: "I_Don_t_I_Don_t_Want_To_muzzik.m4a", periodo: "noite" },
-            { id: 52, title: "Ai, Ai, Ai, Ai", artist: "Ivan Lins", src: "Ivan_Lins_Ai_Ai_Ai_Ai_Ai.m4a", periodo: "tarde" },
-            { id: 53, title: "Amigo do Sol Amigo da Lua", artist: "Benito Di Paula", src: "Benito_Di_Paula_e_Rodrigo_Vellozo_Amigo_do_Sol_Amigo_da_Lua_muzzik.m4a", periodo: "tarde" },
-            { id: 54, title: "Ah Como Eu Amei", artist: "Ivete Sangalo", src: "Ivete Sangalo - Ah_ Como Eu Amei (Benito di Paula)(MP3_160K).mp3", periodo: "noite" },
-            { id: 55, title: "I'm Yours", artist: "Jason Mraz", src: "Jason_Mraz_I_m_Yours_muzzik.m4a", periodo: "tarde" },
-            { id: 56, title: "Million Miles", artist: "Jason Mraz", src: "Jason_Mraz_Million_Miles_muzzik.m4a", periodo: "manha" },
-            { id: 57, title: "Papel Machê", artist: "João Bosco", src: "Jo_o_Bosco_Papel_Machê.m4a", periodo: "noite" },
-            { id: 58, title: "P.D.A.", artist: "John Legend", src: "John_Legend_P_D_A_muzzik.m4a", periodo: "todos" },
-            { id: 59, title: "One", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_One_muzzik.m4a", periodo: "todos" },
-            { id: 60, title: "Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", periodo: "tarde" },
-            { id: 61, title: "Dentro de um Abraço", artist: "Jota Quest", src: "Jota_Quest_Dentro_de_um_Abra_o_muzzik.m4a", periodo: "manha" },
-            { id: 62, title: "Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", periodo: "todos" },
-            { id: 63, title: "Everybody's Changing", artist: "Keane", src: "Keane_Everybody_s_Changing_muzzik.m4a", periodo: "tarde" },
-            { id: 64, title: "Born Again", artist: "Lisa", src: "LISA_Born_Again_feat_Doja_Cat_RAYE_muzzik.m4a", periodo: "manha" },
-            { id: 65, title: "Die With A Smile", artist: "Lady Gaga & Bruno Mars", src: "Lady_Gaga_Bruno_Mars_Die_With_A_Smile_muzzik.m4a", periodo: "todos" },
-            { id: 66, title: "Lanterna dos Afogados", artist: "Paralamas", src: "Lanterna_Dos_Lanterna_Dos_Afogados_muzzik.m4a", periodo: "tarde" },
-            { id: 67, title: "Let It Be Music", artist: "Travel Love Friends", src: "Let_It_Be_Music_Travel_Love_Friends_20.m4a", periodo: "todos" },
-            { id: 68, title: "Muito Estranho", artist: "Liga Joe", src: "Liga_Joe_Muito_Estranho_Flashbacks_ (1).m4a", periodo: "todos" },
-            { id: 69, title: "Mordida de Amor", artist: "Yahoo", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", periodo: "noite" },
-            { id: 70, title: "Toda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", periodo: "tarde" },
-            { id: 71, title: "For Your Babies", artist: "Simply Red", src: "Simply_Red_For_Your_Babies_muzzik.m4a", periodo: "todos" },
-            { id: 72, title: "Reluz", artist: "Marcos Sabino", src: "MARCOS_SABINO_MARCOS_SABINO_reluz_muzzik.m4a", periodo: "todos" },
-            { id: 73, title: "Meu Mundo e Nada Mais", artist: "Guilherme Arantes", src: "MEU_MUNDO_E_NADA_MAIS_Guilherme_Arantes_muzzik.m4a", periodo: "noite" },
-            { id: 74, title: "Balada de Gisberta", artist: "Maria Bethânia", src: "Maria_Beth_nia_Balada_de_Gisberta_ (1).m4a", periodo: "tarde" },
-            { id: 75, title: "Pra Rua me Levar", artist: "Maria Bethânia & Ana Carolina", src: "Maria_Maria_Beth_nia_Pra_Rua_Me_Levar_muzzik (1).m4a", periodo: "tarde" },
-            { id: 76, title: "Just Another Day", artist: "Maurício Manieri feat. Jon Secada", src: "Maur_cio_Manieri_feat_Jon_Secada_Just_Another_Day_14.m4a", periodo: "manha" },
-            { id: 77, title: "I've Had The Time Of My Life", artist: "Mauricio Manieri", src: "Mauricio_Manieri_I_ve_Had_The_Time_Of_My_Life_muzzik.m4a", periodo: "manha" },
-            { id: 78, title: "Billie Jean", artist: "Michael Jackson", src: "Michael_Jackson_Billie_Jean_muzzik.m4a", periodo: "manha" },
-            { id: 79, title: "The Girl Is Mine", artist: "Michael Jackson", src: "Michael_Jackson_The_Girl_Is_Mine_muzzik.m4a", periodo: "noite" },
-            { id: 80, title: "Epitáfio", artist: "Nando Reis", src: "Epit_fio_Epit_fio_muzzik.m4a", periodo: "tarde" },
-            { id: 81, title: "Mina do Condomínio", artist: "Seu Jorge", src: "Mina_do_Mina_do_Condom_nio_muzzik.m4a", periodo: "manha" },
-            { id: 82, title: "My Sweet Lord", artist: "George Harrison", src: "My_Sweet_My_Sweet_Lord_GEORGE_HARRISON_The_HSCC_muzzik.m4a", periodo: "todos" },
-            { id: 83, title: "Sorri Sou Rei", artist: "Natiruts", src: "Natiruts_Sorri_Sou_Rei_muzzik.m4a", periodo: "manha" },
-            { id: 84, title: "Lotta Love", artist: "Nicolette Larson", src: "Nicolette_Larson_Lotta_Love_muzzik.m4a", periodo: "manha" },
-            { id: 85, title: "O Barquinho", artist: "Naira Leão", src: "O_Barquinho_O_Barquinho.m4a", periodo: "tarde" },
-            { id: 86, title: "Paisagem da Janela", artist: "Lô Borges", src: "PAISAGEM_DA_JANELA_L_BORGES_muzzik.m4a", periodo: "tarde" },
-            { id: 87, title: "Palco", artist: "Gilberto Gil & João Gomes", src: "PALCO_PALCO_muzzik.m4a", periodo: "tarde" },
-            { id: 88, title: "Palavras", artist: "Cassia Eller", src: "Palavras_Ao_Palavras_Ao_Vento.m4a", periodo: "tarde" },
-            { id: 89, title: "Palpite", artist: "Vanessa Rangel", src: "Palpite_Palpite_muzzik.m4a", periodo: "tarde" },
-            { id: 90, title: "Let Her Go", artist: "Passenger", src: "Passenger_Passenger_Let_Her_Go_Official_Video__18.m4a", periodo: "manha" },
-            { id: 91, title: "Mil e Uma Noites de Amor", artist: "Pepeu Gomes", src: "Pepeu_Gomes_Mil_e_uma_noites_de_amor_muzzik.m4a", periodo: "tarde" },
-            { id: 92, title: "Baby Come Back", artist: "Player", src: "Player_Baby_Come_Back_7.m4a", periodo: "noite" },
-            { id: 93, title: "Lady Lady Lady", artist: "Joe Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", periodo: "noite" },
-            { id: 94, title: "Primavera", artist: "Cassiano", src: "Primavera_Album_Primavera_Album_Version__muzzik.m4a", periodo: "noite" },
-            { id: 95, title: "Jura Secreta Revelação", artist: "Fagner & Zé Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", periodo: "noite" },
-            { id: 96, title: "Calm Down", artist: "Rema & Selena Gomez", src: "Rema_Selena_Gomez_Calm_Down_muzzik.m4a", periodo: "manha" },
-            { id: 97, title: "trém-das-corres", artist: "Caetano-Veloso", src: "Caetano-Veloso-trém-das-corres-mutv.m4a", periodo: "tarde" },
-            { id: 98, title: "Casinha Branca", artist: "Roberta Campos", src: "Roberta_Campos_Casinha_Branca.m4a", periodo: "tarde" },
-            { id: 99, title: "Furdúncio", artist: "Roberto Carlos", src: "Roberto_Carlos Furduncio.m4a", periodo: "manha" },
-            { id: 100, title: "Everytime You Go Away", artist: "Paul Young", src: "Paul_Young_Everytime_You_Go_Away_muzzik.m4a", periodo: "noite" },
-            { id: 101, title: "Róberta Sá", artist: "Róberta Sá", src: "Róberta Sá, _muzzik.m4a", periodo: "tarde" },
-            { id: 102, title: "Sábado à Noite", artist: "Seu Jorge", src: "S_bado_Noite_Seu_Jorge_4.m4a", periodo: "tarde" },
-            { id: 103, title: "Samba de Verão", artist: "Luiza Sonza", src: "Samba_De_Samba_De_Ver_o.m4a", periodo: "tarde" },
-            { id: 104, title: "Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", periodo: "noite" },
-            { id: 105, title: "Shake You Down", artist: "Unknown", src: "Shake_You_Shake_You_Down.m4a", periodo: "todos" },
-            { id: 106, title: "Simples Desejo", artist: "Luciana Mello", src: "Simples_Desejo_Simples_Desejo_muzzik.m4a", periodo: "tarde" },
-            { id: 107, title: "Holding Back The Years", artist: "Simply Red", src: "Simply_Red_Holding_Back_The_Years_15.m4a", periodo: "noite" },
-            { id: 108, title: "Stars", artist: "Simply Red", src: "Simply_Red_Stars_muzzik.m4a", periodo: "tarde" },
-            { id: 109, title: "Sunrise", artist: "Simply Red", src: "Simply_Red_Sunrise_muzzik.m4a", periodo: "manha" },
-            { id: 110, title: "Queixa", artist: "Caetano Veloso", src: "Queixa_Queixa_muzzik.m4a", periodo: "tarde" },
-            { id: 111, title: "sinais de fogo", artist: "Preta_gil", src: "Preta_gil_sinais_de_fogo_muzzik.m4a", periodo: "manha" },
-            { id: 112, title: "Resposta", artist: "Skank", src: "Skank_Resposta.m4a", periodo: "tarde" },
-            { id: 113, title: "Vamos Fugir", artist: "Skank", src: "Skank_Vamos_Fugir_muzzik.m4a", periodo: "manha" },
-            { id: 114, title: "Sorte", artist: "Caetano Veloso & Gal Costa", src: "Sorte_Caetano_Veloso_Gal_Costa_.m4a", periodo: "noite" },
-            { id: 115, title: "Stand by Me", artist: "Ben E. King", src: "Stand_by_Stand_by_Me_muzzik.m4a", periodo: "tarde" },
-            { id: 116, title: "Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", periodo: "noite" },
-            { id: 117, title: "Sultans of Swing", artist: "Dire Straits", src: "Sultans_of_Sultans_of_Swing_Backing_roger.m4a", periodo: "manha" },
-            { id: 118, title: "Remember The Time", artist: "A Cha", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", periodo: "manha" },
-            { id: 119, title: "Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", periodo: "noite" },
-            { id: 120, title: "Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", periodo: "tarde" },
-            { id: 121, title: "Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", periodo: "manha" },
-            { id: 122, title: "Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", periodo: "tarde" },
-            { id: 123, title: "Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", periodo: "tarde" },
-            { id: 124, title: "Oração ao Tempo", artist: "Maria Gadú", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4a", periodo: "manha" },
-            { id: 125, title: "Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", periodo: "noite" },
-            { id: 126, title: "Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", periodo: "manha" },
-            { id: 127, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" },
-            { id: 128, title: "Não Vá Embora", artist: "Marisa Montes", src: "Marisa-Montes-não vá embora.m4a", periodo: "tarde" },
-            { id: 129, title: "My Love My Love", artist: "Little Texas", src: "My_Love_My_Love_muzzik.m4a", periodo: "tarde" },
-            { id: 130, title: "Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", periodo: "noite" },
-            { id: 131, title: "Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", periodo: "manha" },
-            { id: 132, title: "Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", periodo: "tarde" },
-            { id: 133, title: "Na Estrada", artist: "Marisa Montes", src: "Na_Estrada_Na_Estrada_muzzik.m4a", periodo: "tarde" },
-            { id: 134, title: "Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", periodo: "noite" },
-            { id: 135, title: "For Whom The Bell Tolls", artist: "Bee Gees", src: "Bee_Gees_For_Whom_The_Bell_Tolls_muzzik.m4a", periodo: "tarde" },
-            { id: 136, title: "Levitating", artist: "Dua Lipa", src: "Dua_Lipa_Levitating_Featuring_DaBaby_muzzik.m4a", periodo: "manha" },
-            { id: 137, title: "_In_The_Park", artist: "September", src: "YOU_LL_NEVER_FIND_September_In_The_Park_muzzik.m4a", periodo: "tarde" },
-            { id: 138, title: "Knockin On Heaven s Door", artist: "Guns N Roses", src: "Guns_N_Roses_Knockin_On_Heaven_s_Door_muzzik.m4a", periodo: "manha" },
-            { id: 139, title: "Another Day In Paradise", artist: "Ivan Barreto", src: "Ivan_Barreto_Another_Day_In_Paradise_Good_Times_muzzik.m4a", periodo: "tarde" },
-            { id: 140, title: "Cherish", artist: "Kool & The Gang", src: "Kool_The_Gang_Cherish_muzzik.m4a", periodo: "tarde" },
-            { id: 141, title: "Need You Now", artist: "Lady Antebellum", src: "Lady_Antebellum_Need_You_Now_muzzik.m4a", periodo: "noite" },
-            { id: 142, title: "Beautiful", artist: "Marillion", src: "Marillion_Beautiful_muzzik.m4a", periodo: "noite" },
-            { id: 143, title: "Eva", artist: "Radio Taxi", src: "Radio_Taxi_Eva_muzzik.m4a", periodo: "todos" },
-            { id: 144, title: "There s Never a Forever Thing", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", periodo: "manha" },
-            { id: 145, title: "Vila do Sossego", artist: "Chico Chico", src: "Chico_Chico_Vila_do_Sossego_muzzik.m4a", periodo: "tarde" },
-            { id: 146, title: "Quanto Amore Sei", artist: "Eros Ramazzotti", src: "Eros_Ramazzotti_Quanto_Amore_Sei_muzzik.m4a", periodo: "tarde" },
-            { id: 147, title: "Legião Urbana", artist: "Giz", src: "Giz_Legi_o_Urbana_muzzik.m4a", periodo: "tarde" },
-            { id: 148, title: "By My Side", artist: "INXS", src: "My_Love_My_Love_muzzik.m4a", periodo: "noite" },
-            { id: 149, title: "Velha Infância", artist: "Tribalistas", src: "Tribalistas_Velha_Inf_ncia_muzzik (1).m4a", periodo: "tarde" },
-            { id: 150, title: "Need You Now", artist: "Lady Antebellum", src: "Lady_Antebellum_Need_You_Now_muzzik.m4a", periodo: "tarde" },
-            { id: 151, title: "Love Is Love", artist: "Culture Club", src: "My_Love_My_Love_muzzik.m4a", periodo: "noite" },
-            { id: 152, title: "Nothing's Gonna Stop Us Now", artist: "Starship", src: "Stand_by_Stand_by_Me_muzzik.m4a", periodo: "todos" },
-            { id: 153, title: "Right Here Waiting", artist: "Richard Marx", src: "Richard_Marx_Hazard_muzzik.m4a", periodo: "todos" },
-            { id: 154, title: "Fogo", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", periodo: "tarde" },
-            { id: 155, title: "Knife", artist: "Rockwell", src: "Knife_Rockwell_Sucesso_de_HD_muzzik.m4a", periodo: "noite" },
-            { id: 156, title: "Linger", artist: "The Cranberries", src: "The_Cranberries_Linger_muzzik.m4a", periodo: "noite" },
-            { id: 157, title: "Garoto de Aluguel", artist: "Zé Ramalho", src: "Z_Ramalho_Garoto_de_Aluguel_muzzik.m4a", periodo: "tarde" },
-            { id: 158, title: "Fogo (Acústico)", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", periodo: "tarde" },
-            { id: 159, title: "Torn", artist: "Natalie Imbruglia", src: "Natalie_Imbruglia_Torn_muzzik.m4a", periodo: "tarde" },
-            { id: 160, title: "Na Estrada", artist: "Cidade Negra", src: "Na_Estrada_Na_Estrada_muzzik.m4a", periodo: "tarde" },
-            { id: 161, title: "A Namorada", artist: "Carlinhos Brown", src: "A_Namorada_A_Namorada_Carlinhos_Brown_muzzik.m4a", periodo: "manha" },
-            { id: 162, title: "Ainda Bem Que Chegou", artist: "Vitor Kley", src: "Vitor_Kley_Ainda_Bem_Que_Chegou_muzzik.m4a", periodo: "tarde" },
-            { id: 163, title: "A Loba", artist: "Alcione", src: "A_Loba_A_Loba_muzzik.m4a", periodo: "manha" },
-            { id: 164, title: "Verdade Chinesa", artist: "Emilio Santiago", src: "Verdade_Chinesa_Verdade_Chinesa_Em_lio_Santiago_muzzik.m4a", periodo: "tarde" },
-            { id: 165, title: "Problemas", artist: "Ana Carolina", src: "Ana_Carolina_Problemas_muzzik.m4a", periodo: "tarde" },
-            { id: 166, title: "Andança", artist: "Luana Carvalho e Golden Boys", src: "Andan_a_Luana_Carvalho_e_Golden_Boys_muzzik.m4a", periodo: "tarde" },
-            { id: 167, title: "Faz Uma Loucura Por Mim", artist: "Alcione", src: "Alcione_Faz_Uma_Loucura_Por_Mim_muzzik.m4a", periodo: "manha" },
-            { id: 168, title: "Coisas da Vida", artist: "Milton Nascimento", src: "Milton_Nascimento_Coisas_da_Vida_muzzik.m4a", periodo: "tarde" },
-            { id: 169, title: "Saigon", artist: "Emilio Santiago", src: "Saigon_Saigon_muzzik.m4a", periodo: "tarde" },
-            { id: 170, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", periodo: "tarde" },
-            { id: 171, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "noite" },
-            { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", periodo: "manha" },
-            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" },
-    
-{ id: 174, title: "Air Supply Making Love Out Of Nothing At All", artist: "Unknown", src: "Air_Supply_Making_Love_Out_Of_Nothing_At_All_muzzik.m4a", periodo: "todos" },
-{ id: 175, title: "Ana Carolina Quem dera eu Seu Z", artist: "Unknown", src: "Ana_Carolina_Quem_dera_eu_Seu_Z__muzzik.m4a", periodo: "todos" },
-{ id: 176, title: "Bon Jovi Bed Of Roses", artist: "Unknown", src: "Bon_Jovi_Bed_Of_Roses_muzzik.m4a", periodo: "todos" },
-{ id: 177, title: "Bon Jovi Bed Of Roses", artist: "Unknown", src: "Bon_Jovi_Bed_Of_Roses_muzzik.m4a", periodo: "todos" },
-{ id: 178, title: "Danni Carlos Coisas Que Eu Sei", artist: "Unknown", src: "Danni_Carlos_Coisas_Que_Eu_Sei_muzzik.m4a", periodo: "todos" },
-{ id: 179, title: "Djavan Sina", artist: "Unknown", src: "Djavan_Sina_muzzik.m4a", periodo: "todos" },
-{ id: 180, title: "Dois Beijinhos Dois Beijinhos", artist: "Unknown", src: "Dois_Beijinhos_Dois_Beijinhos_muzzik.m4a", periodo: "todos" },
-{ id: 181, title: "Executive Funk Executive Funk My", artist: "Unknown", src: "Executive_Funk_Executive_Funk_My_muzzik.m4a", periodo: "todos" },
-{ id: 182, title: "Hunting High Hunting High and Low Remaster", artist: "Unknown", src: "Hunting_High_Hunting_High_and_Low_Remaster__muzzik.m4a", periodo: "todos" },
-{ id: 183, title: "Isabella Taviani Diga Sim Pra Mim", artist: "Unknown", src: "Isabella_Taviani_Diga_Sim_Pra_Mim__muzzik.m4a", periodo: "todos" },
-{ id: 184, title: "Ivete Sangalo A Lua Q Eu T Dei", artist: "Unknown", src: "Ivete_Sangalo_A_Lua_Q_Eu_T_Dei_muzzik.m4a", periodo: "todos" },
-{ id: 185, title: "Lagrimas e Chuva Paula Toller Ao Vivo Amorosa", artist: "Unknown", src: "L_grimas_e_Chuva_Paula_Toller_Ao_Vivo_Amorosa_muzzik.m4a", periodo: "todos" },
-{ id: 186, title: "Lulu Santos Apenas Mais uma de Amor", artist: "Unknown", src: "Lulu_Santos_Apenas_Mais_uma_de_Amor_muzzik.m4a", periodo: "todos" },
-{ id: 187, title: "Maria Rita Cara Valente", artist: "Unknown", src: "Maria_Rita_Cara_Valente_muzzik.m4a", periodo: "todos" },
-{ id: 188, title: "N o Mexe N o Mexe Comigo Lyric V deo Alcione", artist: "Unknown", src: "N_o_Mexe_N_o_Mexe_Comigo_Lyric_V_deo_Alcione_muzzik.m4a", periodo: "todos" },
-{ id: 189, title: "Nando Reis e Anavit ria N", artist: "Unknown", src: "Nando_Reis_e_Anavit_ria_N__muzzik.m4a", periodo: "todos" },
-{ id: 190, title: "Night Fever Night Fever Line Dance D", artist: "Unknown", src: "Night_Fever_Night_Fever_Line_Dance_D__muzzik.m4a", periodo: "todos" },
-{ id: 191, title: "Onde Anda Onde Anda Voc Clipe", artist: "Unknown", src: "Onde_Anda_Onde_Anda_Voc_Clipe_muzzik.m4a", periodo: "todos" },
-{ id: 192, title: "Take That Back for Good", artist: "Unknown", src: "Take_That_Back_for_Good_muzzik.m4a", periodo: "todos" },
-{ id: 193, title: "Touchy Touchy", artist: "Unknown", src: "Touchy_Touchy__muzzik.m4a", periodo: "todos" },
-{ id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
-{ id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
-{ id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" },
-  { id: 197, title: "Sem_radar_Sem_radar", artist: "Ls jack", src: "Sem_radar_Sem_radar_Vers_o_ac_stica__muzzik.m4a", periodo: "todos" }, 
-     { id: 198, title: "Liga_Joe_A_Little_Respect", artist: "Liga_Joe_A_Little_Respect_", src: "Liga_Joe_A_Little_Respect_muzzik.m4a", periodo: "todos" },
-       { id: 199, title: "Barbra_Streisand_Guilty", artist: "Barbra_Streisand_Guilty", src: "Barbra_Streisand_Guilty_muzzik.m4a", periodo: "todos" }, 
-         { id: 200, title: "Never_Love_Again", artist: "I_ll_Never_I_ll_Never_Love_Again", src: "I_ll_Never_I_ll_Never_Love_Again_muzzik.m4a", periodo: "todos" },    
-             { id: 201, title: "Haven_t_Met_You_Yet", artist: "Michael Bubl", src: "Michael_Bubl_Haven_t_Met_You_Yet_muzzik.m4a", periodo: "todos" }
+            { id: 1, title: "Clair de Lune", artist: "Debussy", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+            { id: 2, title: "Gymnopédie No.1", artist: "Erik Satie", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+            { id: 3, title: "River Flows in You", artist: "Yiruma", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+            { id: 4, title: "Canon in D", artist: "Pachelbel", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+            { id: 5, title: "Nocturne Op.9 No.2", artist: "Chopin", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" }
         ];
 
         // ==================== DOM Elements ====================
@@ -868,11 +760,7 @@
         const notificationText = document.getElementById('notificationText');
         const clockEl = document.getElementById('clock');
         const welcomeOverlay = document.getElementById('welcomeOverlay');
-        const specialtyNameEl = document.getElementById('specialtyName');
-        const specialtyDescEl = document.getElementById('specialtyDesc');
-        const specialtyIconEl = document.getElementById('specialtyIcon');
-        const specialtyTimerEl = document.getElementById('specialtyTimer');
-        const specialtiesCard = document.getElementById('specialtiesCard');
+        const timerValueEl = document.getElementById('timerValue');
 
         // ==================== Variáveis ====================
         let currentIndex = 0;
@@ -881,13 +769,120 @@
         let timerInterval = null;
         let controlsVisible = true;
         let controlsTimeout = null;
-        let especialidadeIndex = 0;
-        let especialidadeTimer = 240; // 4 minutos em segundos
-        let especialidadeInterval = null;
-        let saudacaoInterval = null;
         let saudacaoVisivel = false;
+        let saudacaoInterval = null;
+        
+        // Variáveis para o ciclo de especialidades
+        let especialidadeAtual = 0;
+        let cicloAtivo = false;
+        let cicloTimer = null;
+        let nextCycleSeconds = 180; // 3 minutos entre ciclos (180 segundos)
+        let countdownInterval = null;
 
-        // ==================== Relógio ====================
+        // ==================== FUNÇÕES DAS ESPECIALIDADES ====================
+        
+        // Esconde todos os cards
+        function hideAllCards() {
+            Object.values(cards).forEach(card => {
+                if (card) {
+                    card.classList.remove('active');
+                    card.classList.add('hide');
+                }
+            });
+        }
+
+        // Mostra um card específico
+        function showCard(cardId) {
+            const card = cards[cardId];
+            if (card) {
+                card.classList.remove('hide');
+                card.classList.add('active');
+            }
+        }
+
+        // Inicia o ciclo de especialidades (cada uma por 20 segundos)
+        function iniciarCicloEspecialidades() {
+            if (cicloAtivo) return;
+            
+            cicloAtivo = true;
+            especialidadeAtual = 0;
+            
+            // Esconde todos primeiro
+            hideAllCards();
+            
+            // Função para mostrar a próxima especialidade
+            function mostrarProximaEspecialidade() {
+                if (especialidadeAtual >= especialidadesConfig.length) {
+                    // Terminou o ciclo
+                    finalizarCiclo();
+                    return;
+                }
+                
+                const especialidade = especialidadesConfig[especialidadeAtual];
+                
+                // Esconde todos e mostra o atual
+                hideAllCards();
+                showCard(especialidade.id);
+                
+                // Notificação opcional
+                showMessage(`🏥 ${especialidade.name} - ${especialidade.desc}`, 3000);
+                
+                // Avança para a próxima após 20 segundos
+                especialidadeAtual++;
+                if (especialidadeAtual < especialidadesConfig.length) {
+                    setTimeout(mostrarProximaEspecialidade, 20000); // 20 segundos cada
+                } else {
+                    // Última especialidade: finaliza após 20 segundos
+                    setTimeout(finalizarCiclo, 20000);
+                }
+            }
+            
+            // Inicia o ciclo
+            mostrarProximaEspecialidade();
+        }
+        
+        // Finaliza o ciclo e prepara o próximo
+        function finalizarCiclo() {
+            hideAllCards();
+            cicloAtivo = false;
+            
+            // Reinicia o timer de 3 minutos
+            nextCycleSeconds = 180;
+            atualizarTimerDisplay();
+            
+            // Inicia contagem regressiva para o próximo ciclo
+            iniciarCountdown();
+            
+            // Agenda o próximo ciclo para 3 minutos
+            if (cicloTimer) clearTimeout(cicloTimer);
+            cicloTimer = setTimeout(() => {
+                iniciarCicloEspecialidades();
+            }, 180000); // 3 minutos
+        }
+        
+        // Contagem regressiva do próximo ciclo
+        function iniciarCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            countdownInterval = setInterval(() => {
+                if (!cicloAtivo && nextCycleSeconds > 0) {
+                    nextCycleSeconds--;
+                    atualizarTimerDisplay();
+                    
+                    if (nextCycleSeconds <= 0) {
+                        clearInterval(countdownInterval);
+                    }
+                }
+            }, 1000);
+        }
+        
+        function atualizarTimerDisplay() {
+            const minutos = Math.floor(nextCycleSeconds / 60);
+            const segundos = nextCycleSeconds % 60;
+            timerValueEl.textContent = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+        }
+
+        // ==================== RELÓGIO ====================
         function updateClock() {
             const now = new Date();
             const hours = now.getHours().toString().padStart(2, '0');
@@ -897,7 +892,7 @@
         updateClock();
         setInterval(updateClock, 60000);
 
-        // ==================== Saudação (30 segundos a cada 3 minutos) ====================
+        // ==================== SAUDAÇÃO (30 segundos a cada 3 minutos) ====================
         function mostrarSaudacao() {
             if (saudacaoVisivel) return;
             saudacaoVisivel = true;
@@ -908,55 +903,22 @@
                 setTimeout(() => {
                     saudacaoVisivel = false;
                 }, 500);
-            }, 30000); // 30 segundos visível
+            }, 30000);
         }
 
         function iniciarCicloSaudacao() {
-            // Mostrar imediatamente ao carregar
             setTimeout(() => mostrarSaudacao(), 1000);
-            // Repetir a cada 3 minutos (180000 ms)
             saudacaoInterval = setInterval(() => {
                 mostrarSaudacao();
-            }, 180000); // 3 minutos
+            }, 180000);
         }
 
-        // ==================== Especialidades (cada 4 minutos) ====================
-        function atualizarEspecialidade() {
-            const especialidade = especialidades[especialidadeIndex];
-            specialtyNameEl.textContent = especialidade.name;
-            specialtyDescEl.textContent = especialidade.desc;
-            specialtyIconEl.innerHTML = `<i class="fas ${especialidade.fullIcon}"></i>`;
-            
-            // Animação suave
-            specialtiesCard.style.animation = 'none';
-            setTimeout(() => {
-                specialtiesCard.style.animation = 'slideInRight 0.5s ease';
-            }, 10);
-            
-            showMessage(`🏥 ${especialidade.name} - ${especialidade.desc}`, 3000);
-        }
-        
-        function iniciarRodizioEspecialidades() {
-            atualizarEspecialidade();
-            
-            especialidadeInterval = setInterval(() => {
-                especialidadeIndex = (especialidadeIndex + 1) % especialidades.length;
-                atualizarEspecialidade();
-            }, 240000); // 4 minutos
-        }
-
-        // ==================== Funções Utilitárias ====================
+        // ==================== FUNÇÕES DO PLAYER ====================
         function formatTime(sec) {
             if (isNaN(sec) || !isFinite(sec)) return "0:00";
             const m = Math.floor(sec / 60);
             const s = Math.floor(sec % 60);
             return `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-
-        function formatTimer(segundos) {
-            const m = Math.floor(segundos / 60);
-            const s = segundos % 60;
-            return `${m}:${s.toString().padStart(2, '0')}`;
         }
 
         function showMessage(msg, duration = 2000) {
@@ -999,7 +961,6 @@
             resetControlsTimer();
         }
 
-        // ==================== Playlist ====================
         function renderPlaylist() {
             let html = '';
             musicas.forEach((music, idx) => {
@@ -1114,7 +1075,6 @@
             showControls();
         }
 
-        // ==================== Fullscreen ====================
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
@@ -1143,7 +1103,7 @@
             }
         }
 
-        // ==================== Eventos ====================
+        // ==================== EVENTOS ====================
         playBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
@@ -1188,11 +1148,28 @@
 
         // ==================== INICIALIZAÇÃO ====================
         function init() {
+            // Inicializa estilos dos cards
+            hideAllCards();
+            
+            // Inicia música
             iniciarMusicaAleatoria();
-            iniciarRodizioEspecialidades();
+            
+            // Inicia saudação
             iniciarCicloSaudacao();
             
+            // Inicia o primeiro ciclo de especialidades após 5 segundos
+            setTimeout(() => {
+                iniciarCicloEspecialidades();
+            }, 5000);
+            
+            // Inicia contagem regressiva
+            atualizarTimerDisplay();
+            iniciarCountdown();
+            
+            // Inicia player
             setTimeout(() => playMusic(), 500);
+            
+            // Tela cheia
             setTimeout(() => document.documentElement.requestFullscreen(), 1000);
             
             resetControlsTimer();
