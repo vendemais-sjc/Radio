@@ -476,10 +476,14 @@
 
 <script>
     // ========== CONFIGURAÇÕES DE TEMPO ==========
-    const TEMPO_SAUDACAO = 32;              // Saudação: 32 segundos
-    const TEMPO_ESPERA_3MIN = 180;          // Espera entre saudações: 3 minutos (180s)
-    const TEMPO_ESPERA_5MIN = 300;          // Espera antes do MP4: 5 minutos (300s)
-    const DURACAO_VIDEO_MP4 = 20;           // Vídeo MP4: 20 segundos
+   const TEMPO_SAUDACAO = 33;           // 32 segundos
+const TEMPO_ESPERA = 180;            // 3 minutos entre saudações
+const DURACAO_VIDEO = 20;            // 20 segundos
+
+// Depois de 1 saudações, mostra o vídeo
+if (contadorSaudacoes >= 3) {
+    mostrarVideo();  // ← sem espera extra de 5 minutos
+}
     
     const VERSA_MP4_FILENAME = 'versa.mp4';
     
