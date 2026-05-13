@@ -27,6 +27,7 @@
             background: #000;
         }
 
+        /* VIDEO YOUTUBE FUNDO */
         .video-background {
             position: absolute;
             top: 0;
@@ -43,7 +44,7 @@
             object-fit: cover;
         }
 
-        /* VÍDEO MP4 - mesma camada da saudação */
+        /* VÍDEO VERSA.MP4 */
         .video-mp4 {
             position: absolute;
             top: 0;
@@ -54,15 +55,15 @@
             z-index: 5;
         }
 
-        /* SAUDAÇÃO - sobre o vídeo MP4 */
+        /* SAUDAÇÃO */
         .welcome-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at center, rgba(0,25,30,0.9) 0%, rgba(0,0,0,0.95) 100%);
-            backdrop-filter: blur(10px);
+            background: radial-gradient(circle at center, rgba(0,25,30,0.92) 0%, rgba(0,0,0,0.96) 100%);
+            backdrop-filter: blur(12px);
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -79,8 +80,8 @@
         }
 
         .logo-img {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             object-fit: contain;
             margin: 0 auto 18px;
             border-radius: 50%;
@@ -90,7 +91,7 @@
         }
 
         .clinic-name {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             letter-spacing: 3px;
             background: linear-gradient(135deg, #fff, #4ecdc4);
@@ -100,7 +101,7 @@
         }
 
         .clinic-tag {
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: #4ecdc4;
             letter-spacing: 2px;
             margin-top: 5px;
@@ -109,16 +110,16 @@
         .welcome-card {
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(20px);
-            padding: 25px 40px;
-            border-radius: 40px;
-            border: 1px solid rgba(78,205,196,0.3);
+            padding: 30px 50px;
+            border-radius: 48px;
+            border: 1px solid rgba(78,205,196,0.35);
             margin: 20px;
         }
 
         .welcome-card h2 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: #fff;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .welcome-card h2 i {
@@ -127,13 +128,13 @@
         }
 
         .mensagem {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #eef5f5;
         }
 
         .badge-row {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             justify-content: center;
             margin: 15px 0;
             flex-wrap: wrap;
@@ -141,9 +142,9 @@
 
         .badge {
             background: rgba(0,0,0,0.5);
-            padding: 5px 16px;
+            padding: 8px 20px;
             border-radius: 50px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #fff;
             border: 1px solid rgba(78,205,196,0.3);
         }
@@ -156,24 +157,100 @@
         .status-line {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             background: rgba(0,0,0,0.45);
-            padding: 8px 24px;
+            padding: 10px 30px;
             border-radius: 60px;
         }
 
         .pulse-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background: #4ecdc4;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
 
         .status-line span {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             letter-spacing: 2px;
             color: white;
+        }
+
+        /* TICKER NO TOPO (como era antes) */
+        .ticker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(78,205,196,0.2) 50%, rgba(0,0,0,0.75) 100%);
+            backdrop-filter: blur(8px);
+            padding: 8px 0;
+            z-index: 15;
+            border-bottom: 1px solid rgba(78,205,196,0.3);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: tickerScroll 22s linear infinite;
+            padding-left: 100%;
+        }
+
+        .ticker-text {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .ticker-text i {
+            margin: 0 10px;
+            color: #4ecdc4;
+        }
+
+        .ticker-text span {
+            margin: 0 14px;
+            color: #fff;
+        }
+
+        /* RELÓGIO NO TOPO DIREITO */
+        .clock {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            padding: 5px 14px;
+            border-radius: 30px;
+            color: #4ecdc4;
+            font-size: 0.8rem;
+            z-index: 16;
+            font-family: monospace;
+            font-weight: bold;
+            border: 1px solid rgba(78,205,196,0.3);
+        }
+
+        /* BOTÃO TELA CHEIA */
+        .fullscreen-btn {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(78,205,196,0.3);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 25;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .fullscreen-btn:hover {
+            background: #4ecdc4;
+            transform: scale(1.05);
         }
 
         /* PLAYER DE MÚSICA */
@@ -268,24 +345,34 @@
             position: absolute;
             bottom: 12px;
             background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.12);
+            border: 1px solid rgba(78,205,196,0.3);
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
             z-index: 25;
+            transition: all 0.2s;
         }
 
-        .toggle-controls { left: 12px; }
-        .playlist-btn { right: 55px; }
+        .toggle-controls {
+            left: 12px;
+        }
+
+        .playlist-btn {
+            right: 60px;
+        }
+
+        .toggle-controls:hover, .playlist-btn:hover {
+            background: #4ecdc4;
+        }
 
         .playlist-container {
             position: absolute;
             bottom: 100%;
             left: 12px;
-            width: 230px;
-            max-height: 250px;
+            width: 240px;
+            max-height: 260px;
             background: rgba(0,0,0,0.95);
             backdrop-filter: blur(15px);
             border-radius: 16px;
@@ -297,58 +384,34 @@
             border: 1px solid rgba(78,205,196,0.3);
         }
 
-        .playlist-container.open { display: block; }
-        .playlist-header { color: #4ecdc4; font-size: 0.65rem; text-align: center; margin-bottom: 8px; }
+        .playlist-container.open {
+            display: block;
+        }
+
+        .playlist-header {
+            color: #4ecdc4;
+            font-size: 0.7rem;
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
         .playlist-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 6px;
+            padding: 6px 8px;
             background: rgba(255,255,255,0.05);
             border-radius: 10px;
             margin-bottom: 5px;
             cursor: pointer;
-            font-size: 0.65rem;
-        }
-        .playlist-item:hover, .playlist-item.active { background: #4ecdc4; color: #000; }
-
-        .ticker {
-            position: absolute;
-            bottom: 65px;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.6);
-            padding: 5px 0;
-            z-index: 15;
-            overflow: hidden;
-            white-space: nowrap;
+            font-size: 0.7rem;
+            transition: all 0.2s;
         }
 
-        .ticker-content {
-            display: inline-block;
-            animation: tickerScroll 20s linear infinite;
-            padding-left: 100%;
-        }
-
-        .ticker-text {
-            display: inline-block;
-            font-size: 0.65rem;
-            color: #fff;
-        }
-
-        .ticker-text i { margin: 0 8px; color: #4ecdc4; }
-
-        .clock {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: rgba(0,0,0,0.5);
-            padding: 4px 12px;
-            border-radius: 20px;
-            color: #4ecdc4;
-            font-size: 0.75rem;
-            z-index: 15;
-            font-family: monospace;
+        .playlist-item:hover, .playlist-item.active {
+            background: #4ecdc4;
+            color: #000;
         }
 
         @keyframes tickerScroll {
@@ -363,12 +426,14 @@
         }
 
         @media (max-width: 680px) {
-            .welcome-card { padding: 18px 25px; }
-            .welcome-card h2 { font-size: 1.3rem; }
-            .clinic-name { font-size: 1.3rem; }
-            .logo-img { width: 70px; height: 70px; }
+            .welcome-card { padding: 20px 30px; }
+            .welcome-card h2 { font-size: 1.5rem; }
+            .clinic-name { font-size: 1.4rem; }
+            .logo-img { width: 80px; height: 80px; }
             .mensagem { font-size: 0.9rem; }
-            .ticker { bottom: 60px; }
+            .badge { padding: 5px 12px; font-size: 0.65rem; }
+            .fullscreen-btn { top: 60px; right: 15px; width: 30px; height: 30px; font-size: 0.8rem; }
+            .clock { top: 10px; right: 15px; font-size: 0.7rem; padding: 3px 10px; }
         }
     </style>
 </head>
@@ -390,40 +455,47 @@
         <div>
             <img src="ver.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
             <div class="clinic-name">CLÍNICA VERSALIS</div>
-            <div class="clinic-tag">Excelência em Saúde</div>
+            <div class="clinic-tag">Excelência em Saúde & Bem-estar</div>
         </div>
         <div class="welcome-card">
-            <h2><i class="fas fa-hand-peace"></i> Bem-vindo(a)!</h2>
-            <div class="mensagem">Em breve você será atendido(a) com excelência.</div>
+            <h2><i class="fas fa-hand-peace"></i> Seja muito bem-vindo(a)!</h2>
+            <div class="mensagem">Em breve você será atendido(a) com todo cuidado e excelência.</div>
         </div>
         <div class="badge-row">
-            <div class="badge"><i class="fas fa-stethoscope"></i> ESPECIALIDADES</div>
-            <div class="badge"><i class="fas fa-calendar-check"></i> AGENDAMENTO</div>
-            <div class="badge"><i class="fas fa-shield-alt"></i> SEGURANÇA</div>
+            <div class="badge"><i class="fas fa-stethoscope"></i> ESPECIALIDADES MÉDICAS</div>
+            <div class="badge"><i class="fas fa-calendar-check"></i> AGENDAMENTO RÁPIDO</div>
+            <div class="badge"><i class="fas fa-shield-alt"></i> SEGURANÇA E CONFORTO</div>
         </div>
         <div class="status-line">
             <div class="pulse-dot"></div>
-            <span>AGUARDE</span>
+            <span>AGUARDE UM MOMENTO • ATENDIMENTO HUMANIZADO</span>
             <div class="pulse-dot"></div>
         </div>
     </div>
 
+    <!-- TICKER NO TOPO -->
     <div class="ticker">
         <div class="ticker-content">
             <div class="ticker-text">
-                <i class="fas fa-heartbeat"></i>
-                <span>CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE</span>
+                <i class="fas fa-heartbeat fa-beat"></i>
+                <span>CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE COM EXCELÊNCIA</span>
+                <i class="fas fa-circle" style="font-size: 0.2rem;"></i>
+                <span>🏥 MAIS DE 20 ESPECIALIDADES</span>
                 <i class="fas fa-circle" style="font-size: 0.2rem;"></i>
                 <span>📞 (12) 98846-1978</span>
                 <i class="fas fa-circle" style="font-size: 0.2rem;"></i>
-                <span>📍 ATENDIMENTO HUMANIZADO</span>
+                <span>📍 AMBIENTE ACONCHEGANTE E SEGURO</span>
             </div>
         </div>
     </div>
 
+    <!-- RELÓGIO -->
     <div class="clock" id="clock">--:--</div>
 
-    <!-- MUSIC PLAYER -->
+    <!-- BOTÃO TELA CHEIA -->
+    <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
+
+    <!-- PLAYER DE MÚSICA -->
     <div class="music-player" id="musicPlayerBar">
         <div class="track-info">
             <div class="track-title" id="trackTitle">Carregando...</div>
@@ -450,41 +522,35 @@
     <button class="playlist-btn" id="playlistBtn"><i class="fas fa-list-ul"></i></button>
 
     <div class="playlist-container" id="playlistContainer">
-        <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST</div>
+        <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST AMBIENTE</div>
         <div id="playlistItems"></div>
     </div>
 </div>
 
 <script>
     // =============================================
-    // SIMPLES E DIRETO:
+    // FLUXO CORRETO:
     // Saudação + Video MP4 JUNTOS por 33 segundos
     // Depois espera 3 minutos
     // Repete eternamente
-    // Músicas tocando sempre no fundo
+    // TUDO NO LUGAR: RELÓGIO, TICKER, TELA CHEIA
     // =============================================
 
-    // TEMPOS
-    const TEMPO_JUNTOS = 33;      // Saudação + vídeo juntos: 33 segundos
-    const TEMPO_ESPERA = 180;     // Espera: 3 minutos
+    const TEMPO_JUNTOS = 33;
+    const TEMPO_ESPERA = 180;
 
-    // ELEMENTOS
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     const versaVideo = document.getElementById('versaVideo');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
     
     let timeoutAtual = null;
-    let videoCarregado = false;
 
-    // ========== FUNÇÕES DO CICLO ==========
-    
     function esconderTudo() {
         welcomeOverlay.classList.add('hide');
-        if (versaVideo) {
-            versaVideo.pause();
-        }
+        if (versaVideo) versaVideo.pause();
     }
     
-    function mostrarSaudacaoEVideo() {
+    function mostrarJuntos() {
         welcomeOverlay.classList.remove('hide');
         if (versaVideo && versaVideo.src) {
             versaVideo.currentTime = 0;
@@ -492,22 +558,14 @@
         }
     }
     
-    function pararCiclo() {
-        if (timeoutAtual) {
-            clearTimeout(timeoutAtual);
-            timeoutAtual = null;
-        }
-        esconderTudo();
-    }
-    
     function iniciarCiclo() {
         if (timeoutAtual) clearTimeout(timeoutAtual);
         
         console.log("🎬 Saudação + Video MP4 juntos por 33 segundos");
-        mostrarSaudacaoEVideo();
+        mostrarJuntos();
         
         timeoutAtual = setTimeout(() => {
-            console.log("⏹️ Fim dos 33 segundos");
+            console.log("⏹️ Fim - escondendo tudo");
             esconderTudo();
             
             console.log("⏳ Aguardando 3 minutos...");
@@ -518,22 +576,31 @@
         }, TEMPO_JUNTOS * 1000);
     }
     
-    // Carrega o vídeo uma vez
-    function carregarVideo() {
-        if (!videoCarregado) {
-            versaVideo.src = 'versa.mp4';
-            versaVideo.load();
-            versaVideo.onerror = () => {
-                console.log("⚠️ Arquivo versa.mp4 não encontrado");
-            };
-            versaVideo.oncanplay = () => {
-                console.log("✅ Vídeo versa.mp4 carregado");
-            };
-            videoCarregado = true;
+    // Carrega o vídeo
+    versaVideo.src = 'versa.mp4';
+    versaVideo.load();
+    versaVideo.onerror = () => console.log("⚠️ versa.mp4 não encontrado");
+    versaVideo.oncanplay = () => console.log("✅ Vídeo carregado");
+
+    // TELA CHEIA
+    function toggleFullscreen() {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            document.documentElement.requestFullscreen();
         }
     }
-    
-    // ========== MÚSICAS ==========
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // RELÓGIO
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // MÚSICAS
     const musicas = [
         { id: 1, title: "Clair de Lune", artist: "Debussy", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
         { id: 2, title: "Gymnopédie No.1", artist: "Erik Satie", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
@@ -541,12 +608,8 @@
         { id: 4, title: "Nuvens", artist: "Piano & Soul", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
     ];
     
-    let currentMusic = 0;
-    let isPlaying = false;
-    let shuffle = false;
-    let timer = null;
-    let controlsVisible = true;
-    let controlsTimer = null;
+    let currentMusic = 0, isPlaying = false, shuffle = false, timer = null;
+    let controlsVisible = true, controlsTimer = null;
     
     const audio = document.getElementById('musicPlayer');
     const playBtn = document.getElementById('playPauseBtn');
@@ -559,169 +622,48 @@
     const trackTitle = document.getElementById('trackTitle');
     const trackArtist = document.getElementById('trackArtist');
     const progressBarBg = document.getElementById('progressBar');
-    const playlistContainerDiv = document.getElementById('playlistContainer');
+    const playlistDiv = document.getElementById('playlistContainer');
     const playlistItemsDiv = document.getElementById('playlistItems');
     const playlistBtnDiv = document.getElementById('playlistBtn');
     const toggleBtn = document.getElementById('toggleControlsBtn');
     const playerBar = document.getElementById('musicPlayerBar');
     
-    function formatTime(sec) {
-        if (isNaN(sec)) return "0:00";
-        const m = Math.floor(sec / 60);
-        const s = Math.floor(sec % 60);
-        return `${m}:${s < 10 ? '0' : ''}${s}`;
-    }
+    function formatTime(sec) { if(isNaN(sec)) return "0:00"; const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s<10?'0':''}${s}`; }
+    function startTimer() { if(timer) clearInterval(timer); timer = setInterval(()=>{ if(isPlaying && audio.duration){ const p=(audio.currentTime/audio.duration)*100; progressFill.style.width=p+'%'; currentTimeEl.textContent=formatTime(audio.currentTime); } },200); }
+    function resetControlsTimer() { if(controlsTimer) clearTimeout(controlsTimer); if(controlsVisible){ controlsTimer = setTimeout(()=>{ playerBar.classList.add('hide'); controlsVisible=false; toggleBtn.innerHTML='<i class="fas fa-chevron-up"></i>'; },4000); } }
+    function showControls() { playerBar.classList.remove('hide'); controlsVisible=true; toggleBtn.innerHTML='<i class="fas fa-chevron-down"></i>'; resetControlsTimer(); }
+    function renderPlaylist() { playlistItemsDiv.innerHTML = musicas.map((m,i)=>`<div class="playlist-item ${i===currentMusic?'active':''}" data-index="${i}"><div>${(i+1).toString().padStart(2,'0')}</div><div><div>${m.title}</div><div>${m.artist}</div></div></div>`).join(''); document.querySelectorAll('.playlist-item').forEach(item=>{ item.addEventListener('click',()=>{ selectSong(parseInt(item.dataset.index)); playlistDiv.classList.remove('open'); }); }); }
+    function loadTrack(i) { currentMusic=i; const t=musicas[currentMusic]; audio.src=t.src; trackTitle.textContent=t.title; trackArtist.textContent=t.artist; progressFill.style.width='0%'; currentTimeEl.textContent='0:00'; renderPlaylist(); audio.onloadedmetadata=()=>{ totalTimeEl.textContent=formatTime(audio.duration); }; }
+    async function playMusic() { try{ await audio.play(); isPlaying=true; playBtn.innerHTML='<i class="fas fa-pause"></i>'; startTimer(); showControls(); } catch(e){ setTimeout(()=>playMusic(),1000); } }
+    function pauseMusic() { audio.pause(); isPlaying=false; playBtn.innerHTML='<i class="fas fa-play"></i>'; if(timer) clearInterval(timer); timer=null; }
+    function togglePlayPause() { isPlaying?pauseMusic():playMusic(); showControls(); }
+    function nextTrack() { loadTrack((currentMusic+1)%musicas.length); if(isPlaying) playMusic(); showControls(); }
+    function prevTrack() { loadTrack((currentMusic-1+musicas.length)%musicas.length); if(isPlaying) playMusic(); showControls(); }
+    function selectSong(i) { loadTrack(i); if(isPlaying) playMusic(); showControls(); }
+    function toggleShuffle() { shuffle=!shuffle; shuffleBtn.style.background=shuffle?'#4ecdc4':''; showControls(); }
+    function togglePlaylist() { playlistDiv.classList.toggle('open'); showControls(); }
+    function toggleControlsBar() { if(controlsVisible){ playerBar.classList.add('hide'); controlsVisible=false; toggleBtn.innerHTML='<i class="fas fa-chevron-up"></i>'; if(controlsTimer) clearTimeout(controlsTimer); }else{ showControls(); } }
     
-    function startTimer() {
-        if (timer) clearInterval(timer);
-        timer = setInterval(() => {
-            if (isPlaying && audio.duration) {
-                const percent = (audio.currentTime / audio.duration) * 100;
-                progressFill.style.width = percent + '%';
-                currentTimeEl.textContent = formatTime(audio.currentTime);
-            }
-        }, 200);
-    }
-    
-    function resetControlsTimer() {
-        if (controlsTimer) clearTimeout(controlsTimer);
-        if (controlsVisible) {
-            controlsTimer = setTimeout(() => {
-                playerBar.classList.add('hide');
-                controlsVisible = false;
-                toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
-            }, 4000);
-        }
-    }
-    
-    function showControls() {
-        playerBar.classList.remove('hide');
-        controlsVisible = true;
-        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
-        resetControlsTimer();
-    }
-    
-    function renderPlaylist() {
-        playlistItemsDiv.innerHTML = musicas.map((m, i) => `
-            <div class="playlist-item ${i === currentMusic ? 'active' : ''}" data-index="${i}">
-                <div>${(i+1).toString().padStart(2,'0')}</div>
-                <div><div>${m.title}</div><div>${m.artist}</div></div>
-            </div>
-        `).join('');
-        document.querySelectorAll('.playlist-item').forEach(item => {
-            item.addEventListener('click', () => {
-                selectSong(parseInt(item.dataset.index));
-                playlistContainerDiv.classList.remove('open');
-            });
-        });
-    }
-    
-    function loadTrack(index) {
-        currentMusic = index;
-        const track = musicas[currentMusic];
-        audio.src = track.src;
-        trackTitle.textContent = track.title;
-        trackArtist.textContent = track.artist;
-        progressFill.style.width = '0%';
-        currentTimeEl.textContent = '0:00';
-        renderPlaylist();
-        audio.onloadedmetadata = () => {
-            totalTimeEl.textContent = formatTime(audio.duration);
-        };
-    }
-    
-    async function playMusic() {
-        try {
-            await audio.play();
-            isPlaying = true;
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            startTimer();
-            showControls();
-        } catch(e) {
-            setTimeout(() => playMusic(), 1000);
-        }
-    }
-    
-    function pauseMusic() {
-        audio.pause();
-        isPlaying = false;
-        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        if (timer) clearInterval(timer);
-        timer = null;
-    }
-    
-    function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); showControls(); }
-    function nextTrack() { loadTrack((currentMusic + 1) % musicas.length); if (isPlaying) playMusic(); showControls(); }
-    function prevTrack() { loadTrack((currentMusic - 1 + musicas.length) % musicas.length); if (isPlaying) playMusic(); showControls(); }
-    function selectSong(index) { loadTrack(index); if (isPlaying) playMusic(); showControls(); }
-    function toggleShuffle() { shuffle = !shuffle; shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; showControls(); }
-    function togglePlaylist() { playlistContainerDiv.classList.toggle('open'); showControls(); }
-    function toggleControlsBar() {
-        if (controlsVisible) {
-            playerBar.classList.add('hide');
-            controlsVisible = false;
-            toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
-            if (controlsTimer) clearTimeout(controlsTimer);
-        } else { showControls(); }
-    }
-    
-    playBtn.addEventListener('click', togglePlayPause);
-    prevBtn.addEventListener('click', prevTrack);
-    nextBtn.addEventListener('click', nextTrack);
-    shuffleBtn.addEventListener('click', toggleShuffle);
-    toggleBtn.addEventListener('click', toggleControlsBar);
-    playlistBtnDiv.addEventListener('click', togglePlaylist);
-    
-    progressBarBg.addEventListener('click', (e) => {
-        if (audio.duration) {
-            const rect = progressBarBg.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = percent * audio.duration;
-        }
-        showControls();
-    });
-    
-    document.addEventListener('mousemove', () => { if (!controlsVisible) showControls(); else resetControlsTimer(); });
-    document.addEventListener('click', (e) => {
-        if (!playlistContainerDiv.contains(e.target) && e.target !== playlistBtnDiv) {
-            playlistContainerDiv.classList.remove('open');
-        }
-    });
-    
-    audio.onended = () => nextTrack();
-    audio.onerror = () => setTimeout(() => nextTrack(), 1500);
-    
-    // RELÓGIO
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('clock').textContent = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-    }
+    playBtn.addEventListener('click',togglePlayPause);
+    prevBtn.addEventListener('click',prevTrack);
+    nextBtn.addEventListener('click',nextTrack);
+    shuffleBtn.addEventListener('click',toggleShuffle);
+    toggleBtn.addEventListener('click',toggleControlsBar);
+    playlistBtnDiv.addEventListener('click',togglePlaylist);
+    progressBarBg.addEventListener('click',(e)=>{ if(audio.duration){ const rect=progressBarBg.getBoundingClientRect(); const percent=(e.clientX-rect.left)/rect.width; audio.currentTime=percent*audio.duration; } showControls(); });
+    document.addEventListener('mousemove',()=>{ if(!controlsVisible) showControls(); else resetControlsTimer(); });
+    document.addEventListener('click',(e)=>{ if(!playlistDiv.contains(e.target) && e.target!==playlistBtnDiv) playlistDiv.classList.remove('open'); });
+    audio.onended = ()=>nextTrack();
     
     // INICIALIZAR
-    function iniciar() {
-        console.log("✅ SISTEMA INICIADO");
-        console.log("📋 Fluxo: Saudação + Video MP4 JUNTOS por 33s → espera 3min → repete");
-        console.log("🎵 Músicas ambiente tocando");
-        
-        updateClock();
-        setInterval(updateClock, 1000);
-        
-        carregarVideo();
-        loadTrack(0);
-        
-        setTimeout(() => playMusic(), 500);
-        setTimeout(() => iniciarCiclo(), 500);
-        
-        resetControlsTimer();
-        
-        setTimeout(() => {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            }
-        }, 1000);
-    }
+    loadTrack(0);
+    setTimeout(()=>playMusic(), 500);
+    setTimeout(()=>iniciarCiclo(), 500);
+    resetControlsTimer();
     
-    iniciar();
+    console.log("✅ CÓDIGO COMPLETO CORRETO!");
+    console.log("📋 Fluxo: Saudação + Video MP4 juntos 33s → espera 3min → repete");
+    console.log("✅ RELÓGIO no topo direito | ✅ TICKER no topo | ✅ TELA CHEIA funcionando");
 </script>
 </body>
 </html>
