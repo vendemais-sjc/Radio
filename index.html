@@ -1,3 +1,5 @@
+
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -27,7 +29,6 @@
             background: #000;
         }
 
-        /* VIDEO YOUTUBE BACKGROUND - PRIMEIRO LINK */
         .video-background {
             position: absolute;
             top: 0;
@@ -44,7 +45,7 @@
             object-fit: cover;
         }
 
-        /* OVERLAY PARA VÍDEO MP4 (versa.mp4) - NUNCA JUNTO COM SAUDAÇÃO */
+        /* OVERLAY VÍDEO MP4 */
         .video-overlay {
             position: fixed;
             top: 0;
@@ -72,7 +73,7 @@
             object-fit: contain;
         }
 
-        /* ============ SAUDAÇÃO PROFISSIONAL - NUNCA JUNTO COM MP4 ============ */
+        /* SAUDAÇÃO PROFISSIONAL */
         .welcome-overlay {
             position: absolute;
             top: 0;
@@ -113,7 +114,6 @@
             border-radius: 50%;
             background: linear-gradient(135deg, rgba(78,205,196,0.15), rgba(78,205,196,0.05));
             padding: 10px;
-            transition: transform 0.3s ease;
             border: 2px solid rgba(78,205,196,0.3);
         }
 
@@ -125,14 +125,12 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 2px 15px rgba(78,205,196,0.3);
         }
 
         .clinic-tag-premium {
             font-size: 0.8rem;
             color: #4ecdc4;
             letter-spacing: 2.5px;
-            font-weight: 400;
             margin-top: 8px;
             text-transform: uppercase;
         }
@@ -236,7 +234,6 @@
             color: white;
         }
 
-        /* TICKER */
         .ticker-moderno {
             position: absolute;
             top: 0;
@@ -266,7 +263,6 @@
         .ticker-text i { margin: 0 10px; color: #4ecdc4; }
         .ticker-text span { margin: 0 14px; color: #fff; }
 
-        /* MUSIC PLAYER */
         .music-player {
             position: absolute;
             bottom: 0;
@@ -391,7 +387,6 @@
 </head>
 <body>
 <div class="tv-container">
-    <!-- VIDEO BACKGROUND YOUTUBE - PRIMEIRO LINK -->
     <div class="video-background">
         <iframe src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -399,12 +394,10 @@
         </iframe>
     </div>
 
-    <!-- OVERLAY VÍDEO MP4 (versa.mp4) -->
     <div class="video-overlay" id="videoOverlay">
         <video id="versaVideo" preload="auto" playsinline></video>
     </div>
 
-    <!-- SAUDAÇÃO PROFISSIONAL -->
     <div class="welcome-overlay" id="welcomeOverlay">
         <div class="logo-container-premium">
             <img src="ver.png" alt="Clínica Versalis" class="logo-img-premium" id="logoImg" 
@@ -482,29 +475,30 @@
 <audio id="musicPlayer" preload="auto"></audio>
 
 <script>
-    // ========== FLUXO CORRETO ==========
-    // Saudação: 33 segundos
-    // Depois aguarda 6 minutos (360 segundos)
-    // Exibe versa.mp4 por 30 segundos
-    // Volta para saudação (33s) e repete o ciclo
-    // NUNCA os dois overlays aparecem juntos
-    
-    const TEMPO_SAUDACAO = 33;           // 33 segundos
-    const TEMPO_ESPERA_APOS_SAUDACAO = 360; // 6 minutos = 360 segundos
-    const DURACAO_VIDEO_VERSA = 30;      // 30 segundos de exibição
+    // ========== CONFIGURAÇÕES DE TEMPO ==========
+    const TEMPO_SAUDACAO = 32;              // Saudação: 32 segundos
+    const TEMPO_ESPERA_3MIN = 180;          // Espera entre saudações: 3 minutos (180s)
+    const TEMPO_ESPERA_5MIN = 300;          // Espera antes do MP4: 5 minutos (300s)
+    const DURACAO_VIDEO_MP4 = 20;           // Vídeo MP4: 20 segundos
     
     const VERSA_MP4_FILENAME = 'versa.mp4';
     
-    let cicloAtivo = true;
+    // ========== VARIÁVEIS DE CONTROLE ==========
     let timeoutAtual = null;
     let videoTimeout = null;
+    let cicloRodando = true;
+    let contadorSaudacoes = 0;               // Conta quantas saudações já foram exibidas
+    const MAX_SAUDACOES_ANTES_MP4 = 3;       // 3 saudações (1 inicial + 2 repetições) antes do MP4
     
+    // Elementos DOM
     const versaVideo = document.getElementById('versaVideo');
     const videoOverlay = document.getElementById('videoOverlay');
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     
-    // Função para esconder o vídeo MP4 completamente
-    function esconderVideoVersa() {
+    // ========== FUNÇÕES DE CONTROLE ==========
+    
+    // Fecha completamente o vídeo MP4
+    function esconderVideoMP4() {
         videoOverlay.classList.remove('show');
         if (versaVideo) {
             versaVideo.pause();
@@ -513,79 +507,97 @@
         if (videoTimeout) clearTimeout(videoTimeout);
     }
     
-    // Função para mostrar o vídeo versa.mp4 (apenas ele, sem saudação)
-    function mostrarVideoVersa() {
-        // Garante que a saudação está fechada
+    // Fecha a saudação
+    function esconderSaudacao() {
         welcomeOverlay.classList.remove('show');
+    }
+    
+    // Exibe o vídeo versa.mp4 (garante que saudação está fechada)
+    function mostrarVideoMP4() {
+        console.log("🎬 Iniciando vídeo versa.mp4 - Duração: 20 segundos");
+        esconderSaudacao();  // Garante que saudação não está visível
         
-        // Prepara e exibe o vídeo
         versaVideo.src = VERSA_MP4_FILENAME;
         versaVideo.load();
         
         versaVideo.onerror = () => {
-            console.log("❌ versa.mp4 não encontrado, pulando para saudação");
-            esconderVideoVersa();
-            iniciarSaudacao();
+            console.log("❌ versa.mp4 não encontrado, pulando para próximo ciclo");
+            esconderVideoMP4();
+            iniciarCicloCompleto();
         };
         
         versaVideo.oncanplay = () => {
-            versaVideo.play().catch(e => console.log("Erro play versa:", e));
+            versaVideo.play().catch(e => console.log("Erro:", e));
             videoOverlay.classList.add('show');
         };
         
-        // Tempo fixo de exibição: 30 segundos, depois volta para saudação
+        // Após 20 segundos, fecha o vídeo e recomeça o ciclo
         videoTimeout = setTimeout(() => {
-            esconderVideoVersa();
-            iniciarSaudacao();
-        }, DURACAO_VIDEO_VERSA * 1000);
+            console.log("⏹️ Vídeo MP4 finalizado (20s). Recomeçando ciclo.");
+            esconderVideoMP4();
+            iniciarCicloCompleto();
+        }, DURACAO_VIDEO_MP4 * 1000);
         
-        // Se o vídeo terminar antes, também volta
         versaVideo.onended = () => {
             if (videoTimeout) clearTimeout(videoTimeout);
-            esconderVideoVersa();
-            iniciarSaudacao();
+            esconderVideoMP4();
+            iniciarCicloCompleto();
         };
     }
     
-    // Função para iniciar o período de espera (após a saudação)
-    function iniciarEsperaParaVideo() {
-        console.log("⏳ Saudação terminou. Aguardando 6 minutos para exibir versa.mp4...");
-        if (timeoutAtual) clearTimeout(timeoutAtual);
-        timeoutAtual = setTimeout(() => {
-            console.log("🎬 6 minutos passados. Exibindo versa.mp4 agora.");
-            mostrarVideoVersa();
-        }, TEMPO_ESPERA_APOS_SAUDACAO * 1000);
-    }
-    
-    // Função para iniciar a saudação (33 segundos)
-    function iniciarSaudacao() {
-        // Garante que o vídeo MP4 está fechado
-        esconderVideoVersa();
-        
-        // Mostra a saudação
+    // Exibe a saudação por 32 segundos
+    function mostrarSaudacao() {
+        console.log(`👋 Exibindo saudação #${contadorSaudacoes + 1} - Duração: 32 segundos`);
+        esconderVideoMP4();  // Garante que vídeo MP4 não está visível
         welcomeOverlay.classList.add('show');
-        console.log("👋 Saudação exibida por 33 segundos");
         
         if (timeoutAtual) clearTimeout(timeoutAtual);
         timeoutAtual = setTimeout(() => {
-            // Fecha a saudação após 33 segundos
-            welcomeOverlay.classList.remove('show');
-            console.log("🔇 Saudação finalizada. Iniciando espera de 6 minutos.");
-            // Agora espera 6 minutos para mostrar o vídeo
-            iniciarEsperaParaVideo();
+            console.log("🔇 Saudação finalizada");
+            esconderSaudacao();
+            
+            // Incrementa contador de saudações
+            contadorSaudacoes++;
+            
+            // DECISÃO: Depois de 3 saudações, vamos para o MP4 após 5 minutos
+            if (contadorSaudacoes >= MAX_SAUDACOES_ANTES_MP4) {
+                console.log("⏳ 3 saudações exibidas. Aguardando 5 minutos para o vídeo MP4...");
+                if (timeoutAtual) clearTimeout(timeoutAtual);
+                timeoutAtual = setTimeout(() => {
+                    mostrarVideoMP4();
+                }, TEMPO_ESPERA_5MIN * 1000);
+            } else {
+                // Senão, aguarda 3 minutos e mostra a próxima saudação
+                console.log(`⏳ Aguardando 3 minutos para próxima saudação (${contadorSaudacoes}/3 saudações antes do MP4)...`);
+                if (timeoutAtual) clearTimeout(timeoutAtual);
+                timeoutAtual = setTimeout(() => {
+                    mostrarSaudacao();
+                }, TEMPO_ESPERA_3MIN * 1000);
+            }
         }, TEMPO_SAUDACAO * 1000);
     }
     
-    // Função para iniciar o ciclo completo (começa com saudação)
-    function iniciarCiclo() {
-        // Cancela qualquer timeout pendente
+    // Inicia ou reinicia o ciclo completo
+    function iniciarCicloCompleto() {
+        // Cancela todos os timeouts pendentes
         if (timeoutAtual) clearTimeout(timeoutAtual);
         if (videoTimeout) clearTimeout(videoTimeout);
-        esconderVideoVersa();
-        iniciarSaudacao();
+        
+        // Garante que ambos overlays estão fechados
+        esconderVideoMP4();
+        esconderSaudacao();
+        
+        // Reseta o contador de saudações
+        contadorSaudacoes = 0;
+        
+        console.log("🚀 Iniciando ciclo: Saudação inicial (32s)");
+        console.log("📋 Fluxo: Saudação(32s) → espera 3min → Saudação(32s) → espera 3min → Saudação(32s) → espera 5min → MP4(20s) → repete");
+        
+        // Começa com a primeira saudação
+        mostrarSaudacao();
     }
     
-    // ========== MÚSICA E PLAYER (MANTIDO) ==========
+    // ========== MÚSICA E PLAYER ==========
     const musicas = [
  { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
@@ -855,13 +867,14 @@
     updateClock(); setInterval(updateClock,60000);
     loadTrack(0); setTimeout(()=>playMusic(),500);
     
-    // INICIA O CICLO PRINCIPAL
-    iniciarCiclo();
+    // INICIA O CICLO
+    iniciarCicloCompleto();
     
     setTimeout(()=>{ if(document.fullscreenEnabled) document.documentElement.requestFullscreen().catch(()=>{}); },800);
     resetControlsTimer();
-    showMessage('✅ Clínica Versalis | Ciclo: Saudação 33s → espera 6min → versa.mp4 30s');
-    console.log("🎯 FLUXO CORRETO: Saudação 33s → Aguarda 6min → versa.mp4 30s → volta saudação. NUNCA juntos.");
+    showMessage('✅ Clínica Versalis | Ciclo ativo');
+    console.log("🎯 FLUXO: Saudação(32s) → espera 3min → Saudação → espera 3min → Saudação → espera 5min → MP4(20s) → repete");
+    console.log("✅ GARANTIDO: Saudação e MP4 NUNCA aparecem juntos!");
 </script>
 </body>
 </html>
