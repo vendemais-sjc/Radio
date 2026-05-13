@@ -71,36 +71,25 @@
             object-fit: contain;
         }
 
-        .error-message {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(255,0,0,0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 30;
-        }
-
+        /* ============ SAUDAÇÃO PROFISSIONAL REDESIGN ============ */
         .welcome-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(0,20,30,0.88) 100%);
+            backdrop-filter: blur(12px);
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 20px;
+            padding: 40px 20px;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
 
@@ -109,70 +98,172 @@
             visibility: visible;
         }
 
+        .logo-container {
+            animation: fadeInDown 0.8s ease-out;
+        }
+
         .logo-img {
-            width: 130px;
-            height: 130px;
+            width: 160px;
+            height: 160px;
             object-fit: contain;
-            margin: 0 auto 20px;
-            background: rgba(255,255,255,0.1);
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, rgba(78,205,196,0.15) 0%, rgba(78,205,196,0.05) 100%);
             border-radius: 50%;
-            padding: 15px;
-            border: 2px solid #4ecdc4;
+            padding: 18px;
+            border: 3px solid #4ecdc4;
+            box-shadow: 0 0 30px rgba(78,205,196,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.02);
         }
 
         .logo-text {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 3px;
+            font-size: 3.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #4ecdc4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(78,205,196,0.3);
         }
 
         .logo-sub {
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             color: #4ecdc4;
-            letter-spacing: 2px;
-            margin-top: 5px;
+            letter-spacing: 3px;
+            margin-top: 8px;
+            font-weight: 300;
+            text-transform: uppercase;
         }
 
+        /* MENSAGEM PRINCIPAL - MAIOR E MAIS PROFISSIONAL */
         .welcome-message {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(12px);
-            padding: 25px 45px;
-            border-radius: 20px;
-            border-left: 3px solid #4ecdc4;
-            border-right: 3px solid #4ecdc4;
-            margin: 20px 0;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(20px);
+            padding: 45px 65px;
+            border-radius: 28px;
+            border-left: 4px solid #4ecdc4;
+            border-right: 4px solid #4ecdc4;
+            margin: 35px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(78,205,196,0.1);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
         .welcome-message h1 {
-            font-size: 1.8rem;
-            color: #4ecdc4;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
         }
 
-        .welcome-message p {
-            font-size: 1.2rem;
+        .welcome-message h1 i {
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: #4ecdc4;
+            margin-right: 15px;
+        }
+
+        .welcome-message .mensagem-destaque {
+            font-size: 1.8rem;
             color: #fff;
+            margin: 20px 0;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .welcome-message .mensagem-destaque i {
+            color: #4ecdc4;
+            margin: 0 8px;
+        }
+
+        .welcome-message .tempo-estimado {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(78,205,196,0.3);
+            display: inline-block;
+        }
+
+        .badges-container {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin: 20px 0 30px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .badge {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 1px solid rgba(78,205,196,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .badge i {
+            color: #4ecdc4;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .badge span {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .badge:hover {
+            border-color: #4ecdc4;
+            transform: translateY(-2px);
         }
 
         .waiting-status {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 18px;
             background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            padding: 10px 25px;
-            border-radius: 50px;
+            backdrop-filter: blur(12px);
+            padding: 14px 32px;
+            border-radius: 60px;
+            margin-top: 20px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+            border: 1px solid rgba(78,205,196,0.2);
         }
 
         .waiting-status i {
             color: #4ecdc4;
+            font-size: 1.2rem;
         }
 
         .waiting-status span {
             color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 2px;
         }
 
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: #4ecdc4;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* ============ TICKER E OUTROS ELEMENTOS ============ */
         .ticker-moderno {
             position: absolute;
             top: 0;
@@ -283,10 +374,12 @@
             height: 38px;
             border-radius: 50%;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .ctrl-btn:hover {
             background: #4ecdc4;
+            transform: scale(1.05);
         }
 
         .ctrl-btn.play {
@@ -309,6 +402,11 @@
             border-radius: 50%;
             cursor: pointer;
             z-index: 25;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-controls:hover {
+            background: #4ecdc4;
         }
 
         .fullscreen-btn {
@@ -323,6 +421,11 @@
             border-radius: 50%;
             cursor: pointer;
             z-index: 25;
+            transition: all 0.2s ease;
+        }
+
+        .fullscreen-btn:hover {
+            background: #4ecdc4;
         }
 
         .playlist-btn {
@@ -337,6 +440,11 @@
             border-radius: 50%;
             cursor: pointer;
             z-index: 25;
+            transition: all 0.2s ease;
+        }
+
+        .playlist-btn:hover {
+            background: #4ecdc4;
         }
 
         .notification {
@@ -396,6 +504,7 @@
             margin-bottom: 5px;
             cursor: pointer;
             font-size: 0.7rem;
+            transition: all 0.2s ease;
         }
 
         .playlist-item:hover, .playlist-item.active {
@@ -416,9 +525,60 @@
             font-family: monospace;
         }
 
+        /* ============ ANIMAÇÕES ============ */
         @keyframes tickerScroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .logo-text { font-size: 2rem; }
+            .logo-sub { font-size: 0.8rem; }
+            .welcome-message { padding: 25px 35px; margin: 20px; }
+            .welcome-message h1 { font-size: 1.8rem; }
+            .welcome-message .mensagem-destaque { font-size: 1.2rem; }
+            .badge { padding: 8px 16px; }
+            .badge span { font-size: 0.7rem; }
+            .waiting-status { padding: 10px 20px; }
+            .waiting-status span { font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -435,22 +595,49 @@
             <video id="highlightVideo" preload="auto"></video>
         </div>
 
+        <!-- SAUDAÇÃO PROFISSIONAL REDESIGN -->
         <div class="welcome-overlay" id="welcomeOverlay">
             <div class="logo-container">
                 <img src="ver.png" alt="Clínica Versalis" class="logo-img" id="logoImg" 
-                     onerror="this.style.display='none'; this.parentElement.innerHTML+='<div style=\'font-size:50px; color:#4ecdc4;\'><i class=\'fas fa-heartbeat\'></i></div>'">
+                     onerror="this.style.display='none'; this.parentElement.innerHTML+='<div style=\'font-size:60px; color:#4ecdc4;\'><i class=\'fas fa-heartbeat\'></i></div>'">
                 <div class="logo-text">CLÍNICA VERSALIS</div>
-                <div class="logo-sub">Cuidando da sua saúde e bem-estar</div>
+                <div class="logo-sub">Excelência em saúde & bem-estar</div>
             </div>
+
             <div class="welcome-message">
-                <h1><i class="fas fa-hand-peace"></i> SEJA BEM-VINDO(A)!</h1>
-                <p><i class="fas fa-clock"></i> Em breve você será atendido(a)</p>
-                <p><i class="fas fa-heartbeat"></i> Excelência em cuidados com a saúde</p>
+                <h1>
+                    <i class="fas fa-hand-peace"></i> 
+                    SEJA MUITO BEM-VINDO(A)!
+                </h1>
+                <div class="mensagem-destaque">
+                    <i class="fas fa-clock"></i>
+                    Em breve você será atendido(a) com todo cuidado e atenção que você merece
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="tempo-estimado">
+                    <i class="fas fa-hourglass-half"></i> Tempo estimado de espera: alguns minutos
+                </div>
             </div>
+
+            <div class="badges-container">
+                <div class="badge">
+                    <i class="fas fa-stethoscope"></i>
+                    <span>ESPECIALIDADES MÉDICAS</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>AGENDAMENTO RÁPIDO</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>SEGURANÇA E CONFORTO</span>
+                </div>
+            </div>
+
             <div class="waiting-status">
-                <i class="fas fa-circle fa-pulse"></i>
+                <div class="pulse-dot"></div>
                 <span>AGUARDE UM MOMENTO</span>
-                <i class="fas fa-circle fa-pulse"></i>
+                <div class="pulse-dot"></div>
             </div>
         </div>
 
@@ -463,6 +650,8 @@
                     <span>🏥 ESPECIALIDADES MÉDICAS</span>
                     <i class="fas fa-circle"></i>
                     <span>📞 (12) 98846-1978</span>
+                    <i class="fas fa-circle"></i>
+                    <span>📍 ATENDIMENTO HUMANIZADO 24h</span>
                 </div>
             </div>
         </div>
@@ -476,16 +665,16 @@
                 <div class="progress-bar-bg" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
             </div>
             <div class="control-buttons">
-                <button class="ctrl-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-                <button class="ctrl-btn play" id="playPauseBtn"><i class="fas fa-play"></i></button>
-                <button class="ctrl-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
-                <button class="ctrl-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+                <button class="ctrl-btn" id="prevBtn" aria-label="Música anterior"><i class="fas fa-step-backward"></i></button>
+                <button class="ctrl-btn play" id="playPauseBtn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+                <button class="ctrl-btn" id="shuffleBtn" aria-label="Modo aleatório"><i class="fas fa-random"></i></button>
+                <button class="ctrl-btn" id="nextBtn" aria-label="Próxima música"><i class="fas fa-step-forward"></i></button>
             </div>
         </div>
 
-        <button class="toggle-controls" id="toggleControlsBtn"><i class="fas fa-chevron-up"></i></button>
-        <button class="playlist-btn" id="playlistBtn"><i class="fas fa-list-ul"></i></button>
-        <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
+        <button class="toggle-controls" id="toggleControlsBtn" aria-label="Mostrar controles"><i class="fas fa-chevron-up"></i></button>
+        <button class="playlist-btn" id="playlistBtn" aria-label="Playlist"><i class="fas fa-list-ul"></i></button>
+        <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Tela cheia"><i class="fas fa-expand"></i></button>
 
         <div class="playlist-container" id="playlistContainer">
             <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST AMBIENTE</div>
@@ -497,11 +686,8 @@
     <audio id="musicPlayer" preload="auto"></audio>
 
     <script>
-        // LISTA DE VÍDEOS - VERIFIQUE OS NOMES!
+        // LISTA DE VÍDEOS
         const videosMp4 = ['espe.mp4', 'orto.mp4', 'gine.mp4', 'psic.mp4', 'demo.mp4'];
-        
-        // PARA TESTE - tente apenas um vídeo primeiro:
-        // const videosMp4 = ['espe.mp4'];
         
         const TEMPO_SAUDACAO = 31;
         const TEMPO_ENTRE_CICLOS = 240;
@@ -547,7 +733,6 @@
         let timeoutPrincipal = null;
         let videoTimeout = null;
 
-        // FUNÇÃO PARA TESTAR SE O VÍDEO EXISTE
         function testarVideo(videoFile, index) {
             fetch(videoFile, { method: 'HEAD' })
                 .then(response => {
@@ -555,12 +740,11 @@
                         console.log(`✅ Vídeo encontrado: ${videoFile}`);
                     } else {
                         console.log(`❌ Vídeo NÃO encontrado: ${videoFile}`);
-                        showMessage(`ERRO: ${videoFile} não encontrado!`, 3000);
+                        showMessage(`⚠️ ${videoFile} não encontrado`, 2000);
                     }
                 })
                 .catch(() => {
                     console.log(`❌ Erro ao acessar: ${videoFile}`);
-                    showMessage(`ERRO: ${videoFile} não encontrado!`, 3000);
                 });
         }
 
@@ -582,28 +766,23 @@
             }
             
             const videoFile = videosMp4[index];
-            console.log(`🎬 Tentando carregar: ${videoFile}`);
+            console.log(`🎬 Carregando: ${videoFile}`);
             
             highlightVideo.src = videoFile;
             highlightVideo.load();
             
-            // Evento de erro do vídeo
             highlightVideo.onerror = function() {
-                console.log(`❌ Erro ao carregar: ${videoFile}`);
-                showMessage(`⚠️ Não foi possível carregar: ${videoFile}`, 2000);
-                // Pula para o próximo vídeo
+                console.log(`❌ Erro: ${videoFile}`);
                 clearTimeout(videoTimeout);
                 mostrarVideoMp4(index + 1);
             };
             
             highlightVideo.oncanplay = function() {
-                console.log(`✅ Vídeo carregado: ${videoFile}`);
+                console.log(`✅ Rodando: ${videoFile}`);
                 highlightVideo.play().catch(e => console.log('Erro play:', e));
                 videoOverlay.classList.add('show');
-                showMessage(`▶️ Reproduzindo: ${videoFile}`, 1500);
             };
             
-            // Timeout para passar ao próximo vídeo
             videoTimeout = setTimeout(() => {
                 mostrarVideoMp4(index + 1);
             }, TEMPO_CADA_VIDEO * 1000);
@@ -615,7 +794,6 @@
         }
         
         function iniciarSequenciaVideos() {
-            // Testa todos os vídeos antes de começar
             videosMp4.forEach((video, i) => testarVideo(video, i));
             mostrarVideoMp4(0);
         }
@@ -625,9 +803,7 @@
             if (videoTimeout) clearTimeout(videoTimeout);
             
             esconderVideoMp4();
-            
             welcomeOverlay.classList.add('show');
-            showMessage('👋 Saudação inicial - 31 segundos', 2000);
             
             timeoutPrincipal = setTimeout(() => {
                 welcomeOverlay.classList.remove('show');
@@ -637,13 +813,11 @@
             }, TEMPO_SAUDACAO * 1000);
         }
 
-        // RELÓGIO
         function updateClock() {
             const now = new Date();
             clockEl.textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
         }
 
-        // PLAYER
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
             const m = Math.floor(sec / 60);
@@ -743,7 +917,7 @@
         function nextTrack() { loadTrack((currentMusicIndex + 1) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏭️ ${musicas[currentMusicIndex].title}`); showControls(); }
         function prevTrack() { loadTrack((currentMusicIndex - 1 + musicas.length) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏮️ ${musicas[currentMusicIndex].title}`); showControls(); }
         function selectSong(index) { loadTrack(index); if (isPlaying) playMusic(); showMessage(`🎵 ${musicas[currentMusicIndex].title}`); showControls(); }
-        function toggleShuffleMode() { shuffle = !shuffle; showMessage(shuffle ? '🔀 Aleatório' : '➡️ Sequencial'); shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; showControls(); }
+        function toggleShuffleMode() { shuffle = !shuffle; showMessage(shuffle ? '🔀 Modo aleatório ativado' : '➡️ Modo sequencial'); shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; showControls(); }
         function toggleFullscreen() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); showControls(); }
         function togglePlaylist() { playlistContainer.classList.toggle('open'); showControls(); }
         function toggleControls() {
@@ -755,7 +929,6 @@
             } else { showControls(); }
         }
 
-        // EVENTOS
         playBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
@@ -778,7 +951,6 @@
         musicPlayer.onended = () => nextTrack();
         musicPlayer.onerror = () => setTimeout(() => nextTrack(), 1000);
 
-        // INICIALIZAÇÃO
         updateClock();
         setInterval(updateClock, 60000);
         
@@ -789,9 +961,8 @@
         
         setTimeout(() => document.documentElement.requestFullscreen(), 1000);
         resetControlsTimer();
-        showMessage('✅ Sistema iniciado - Ciclo de 4 minutos');
+        showMessage('✅ Sistema iniciado | Clínica Versalis');
         
-        // Lista os vídeos no console para debug
         console.log('📁 Vídeos esperados:', videosMp4);
     </script>
 </body>
