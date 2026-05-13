@@ -27,7 +27,7 @@
             background: #000;
         }
 
-        /* VIDEO YOUTUBE BACKGROUND */
+        /* VIDEO YOUTUBE BACKGROUND - ANTIOG */
         .video-background {
             position: absolute;
             top: 0;
@@ -105,22 +105,21 @@
             margin-bottom: 20px;
         }
 
-        .logo-simbol {
-            width: 75px;
-            height: 75px;
-            background: linear-gradient(145deg, #4ecdc4 0%, #2c9c94 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* LOGO REAL - IMAGEM */
+        .logo-img-welcome {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
             margin: 0 auto 12px;
-            box-shadow: 0 8px 25px rgba(78,205,196,0.25);
+            filter: drop-shadow(0 4px 12px rgba(78,205,196,0.3));
+            border-radius: 50%;
+            background: rgba(78,205,196,0.08);
+            padding: 8px;
+            transition: transform 0.2s ease;
         }
 
-        .logo-simbol i {
-            font-size: 2.5rem;
-            color: #fff;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        .logo-img-welcome:hover {
+            transform: scale(1.02);
         }
 
         .clinic-name {
@@ -467,14 +466,15 @@
             .welcome-card h2 { font-size: 1.4rem; }
             .mensagem-breve { font-size: 0.9rem; }
             .clinic-name { font-size: 1.3rem; }
+            .logo-img-welcome { width: 70px; height: 70px; }
         }
     </style>
 </head>
 <body>
 <div class="tv-container">
-    <!-- VIDEO BACKGROUND YOUTUBE (NOVO LINK MUKAPLAY) -->
+    <!-- VIDEO BACKGROUND YOUTUBE - LINK ANTIOG (CORRIGIDO) -->
     <div class="video-background">
-        <iframe src="https://www.youtube.com/embed/HRcLFwgUFQI?autoplay=1&mute=1&loop=1&playlist=HRcLFwgUFQI&controls=0&showinfo=0&rel=0&modestbranding=1" 
+        <iframe src="https://www.youtube.com/embed/7laJXHiMZaA?autoplay=1&mute=1&loop=1&playlist=7laJXHiMZaA&controls=0&showinfo=0&rel=0&modestbranding=1" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowfullscreen>
         </iframe>
@@ -485,12 +485,12 @@
         <video id="versaVideo" preload="auto" playsinline></video>
     </div>
 
-    <!-- SAUDAÇÃO PROFISSIONAL MAIS COMPACTA -->
+    <!-- SAUDAÇÃO PROFISSIONAL COM LOGO REAL -->
     <div class="welcome-overlay" id="welcomeOverlay">
         <div class="logo-mini-container">
-            <div class="logo-simbol">
-                <i class="fas fa-leaf"></i>
-            </div>
+            <!-- LOGO REAL - imagem ver.png -->
+            <img src="ver.png" alt="Clínica Versalis" class="logo-img-welcome" id="logoImg" 
+                 onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('afterbegin', '<div class=\'logo-simbol-fallback\' style=\'width:80px;height:80px;background:linear-gradient(145deg,#4ecdc4,#2c9c94);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;\'><i class=\'fas fa-heartbeat\' style=\'font-size:2.5rem;color:#fff;\'></i></div>')">
             <div class="clinic-name">CLÍNICA VERSALIS</div>
             <div class="clinic-tag">saúde integrada & humanização</div>
         </div>
@@ -568,25 +568,23 @@
 <audio id="musicPlayer" preload="auto"></audio>
 
 <script>
-    // CONFIGURAÇÕES: TEMPO DE SAUDAÇÃO reduzido (mais profissional) = 12 segundos
-    const TEMPO_SAUDACAO = 12;          // saudação mais curta
+    // CONFIGURAÇÕES: SAUDAÇÃO REDUZIDA (12s) e VIDEO VERSA.MP4 APÓS 3 MINUTOS
+    const TEMPO_SAUDACAO = 12;          
     const TEMPO_ATIVA_VIDEO_VERSA = 180; // 3 minutos = 180 segundos
     const VERSA_MP4_FILENAME = 'versa.mp4';
 
-    // Função principal: após 3 minutos, exibe o vídeo versa.mp4 e depois repete o ciclo
     let cronometroVersa = null;
     let loopPrincipalTimeout = null;
     let videoVersaTimeout = null;
-    let welcomeVisible = false;
 
     // Referências DOM
     const versaVideo = document.getElementById('versaVideo');
     const videoOverlay = document.getElementById('videoOverlay');
     const welcomeOverlay = document.getElementById('welcomeOverlay');
 
-    // MÚSICAS (biblioteca leve)
+    // MÚSICAS AMBIENTE
     const musicas = [
-      { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+{ id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -605,7 +603,101 @@
             { id: 17, title: "Cheia de Charme", artist: "Guilherme Arantes", src: "Cheia_de_Cheia_de_Charme_muzzik.m4a", periodo: "manha" },
             { id: 18, title: "Sailing", artist: "Christopher Cross", src: "Christopher_Cross_Sailing_muzzik.m4a", periodo: "noite" },
             { id: 19, title: "Poeira No Vento", artist: "Chrystian & Ralf", src: "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", periodo: "noite" },
-            { id: 20, title: "Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", periodo: "noite" }, 
+            { id: 20, title: "Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", periodo: "noite" },
+             { id: 21, title: "Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", periodo: "tarde" },
+            { id: 22, title: "Corre Pro Meu Mar", artist: "Maneva", src: "Corre_Pro_Corre_Pro_Meu_Mar_Radio_Edit__muzzik.m4a", periodo: "manha" },
+            { id: 23, title: "Time After Time", artist: "Cyndi Lauper", src: "Cyndi_Lauper_Time_after_time_muzzik.m4a", periodo: "noite" },
+            { id: 24, title: "Você Sempre Será", artist: "DINO & Banda Malta", src: "DINO_Feat_Banda_Malta_Voc_Sempre_Ser_DVD_Barzim_de_Rock.m4a", periodo: "tarde" },
+            { id: 25, title: "Casinha Branca", artist: "DINO & Renato Vianna", src: "DINO_feat_Renato_Vianna_Casinha_Branca_DVD_Barzim_de_Rock_muzzik (1).m4a", periodo: "manha" },
+            { id: 26, title: "Send It Back", artist: "Don West", src: "DON_WEST_Send_It_Back_muzzik.m4a", periodo: "manha" },
+            { id: 27, title: "Thank You", artist: "Dido", src: "Dido_Thank_You_muzzik.m4a", periodo: "todos" },
+            { id: 28, title: "Ah! Como eu Amei", artist: "Alexandre Pires", src: "Ah_Como_Eu_Amei_Alexandre_Pires_muzzik.m4a", periodo: "noite" },
+            { id: 29, title: "Everytime You Go Away", artist: "Dino Fonseca", src: "Dino_Fonseca_Everytime_You_Go_Away_Back_To_The_s_muzzik.m4a", periodo: "todos" },
+            { id: 30, title: "Correnteza", artist: "Djavan", src: "Djavan_Correnteza.m4a", periodo: "noite" },
+            { id: 31, title: "La Belle de_our", artist: "Paulinho mosca", src: "La_Belle_La_Belle_de_Jour_muzzik.m4a", periodo: "noite" },
+            { id: 32, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" },
+            { id: 33, title: "Sailing", artist: "Emmerson Nogueira", src: "Emmerson_Nogueira_Sailing_13.m4a", periodo: "todos" },
+            { id: 34, title: "Encostar na Tua", artist: "Anavitória", src: "Encostar_na_Encostar_na_Tua.m4a", periodo: "todos" },
+            { id: 35, title: "Somos Quem Podemos Ser", artist: "Engenheiros Do Hawaii", src: "Engenheiros_Do_Hawaii_Somos_Quem_Podemos_Ser_muzzik.m4a", periodo: "manha" },
+            { id: 36, title: "Entre o Céu e o Mar", artist: "Elba Ramalho", src: "Entre_O_Entre o Ceu e o Mar.m4a", periodo: "noite" },
+            { id: 37, title: "Epitáfio", artist: "Titãs", src: "Epit_fio_Epit_fio_muzzik.m4a", periodo: "todos" },
+            { id: 38, title: "Espumas ao Vento", artist: "Fagner", src: "Espumas_ao_Espumas_ao_Vento.m4a", periodo: "noite" },
+            { id: 39, title: "Esquece e Vem", artist: "Nico Rezende", src: "Esquece_e_Esquece_e_vem_Nico_5.m4a", periodo: "noite" },
+            { id: 40, title: "Só pro seu prazer", artist: "Heróis da Resistência", src: "so proseu pazer.m4a", periodo: "todos" },
+            { id: 41, title: "Skyline Pigeon", artist: "Elton John", src: "Elton_John_Skyline_Pigeon_muzzik.m4a", periodo: "noite" },
+            { id: 42, title: "Clube da Esquina", artist: "Flávio Venturini", src: "Fl_vio_Venturini_Clube_da_esquina.m4a", periodo: "tarde" },
+            { id: 43, title: "Noites com Sol", artist: "Flávio Venturini & Vanessa da Mata", src: "Flavio venturininoitescom sol.m4a", periodo: "noite" },
+            { id: 44, title: "I Like Chopin", artist: "Gazebo", src: "Gazebo_I_Like_Chopin_muzzik.m4a", periodo: "todos" },
+            { id: 45, title: "I Was Born To Love You", artist: "Freddie Mercury", src: "Freddie_Mercury_I_Was_Born_To_Love_You_muzzik.m4a", periodo: "manha" },
+            { id: 46, title: "Amado", artist: "Gupe", src: "GUPE_Amado_muzzik.m4a", periodo: "tarde" },
+            { id: 47, title: "Careless Whisper", artist: "George Michael", src: "George_Michael_Careless_Whisper_muzzik.m4a", periodo: "noite" },
+            { id: 48, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "tarde" },
+            { id: 49, title: "Dona Da Minha Cabeça", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dona_da_Minha_Cabe_a_muzzik.m4a", periodo: "manha" },
+            { id: 50, title: "A Noite", artist: "Gusttavo Lima", src: "Gusttavo_Lima_A_Noite_67k.m4a", periodo: "noite" },
+            { id: 51, title: "I Don't Want To", artist: "Toni Braxton", src: "I_Don_t_I_Don_t_Want_To_muzzik.m4a", periodo: "noite" },
+            { id: 52, title: "Ai, Ai, Ai, Ai", artist: "Ivan Lins", src: "Ivan_Lins_Ai_Ai_Ai_Ai_Ai.m4a", periodo: "tarde" },
+            { id: 53, title: "Amigo do Sol Amigo da Lua", artist: "Benito Di Paula", src: "Benito_Di_Paula_e_Rodrigo_Vellozo_Amigo_do_Sol_Amigo_da_Lua_muzzik.m4a", periodo: "tarde" },
+            { id: 54, title: "Ah Como Eu Amei", artist: "Ivete Sangalo", src: "Ivete Sangalo - Ah_ Como Eu Amei (Benito di Paula)(MP3_160K).mp3", periodo: "noite" },
+            { id: 55, title: "I'm Yours", artist: "Jason Mraz", src: "Jason_Mraz_I_m_Yours_muzzik.m4a", periodo: "tarde" },
+            { id: 56, title: "Million Miles", artist: "Jason Mraz", src: "Jason_Mraz_Million_Miles_muzzik.m4a", periodo: "manha" },
+            { id: 57, title: "Papel Machê", artist: "João Bosco", src: "Jo_o_Bosco_Papel_Machê.m4a", periodo: "noite" },
+            { id: 58, title: "P.D.A.", artist: "John Legend", src: "John_Legend_P_D_A_muzzik.m4a", periodo: "todos" },
+            { id: 59, title: "One", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_One_muzzik.m4a", periodo: "todos" },
+            { id: 60, title: "Homem Aranha", artist: "Jorge Vercilo", src: "Jorge_Vercilo_Homem_Aranha_muzzik.m4a", periodo: "tarde" },
+            { id: 61, title: "Dentro de um Abraço", artist: "Jota Quest", src: "Jota_Quest_Dentro_de_um_Abra_o_muzzik.m4a", periodo: "manha" },
+            { id: 62, title: "Nem Pensar", artist: "Kleiton & Kledir", src: "KLEITON_KLEDIR_nem_pensar_muzzik.m4a", periodo: "todos" },
+            { id: 63, title: "Everybody's Changing", artist: "Keane", src: "Keane_Everybody_s_Changing_muzzik.m4a", periodo: "tarde" },
+            { id: 64, title: "Born Again", artist: "Lisa", src: "LISA_Born_Again_feat_Doja_Cat_RAYE_muzzik.m4a", periodo: "manha" },
+            { id: 65, title: "Die With A Smile", artist: "Lady Gaga & Bruno Mars", src: "Lady_Gaga_Bruno_Mars_Die_With_A_Smile_muzzik.m4a", periodo: "todos" },
+            { id: 66, title: "Lanterna dos Afogados", artist: "Paralamas", src: "Lanterna_Dos_Lanterna_Dos_Afogados_muzzik.m4a", periodo: "tarde" },
+            { id: 67, title: "Let It Be Music", artist: "Travel Love Friends", src: "Let_It_Be_Music_Travel_Love_Friends_20.m4a", periodo: "todos" },
+            { id: 68, title: "Muito Estranho", artist: "Liga Joe", src: "Liga_Joe_Muito_Estranho_Flashbacks_ (1).m4a", periodo: "todos" },
+            { id: 69, title: "Mordida de Amor", artist: "Yahoo", src: "Yahoo_Mordida_de_Amor_muzzik.m4a", periodo: "noite" },
+            { id: 70, title: "Toda Forma de Amor", artist: "Lulu Santos", src: "Lulu_Santos_Toda_Forma_de_Amor_Um_Certo_Algu_m_O_ltimo_Rom_ntico_muzzik.m4a", periodo: "tarde" },
+            { id: 71, title: "For Your Babies", artist: "Simply Red", src: "Simply_Red_For_Your_Babies_muzzik.m4a", periodo: "todos" },
+            { id: 72, title: "Reluz", artist: "Marcos Sabino", src: "MARCOS_SABINO_MARCOS_SABINO_reluz_muzzik.m4a", periodo: "todos" },
+            { id: 73, title: "Meu Mundo e Nada Mais", artist: "Guilherme Arantes", src: "MEU_MUNDO_E_NADA_MAIS_Guilherme_Arantes_muzzik.m4a", periodo: "noite" },
+            { id: 74, title: "Balada de Gisberta", artist: "Maria Bethânia", src: "Maria_Beth_nia_Balada_de_Gisberta_ (1).m4a", periodo: "tarde" },
+            { id: 75, title: "Pra Rua me Levar", artist: "Maria Bethânia & Ana Carolina", src: "Maria_Maria_Beth_nia_Pra_Rua_Me_Levar_muzzik (1).m4a", periodo: "tarde" },
+            { id: 76, title: "Just Another Day", artist: "Maurício Manieri feat. Jon Secada", src: "Maur_cio_Manieri_feat_Jon_Secada_Just_Another_Day_14.m4a", periodo: "manha" },
+            { id: 77, title: "I've Had The Time Of My Life", artist: "Mauricio Manieri", src: "Mauricio_Manieri_I_ve_Had_The_Time_Of_My_Life_muzzik.m4a", periodo: "manha" },
+            { id: 78, title: "Billie Jean", artist: "Michael Jackson", src: "Michael_Jackson_Billie_Jean_muzzik.m4a", periodo: "manha" },
+            { id: 79, title: "The Girl Is Mine", artist: "Michael Jackson", src: "Michael_Jackson_The_Girl_Is_Mine_muzzik.m4a", periodo: "noite" },
+            { id: 80, title: "Epitáfio", artist: "Nando Reis", src: "Epit_fio_Epit_fio_muzzik.m4a", periodo: "tarde" },
+            { id: 81, title: "Mina do Condomínio", artist: "Seu Jorge", src: "Mina_do_Mina_do_Condom_nio_muzzik.m4a", periodo: "manha" },
+            { id: 82, title: "My Sweet Lord", artist: "George Harrison", src: "My_Sweet_My_Sweet_Lord_GEORGE_HARRISON_The_HSCC_muzzik.m4a", periodo: "todos" },
+            { id: 83, title: "Sorri Sou Rei", artist: "Natiruts", src: "Natiruts_Sorri_Sou_Rei_muzzik.m4a", periodo: "manha" },
+            { id: 84, title: "Lotta Love", artist: "Nicolette Larson", src: "Nicolette_Larson_Lotta_Love_muzzik.m4a", periodo: "manha" },
+            { id: 85, title: "O Barquinho", artist: "Naira Leão", src: "O_Barquinho_O_Barquinho.m4a", periodo: "tarde" },
+            { id: 86, title: "Paisagem da Janela", artist: "Lô Borges", src: "PAISAGEM_DA_JANELA_L_BORGES_muzzik.m4a", periodo: "tarde" },
+            { id: 87, title: "Palco", artist: "Gilberto Gil & João Gomes", src: "PALCO_PALCO_muzzik.m4a", periodo: "tarde" },
+            { id: 88, title: "Palavras", artist: "Cassia Eller", src: "Palavras_Ao_Palavras_Ao_Vento.m4a", periodo: "tarde" },
+            { id: 89, title: "Palpite", artist: "Vanessa Rangel", src: "Palpite_Palpite_muzzik.m4a", periodo: "tarde" },
+            { id: 90, title: "Let Her Go", artist: "Passenger", src: "Passenger_Passenger_Let_Her_Go_Official_Video__18.m4a", periodo: "manha" },
+            { id: 91, title: "Mil e Uma Noites de Amor", artist: "Pepeu Gomes", src: "Pepeu_Gomes_Mil_e_uma_noites_de_amor_muzzik.m4a", periodo: "tarde" },
+            { id: 92, title: "Baby Come Back", artist: "Player", src: "Player_Baby_Come_Back_7.m4a", periodo: "noite" },
+            { id: 93, title: "Lady Lady Lady", artist: "Joe Esposito", src: "Joe_Esposito_Lady_Lady_Lady_muzzik.m4a", periodo: "noite" },
+            { id: 94, title: "Primavera", artist: "Cassiano", src: "Primavera_Album_Primavera_Album_Version__muzzik.m4a", periodo: "noite" },
+            { id: 95, title: "Jura Secreta Revelação", artist: "Fagner & Zé Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", periodo: "noite" },
+            { id: 96, title: "Calm Down", artist: "Rema & Selena Gomez", src: "Rema_Selena_Gomez_Calm_Down_muzzik.m4a", periodo: "manha" },
+            { id: 97, title: "trém-das-corres", artist: "Caetano-Veloso", src: "Caetano-Veloso-trém-das-corres-mutv.m4a", periodo: "tarde" },
+            { id: 98, title: "Casinha Branca", artist: "Roberta Campos", src: "Roberta_Campos_Casinha_Branca.m4a", periodo: "tarde" },
+            { id: 99, title: "Furdúncio", artist: "Roberto Carlos", src: "Roberto_Carlos Furduncio.m4a", periodo: "manha" },
+            { id: 100, title: "Everytime You Go Away", artist: "Paul Young", src: "Paul_Young_Everytime_You_Go_Away_muzzik.m4a", periodo: "noite" },
+            { id: 101, title: "Róberta Sá", artist: "Róberta Sá", src: "Róberta Sá, _muzzik.m4a", periodo: "tarde" },
+            { id: 102, title: "Sábado à Noite", artist: "Seu Jorge", src: "S_bado_Noite_Seu_Jorge_4.m4a", periodo: "tarde" },
+            { id: 103, title: "Samba de Verão", artist: "Luiza Sonza", src: "Samba_De_Samba_De_Ver_o.m4a", periodo: "tarde" },
+            { id: 104, title: "Sexual Healing", artist: "Marvin Gaye", src: "Sexual_Healing_Sexual_Healing_muzzik.m4a", periodo: "noite" },
+            { id: 105, title: "Shake You Down", artist: "Unknown", src: "Shake_You_Shake_You_Down.m4a", periodo: "todos" },
+            { id: 106, title: "Simples Desejo", artist: "Luciana Mello", src: "Simples_Desejo_Simples_Desejo_muzzik.m4a", periodo: "tarde" },
+            { id: 107, title: "Holding Back The Years", artist: "Simply Red", src: "Simply_Red_Holding_Back_The_Years_15.m4a", periodo: "noite" },
+            { id: 108, title: "Stars", artist: "Simply Red", src: "Simply_Red_Stars_muzzik.m4a", periodo: "tarde" },
+            { id: 109, title: "Sunrise", artist: "Simply Red", src: "Simply_Red_Sunrise_muzzik.m4a", periodo: "manha" },
+            { id: 110, title: "Queixa", artist: "Caetano Veloso", src: "Queixa_Queixa_muzzik.m4a", periodo: "tarde" },
+            { id: 111, title: "sinais de fogo", artist: "Preta_gil", src: "Preta_gil_sinais_de_fogo_muzzik.m4a", periodo: "manha" },
+            { id: 112, title: "Resposta", artist: "Skank", src: "Skank_Resposta.m4a", periodo: "tarde" },
+            { id: 113, title: "Vamos Fugir", artist: "Skank", src: "Skank_Vamos_Fugir_muzzik.m4a", periodo: "manha" },
+        
     ];
 
     // AUDIO GLOBAL
@@ -630,10 +722,9 @@
     const notificationText = document.getElementById('notificationText');
     const clockEl = document.getElementById('clock');
 
-    // Variáveis musicais
     let currentMusicIndex = 0;
     let isPlaying = false;
-    let shuffle = false;
+    let shuffleMode = false;
     let timerInterval = null;
     let controlsVisible = true;
     let controlsTimeout = null;
@@ -648,21 +739,18 @@
     }
 
     function iniciarVideoVersa() {
-        // Cancela qualquer timeout pendente para não conflitar
         if (videoVersaTimeout) clearTimeout(videoVersaTimeout);
         if (loopPrincipalTimeout) clearTimeout(loopPrincipalTimeout);
         
         console.log("🎬 Iniciando vídeo versa.mp4 após 3 minutos");
-        // Garantir que overlay de saudação esteja oculto antes
         welcomeOverlay.classList.remove('show');
         
-        // Carrega e exibe o versa.mp4
         versaVideo.src = VERSA_MP4_FILENAME;
         versaVideo.load();
         
         versaVideo.onerror = () => {
-            console.error("❌ versa.mp4 não encontrado, tentando novamente em 5s");
-            showMessage("⚠️ Vídeo institucional não encontrado, retornando ao ciclo", 2000);
+            console.error("❌ versa.mp4 não encontrado");
+            showMessage("⚠️ Vídeo institucional indisponível", 2000);
             setTimeout(() => {
                 esconderVideoVersa();
                 iniciarCicloComSaudacao();
@@ -675,9 +763,8 @@
             videoOverlay.classList.add('show');
         };
         
-        // Duração do vídeo: caso não tenha evento ended, definimos timeout de 30 segundos (ajuste conforme necessidade)
-        // Para manter ciclo, após o vídeo, volta para saudação e repetir o processo
-        const duracaoVideoEstimada = 27000; // 27 segundos (tempo razoável)
+        // Duração estimada do vídeo (30 segundos)
+        const duracaoVideoEstimada = 30000;
         videoVersaTimeout = setTimeout(() => {
             esconderVideoVersa();
             iniciarCicloComSaudacao();
@@ -691,15 +778,11 @@
     }
     
     function iniciarCicloComSaudacao() {
-        // Mostra saudação profissional por TEMPO_SAUDACAO segundos (agora 12s)
         welcomeOverlay.classList.add('show');
-        welcomeVisible = true;
         
         if (loopPrincipalTimeout) clearTimeout(loopPrincipalTimeout);
         loopPrincipalTimeout = setTimeout(() => {
             welcomeOverlay.classList.remove('show');
-            welcomeVisible = false;
-            // Após sair da saudação, programar o vídeo versa para daqui a 3 minutos
             if (cronometroVersa) clearTimeout(cronometroVersa);
             cronometroVersa = setTimeout(() => {
                 iniciarVideoVersa();
@@ -707,7 +790,6 @@
         }, TEMPO_SAUDACAO * 1000);
     }
     
-    // Função de inicialização principal: começa com saudacao, depois vídeo background + cronometro para versa
     function iniciarSistema() {
         iniciarCicloComSaudacao();
     }
@@ -725,7 +807,7 @@
         setTimeout(() => notification.style.opacity = '0', duration);
     }
 
-    // ========== PLAYER ==========
+    // ========== PLAYER DE MÚSICA ==========
     function formatTime(sec) {
         if (isNaN(sec)) return "0:00";
         const m = Math.floor(sec / 60);
@@ -811,7 +893,7 @@
     function nextTrack() { loadTrack((currentMusicIndex + 1) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏭️ ${musicas[currentMusicIndex].title}`); showControls(); }
     function prevTrack() { loadTrack((currentMusicIndex - 1 + musicas.length) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏮️ ${musicas[currentMusicIndex].title}`); showControls(); }
     function selectSong(index) { loadTrack(index); if (isPlaying) playMusic(); showMessage(`🎵 ${musicas[currentMusicIndex].title}`); showControls(); }
-    function toggleShuffleMode() { shuffle = !shuffle; showMessage(shuffle ? '🔀 Aleatório ativado' : '➡️ Sequencial'); shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; showControls(); }
+    function toggleShuffleMode() { shuffleMode = !shuffleMode; showMessage(shuffleMode ? '🔀 Aleatório ativado' : '➡️ Sequencial'); shuffleBtn.style.background = shuffleMode ? '#4ecdc4' : ''; showControls(); }
     function toggleFullscreen() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); showControls(); }
     function togglePlaylist() { playlistContainer.classList.toggle('open'); showControls(); }
     function toggleControls() {
@@ -823,7 +905,7 @@
         } else { showControls(); }
     }
 
-    // Event listeners
+    // EVENT LISTENERS
     playBtn.addEventListener('click', togglePlayPause);
     prevBtn.addEventListener('click', prevTrack);
     nextBtn.addEventListener('click', nextTrack);
@@ -844,20 +926,19 @@
     musicPlayer.onended = () => nextTrack();
     musicPlayer.onerror = () => setTimeout(() => nextTrack(), 1500);
 
-    // Inicialização geral
+    // INICIALIZAÇÃO
     updateClock();
     setInterval(updateClock, 60000);
     loadTrack(0);
     setTimeout(() => playMusic(), 500);
-    iniciarSistema();   // Saudação profissional + após 3min exibe versa.mp4
+    iniciarSistema();
     
-    // Pequeno teste de log e suporte
     setTimeout(() => {
         if (document.fullscreenEnabled) document.documentElement.requestFullscreen().catch(()=>{});
     }, 800);
     resetControlsTimer();
-    showMessage('✨ Clínica Versalis | Ambiente preparado');
-    console.log("📽️ Vídeo principal: versa.mp4 (após 180s) | Saudação reduzida (12s)");
+    showMessage('✨ Clínica Versalis | Bem-estar e cuidado');
+    console.log("✅ Sistema pronto: Saudação 12s | Vídeo versa.mp4 após 3min | Link YouTube: Antiog");
 </script>
 </body>
 </html>
