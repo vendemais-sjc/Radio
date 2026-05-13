@@ -160,11 +160,11 @@
 
         .specialty-image-behind {
             position: absolute;
-            top: -30px;
+            top: -35px;
             left: 50%;
             transform: translateX(-50%);
-            width: 160px;
-            height: 160px;
+            width: 150px;
+            height: 150px;
             z-index: 1;
             display: flex;
             align-items: center;
@@ -193,10 +193,10 @@
         }
 
         .specialty-bubble-front {
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.88);
             backdrop-filter: blur(24px);
             border-radius: 32px;
-            padding: 60px 24px 28px 24px;
+            padding: 65px 24px 28px 24px;
             text-align: center;
             border: 1px solid rgba(78,205,196,0.5);
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
@@ -205,12 +205,11 @@
         }
 
         .specialty-name {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 8px;
             letter-spacing: 1px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .specialty-desc {
@@ -570,15 +569,21 @@
                 width: 280px;
             }
             .specialty-image-behind {
-                width: 120px;
-                height: 120px;
+                width: 110px;
+                height: 110px;
                 top: -25px;
             }
             .specialty-bubble-front {
                 padding: 50px 16px 20px 16px;
             }
             .specialty-name {
+                font-size: 1.1rem;
+            }
+            .welcome-message h1 {
                 font-size: 1.2rem;
+            }
+            .logo-text {
+                font-size: 1.3rem;
             }
         }
     </style>
@@ -595,7 +600,7 @@
         <div class="welcome-overlay" id="welcomeOverlay">
             <div class="logo-container">
                 <img src="ver.png" alt="Clínica Versalis" class="logo-img" id="logoImg" 
-                     onerror="this.style.display='none'; this.parentElement.innerHTML+='<div class=\'logo-icon\' style=\'font-size:60px; color:#4ecdc4;\'><i class=\'fas fa-heartbeat\'></i></div>'">
+                     onerror="this.style.display='none'; this.parentElement.innerHTML+='<div style=\'font-size:60px; color:#4ecdc4;\'><i class=\'fas fa-heartbeat\'></i></div>'">
                 <div class="logo-text">CLÍNICA VERSALIS</div>
                 <div class="logo-sub">Cuidando da sua saúde e bem-estar</div>
             </div>
@@ -679,16 +684,15 @@
     <audio id="musicPlayer" preload="auto"></audio>
 
     <script>
+        // ==================== ESPECIALIDADES COM NOMES CORRETOS ====================
         const especialidadesConfig = [
-          const especialidadesConfig = [
-    { name: 'Ginecologia & Obstetrícia', desc: 'Saúde integral da mulher', badge: '👩‍⚕️ Cuidado e Excelência', img: 'gino.png' }, // ✅ USANDO gino.png
-    { name: 'Psiquiatria', desc: 'Saúde mental e bem-estar', badge: '🧠 Cuidamos da sua mente', img: 'psic.png' },
-    { name: 'Dermatologia', desc: 'Cuidados com sua pele', badge: '✨ Beleza e Saúde', img: 'derm.png' },
-    { name: 'Ortopedia', desc: 'Movimento e qualidade de vida', badge: '🦴 Reabilitação e conforto', img: 'orto.png' }
-];
-            
+            { name: 'Ginecologia & Obstetrícia', desc: 'Saúde integral da mulher', badge: '👩‍⚕️ Cuidado e Excelência', img: 'gino.png' },
+            { name: 'Psiquiatria', desc: 'Saúde mental e bem-estar', badge: '🧠 Cuidamos da sua mente', img: 'psic.png' },
+            { name: 'Dermatologia', desc: 'Cuidados com sua pele', badge: '✨ Beleza e Saúde', img: 'derm.png' },
+            { name: 'Ortopedia', desc: 'Movimento e qualidade de vida', badge: '🦴 Reabilitação e conforto', img: 'orto.png' }
         ];
 
+        // ==================== PLAYLIST DE MÚSICAS ====================
         const musicas = [
           { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
@@ -895,7 +899,7 @@
             
         ];
 
-        // DOM Elements
+        // ==================== DOM ELEMENTS ====================
         const musicPlayer = document.getElementById('musicPlayer');
         const playBtn = document.getElementById('playPauseBtn');
         const prevBtn = document.getElementById('prevBtn');
@@ -926,6 +930,7 @@
         const specialtyBadge = document.getElementById('specialtyBadge');
         const specialtyImageContainer = document.getElementById('specialtyImageContainer');
 
+        // ==================== VARIÁVEIS ====================
         let currentMusicIndex = 0;
         let isPlaying = false;
         let shuffle = false;
@@ -940,12 +945,15 @@
         let nextCycleSeconds = 180;
         let countdownInterval = null;
 
-        function hideSpecialty() { specialtyCard.classList.remove('active'); }
+        // ==================== FUNÇÕES DAS ESPECIALIDADES ====================
+        function hideSpecialty() { 
+            specialtyCard.classList.remove('active'); 
+        }
+        
         function showSpecialty(index) {
             const esp = especialidadesConfig[index];
             if (!esp) return;
             
-            // Recria a imagem para evitar cache
             const newImg = document.createElement('img');
             newImg.id = 'specialtyImg';
             newImg.src = esp.img;
@@ -974,11 +982,17 @@
             cycleStatusEl.innerHTML = '<i class="fas fa-play-circle"></i> Apresentando especialidades';
             
             function mostrarProxima() {
-                if (especialidadeAtual >= especialidadesConfig.length) { finalizarCiclo(); return; }
+                if (especialidadeAtual >= especialidadesConfig.length) { 
+                    finalizarCiclo(); 
+                    return; 
+                }
                 showSpecialty(especialidadeAtual);
                 especialidadeAtual++;
-                if (especialidadeAtual < especialidadesConfig.length) setTimeout(mostrarProxima, 20000);
-                else setTimeout(finalizarCiclo, 20000);
+                if (especialidadeAtual < especialidadesConfig.length) {
+                    setTimeout(mostrarProxima, 20000);
+                } else {
+                    setTimeout(finalizarCiclo, 20000);
+                }
             }
             mostrarProxima();
         }
@@ -1010,11 +1024,13 @@
             timerValueEl.textContent = `${minutos}:${segundos.toString().padStart(2, '0')}`;
         }
 
+        // ==================== RELÓGIO ====================
         function updateClock() {
             const now = new Date();
             clockEl.textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
         }
 
+        // ==================== SAUDAÇÃO ====================
         function mostrarSaudacao() {
             if (saudacaoVisivel) return;
             saudacaoVisivel = true;
@@ -1030,6 +1046,7 @@
             saudacaoInterval = setInterval(() => mostrarSaudacao(), 180000);
         }
 
+        // ==================== FUNÇÕES DO PLAYER ====================
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
             const m = Math.floor(sec / 60);
@@ -1047,7 +1064,8 @@
             if (timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 if (isPlaying && musicPlayer.duration) {
-                    progressFill.style.width = (musicPlayer.currentTime / musicPlayer.duration) * 100 + '%';
+                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
+                    progressFill.style.width = percent + '%';
                     currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
                 }
             }, 200);
@@ -1075,11 +1093,18 @@
             playlistItems.innerHTML = musicas.map((m, idx) => `
                 <div class="playlist-item ${idx === currentMusicIndex ? 'active' : ''}" data-index="${idx}">
                     <div class="playlist-number">${(idx+1).toString().padStart(2,'0')}</div>
-                    <div class="playlist-info"><div class="playlist-name">${m.title}</div><div class="playlist-artist">${m.artist}</div></div>
+                    <div class="playlist-info">
+                        <div class="playlist-name">${m.title}</div>
+                        <div class="playlist-artist">${m.artist}</div>
+                    </div>
                 </div>
             `).join('');
+            
             document.querySelectorAll('.playlist-item').forEach(item => {
-                item.addEventListener('click', () => { selectSong(parseInt(item.dataset.index)); playlistContainer.classList.remove('open'); });
+                item.addEventListener('click', () => { 
+                    selectSong(parseInt(item.dataset.index)); 
+                    playlistContainer.classList.remove('open'); 
+                });
             });
         }
 
@@ -1092,7 +1117,9 @@
             progressFill.style.width = '0%';
             currentTimeEl.textContent = '0:00';
             renderPlaylist();
-            musicPlayer.onloadedmetadata = () => totalTimeEl.textContent = formatTime(musicPlayer.duration);
+            musicPlayer.onloadedmetadata = () => {
+                totalTimeEl.textContent = formatTime(musicPlayer.duration);
+            };
         }
 
         async function playMusic() {
@@ -1102,7 +1129,9 @@
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 startTimer();
                 showControls();
-            } catch(e) { setTimeout(() => playMusic(), 1000); }
+            } catch(e) { 
+                setTimeout(() => playMusic(), 1000); 
+            }
         }
 
         function pauseMusic() {
@@ -1113,22 +1142,61 @@
             timerInterval = null;
         }
 
-        function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); showControls(); }
-        function nextTrack() { loadTrack((currentMusicIndex + 1) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏭️ ${musicas[currentMusicIndex].title}`); showControls(); }
-        function prevTrack() { loadTrack((currentMusicIndex - 1 + musicas.length) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏮️ ${musicas[currentMusicIndex].title}`); showControls(); }
-        function selectSong(index) { loadTrack(index); if (isPlaying) playMusic(); showMessage(`🎵 ${musicas[currentMusicIndex].title}`); showControls(); }
-        function toggleShuffleMode() { shuffle = !shuffle; showMessage(shuffle ? '🔀 Aleatório ATIVADO' : '➡️ Sequencial'); shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; showControls(); }
-        function toggleFullscreen() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); showControls(); }
-        function togglePlaylist() { playlistContainer.classList.toggle('open'); showControls(); }
+        function togglePlayPause() { 
+            isPlaying ? pauseMusic() : playMusic(); 
+            showControls(); 
+        }
+        
+        function nextTrack() { 
+            loadTrack((currentMusicIndex + 1) % musicas.length); 
+            if (isPlaying) playMusic(); 
+            showMessage(`⏭️ ${musicas[currentMusicIndex].title}`); 
+            showControls(); 
+        }
+        
+        function prevTrack() { 
+            loadTrack((currentMusicIndex - 1 + musicas.length) % musicas.length); 
+            if (isPlaying) playMusic(); 
+            showMessage(`⏮️ ${musicas[currentMusicIndex].title}`); 
+            showControls(); 
+        }
+        
+        function selectSong(index) { 
+            loadTrack(index); 
+            if (isPlaying) playMusic(); 
+            showMessage(`🎵 ${musicas[currentMusicIndex].title}`); 
+            showControls(); 
+        }
+        
+        function toggleShuffleMode() { 
+            shuffle = !shuffle; 
+            showMessage(shuffle ? '🔀 Aleatório ATIVADO' : '➡️ Sequencial'); 
+            shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; 
+            showControls(); 
+        }
+        
+        function toggleFullscreen() { 
+            document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); 
+            showControls(); 
+        }
+        
+        function togglePlaylist() { 
+            playlistContainer.classList.toggle('open'); 
+            showControls(); 
+        }
+        
         function toggleControls() {
             if (controlsVisible) {
                 musicPlayerBar.classList.add('hide');
                 controlsVisible = false;
                 toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
                 if (controlsTimeout) clearTimeout(controlsTimeout);
-            } else { showControls(); }
+            } else { 
+                showControls(); 
+            }
         }
 
+        // ==================== EVENTOS ====================
         playBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', prevTrack);
         nextBtn.addEventListener('click', nextTrack);
@@ -1136,20 +1204,38 @@
         toggleControlsBtn.addEventListener('click', toggleControls);
         playlistBtn.addEventListener('click', togglePlaylist);
         fullscreenBtn.addEventListener('click', toggleFullscreen);
+        
         progressBar.addEventListener('click', (e) => {
-            if (musicPlayer.duration) musicPlayer.currentTime = (e.clientX - progressBar.getBoundingClientRect().left) / progressBar.clientWidth * musicPlayer.duration;
+            if (musicPlayer.duration) {
+                const rect = progressBar.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                musicPlayer.currentTime = percent * musicPlayer.duration;
+            }
             showControls();
         });
-        document.addEventListener('mousemove', () => { if (!controlsVisible) showControls(); else resetControlsTimer(); });
-        document.addEventListener('click', (e) => { if (!playlistContainer.contains(e.target) && e.target !== playlistBtn) playlistContainer.classList.remove('open'); });
+        
+        document.addEventListener('mousemove', () => { 
+            if (!controlsVisible) showControls(); 
+            else resetControlsTimer(); 
+        });
+        
+        document.addEventListener('click', (e) => { 
+            if (!playlistContainer.contains(e.target) && e.target !== playlistBtn) {
+                playlistContainer.classList.remove('open');
+            }
+        });
+        
         musicPlayer.onended = () => nextTrack();
+        musicPlayer.onerror = () => setTimeout(() => nextTrack(), 1000);
 
+        // ==================== INICIALIZAÇÃO ====================
         updateClock();
         setInterval(updateClock, 60000);
         
         hideSpecialty();
         loadTrack(Math.floor(Math.random() * musicas.length));
         iniciarCicloSaudacao();
+        
         setTimeout(() => playMusic(), 500);
         setTimeout(() => iniciarCicloEspecialidades(), 5000);
         iniciarCountdown();
