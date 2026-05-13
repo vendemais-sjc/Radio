@@ -17,7 +17,7 @@
             height: 100vh;
             overflow: hidden;
             background: #000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         .tv-container {
@@ -27,6 +27,7 @@
             background: #000;
         }
 
+        /* VIDEO YOUTUBE BACKGROUND */
         .video-background {
             position: absolute;
             top: 0;
@@ -43,6 +44,7 @@
             object-fit: cover;
         }
 
+        /* OVERLAY PARA VÍDEO MP4 (versa.mp4) */
         .video-overlay {
             position: fixed;
             top: 50%;
@@ -71,25 +73,25 @@
             object-fit: contain;
         }
 
-        /* ============ SAUDAÇÃO PROFISSIONAL REDESIGN ============ */
+        /* ============ SAUDAÇÃO PROFISSIONAL - MAIS COMPACTA E ELEGANTE ============ */
         .welcome-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(0,20,30,0.88) 100%);
-            backdrop-filter: blur(12px);
+            background: radial-gradient(circle at center, rgba(0,20,25,0.92) 0%, rgba(0,0,0,0.96) 100%);
+            backdrop-filter: blur(10px);
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             pointer-events: none;
         }
 
@@ -98,219 +100,202 @@
             visibility: visible;
         }
 
-        .logo-container {
-            animation: fadeInDown 0.8s ease-out;
-        }
-
-        .logo-img {
-            width: 160px;
-            height: 160px;
-            object-fit: contain;
-            margin: 0 auto 25px;
-            background: linear-gradient(135deg, rgba(78,205,196,0.15) 0%, rgba(78,205,196,0.05) 100%);
-            border-radius: 50%;
-            padding: 18px;
-            border: 3px solid #4ecdc4;
-            box-shadow: 0 0 30px rgba(78,205,196,0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .logo-img:hover {
-            transform: scale(1.02);
-        }
-
-        .logo-text {
-            font-size: 3.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff 0%, #4ecdc4 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            text-shadow: 0 2px 10px rgba(78,205,196,0.3);
-        }
-
-        .logo-sub {
-            font-size: 1.1rem;
-            color: #4ecdc4;
-            letter-spacing: 3px;
-            margin-top: 8px;
-            font-weight: 300;
-            text-transform: uppercase;
-        }
-
-        /* MENSAGEM PRINCIPAL - MAIOR E MAIS PROFISSIONAL */
-        .welcome-message {
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(20px);
-            padding: 45px 65px;
-            border-radius: 28px;
-            border-left: 4px solid #4ecdc4;
-            border-right: 4px solid #4ecdc4;
-            margin: 35px 0;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(78,205,196,0.1);
-            animation: fadeInUp 0.8s ease-out 0.2s both;
-        }
-
-        .welcome-message h1 {
-            font-size: 3rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        .logo-mini-container {
+            animation: fadeInScale 0.5s ease-out;
             margin-bottom: 20px;
-            letter-spacing: -0.5px;
         }
 
-        .welcome-message h1 i {
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-            color: #4ecdc4;
-            margin-right: 15px;
+        .logo-simbol {
+            width: 75px;
+            height: 75px;
+            background: linear-gradient(145deg, #4ecdc4 0%, #2c9c94 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            box-shadow: 0 8px 25px rgba(78,205,196,0.25);
         }
 
-        .welcome-message .mensagem-destaque {
-            font-size: 1.8rem;
+        .logo-simbol i {
+            font-size: 2.5rem;
             color: #fff;
-            margin: 20px 0;
-            font-weight: 400;
-            letter-spacing: 1px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
-        .welcome-message .mensagem-destaque i {
+        .clinic-name {
+            font-size: 1.65rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #fff 0%, #d4f3f0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .clinic-tag {
+            font-size: 0.7rem;
             color: #4ecdc4;
-            margin: 0 8px;
+            letter-spacing: 2px;
+            font-weight: 300;
+            margin-top: 4px;
         }
 
-        .welcome-message .tempo-estimado {
+        /* CARD PRINCIPAL MAIS LIMPO */
+        .welcome-card {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(18px);
+            padding: 28px 48px;
+            border-radius: 40px;
+            border: 1px solid rgba(78,205,196,0.25);
+            margin: 18px 0 20px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+            animation: fadeInUp 0.55s ease-out 0.15s both;
+            max-width: 680px;
+            width: auto;
+        }
+
+        .welcome-card h2 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: -0.3px;
+            margin-bottom: 12px;
+        }
+
+        .welcome-card h2 i {
+            color: #4ecdc4;
+            margin-right: 12px;
+            font-size: 1.8rem;
+        }
+
+        .mensagem-breve {
             font-size: 1.2rem;
-            color: rgba(255,255,255,0.7);
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(78,205,196,0.3);
+            color: #e0f2f0;
+            font-weight: 400;
+            border-left: 2px solid #4ecdc4;
+            padding-left: 16px;
+            margin: 15px 0 0;
+            text-align: left;
             display: inline-block;
         }
 
-        .badges-container {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-            margin: 20px 0 30px;
-            flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
+        .tempo-breve {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(78,205,196,0.12);
+            padding: 6px 18px;
+            border-radius: 40px;
+            margin-top: 18px;
+            font-size: 0.8rem;
+            color: #b0e0db;
         }
 
-        .badge {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            padding: 12px 24px;
-            border-radius: 50px;
-            border: 1px solid rgba(78,205,196,0.3);
-            transition: all 0.3s ease;
-        }
-
-        .badge i {
+        .tempo-breve i {
             color: #4ecdc4;
-            margin-right: 10px;
-            font-size: 1.1rem;
         }
 
-        .badge span {
-            color: #fff;
-            font-size: 0.9rem;
+        /* BADGES MINI */
+        .badge-row {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            margin: 10px 0 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge-light {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(4px);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.7rem;
             font-weight: 500;
-            letter-spacing: 1px;
+            color: #ddd;
+            border: 0.5px solid rgba(78,205,196,0.3);
         }
 
-        .badge:hover {
-            border-color: #4ecdc4;
-            transform: translateY(-2px);
+        .badge-light i {
+            color: #4ecdc4;
+            margin-right: 6px;
         }
 
-        .waiting-status {
+        .status-line {
             display: flex;
             align-items: center;
-            gap: 18px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(12px);
-            padding: 14px 32px;
+            gap: 12px;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(8px);
+            padding: 8px 24px;
             border-radius: 60px;
-            margin-top: 20px;
-            animation: fadeInUp 0.8s ease-out 0.6s both;
-            border: 1px solid rgba(78,205,196,0.2);
+            margin-top: 12px;
         }
 
-        .waiting-status i {
-            color: #4ecdc4;
-            font-size: 1.2rem;
-        }
-
-        .waiting-status span {
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 500;
-            letter-spacing: 2px;
-        }
-
-        .pulse-dot {
-            width: 10px;
-            height: 10px;
+        .pulse-dot-sm {
+            width: 8px;
+            height: 8px;
             background: #4ecdc4;
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
+            animation: pulse 1.4s infinite;
         }
 
-        /* ============ TICKER E OUTROS ELEMENTOS ============ */
+        .status-line span {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: white;
+        }
+
+        /* TICKER */
         .ticker-moderno {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(78,205,196,0.15) 50%, rgba(0,0,0,0.7) 100%);
+            background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(78,205,196,0.2) 50%, rgba(0,0,0,0.7) 100%);
             backdrop-filter: blur(8px);
-            padding: 8px 0;
+            padding: 6px 0;
             z-index: 15;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
             overflow: hidden;
             white-space: nowrap;
         }
 
         .ticker-content {
             display: inline-block;
-            animation: tickerScroll 25s linear infinite;
+            animation: tickerScroll 22s linear infinite;
             padding-left: 100%;
         }
 
         .ticker-text {
             display: inline-block;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 500;
         }
 
         .ticker-text i {
-            margin: 0 10px;
+            margin: 0 8px;
             color: #4ecdc4;
         }
 
         .ticker-text span {
-            margin: 0 15px;
+            margin: 0 12px;
             color: #fff;
         }
 
+        /* MUSIC PLAYER */
         .music-player {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(12px);
-            padding: 10px 25px;
+            padding: 8px 20px;
             z-index: 20;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            transition: transform 0.3s ease;
         }
 
         .music-player.hide {
@@ -319,30 +304,30 @@
 
         .track-info {
             text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .track-title {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: #fff;
         }
 
         .track-artist {
-            font-size: 0.65rem;
-            color: #ccc;
+            font-size: 0.6rem;
+            color: #bbb;
         }
 
         .progress-area {
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         .progress-time {
             display: flex;
             justify-content: space-between;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: #aaa;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .progress-bar-bg {
@@ -362,102 +347,77 @@
         .control-buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
         }
 
         .ctrl-btn {
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.15);
             color: white;
-            font-size: 1rem;
-            width: 38px;
-            height: 38px;
+            font-size: 0.85rem;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
         }
 
         .ctrl-btn:hover {
             background: #4ecdc4;
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .ctrl-btn.play {
-            width: 45px;
-            height: 45px;
-            font-size: 1.1rem;
+            width: 38px;
+            height: 38px;
             background: #4ecdc4;
             border: none;
         }
 
-        .toggle-controls {
+        .toggle-controls, .playlist-btn, .fullscreen-btn {
             position: absolute;
-            bottom: 15px;
-            left: 15px;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(255,255,255,0.12);
             color: white;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             cursor: pointer;
             z-index: 25;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
+            font-size: 0.8rem;
         }
 
-        .toggle-controls:hover {
-            background: #4ecdc4;
-        }
+        .toggle-controls { bottom: 12px; left: 12px; }
+        .playlist-btn { bottom: 12px; right: 55px; }
+        .fullscreen-btn { top: 70px; right: 12px; }
+        .toggle-controls:hover, .playlist-btn:hover, .fullscreen-btn:hover { background: #4ecdc4; }
 
-        .fullscreen-btn {
+        .clock {
             position: absolute;
-            top: 70px;
-            right: 15px;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.15);
+            top: 12px;
+            right: 55px;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(6px);
+            padding: 3px 12px;
+            border-radius: 20px;
             color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 25;
-            transition: all 0.2s ease;
-        }
-
-        .fullscreen-btn:hover {
-            background: #4ecdc4;
-        }
-
-        .playlist-btn {
-            position: absolute;
-            bottom: 15px;
-            right: 60px;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 25;
-            transition: all 0.2s ease;
-        }
-
-        .playlist-btn:hover {
-            background: #4ecdc4;
+            font-size: 0.7rem;
+            z-index: 15;
+            font-family: monospace;
         }
 
         .notification {
             position: fixed;
-            bottom: 30%;
+            bottom: 28%;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 0.8rem;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.7rem;
             z-index: 1000;
             border-left: 3px solid #4ecdc4;
             opacity: 0;
@@ -468,502 +428,436 @@
         .playlist-container {
             position: absolute;
             bottom: 100%;
-            left: 15px;
-            width: 260px;
-            max-height: 280px;
+            left: 12px;
+            width: 230px;
+            max-height: 250px;
             background: rgba(0,0,0,0.92);
             backdrop-filter: blur(15px);
-            border-radius: 12px;
-            padding: 10px;
+            border-radius: 16px;
+            padding: 8px;
             margin-bottom: 8px;
             z-index: 20;
             display: none;
             overflow-y: auto;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
-        .playlist-container.open {
-            display: block;
-        }
-
-        .playlist-header {
-            color: #4ecdc4;
-            font-size: 0.7rem;
-            margin-bottom: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
-
+        .playlist-container.open { display: block; }
+        .playlist-header { color: #4ecdc4; font-size: 0.65rem; text-align: center; margin-bottom: 6px; font-weight: bold; }
         .playlist-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px;
+            padding: 5px;
             background: rgba(255,255,255,0.05);
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 5px;
             cursor: pointer;
-            font-size: 0.7rem;
-            transition: all 0.2s ease;
+            font-size: 0.65rem;
         }
+        .playlist-item:hover, .playlist-item.active { background: #4ecdc4; color: #000; }
 
-        .playlist-item:hover, .playlist-item.active {
-            background: #4ecdc4;
-        }
+        @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
 
-        .clock {
-            position: absolute;
-            top: 12px;
-            right: 60px;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(6px);
-            padding: 4px 12px;
-            border-radius: 20px;
-            color: white;
-            font-size: 0.75rem;
-            z-index: 15;
-            font-family: monospace;
-        }
-
-        /* ============ ANIMAÇÕES ============ */
-        @keyframes tickerScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: scale(1.2);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .logo-text { font-size: 2rem; }
-            .logo-sub { font-size: 0.8rem; }
-            .welcome-message { padding: 25px 35px; margin: 20px; }
-            .welcome-message h1 { font-size: 1.8rem; }
-            .welcome-message .mensagem-destaque { font-size: 1.2rem; }
-            .badge { padding: 8px 16px; }
-            .badge span { font-size: 0.7rem; }
-            .waiting-status { padding: 10px 20px; }
-            .waiting-status span { font-size: 0.8rem; }
+        @media (max-width: 680px) {
+            .welcome-card { padding: 20px 28px; margin: 12px; }
+            .welcome-card h2 { font-size: 1.4rem; }
+            .mensagem-breve { font-size: 0.9rem; }
+            .clinic-name { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
-    <div class="tv-container">
-        <div class="video-background">
-            <iframe src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-            </iframe>
+<div class="tv-container">
+    <!-- VIDEO BACKGROUND YOUTUBE (NOVO LINK MUKAPLAY) -->
+    <div class="video-background">
+        <iframe src="https://www.youtube.com/embed/HRcLFwgUFQI?autoplay=1&mute=1&loop=1&playlist=HRcLFwgUFQI&controls=0&showinfo=0&rel=0&modestbranding=1" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+        </iframe>
+    </div>
+
+    <!-- OVERLAY PARA VÍDEO MP4 (versa.mp4) -->
+    <div class="video-overlay" id="videoOverlay">
+        <video id="versaVideo" preload="auto" playsinline></video>
+    </div>
+
+    <!-- SAUDAÇÃO PROFISSIONAL MAIS COMPACTA -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="logo-mini-container">
+            <div class="logo-simbol">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="clinic-name">CLÍNICA VERSALIS</div>
+            <div class="clinic-tag">saúde integrada & humanização</div>
         </div>
 
-        <div class="video-overlay" id="videoOverlay">
-            <video id="highlightVideo" preload="auto"></video>
-        </div>
-
-        <!-- SAUDAÇÃO PROFISSIONAL REDESIGN -->
-        <div class="welcome-overlay" id="welcomeOverlay">
-            <div class="logo-container">
-                <img src="ver.png" alt="Clínica Versalis" class="logo-img" id="logoImg" 
-                     onerror="this.style.display='none'; this.parentElement.innerHTML+='<div style=\'font-size:60px; color:#4ecdc4;\'><i class=\'fas fa-heartbeat\'></i></div>'">
-                <div class="logo-text">CLÍNICA VERSALIS</div>
-                <div class="logo-sub">Excelência em saúde & bem-estar</div>
+        <div class="welcome-card">
+            <h2>
+                <i class="fas fa-hand-sparkles"></i> Bem-vindo(a)
+            </h2>
+            <div class="mensagem-breve">
+                Sua jornada de cuidado começa aqui.<br>
+                Em instantes você será atendido(a) com excelência.
             </div>
-
-            <div class="welcome-message">
-                <h1>
-                    <i class="fas fa-hand-peace"></i> 
-                    SEJA MUITO BEM-VINDO(A)!
-                </h1>
-                <div class="mensagem-destaque">
-                    <i class="fas fa-clock"></i>
-                    Em breve você será atendido(a) com todo cuidado e atenção que você merece
-                    <i class="fas fa-heartbeat"></i>
-                </div>
-                <div class="tempo-estimado">
-                    <i class="fas fa-hourglass-half"></i> Tempo estimado de espera: alguns minutos
-                </div>
-            </div>
-
-            <div class="badges-container">
-                <div class="badge">
-                    <i class="fas fa-stethoscope"></i>
-                    <span>ESPECIALIDADES MÉDICAS</span>
-                </div>
-                <div class="badge">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>AGENDAMENTO RÁPIDO</span>
-                </div>
-                <div class="badge">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>SEGURANÇA E CONFORTO</span>
-                </div>
-            </div>
-
-            <div class="waiting-status">
-                <div class="pulse-dot"></div>
-                <span>AGUARDE UM MOMENTO</span>
-                <div class="pulse-dot"></div>
+            <div class="tempo-breve">
+                <i class="fas fa-hourglass-half"></i> Tempo estimado: alguns minutos
             </div>
         </div>
 
-        <div class="ticker-moderno">
-            <div class="ticker-content">
-                <div class="ticker-text">
-                    <i class="fas fa-heartbeat fa-beat"></i>
-                    <span>CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE E BEM-ESTAR</span>
-                    <i class="fas fa-circle"></i>
-                    <span>🏥 ESPECIALIDADES MÉDICAS</span>
-                    <i class="fas fa-circle"></i>
-                    <span>📞 (12) 98846-1978</span>
-                    <i class="fas fa-circle"></i>
-                    <span>📍 ATENDIMENTO HUMANIZADO 24h</span>
-                </div>
-            </div>
+        <div class="badge-row">
+            <div class="badge-light"><i class="fas fa-stethoscope"></i> Especialidades</div>
+            <div class="badge-light"><i class="fas fa-calendar-check"></i> Agendamento ágil</div>
+            <div class="badge-light"><i class="fas fa-shield-alt"></i> Ambiente seguro</div>
         </div>
 
-        <div class="clock" id="clock">--:--</div>
-
-        <div class="music-player" id="musicPlayerBar">
-            <div class="track-info"><div class="track-title" id="trackTitle">🎵 Carregando...</div><div class="track-artist" id="trackArtist">Música ambiente</div></div>
-            <div class="progress-area">
-                <div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
-                <div class="progress-bar-bg" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
-            </div>
-            <div class="control-buttons">
-                <button class="ctrl-btn" id="prevBtn" aria-label="Música anterior"><i class="fas fa-step-backward"></i></button>
-                <button class="ctrl-btn play" id="playPauseBtn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
-                <button class="ctrl-btn" id="shuffleBtn" aria-label="Modo aleatório"><i class="fas fa-random"></i></button>
-                <button class="ctrl-btn" id="nextBtn" aria-label="Próxima música"><i class="fas fa-step-forward"></i></button>
-            </div>
-        </div>
-
-        <button class="toggle-controls" id="toggleControlsBtn" aria-label="Mostrar controles"><i class="fas fa-chevron-up"></i></button>
-        <button class="playlist-btn" id="playlistBtn" aria-label="Playlist"><i class="fas fa-list-ul"></i></button>
-        <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Tela cheia"><i class="fas fa-expand"></i></button>
-
-        <div class="playlist-container" id="playlistContainer">
-            <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST AMBIENTE</div>
-            <div id="playlistItems"></div>
+        <div class="status-line">
+            <div class="pulse-dot-sm"></div>
+            <span>PREPARANDO ATENDIMENTO</span>
+            <div class="pulse-dot-sm"></div>
         </div>
     </div>
 
-    <div class="notification" id="notification"><span id="notificationText"></span></div>
-    <audio id="musicPlayer" preload="auto"></audio>
+    <!-- TICKER -->
+    <div class="ticker-moderno">
+        <div class="ticker-content">
+            <div class="ticker-text">
+                <i class="fas fa-heartbeat"></i>
+                <span>CLÍNICA VERSALIS - CUIDADO QUE TRANSFORMA</span>
+                <i class="fas fa-circle" style="font-size: 0.2rem;"></i>
+                <span>🩺 ESPECIALIDADES MÉDICAS</span>
+                <i class="fas fa-circle" style="font-size: 0.2rem;"></i>
+                <span>📞 (12) 98846-1978</span>
+                <i class="fas fa-circle" style="font-size: 0.2rem;"></i>
+                <span>📍 ATENDIMENTO PERSONALIZADO</span>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        // LISTA DE VÍDEOS
-        const videosMp4 = ['espe.mp4', 'orto.mp4', 'gine.mp4', 'psic.mp4', 'demo.mp4'];
+    <div class="clock" id="clock">--:--</div>
+
+    <!-- MUSIC PLAYER CONTROLES -->
+    <div class="music-player" id="musicPlayerBar">
+        <div class="track-info"><div class="track-title" id="trackTitle">🎵 Carregando...</div><div class="track-artist" id="trackArtist">Música ambiente</div></div>
+        <div class="progress-area">
+            <div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
+            <div class="progress-bar-bg" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
+            <button class="ctrl-btn play" id="playPauseBtn"><i class="fas fa-play"></i></button>
+            <button class="ctrl-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
+            <button class="ctrl-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+        </div>
+    </div>
+
+    <button class="toggle-controls" id="toggleControlsBtn"><i class="fas fa-chevron-up"></i></button>
+    <button class="playlist-btn" id="playlistBtn"><i class="fas fa-list-ul"></i></button>
+    <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
+
+    <div class="playlist-container" id="playlistContainer">
+        <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST AMBIENTE</div>
+        <div id="playlistItems"></div>
+    </div>
+</div>
+
+<div class="notification" id="notification"><span id="notificationText"></span></div>
+<audio id="musicPlayer" preload="auto"></audio>
+
+<script>
+    // CONFIGURAÇÕES: TEMPO DE SAUDAÇÃO reduzido (mais profissional) = 12 segundos
+    const TEMPO_SAUDACAO = 12;          // saudação mais curta
+    const TEMPO_ATIVA_VIDEO_VERSA = 180; // 3 minutos = 180 segundos
+    const VERSA_MP4_FILENAME = 'versa.mp4';
+
+    // Função principal: após 3 minutos, exibe o vídeo versa.mp4 e depois repete o ciclo
+    let cronometroVersa = null;
+    let loopPrincipalTimeout = null;
+    let videoVersaTimeout = null;
+    let welcomeVisible = false;
+
+    // Referências DOM
+    const versaVideo = document.getElementById('versaVideo');
+    const videoOverlay = document.getElementById('videoOverlay');
+    const welcomeOverlay = document.getElementById('welcomeOverlay');
+
+    // MÚSICAS (biblioteca leve)
+    const musicas = [
+      { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+            { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
+            { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
+            { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
+            { id: 5, title: "I Love You", artist: "Jim Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a", periodo: "noite" },
+            { id: 6, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", periodo: "noite" },
+            { id: 7, title: "Simone Migalhas", artist: "Simone", src: "Simone-Migalhas-mutv.m4a", periodo: "noite" },
+            { id: 8, title: "What's Up", artist: "Banda Rock Beats", src: "Banda_Rock_Beats_What_s_Up__muzzik (1).m4a", periodo: "todos" },
+            { id: 9, title: "More Than A Woman", artist: "Bee Gees", src: "Bee_Gees_More_Than_A_Woman_muzzik.m4a", periodo: "todos" },
+            { id: 10, title: "Janaína", artist: "Biquini Cavadão", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", periodo: "manha" },
+            { id: 11, title: "Jura Secreta Revelação", artist: "Fagner & Zé Ramalho", src: "Fagner_Z_Ramalho_Jura_Secreta_Revela_o_muzzik.m4a", periodo: "noite" },
+            { id: 12, title: "Noite do Prazer", artist: "Cláudio Zolli", src: "Brylho_Noite_do_Prazer_muzzik.m4a", periodo: "noite" },
+            { id: 13, title: "Fé", artist: "Caetano Veloso & Maria Bethânia", src: "Caetano_Veloso_Maria_Bethania.m4a", periodo: "tarde" },
+            { id: 14, title: "Codinome Beija-Flor", artist: "Cazuza", src: "Cazuza_Codinome_Beija_Flor.m4a", periodo: "todos" },
+            { id: 15, title: "Só os Loucos Sabem", artist: "Charlie Brown Jr.", src: "Charlie_Brown_Jr_S_os_loucos_sabem_muzzik.m4a", periodo: "manha" },
+            { id: 16, title: "Charme do Mundo", artist: "Marina Lima", src: "Charme_do_Charme_do_Mundo_muzzik.m4a", periodo: "manha" },
+            { id: 17, title: "Cheia de Charme", artist: "Guilherme Arantes", src: "Cheia_de_Cheia_de_Charme_muzzik.m4a", periodo: "manha" },
+            { id: 18, title: "Sailing", artist: "Christopher Cross", src: "Christopher_Cross_Sailing_muzzik.m4a", periodo: "noite" },
+            { id: 19, title: "Poeira No Vento", artist: "Chrystian & Ralf", src: "Chrystian_Ralf_Pocket_Show_Poeira_No_Vento.m4a", periodo: "noite" },
+            { id: 20, title: "Easy", artist: "Commodores", src: "Commodores_Easy_6.m4a", periodo: "noite" }, 
+    ];
+
+    // AUDIO GLOBAL
+    const musicPlayer = document.getElementById('musicPlayer');
+    const playBtn = document.getElementById('playPauseBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const progressFill = document.getElementById('progressFill');
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalTimeEl = document.getElementById('totalTime');
+    const trackTitleEl = document.getElementById('trackTitle');
+    const trackArtistEl = document.getElementById('trackArtist');
+    const progressBar = document.getElementById('progressBar');
+    const playlistContainer = document.getElementById('playlistContainer');
+    const playlistItems = document.getElementById('playlistItems');
+    const playlistBtn = document.getElementById('playlistBtn');
+    const toggleControlsBtn = document.getElementById('toggleControlsBtn');
+    const musicPlayerBar = document.getElementById('musicPlayerBar');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const notification = document.getElementById('notification');
+    const notificationText = document.getElementById('notificationText');
+    const clockEl = document.getElementById('clock');
+
+    // Variáveis musicais
+    let currentMusicIndex = 0;
+    let isPlaying = false;
+    let shuffle = false;
+    let timerInterval = null;
+    let controlsVisible = true;
+    let controlsTimeout = null;
+
+    // ========== FUNÇÕES DE CICLO PRINCIPAL (versa.mp4) ==========
+    function esconderVideoVersa() {
+        videoOverlay.classList.remove('show');
+        if (versaVideo) {
+            versaVideo.pause();
+            versaVideo.currentTime = 0;
+        }
+    }
+
+    function iniciarVideoVersa() {
+        // Cancela qualquer timeout pendente para não conflitar
+        if (videoVersaTimeout) clearTimeout(videoVersaTimeout);
+        if (loopPrincipalTimeout) clearTimeout(loopPrincipalTimeout);
         
-        const TEMPO_SAUDACAO = 31;
-        const TEMPO_ENTRE_CICLOS = 240;
-        const TEMPO_CADA_VIDEO = 20;
-
-        const musicas = [
-            { id: 1, title: "Clair de Lune", artist: "Debussy", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-            { id: 2, title: "Gymnopédie No.1", artist: "Erik Satie", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-            { id: 3, title: "River Flows in You", artist: "Yiruma", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
-        ];
-
-        // DOM
-        const highlightVideo = document.getElementById('highlightVideo');
-        const videoOverlay = document.getElementById('videoOverlay');
-        const welcomeOverlay = document.getElementById('welcomeOverlay');
-        const musicPlayer = document.getElementById('musicPlayer');
-        const playBtn = document.getElementById('playPauseBtn');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const shuffleBtn = document.getElementById('shuffleBtn');
-        const progressFill = document.getElementById('progressFill');
-        const currentTimeEl = document.getElementById('currentTime');
-        const totalTimeEl = document.getElementById('totalTime');
-        const trackTitleEl = document.getElementById('trackTitle');
-        const trackArtistEl = document.getElementById('trackArtist');
-        const progressBar = document.getElementById('progressBar');
-        const playlistContainer = document.getElementById('playlistContainer');
-        const playlistItems = document.getElementById('playlistItems');
-        const playlistBtn = document.getElementById('playlistBtn');
-        const toggleControlsBtn = document.getElementById('toggleControlsBtn');
-        const musicPlayerBar = document.getElementById('musicPlayerBar');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const notification = document.getElementById('notification');
-        const notificationText = document.getElementById('notificationText');
-        const clockEl = document.getElementById('clock');
-
-        let currentMusicIndex = 0;
-        let isPlaying = false;
-        let shuffle = false;
-        let timerInterval = null;
-        let controlsVisible = true;
-        let controlsTimeout = null;
-        let timeoutPrincipal = null;
-        let videoTimeout = null;
-
-        function testarVideo(videoFile, index) {
-            fetch(videoFile, { method: 'HEAD' })
-                .then(response => {
-                    if (response.ok) {
-                        console.log(`✅ Vídeo encontrado: ${videoFile}`);
-                    } else {
-                        console.log(`❌ Vídeo NÃO encontrado: ${videoFile}`);
-                        showMessage(`⚠️ ${videoFile} não encontrado`, 2000);
-                    }
-                })
-                .catch(() => {
-                    console.log(`❌ Erro ao acessar: ${videoFile}`);
-                });
-        }
-
-        function esconderVideoMp4() {
-            videoOverlay.classList.remove('show');
-            if (highlightVideo) {
-                highlightVideo.pause();
-                highlightVideo.currentTime = 0;
-            }
-        }
+        console.log("🎬 Iniciando vídeo versa.mp4 após 3 minutos");
+        // Garantir que overlay de saudação esteja oculto antes
+        welcomeOverlay.classList.remove('show');
         
-        function mostrarVideoMp4(index) {
-            if (index >= videosMp4.length) {
-                esconderVideoMp4();
-                setTimeout(() => {
-                    iniciarCicloCompleto();
-                }, TEMPO_ENTRE_CICLOS * 1000);
-                return;
-            }
-            
-            const videoFile = videosMp4[index];
-            console.log(`🎬 Carregando: ${videoFile}`);
-            
-            highlightVideo.src = videoFile;
-            highlightVideo.load();
-            
-            highlightVideo.onerror = function() {
-                console.log(`❌ Erro: ${videoFile}`);
-                clearTimeout(videoTimeout);
-                mostrarVideoMp4(index + 1);
-            };
-            
-            highlightVideo.oncanplay = function() {
-                console.log(`✅ Rodando: ${videoFile}`);
-                highlightVideo.play().catch(e => console.log('Erro play:', e));
-                videoOverlay.classList.add('show');
-            };
-            
-            videoTimeout = setTimeout(() => {
-                mostrarVideoMp4(index + 1);
-            }, TEMPO_CADA_VIDEO * 1000);
-            
-            highlightVideo.onended = () => {
-                clearTimeout(videoTimeout);
-                mostrarVideoMp4(index + 1);
-            };
-        }
+        // Carrega e exibe o versa.mp4
+        versaVideo.src = VERSA_MP4_FILENAME;
+        versaVideo.load();
         
-        function iniciarSequenciaVideos() {
-            videosMp4.forEach((video, i) => testarVideo(video, i));
-            mostrarVideoMp4(0);
-        }
+        versaVideo.onerror = () => {
+            console.error("❌ versa.mp4 não encontrado, tentando novamente em 5s");
+            showMessage("⚠️ Vídeo institucional não encontrado, retornando ao ciclo", 2000);
+            setTimeout(() => {
+                esconderVideoVersa();
+                iniciarCicloComSaudacao();
+            }, 2000);
+        };
         
-        function iniciarCicloCompleto() {
-            if (timeoutPrincipal) clearTimeout(timeoutPrincipal);
-            if (videoTimeout) clearTimeout(videoTimeout);
-            
-            esconderVideoMp4();
-            welcomeOverlay.classList.add('show');
-            
-            timeoutPrincipal = setTimeout(() => {
-                welcomeOverlay.classList.remove('show');
-                setTimeout(() => {
-                    iniciarSequenciaVideos();
-                }, 500);
-            }, TEMPO_SAUDACAO * 1000);
-        }
+        versaVideo.oncanplay = () => {
+            console.log("✅ Rodando versa.mp4");
+            versaVideo.play().catch(e => console.log("Play versa.mp4 error", e));
+            videoOverlay.classList.add('show');
+        };
+        
+        // Duração do vídeo: caso não tenha evento ended, definimos timeout de 30 segundos (ajuste conforme necessidade)
+        // Para manter ciclo, após o vídeo, volta para saudação e repetir o processo
+        const duracaoVideoEstimada = 27000; // 27 segundos (tempo razoável)
+        videoVersaTimeout = setTimeout(() => {
+            esconderVideoVersa();
+            iniciarCicloComSaudacao();
+        }, duracaoVideoEstimada);
+        
+        versaVideo.onended = () => {
+            if (videoVersaTimeout) clearTimeout(videoVersaTimeout);
+            esconderVideoVersa();
+            iniciarCicloComSaudacao();
+        };
+    }
+    
+    function iniciarCicloComSaudacao() {
+        // Mostra saudação profissional por TEMPO_SAUDACAO segundos (agora 12s)
+        welcomeOverlay.classList.add('show');
+        welcomeVisible = true;
+        
+        if (loopPrincipalTimeout) clearTimeout(loopPrincipalTimeout);
+        loopPrincipalTimeout = setTimeout(() => {
+            welcomeOverlay.classList.remove('show');
+            welcomeVisible = false;
+            // Após sair da saudação, programar o vídeo versa para daqui a 3 minutos
+            if (cronometroVersa) clearTimeout(cronometroVersa);
+            cronometroVersa = setTimeout(() => {
+                iniciarVideoVersa();
+            }, TEMPO_ATIVA_VIDEO_VERSA * 1000);
+        }, TEMPO_SAUDACAO * 1000);
+    }
+    
+    // Função de inicialização principal: começa com saudacao, depois vídeo background + cronometro para versa
+    function iniciarSistema() {
+        iniciarCicloComSaudacao();
+    }
 
-        function updateClock() {
-            const now = new Date();
-            clockEl.textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-        }
+    // ========== RELÓGIO ==========
+    function updateClock() {
+        const now = new Date();
+        clockEl.textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    }
 
-        function formatTime(sec) {
-            if (isNaN(sec)) return "0:00";
-            const m = Math.floor(sec / 60);
-            const s = Math.floor(sec % 60);
-            return `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
+    // ========== NOTIFICAÇÕES ==========
+    function showMessage(msg, duration = 1800) {
+        notificationText.innerText = msg;
+        notification.style.opacity = '1';
+        setTimeout(() => notification.style.opacity = '0', duration);
+    }
 
-        function showMessage(msg, duration = 2000) {
-            notificationText.innerText = msg;
-            notification.classList.add('show');
-            setTimeout(() => notification.classList.remove('show'), duration);
-        }
+    // ========== PLAYER ==========
+    function formatTime(sec) {
+        if (isNaN(sec)) return "0:00";
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
 
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (isPlaying && musicPlayer.duration) {
-                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
-                    progressFill.style.width = percent + '%';
-                    currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
-                }
-            }, 200);
-        }
-
-        function resetControlsTimer() {
-            if (controlsTimeout) clearTimeout(controlsTimeout);
-            if (controlsVisible) {
-                controlsTimeout = setTimeout(() => {
-                    musicPlayerBar.classList.add('hide');
-                    controlsVisible = false;
-                    toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
-                }, 4000);
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (isPlaying && musicPlayer.duration) {
+                const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
+                progressFill.style.width = percent + '%';
+                currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
             }
-        }
+        }, 200);
+    }
 
-        function showControls() {
-            musicPlayerBar.classList.remove('hide');
-            controlsVisible = true;
-            toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
-            resetControlsTimer();
-        }
-
-        function renderPlaylist() {
-            playlistItems.innerHTML = musicas.map((m, idx) => `
-                <div class="playlist-item ${idx === currentMusicIndex ? 'active' : ''}" data-index="${idx}">
-                    <div class="playlist-number">${(idx+1).toString().padStart(2,'0')}</div>
-                    <div class="playlist-info">
-                        <div class="playlist-name">${m.title}</div>
-                        <div class="playlist-artist">${m.artist}</div>
-                    </div>
-                </div>
-            `).join('');
-            
-            document.querySelectorAll('.playlist-item').forEach(item => {
-                item.addEventListener('click', () => { 
-                    selectSong(parseInt(item.dataset.index)); 
-                    playlistContainer.classList.remove('open'); 
-                });
-            });
-        }
-
-        function loadTrack(index) {
-            currentMusicIndex = index;
-            const track = musicas[currentMusicIndex];
-            musicPlayer.src = track.src;
-            trackTitleEl.textContent = track.title;
-            trackArtistEl.textContent = track.artist;
-            progressFill.style.width = '0%';
-            currentTimeEl.textContent = '0:00';
-            renderPlaylist();
-            musicPlayer.onloadedmetadata = () => {
-                totalTimeEl.textContent = formatTime(musicPlayer.duration);
-            };
-        }
-
-        async function playMusic() {
-            try {
-                await musicPlayer.play();
-                isPlaying = true;
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                startTimer();
-                showControls();
-            } catch(e) { 
-                setTimeout(() => playMusic(), 1000); 
-            }
-        }
-
-        function pauseMusic() {
-            musicPlayer.pause();
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = null;
-        }
-
-        function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); showControls(); }
-        function nextTrack() { loadTrack((currentMusicIndex + 1) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏭️ ${musicas[currentMusicIndex].title}`); showControls(); }
-        function prevTrack() { loadTrack((currentMusicIndex - 1 + musicas.length) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏮️ ${musicas[currentMusicIndex].title}`); showControls(); }
-        function selectSong(index) { loadTrack(index); if (isPlaying) playMusic(); showMessage(`🎵 ${musicas[currentMusicIndex].title}`); showControls(); }
-        function toggleShuffleMode() { shuffle = !shuffle; showMessage(shuffle ? '🔀 Modo aleatório ativado' : '➡️ Modo sequencial'); shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; showControls(); }
-        function toggleFullscreen() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); showControls(); }
-        function togglePlaylist() { playlistContainer.classList.toggle('open'); showControls(); }
-        function toggleControls() {
-            if (controlsVisible) {
+    function resetControlsTimer() {
+        if (controlsTimeout) clearTimeout(controlsTimeout);
+        if (controlsVisible) {
+            controlsTimeout = setTimeout(() => {
                 musicPlayerBar.classList.add('hide');
                 controlsVisible = false;
                 toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
-                if (controlsTimeout) clearTimeout(controlsTimeout);
-            } else { showControls(); }
+            }, 4000);
         }
+    }
 
-        playBtn.addEventListener('click', togglePlayPause);
-        prevBtn.addEventListener('click', prevTrack);
-        nextBtn.addEventListener('click', nextTrack);
-        shuffleBtn.addEventListener('click', toggleShuffleMode);
-        toggleControlsBtn.addEventListener('click', toggleControls);
-        playlistBtn.addEventListener('click', togglePlaylist);
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-        
-        progressBar.addEventListener('click', (e) => {
-            if (musicPlayer.duration) {
-                const rect = progressBar.getBoundingClientRect();
-                const percent = (e.clientX - rect.left) / rect.width;
-                musicPlayer.currentTime = percent * musicPlayer.duration;
-            }
-            showControls();
-        });
-        
-        document.addEventListener('mousemove', () => { if (!controlsVisible) showControls(); else resetControlsTimer(); });
-        document.addEventListener('click', (e) => { if (!playlistContainer.contains(e.target) && e.target !== playlistBtn) playlistContainer.classList.remove('open'); });
-        musicPlayer.onended = () => nextTrack();
-        musicPlayer.onerror = () => setTimeout(() => nextTrack(), 1000);
-
-        updateClock();
-        setInterval(updateClock, 60000);
-        
-        loadTrack(0);
-        setTimeout(() => playMusic(), 500);
-        
-        iniciarCicloCompleto();
-        
-        setTimeout(() => document.documentElement.requestFullscreen(), 1000);
+    function showControls() {
+        musicPlayerBar.classList.remove('hide');
+        controlsVisible = true;
+        toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
         resetControlsTimer();
-        showMessage('✅ Sistema iniciado | Clínica Versalis');
-        
-        console.log('📁 Vídeos esperados:', videosMp4);
-    </script>
+    }
+
+    function renderPlaylist() {
+        playlistItems.innerHTML = musicas.map((m, idx) => `
+            <div class="playlist-item ${idx === currentMusicIndex ? 'active' : ''}" data-index="${idx}">
+                <div class="playlist-number">${(idx+1).toString().padStart(2,'0')}</div>
+                <div class="playlist-info">
+                    <div class="playlist-name">${m.title}</div>
+                    <div class="playlist-artist">${m.artist}</div>
+                </div>
+            </div>
+        `).join('');
+        document.querySelectorAll('.playlist-item').forEach(item => {
+            item.addEventListener('click', () => { selectSong(parseInt(item.dataset.index)); playlistContainer.classList.remove('open'); });
+        });
+    }
+
+    function loadTrack(index) {
+        currentMusicIndex = index;
+        const track = musicas[currentMusicIndex];
+        musicPlayer.src = track.src;
+        trackTitleEl.textContent = track.title;
+        trackArtistEl.textContent = track.artist;
+        progressFill.style.width = '0%';
+        currentTimeEl.textContent = '0:00';
+        renderPlaylist();
+        musicPlayer.onloadedmetadata = () => { totalTimeEl.textContent = formatTime(musicPlayer.duration); };
+    }
+
+    async function playMusic() {
+        try {
+            await musicPlayer.play();
+            isPlaying = true;
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            startTimer();
+            showControls();
+        } catch(e) { setTimeout(() => playMusic(), 1000); }
+    }
+
+    function pauseMusic() {
+        musicPlayer.pause();
+        isPlaying = false;
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); showControls(); }
+    function nextTrack() { loadTrack((currentMusicIndex + 1) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏭️ ${musicas[currentMusicIndex].title}`); showControls(); }
+    function prevTrack() { loadTrack((currentMusicIndex - 1 + musicas.length) % musicas.length); if (isPlaying) playMusic(); showMessage(`⏮️ ${musicas[currentMusicIndex].title}`); showControls(); }
+    function selectSong(index) { loadTrack(index); if (isPlaying) playMusic(); showMessage(`🎵 ${musicas[currentMusicIndex].title}`); showControls(); }
+    function toggleShuffleMode() { shuffle = !shuffle; showMessage(shuffle ? '🔀 Aleatório ativado' : '➡️ Sequencial'); shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; showControls(); }
+    function toggleFullscreen() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); showControls(); }
+    function togglePlaylist() { playlistContainer.classList.toggle('open'); showControls(); }
+    function toggleControls() {
+        if (controlsVisible) {
+            musicPlayerBar.classList.add('hide');
+            controlsVisible = false;
+            toggleControlsBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+            if (controlsTimeout) clearTimeout(controlsTimeout);
+        } else { showControls(); }
+    }
+
+    // Event listeners
+    playBtn.addEventListener('click', togglePlayPause);
+    prevBtn.addEventListener('click', prevTrack);
+    nextBtn.addEventListener('click', nextTrack);
+    shuffleBtn.addEventListener('click', toggleShuffleMode);
+    toggleControlsBtn.addEventListener('click', toggleControls);
+    playlistBtn.addEventListener('click', togglePlaylist);
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    progressBar.addEventListener('click', (e) => {
+        if (musicPlayer.duration) {
+            const rect = progressBar.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            musicPlayer.currentTime = percent * musicPlayer.duration;
+        }
+        showControls();
+    });
+    document.addEventListener('mousemove', () => { if (!controlsVisible) showControls(); else resetControlsTimer(); });
+    document.addEventListener('click', (e) => { if (!playlistContainer.contains(e.target) && e.target !== playlistBtn) playlistContainer.classList.remove('open'); });
+    musicPlayer.onended = () => nextTrack();
+    musicPlayer.onerror = () => setTimeout(() => nextTrack(), 1500);
+
+    // Inicialização geral
+    updateClock();
+    setInterval(updateClock, 60000);
+    loadTrack(0);
+    setTimeout(() => playMusic(), 500);
+    iniciarSistema();   // Saudação profissional + após 3min exibe versa.mp4
+    
+    // Pequeno teste de log e suporte
+    setTimeout(() => {
+        if (document.fullscreenEnabled) document.documentElement.requestFullscreen().catch(()=>{});
+    }, 800);
+    resetControlsTimer();
+    showMessage('✨ Clínica Versalis | Ambiente preparado');
+    console.log("📽️ Vídeo principal: versa.mp4 (após 180s) | Saudação reduzida (12s)");
+</script>
 </body>
 </html>
