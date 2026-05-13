@@ -1,5 +1,3 @@
-
-```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -73,7 +71,7 @@
             object-fit: contain;
         }
 
-        /* SAUDAÇÃO PROFISSIONAL */
+        /* SAUDAÇÃO */
         .welcome-overlay {
             position: absolute;
             top: 0;
@@ -100,12 +98,12 @@
             visibility: visible;
         }
 
-        .logo-container-premium {
+        .logo-container {
             animation: fadeInScale 0.6s ease-out;
             margin-bottom: 28px;
         }
 
-        .logo-img-premium {
+        .logo-img {
             width: 110px;
             height: 110px;
             object-fit: contain;
@@ -117,7 +115,7 @@
             border: 2px solid rgba(78,205,196,0.3);
         }
 
-        .clinic-name-premium {
+        .clinic-name {
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: 3px;
@@ -127,7 +125,7 @@
             color: transparent;
         }
 
-        .clinic-tag-premium {
+        .clinic-tag {
             font-size: 0.8rem;
             color: #4ecdc4;
             letter-spacing: 2.5px;
@@ -135,7 +133,7 @@
             text-transform: uppercase;
         }
 
-        .welcome-card-premium {
+        .welcome-card {
             background: rgba(0,0,0,0.55);
             backdrop-filter: blur(20px);
             padding: 38px 58px;
@@ -147,7 +145,7 @@
             max-width: 720px;
         }
 
-        .welcome-card-premium h2 {
+        .welcome-card h2 {
             font-size: 2.2rem;
             font-weight: 600;
             background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
@@ -157,12 +155,12 @@
             margin-bottom: 18px;
         }
 
-        .welcome-card-premium h2 i {
+        .welcome-card h2 i {
             color: #4ecdc4;
             margin-right: 14px;
         }
 
-        .mensagem-destaque-premium {
+        .mensagem-destaque {
             font-size: 1.35rem;
             color: #eef5f5;
             font-weight: 400;
@@ -173,7 +171,7 @@
             display: inline-block;
         }
 
-        .tempo-estimado-premium {
+        .tempo-estimado {
             display: inline-flex;
             align-items: center;
             gap: 12px;
@@ -185,9 +183,9 @@
             color: #c4e6e3;
         }
 
-        .tempo-estimado-premium i { color: #4ecdc4; }
+        .tempo-estimado i { color: #4ecdc4; }
 
-        .badge-row-premium {
+        .badge-row {
             display: flex;
             gap: 22px;
             justify-content: center;
@@ -195,7 +193,7 @@
             flex-wrap: wrap;
         }
 
-        .badge-premium {
+        .badge {
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(8px);
             padding: 8px 22px;
@@ -206,9 +204,9 @@
             color: #eef2f2;
         }
 
-        .badge-premium i { color: #4ecdc4; margin-right: 8px; }
+        .badge i { color: #4ecdc4; margin-right: 8px; }
 
-        .status-line-premium {
+        .status-line {
             display: flex;
             align-items: center;
             gap: 16px;
@@ -219,7 +217,7 @@
             margin-top: 12px;
         }
 
-        .pulse-dot-premium {
+        .pulse-dot {
             width: 10px;
             height: 10px;
             background: #4ecdc4;
@@ -227,14 +225,14 @@
             animation: pulse 1.5s infinite;
         }
 
-        .status-line-premium span {
+        .status-line span {
             font-size: 0.85rem;
             font-weight: 600;
             letter-spacing: 2px;
             color: white;
         }
 
-        .ticker-moderno {
+        .ticker {
             position: absolute;
             top: 0;
             left: 0;
@@ -377,16 +375,17 @@
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
 
         @media (max-width: 680px) {
-            .welcome-card-premium { padding: 24px 30px; }
-            .welcome-card-premium h2 { font-size: 1.6rem; }
-            .mensagem-destaque-premium { font-size: 1rem; }
-            .clinic-name-premium { font-size: 1.4rem; }
-            .logo-img-premium { width: 80px; height: 80px; }
+            .welcome-card { padding: 24px 30px; }
+            .welcome-card h2 { font-size: 1.6rem; }
+            .mensagem-destaque { font-size: 1rem; }
+            .clinic-name { font-size: 1.4rem; }
+            .logo-img { width: 80px; height: 80px; }
         }
     </style>
 </head>
 <body>
 <div class="tv-container">
+    <!-- VIDEO BACKGROUND YOUTUBE -->
     <div class="video-background">
         <iframe src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -394,44 +393,46 @@
         </iframe>
     </div>
 
+    <!-- OVERLAY VÍDEO MP4 -->
     <div class="video-overlay" id="videoOverlay">
         <video id="versaVideo" preload="auto" playsinline></video>
     </div>
 
+    <!-- SAUDAÇÃO -->
     <div class="welcome-overlay" id="welcomeOverlay">
-        <div class="logo-container-premium">
-            <img src="ver.png" alt="Clínica Versalis" class="logo-img-premium" id="logoImg" 
+        <div class="logo-container">
+            <img src="ver.png" alt="Clínica Versalis" class="logo-img" id="logoImg" 
                  onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('afterbegin', '<div style=\'width:90px;height:90px;background:linear-gradient(145deg,#4ecdc4,#2c9c94);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;\'><i class=\'fas fa-heartbeat\' style=\'font-size:2.8rem;color:#fff;\'></i></div>')">
-            <div class="clinic-name-premium">CLÍNICA VERSALIS</div>
-            <div class="clinic-tag-premium">Excelência em Saúde & Bem-estar</div>
+            <div class="clinic-name">CLÍNICA VERSALIS</div>
+            <div class="clinic-tag">Excelência em Saúde & Bem-estar</div>
         </div>
 
-        <div class="welcome-card-premium">
+        <div class="welcome-card">
             <h2><i class="fas fa-hand-peace"></i> Seja muito bem-vindo(a)!</h2>
-            <div class="mensagem-destaque-premium">
+            <div class="mensagem-destaque">
                 <i class="fas fa-clock" style="color:#4ecdc4; margin-right:10px;"></i>
                 Em breve você será atendido(a) com todo cuidado,<br>
                 respeito e excelência que você merece.
             </div>
-            <div class="tempo-estimado-premium">
+            <div class="tempo-estimado">
                 <i class="fas fa-hourglass-half"></i> Tempo estimado de espera: alguns minutos
             </div>
         </div>
 
-        <div class="badge-row-premium">
-            <div class="badge-premium"><i class="fas fa-stethoscope"></i> ESPECIALIDADES MÉDICAS</div>
-            <div class="badge-premium"><i class="fas fa-calendar-check"></i> AGENDAMENTO RÁPIDO</div>
-            <div class="badge-premium"><i class="fas fa-shield-alt"></i> SEGURANÇA E CONFORTO</div>
+        <div class="badge-row">
+            <div class="badge"><i class="fas fa-stethoscope"></i> ESPECIALIDADES MÉDICAS</div>
+            <div class="badge"><i class="fas fa-calendar-check"></i> AGENDAMENTO RÁPIDO</div>
+            <div class="badge"><i class="fas fa-shield-alt"></i> SEGURANÇA E CONFORTO</div>
         </div>
 
-        <div class="status-line-premium">
-            <div class="pulse-dot-premium"></div>
+        <div class="status-line">
+            <div class="pulse-dot"></div>
             <span>AGUARDE UM MOMENTO • ATENDIMENTO HUMANIZADO</span>
-            <div class="pulse-dot-premium"></div>
+            <div class="pulse-dot"></div>
         </div>
     </div>
 
-    <div class="ticker-moderno">
+    <div class="ticker">
         <div class="ticker-content">
             <div class="ticker-text">
                 <i class="fas fa-heartbeat"></i>
@@ -475,135 +476,125 @@
 <audio id="musicPlayer" preload="auto"></audio>
 
 <script>
-    // ========== CONFIGURAÇÕES DE TEMPO ==========
-   const TEMPO_SAUDACAO = 33;           // 32 segundos
-const TEMPO_ESPERA = 180;            // 3 minutos entre saudações
-const DURACAO_VIDEO = 20;            // 20 segundos
-
-// Depois de 1 saudações, mostra o vídeo
-if (contadorSaudacoes >= 3) {
-    mostrarVideo();  // ← sem espera extra de 5 minutos
-}
+    // ========== CONFIGURAÇÕES ==========
+    const TEMPO_SAUDACAO = 32;           // Saudação: 32 segundos
+    const TEMPO_ESPERA = 180;            // Espera entre saudações: 3 minutos (180 segundos)
+    const DURACAO_VIDEO = 20;            // Vídeo MP4: 20 segundos
+    const VIDEO_MP4 = 'versa.mp4';       // Nome do arquivo do vídeo
     
-    const VERSA_MP4_FILENAME = 'versa.mp4';
-    
-    // ========== VARIÁVEIS DE CONTROLE ==========
+    // ========== VARIÁVEIS ==========
     let timeoutAtual = null;
-    let videoTimeout = null;
-    let cicloRodando = true;
-    let contadorSaudacoes = 0;               // Conta quantas saudações já foram exibidas
-    const MAX_SAUDACOES_ANTES_MP4 = 3;       // 3 saudações (1 inicial + 2 repetições) antes do MP4
+    let timeoutVideo = null;
+    let contadorSaudacoes = 0;
     
     // Elementos DOM
-    const versaVideo = document.getElementById('versaVideo');
     const videoOverlay = document.getElementById('videoOverlay');
     const welcomeOverlay = document.getElementById('welcomeOverlay');
+    const versaVideo = document.getElementById('versaVideo');
     
-    // ========== FUNÇÕES DE CONTROLE ==========
+    // ========== FUNÇÕES PRINCIPAIS ==========
     
-    // Fecha completamente o vídeo MP4
-    function esconderVideoMP4() {
+    // Fecha o vídeo MP4
+    function fecharVideo() {
         videoOverlay.classList.remove('show');
         if (versaVideo) {
             versaVideo.pause();
             versaVideo.currentTime = 0;
         }
-        if (videoTimeout) clearTimeout(videoTimeout);
+        if (timeoutVideo) clearTimeout(timeoutVideo);
     }
     
     // Fecha a saudação
-    function esconderSaudacao() {
+    function fecharSaudacao() {
         welcomeOverlay.classList.remove('show');
     }
     
-    // Exibe o vídeo versa.mp4 (garante que saudação está fechada)
-    function mostrarVideoMP4() {
+    // Mostra o vídeo versa.mp4
+    function mostrarVideo() {
         console.log("🎬 Iniciando vídeo versa.mp4 - Duração: 20 segundos");
-        esconderSaudacao();  // Garante que saudação não está visível
+        fecharSaudacao(); // Garante que a saudação está fechada
         
-        versaVideo.src = VERSA_MP4_FILENAME;
+        versaVideo.src = VIDEO_MP4;
         versaVideo.load();
         
         versaVideo.onerror = () => {
-            console.log("❌ versa.mp4 não encontrado, pulando para próximo ciclo");
-            esconderVideoMP4();
-            iniciarCicloCompleto();
+            console.log("❌ versa.mp4 não encontrado! Coloque o arquivo na mesma pasta.");
+            fecharVideo();
+            // Se o vídeo não existe, volta para o início do ciclo
+            iniciarCiclo();
         };
         
         versaVideo.oncanplay = () => {
-            versaVideo.play().catch(e => console.log("Erro:", e));
+            versaVideo.play().catch(e => console.log("Erro ao reproduzir:", e));
             videoOverlay.classList.add('show');
         };
         
         // Após 20 segundos, fecha o vídeo e recomeça o ciclo
-        videoTimeout = setTimeout(() => {
-            console.log("⏹️ Vídeo MP4 finalizado (20s). Recomeçando ciclo.");
-            esconderVideoMP4();
-            iniciarCicloCompleto();
-        }, DURACAO_VIDEO_MP4 * 1000);
+        timeoutVideo = setTimeout(() => {
+            console.log("⏹️ Vídeo MP4 finalizado (20 segundos). Recomeçando ciclo.");
+            fecharVideo();
+            iniciarCiclo(); // Volta para a primeira saudação
+        }, DURACAO_VIDEO * 1000);
         
         versaVideo.onended = () => {
-            if (videoTimeout) clearTimeout(videoTimeout);
-            esconderVideoMP4();
-            iniciarCicloCompleto();
+            if (timeoutVideo) clearTimeout(timeoutVideo);
+            fecharVideo();
+            iniciarCiclo();
         };
     }
     
-    // Exibe a saudação por 32 segundos
+    // Mostra a saudação
     function mostrarSaudacao() {
-        console.log(`👋 Exibindo saudação #${contadorSaudacoes + 1} - Duração: 32 segundos`);
-        esconderVideoMP4();  // Garante que vídeo MP4 não está visível
+        console.log(`👋 Saudação #${contadorSaudacoes + 1} de 3 - Duração: 32 segundos`);
+        fecharVideo(); // Garante que o vídeo está fechado
         welcomeOverlay.classList.add('show');
         
         if (timeoutAtual) clearTimeout(timeoutAtual);
         timeoutAtual = setTimeout(() => {
             console.log("🔇 Saudação finalizada");
-            esconderSaudacao();
-            
-            // Incrementa contador de saudações
+            fecharSaudacao();
             contadorSaudacoes++;
             
-            // DECISÃO: Depois de 3 saudações, vamos para o MP4 após 5 minutos
-            if (contadorSaudacoes >= MAX_SAUDACOES_ANTES_MP4) {
-                console.log("⏳ 3 saudações exibidas. Aguardando 5 minutos para o vídeo MP4...");
-                if (timeoutAtual) clearTimeout(timeoutAtual);
+            // Verifica se já mostrou 3 saudações
+            if (contadorSaudacoes >= 3) {
+                console.log("🎬 3 saudações exibidas. Agora vai mostrar o vídeo versa.mp4!");
+                // Aguarda 3 minutos e mostra o vídeo
                 timeoutAtual = setTimeout(() => {
-                    mostrarVideoMP4();
-                }, TEMPO_ESPERA_5MIN * 1000);
+                    mostrarVideo();
+                }, TEMPO_ESPERA * 1000);
             } else {
-                // Senão, aguarda 3 minutos e mostra a próxima saudação
-                console.log(`⏳ Aguardando 3 minutos para próxima saudação (${contadorSaudacoes}/3 saudações antes do MP4)...`);
-                if (timeoutAtual) clearTimeout(timeoutAtual);
+                console.log(`⏳ Aguardando 3 minutos para a próxima saudação (${contadorSaudacoes}/3)...`);
+                // Aguarda 3 minutos e mostra a próxima saudação
                 timeoutAtual = setTimeout(() => {
                     mostrarSaudacao();
-                }, TEMPO_ESPERA_3MIN * 1000);
+                }, TEMPO_ESPERA * 1000);
             }
         }, TEMPO_SAUDACAO * 1000);
     }
     
-    // Inicia ou reinicia o ciclo completo
-    function iniciarCicloCompleto() {
+    // Inicia o ciclo completo
+    function iniciarCiclo() {
         // Cancela todos os timeouts pendentes
         if (timeoutAtual) clearTimeout(timeoutAtual);
-        if (videoTimeout) clearTimeout(videoTimeout);
+        if (timeoutVideo) clearTimeout(timeoutVideo);
         
         // Garante que ambos overlays estão fechados
-        esconderVideoMP4();
-        esconderSaudacao();
+        fecharVideo();
+        fecharSaudacao();
         
         // Reseta o contador de saudações
         contadorSaudacoes = 0;
         
-        console.log("🚀 Iniciando ciclo: Saudação inicial (32s)");
-        console.log("📋 Fluxo: Saudação(32s) → espera 3min → Saudação(32s) → espera 3min → Saudação(32s) → espera 5min → MP4(20s) → repete");
+        console.log("🚀 INICIANDO CICLO COMPLETO");
+        console.log("📋 FLUXO: Saudação(32s) → espera 3min → Saudação(32s) → espera 3min → Saudação(32s) → espera 3min → Vídeo versa.mp4(20s) → repete");
         
         // Começa com a primeira saudação
         mostrarSaudacao();
     }
     
-    // ========== MÚSICA E PLAYER ==========
+    // ========== PLAYER DE MÚSICA ==========
     const musicas = [
- { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+{ id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -716,95 +707,6 @@ if (contadorSaudacoes >= 3) {
             { id: 111, title: "sinais de fogo", artist: "Preta_gil", src: "Preta_gil_sinais_de_fogo_muzzik.m4a", periodo: "manha" },
             { id: 112, title: "Resposta", artist: "Skank", src: "Skank_Resposta.m4a", periodo: "tarde" },
             { id: 113, title: "Vamos Fugir", artist: "Skank", src: "Skank_Vamos_Fugir_muzzik.m4a", periodo: "manha" },
-            { id: 114, title: "Sorte", artist: "Caetano Veloso & Gal Costa", src: "Sorte_Caetano_Veloso_Gal_Costa_.m4a", periodo: "noite" },
-            { id: 115, title: "Stand by Me", artist: "Ben E. King", src: "Stand_by_Stand_by_Me_muzzik.m4a", periodo: "tarde" },
-            { id: 116, title: "Fields of Gold", artist: "Sting", src: "Sting_Fields_Of_Gold_muzzik.m4a", periodo: "noite" },
-            { id: 117, title: "Sultans of Swing", artist: "Dire Straits", src: "Sultans_of_Sultans_of_Swing_Backing_roger.m4a", periodo: "manha" },
-            { id: 118, title: "Remember The Time", artist: "A Cha", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", periodo: "manha" },
-            { id: 119, title: "Rua Ramalhete", artist: "Tavito", src: "Tavito_Rua_Ramalhete.m4a", periodo: "noite" },
-            { id: 120, title: "Have You Ever Really Loved A Woman", artist: "Bryan Adams", src: "Bryan_Adams_Have_You_Ever_Really_Loved_A_Woman__muzzik.m4a", periodo: "tarde" },
-            { id: 121, title: "Get Lucky", artist: "Daft Punk", src: "Daft_Punk_Get_Lucky_muzzik.m4a", periodo: "manha" },
-            { id: 122, title: "Várias Queixas", artist: "Gilsons", src: "Gilsons_V_rias_Queixas_muzzik.m4a", periodo: "tarde" },
-            { id: 123, title: "Evidências", artist: "Maneva", src: "Maneva_Evid_ncias_muzzik.m4a", periodo: "tarde" },
-            { id: 124, title: "Oração ao Tempo", artist: "Maria Gadú", src: "Maria_Gad_Ora_o_ao_Tempo_muzzik.m4a", periodo: "manha" },
-            { id: 125, title: "Classic", artist: "Adrian Gurvitz", src: "Adrian_Gurvitz_Classic_TopPop_muzzik.m4a", periodo: "noite" },
-            { id: 126, title: "Take On Me", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", periodo: "manha" },
-            { id: 127, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" },
-            { id: 128, title: "Não Vá Embora", artist: "Marisa Montes", src: "Marisa-Montes-não vá embora.m4a", periodo: "tarde" },
-            { id: 129, title: "My Love My Love", artist: "Little Texas", src: "My_Love_My_Love_muzzik.m4a", periodo: "tarde" },
-            { id: 130, title: "Um Amor Puro", artist: "Djavan", src: "Djavan_Um_Amor_Puro_muzzik.m4a", periodo: "noite" },
-            { id: 131, title: "Pra Quem Tem Fé", artist: "Falcão", src: "Falcão-prá-quem-tem fé.m4a", periodo: "manha" },
-            { id: 132, title: "Linha Do Equador", artist: "Melim", src: "Melim_Linha_Do_Equador_muzzik.m4a", periodo: "tarde" },
-            { id: 133, title: "Na Estrada", artist: "Marisa Montes", src: "Na_Estrada_Na_Estrada_muzzik.m4a", periodo: "tarde" },
-            { id: 134, title: "Toada", artist: "Boca Livre", src: "Boca_Livre_Mmpb_Toada_muzzik.m4a", periodo: "noite" },
-            { id: 135, title: "For Whom The Bell Tolls", artist: "Bee Gees", src: "Bee_Gees_For_Whom_The_Bell_Tolls_muzzik.m4a", periodo: "tarde" },
-            { id: 136, title: "Levitating", artist: "Dua Lipa", src: "Dua_Lipa_Levitating_Featuring_DaBaby_muzzik.m4a", periodo: "manha" },
-            { id: 137, title: "_In_The_Park", artist: "September", src: "YOU_LL_NEVER_FIND_September_In_The_Park_muzzik.m4a", periodo: "tarde" },
-            { id: 138, title: "Knockin On Heaven s Door", artist: "Guns N Roses", src: "Guns_N_Roses_Knockin_On_Heaven_s_Door_muzzik.m4a", periodo: "manha" },
-            { id: 139, title: "Another Day In Paradise", artist: "Ivan Barreto", src: "Ivan_Barreto_Another_Day_In_Paradise_Good_Times_muzzik.m4a", periodo: "tarde" },
-            { id: 140, title: "Cherish", artist: "Kool & The Gang", src: "Kool_The_Gang_Cherish_muzzik.m4a", periodo: "tarde" },
-            { id: 141, title: "Need You Now", artist: "Lady Antebellum", src: "Lady_Antebellum_Need_You_Now_muzzik.m4a", periodo: "noite" },
-            { id: 142, title: "Beautiful", artist: "Marillion", src: "Marillion_Beautiful_muzzik.m4a", periodo: "noite" },
-            { id: 143, title: "Eva", artist: "Radio Taxi", src: "Radio_Taxi_Eva_muzzik.m4a", periodo: "todos" },
-            { id: 144, title: "There s Never a Forever Thing", artist: "a-ha", src: "a_ha_Take_On_Me_muzzik.m4a", periodo: "manha" },
-            { id: 145, title: "Vila do Sossego", artist: "Chico Chico", src: "Chico_Chico_Vila_do_Sossego_muzzik.m4a", periodo: "tarde" },
-            { id: 146, title: "Quanto Amore Sei", artist: "Eros Ramazzotti", src: "Eros_Ramazzotti_Quanto_Amore_Sei_muzzik.m4a", periodo: "tarde" },
-            { id: 147, title: "Legião Urbana", artist: "Giz", src: "Giz_Legi_o_Urbana_muzzik.m4a", periodo: "tarde" },
-            { id: 148, title: "By My Side", artist: "INXS", src: "My_Love_My_Love_muzzik.m4a", periodo: "noite" },
-            { id: 149, title: "Velha Infância", artist: "Tribalistas", src: "Tribalistas_Velha_Inf_ncia_muzzik (1).m4a", periodo: "tarde" },
-            { id: 150, title: "Need You Now", artist: "Lady Antebellum", src: "Lady_Antebellum_Need_You_Now_muzzik.m4a", periodo: "tarde" },
-            { id: 151, title: "Love Is Love", artist: "Culture Club", src: "My_Love_My_Love_muzzik.m4a", periodo: "noite" },
-            { id: 152, title: "Nothing's Gonna Stop Us Now", artist: "Starship", src: "Stand_by_Stand_by_Me_muzzik.m4a", periodo: "todos" },
-            { id: 153, title: "Right Here Waiting", artist: "Richard Marx", src: "Richard_Marx_Hazard_muzzik.m4a", periodo: "todos" },
-            { id: 154, title: "Fogo", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", periodo: "tarde" },
-            { id: 155, title: "Knife", artist: "Rockwell", src: "Knife_Rockwell_Sucesso_de_HD_muzzik.m4a", periodo: "noite" },
-            { id: 156, title: "Linger", artist: "The Cranberries", src: "The_Cranberries_Linger_muzzik.m4a", periodo: "noite" },
-            { id: 157, title: "Garoto de Aluguel", artist: "Zé Ramalho", src: "Z_Ramalho_Garoto_de_Aluguel_muzzik.m4a", periodo: "tarde" },
-            { id: 158, title: "Fogo (Acústico)", artist: "Capital Inicial", src: "CAPITAL_INICIAL_FOGO_AC_STICO_MTV_muzzik.m4a", periodo: "tarde" },
-            { id: 159, title: "Torn", artist: "Natalie Imbruglia", src: "Natalie_Imbruglia_Torn_muzzik.m4a", periodo: "tarde" },
-            { id: 160, title: "Na Estrada", artist: "Cidade Negra", src: "Na_Estrada_Na_Estrada_muzzik.m4a", periodo: "tarde" },
-            { id: 161, title: "A Namorada", artist: "Carlinhos Brown", src: "A_Namorada_A_Namorada_Carlinhos_Brown_muzzik.m4a", periodo: "manha" },
-            { id: 162, title: "Ainda Bem Que Chegou", artist: "Vitor Kley", src: "Vitor_Kley_Ainda_Bem_Que_Chegou_muzzik.m4a", periodo: "tarde" },
-            { id: 163, title: "A Loba", artist: "Alcione", src: "A_Loba_A_Loba_muzzik.m4a", periodo: "manha" },
-            { id: 164, title: "Verdade Chinesa", artist: "Emilio Santiago", src: "Verdade_Chinesa_Verdade_Chinesa_Em_lio_Santiago_muzzik.m4a", periodo: "tarde" },
-            { id: 165, title: "Problemas", artist: "Ana Carolina", src: "Ana_Carolina_Problemas_muzzik.m4a", periodo: "tarde" },
-            { id: 166, title: "Andança", artist: "Luana Carvalho e Golden Boys", src: "Andan_a_Luana_Carvalho_e_Golden_Boys_muzzik.m4a", periodo: "tarde" },
-            { id: 167, title: "Faz Uma Loucura Por Mim", artist: "Alcione", src: "Alcione_Faz_Uma_Loucura_Por_Mim_muzzik.m4a", periodo: "manha" },
-            { id: 168, title: "Coisas da Vida", artist: "Milton Nascimento", src: "Milton_Nascimento_Coisas_da_Vida_muzzik.m4a", periodo: "tarde" },
-            { id: 169, title: "Saigon", artist: "Emilio Santiago", src: "Saigon_Saigon_muzzik.m4a", periodo: "tarde" },
-            { id: 170, title: "Intriga da Oposição", artist: "Belo", src: "Belo_Intriga_Da_Oposi_o_muzzik.m4a", periodo: "tarde" },
-            { id: 171, title: "Dia Branco", artist: "Geraldo Azevedo", src: "Geraldo_Azevedo_Dia_Branco.m4a", periodo: "noite" },
-            { id: 172, title: "Tô Voltando", artist: "Simone", src: "Simone_T_Voltando_muzzik.m4a", periodo: "manha" },
-            { id: 173, title: "Samba de Verão", artist: "Various", src: "Samba_de_Samba_de_Ver_o_muzzik.m4a", periodo: "manha" },
-    
-{ id: 174, title: "Air Supply Making Love Out Of Nothing At All", artist: "Unknown", src: "Air_Supply_Making_Love_Out_Of_Nothing_At_All_muzzik.m4a", periodo: "todos" },
-{ id: 175, title: "Ana Carolina Quem dera eu Seu Z", artist: "Unknown", src: "Ana_Carolina_Quem_dera_eu_Seu_Z__muzzik.m4a", periodo: "todos" },
-{ id: 176, title: "Bon Jovi Bed Of Roses", artist: "Unknown", src: "Bon_Jovi_Bed_Of_Roses_muzzik.m4a", periodo: "todos" },
-{ id: 177, title: "Bon Jovi Bed Of Roses", artist: "Unknown", src: "Bon_Jovi_Bed_Of_Roses_muzzik.m4a", periodo: "todos" },
-{ id: 178, title: "Danni Carlos Coisas Que Eu Sei", artist: "Unknown", src: "Danni_Carlos_Coisas_Que_Eu_Sei_muzzik.m4a", periodo: "todos" },
-{ id: 179, title: "Djavan Sina", artist: "Unknown", src: "Djavan_Sina_muzzik.m4a", periodo: "todos" },
-{ id: 180, title: "Dois Beijinhos Dois Beijinhos", artist: "Unknown", src: "Dois_Beijinhos_Dois_Beijinhos_muzzik.m4a", periodo: "todos" },
-{ id: 181, title: "Executive Funk Executive Funk My", artist: "Unknown", src: "Executive_Funk_Executive_Funk_My_muzzik.m4a", periodo: "todos" },
-{ id: 182, title: "Hunting High Hunting High and Low Remaster", artist: "Unknown", src: "Hunting_High_Hunting_High_and_Low_Remaster__muzzik.m4a", periodo: "todos" },
-{ id: 183, title: "Isabella Taviani Diga Sim Pra Mim", artist: "Unknown", src: "Isabella_Taviani_Diga_Sim_Pra_Mim__muzzik.m4a", periodo: "todos" },
-{ id: 184, title: "Ivete Sangalo A Lua Q Eu T Dei", artist: "Unknown", src: "Ivete_Sangalo_A_Lua_Q_Eu_T_Dei_muzzik.m4a", periodo: "todos" },
-{ id: 185, title: "Lagrimas e Chuva Paula Toller Ao Vivo Amorosa", artist: "Unknown", src: "L_grimas_e_Chuva_Paula_Toller_Ao_Vivo_Amorosa_muzzik.m4a", periodo: "todos" },
-{ id: 186, title: "Lulu Santos Apenas Mais uma de Amor", artist: "Unknown", src: "Lulu_Santos_Apenas_Mais_uma_de_Amor_muzzik.m4a", periodo: "todos" },
-{ id: 187, title: "Maria Rita Cara Valente", artist: "Unknown", src: "Maria_Rita_Cara_Valente_muzzik.m4a", periodo: "todos" },
-{ id: 188, title: "N o Mexe N o Mexe Comigo Lyric V deo Alcione", artist: "Unknown", src: "N_o_Mexe_N_o_Mexe_Comigo_Lyric_V_deo_Alcione_muzzik.m4a", periodo: "todos" },
-{ id: 189, title: "Nando Reis e Anavit ria N", artist: "Unknown", src: "Nando_Reis_e_Anavit_ria_N__muzzik.m4a", periodo: "todos" },
-{ id: 190, title: "Night Fever Night Fever Line Dance D", artist: "Unknown", src: "Night_Fever_Night_Fever_Line_Dance_D__muzzik.m4a", periodo: "todos" },
-{ id: 191, title: "Onde Anda Onde Anda Voc Clipe", artist: "Unknown", src: "Onde_Anda_Onde_Anda_Voc_Clipe_muzzik.m4a", periodo: "todos" },
-{ id: 192, title: "Take That Back for Good", artist: "Unknown", src: "Take_That_Back_for_Good_muzzik.m4a", periodo: "todos" },
-{ id: 193, title: "Touchy Touchy", artist: "Unknown", src: "Touchy_Touchy__muzzik.m4a", periodo: "todos" },
-{ id: 194, title: "eWoman in Woman in Love muzzik.m", artist: "Unknown", src: "eWoman_in_Woman_in_Love_muzzik.m", periodo: "todos" },
-{ id: 195, title: "ELECTRIC LOCO s Hits muzzik (1)", artist: "Unknown", src: "ELECTRIC_LOCO_s_Hits_muzzik (1).m4a", periodo: "todos" },
-{ id: 196, title: "Freddie Mercury Montserrat Caball How Can I Go On", artist: "Unknown", src: "Freddie_Mercury_Montserrat_Caball_How_Can_I_Go_On_muzzik.m4a", periodo: "todos" },
-  { id: 197, title: "Sem_radar_Sem_radar", artist: "Ls jack", src: "Sem_radar_Sem_radar_Vers_o_ac_stica__muzzik.m4a", periodo: "todos" }, 
-     { id: 198, title: "Liga_Joe_A_Little_Respect", artist: "Liga_Joe_A_Little_Respect_", src: "Liga_Joe_A_Little_Respect_muzzik.m4a", periodo: "todos" },
-       { id: 199, title: "Barbra_Streisand_Guilty", artist: "Barbra_Streisand_Guilty", src: "Barbra_Streisand_Guilty_muzzik.m4a", periodo: "todos" }, 
-         { id: 200, title: "Never_Love_Again", artist: "I_ll_Never_I_ll_Never_Love_Again", src: "I_ll_Never_I_ll_Never_Love_Again_muzzik.m4a", periodo: "todos" },    
-             { id: 201, title: "Haven_t_Met_You_Yet", artist: "Michael Bubl", src: "Michael_Bubl_Haven_t_Met_You_Yet_muzzik.m4a", periodo: "todos" }
         
     ];
     
@@ -872,13 +774,13 @@ if (contadorSaudacoes >= 3) {
     loadTrack(0); setTimeout(()=>playMusic(),500);
     
     // INICIA O CICLO
-    iniciarCicloCompleto();
+    iniciarCiclo();
     
     setTimeout(()=>{ if(document.fullscreenEnabled) document.documentElement.requestFullscreen().catch(()=>{}); },800);
     resetControlsTimer();
-    showMessage('✅ Clínica Versalis | Ciclo ativo');
-    console.log("🎯 FLUXO: Saudação(32s) → espera 3min → Saudação → espera 3min → Saudação → espera 5min → MP4(20s) → repete");
-    console.log("✅ GARANTIDO: Saudação e MP4 NUNCA aparecem juntos!");
+    showMessage('✅ Clínica Versalis | Sistema ativo');
+    console.log("✅ Código pronto! Aguardando arquivo 'versa.mp4' na mesma pasta");
+    console.log("📋 FLUXO: 3 saudações de 32s com intervalos de 3min → depois vídeo de 20s → repete");
 </script>
 </body>
 </html>
