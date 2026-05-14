@@ -36,6 +36,27 @@
             z-index: 1;
         }
 
+        /* Vídeo MP4 local */
+        .video-mp4 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 2;
+        }
+
+        /* YouTube como fallback */
+        .video-yt {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
         iframe {
             width: 100%;
             height: 100%;
@@ -64,6 +85,18 @@
         .welcome-overlay.hide {
             opacity: 0;
             visibility: hidden;
+        }
+
+        /* Logo - suporta tanto imagem quanto ícone */
+        .logo-img {
+            width: 110px;
+            height: 110px;
+            object-fit: contain;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: rgba(78,205,196,0.1);
+            padding: 10px;
+            border: 2px solid rgba(78,205,196,0.3);
         }
 
         .logo-placeholder {
@@ -418,7 +451,7 @@
             .welcome-card { padding: 20px 30px; }
             .welcome-card h2 { font-size: 1.5rem; }
             .clinic-name { font-size: 1.4rem; }
-            .logo-placeholder { width: 80px; height: 80px; }
+            .logo-img, .logo-placeholder { width: 80px; height: 80px; }
             .logo-placeholder i { font-size: 40px; }
             .mensagem { font-size: 0.9rem; }
             .badge { padding: 5px 12px; font-size: 0.65rem; }
@@ -429,8 +462,11 @@
 </head>
 <body>
 <div class="tv-container">
-    <!-- Vídeo do YouTube como fundo -->
-    <div class="video-background">
+    <!-- VÍDEO MP4 LOCAL (se existir) -->
+    <video id="versaVideo" class="video-mp4" preload="auto" playsinline muted></video>
+    
+    <!-- VÍDEO YOUTUBE (fallback) -->
+    <div class="video-yt">
         <iframe src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowfullscreen>
@@ -439,7 +475,9 @@
 
     <div class="welcome-overlay" id="welcomeOverlay">
         <div>
-            <div class="logo-placeholder">
+            <!-- Tenta carregar a imagem ver.png, se não existir, mostra o ícone -->
+            <img src="ver.png" alt="Logo" class="logo-img" id="logoImg" onerror="this.style.display='none'; document.getElementById('logoPlaceholder').style.display='flex';">
+            <div class="logo-placeholder" id="logoPlaceholder" style="display: none;">
                 <i class="fas fa-heartbeat"></i>
             </div>
             <div class="clinic-name">CLÍNICA VERSALIS</div>
@@ -481,8 +519,8 @@
 
     <div class="music-player" id="musicPlayerBar">
         <div class="track-info">
-            <div class="track-title" id="trackTitle">🎵 Música Ambiente</div>
-            <div class="track-artist" id="trackArtist">Clínica Versalis</div>
+            <div class="track-title" id="trackTitle">🎵 Carregando...</div>
+            <div class="track-artist" id="trackArtist">Música ambiente</div>
         </div>
         <div class="progress-area">
             <div class="progress-time">
@@ -512,6 +550,32 @@
 
 <script>
     // =============================================
+    // GERENCIAMENTO DE VÍDEO MP4 LOCAL
+    // =============================================
+    const versaVideo = document.getElementById('versaVideo');
+    
+    // Tenta carregar o vídeo local
+    versaVideo.src = 'versa.mp4';
+    versaVideo.load();
+    
+    // Se o vídeo local existir, usa ele e esconde o YouTube
+    versaVideo.oncanplay = () => {
+        console.log("✅ Vídeo 'versa.mp4' encontrado! Usando vídeo local.");
+        document.querySelector('.video-yt').style.opacity = '0';
+        versaVideo.style.zIndex = '5';
+        versaVideo.muted = false; // Se quiser som, mude para false
+        versaVideo.play().catch(e => console.log("Vídeo local não pôde tocar automaticamente"));
+    };
+    
+    // Se o vídeo local NÃO existir, usa o YouTube
+    versaVideo.onerror = () => {
+        console.log("⚠️ Arquivo 'versa.mp4' NÃO encontrado. Usando YouTube como fundo.");
+        versaVideo.style.display = 'none';
+        document.querySelector('.video-yt').style.opacity = '1';
+        document.querySelector('.video-yt').style.zIndex = '2';
+    };
+    
+    // =============================================
     // CICLO DE SAUDAÇÃO
     // =============================================
     const TEMPO_JUNTOS = 33;
@@ -540,10 +604,10 @@
     }
     
     // =============================================
-    // PLAYER DE MÚSICA COM LINKS FUNCIONAIS
+    // PLAYER DE MÚSICA
     // =============================================
     const musicas = [
-     { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+{ id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -969,10 +1033,10 @@
     setTimeout(() => iniciarCiclo(), 500);
     resetControlsTimer();
     
-    console.log("✅ SISTEMA FUNCIONANDO!");
-    console.log("📋 Saudação: 33s visível / 3min oculto");
-    console.log("🎵 Música ambiente com 4 músicas");
-    console.log("🎬 Vídeo do YouTube como fundo");
+    console.log("✅ SISTEMA COMPLETO!");
+    console.log("📁 Para usar sua logo: coloque o arquivo 'ver.png' na mesma pasta");
+    console.log("📁 Para usar seu vídeo: coloque o arquivo 'versa.mp4' na mesma pasta");
+    console.log("🎬 Se não encontrar os arquivos, usa ícone e YouTube como fallback");
 </script>
 </body>
 </html>
