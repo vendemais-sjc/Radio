@@ -36,7 +36,6 @@
             z-index: 1;
         }
 
-        /* Vídeo MP4 local */
         .video-mp4 {
             position: absolute;
             top: 0;
@@ -44,10 +43,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 2;
+            z-index: 5;
         }
 
-        /* YouTube como fallback */
         .video-yt {
             position: absolute;
             top: 0;
@@ -62,6 +60,21 @@
             height: 100%;
             pointer-events: none;
             border: none;
+        }
+
+        .debug-panel {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: #0f0;
+            font-family: monospace;
+            font-size: 11px;
+            padding: 8px;
+            border-radius: 5px;
+            z-index: 999;
+            max-width: 300px;
+            pointer-events: none;
         }
 
         .welcome-overlay {
@@ -87,7 +100,6 @@
             visibility: hidden;
         }
 
-        /* Logo - suporta tanto imagem quanto ícone */
         .logo-img {
             width: 110px;
             height: 110px;
@@ -105,7 +117,7 @@
             margin: 0 auto 18px;
             background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
             border-radius: 50%;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             border: 3px solid rgba(78,205,196,0.5);
@@ -462,8 +474,8 @@
 </head>
 <body>
 <div class="tv-container">
-    <!-- VÍDEO MP4 LOCAL (se existir) -->
-    <video id="versaVideo" class="video-mp4" preload="auto" playsinline muted></video>
+    <!-- VÍDEO MP4 LOCAL -->
+    <video id="versaVideo" class="video-mp4" preload="auto" playsinline muted style="display: none;"></video>
     
     <!-- VÍDEO YOUTUBE (fallback) -->
     <div class="video-yt">
@@ -473,11 +485,15 @@
         </iframe>
     </div>
 
+    <!-- PAINEL DE DEBUG (mostra o erro) -->
+    <div class="debug-panel" id="debugPanel">
+        🔍 Testando vídeo...
+    </div>
+
     <div class="welcome-overlay" id="welcomeOverlay">
         <div>
-            <!-- Tenta carregar a imagem ver.png, se não existir, mostra o ícone -->
             <img src="ver.png" alt="Logo" class="logo-img" id="logoImg" onerror="this.style.display='none'; document.getElementById('logoPlaceholder').style.display='flex';">
-            <div class="logo-placeholder" id="logoPlaceholder" style="display: none;">
+            <div class="logo-placeholder" id="logoPlaceholder">
                 <i class="fas fa-heartbeat"></i>
             </div>
             <div class="clinic-name">CLÍNICA VERSALIS</div>
@@ -549,30 +565,93 @@
 </div>
 
 <script>
+    const debugPanel = document.getElementById('debugPanel');
+    
+    function logDebug(msg, isError = false) {
+        console.log(msg);
+        debugPanel.innerHTML = (isError ? '❌ ' : '✅ ') + msg + '<br>' + debugPanel.innerHTML.split('<br>')[0];
+        debugPanel.style.color = isError ? '#ff6666' : '#66ff66';
+    }
+
     // =============================================
-    // GERENCIAMENTO DE VÍDEO MP4 LOCAL
+    // TESTE DETALHADO DO VÍDEO MP4
     // =============================================
     const versaVideo = document.getElementById('versaVideo');
+    const videoYT = document.querySelector('.video-yt');
     
-    // Tenta carregar o vídeo local
-    versaVideo.src = 'versa.mp4';
+    logDebug("🔍 Procurando arquivo 'dsa.mp4'...");
+    
+    // Tenta carregar o vídeo
+    versaVideo.src = 'dsa.mp4';
     versaVideo.load();
     
-    // Se o vídeo local existir, usa ele e esconde o YouTube
-    versaVideo.oncanplay = () => {
-        console.log("✅ Vídeo 'versa.mp4' encontrado! Usando vídeo local.");
-        document.querySelector('.video-yt').style.opacity = '0';
-        versaVideo.style.zIndex = '5';
-        versaVideo.muted = false; // Se quiser som, mude para false
-        versaVideo.play().catch(e => console.log("Vídeo local não pôde tocar automaticamente"));
+    // Evento: quando o vídeo começa a carregar
+    versaVideo.onloadstart = () => {
+        logDebug("📁 Arquivo encontrado! Carregando...");
     };
     
-    // Se o vídeo local NÃO existir, usa o YouTube
-    versaVideo.onerror = () => {
-        console.log("⚠️ Arquivo 'versa.mp4' NÃO encontrado. Usando YouTube como fundo.");
+    // Evento: quando o vídeo está pronto para tocar
+    versaVideo.oncanplay = () => {
+        logDebug("✅ VÍDEO 'versa.mp4' CARREGADO COM SUCESSO!");
+        versaVideo.style.display = 'block';
+        videoYT.style.opacity = '0';
+        videoYT.style.zIndex = '1';
+        versaVideo.style.zIndex = '5';
+        
+        // Tenta tocar o vídeo
+        versaVideo.play().then(() => {
+            logDebug("🎬 Vídeo local começou a tocar!");
+        }).catch(e => {
+            logDebug("⚠️ Vídeo carregado mas não tocou automaticamente: " + e.message);
+            // Tenta tocar com clique
+            document.addEventListener('click', () => {
+                versaVideo.play();
+            }, { once: true });
+        });
+    };
+    
+    // Evento: erro ao carregar o vídeo
+    versaVideo.onerror = (e) => {
+        const errorCode = versaVideo.error ? versaVideo.error.code : 'desconhecido';
+        let errorMsg = '';
+        
+        switch(errorCode) {
+            case 1:
+                errorMsg = 'CARREGAMENTO INTERROMPIDO (o navegador parou o carregamento)';
+                break;
+            case 2:
+                errorMsg = 'ARQUIVO NÃO ENCONTRADO (verifique se "versa.mp4" está na mesma pasta)';
+                break;
+            case 3:
+                errorMsg = 'FORMATO INVÁLIDO ou VÍDEO CORROMPIDO';
+                break;
+            case 4:
+                errorMsg = 'URL INVÁLIDA ou SEM SUPORTE';
+                break;
+            default:
+                errorMsg = 'Erro desconhecido';
+        }
+        
+        logDebug(`❌ ERRO ${errorCode}: ${errorMsg}`, true);
+        logDebug("🔄 Usando YouTube como fallback...", false);
+        
+        // Esconde o vídeo local e mostra o YouTube
         versaVideo.style.display = 'none';
-        document.querySelector('.video-yt').style.opacity = '1';
-        document.querySelector('.video-yt').style.zIndex = '2';
+        videoYT.style.opacity = '1';
+        videoYT.style.zIndex = '2';
+        
+        // Dicas para resolver
+        if(errorCode === 2) {
+            debugPanel.innerHTML += '<br>💡 DICA: Coloque o arquivo "versa.mp4" na MESMA PASTA deste arquivo HTML';
+        } else if(errorCode === 3) {
+            debugPanel.innerHTML += '<br>💡 DICA: Converta o vídeo para MP4 (H.264) usando HandBrake ou similar';
+        }
+    };
+    
+    // Evento: quando o vídeo termina de carregar metadados
+    versaVideo.onloadedmetadata = () => {
+        logDebug(`📊 Duração do vídeo: ${versaVideo.duration} segundos`);
+        logDebug(`📐 Resolução: ${versaVideo.videoWidth}x${versaVideo.videoHeight}`);
     };
     
     // =============================================
@@ -607,7 +686,7 @@
     // PLAYER DE MÚSICA
     // =============================================
     const musicas = [
-{ id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
+    { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "True True Remaster", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a", periodo: "noite" },
             { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a", periodo: "tarde" },
@@ -912,7 +991,7 @@
             startTimer(); 
             showControls(); 
         } catch(e){ 
-            console.log("Clique na tela para ativar a música");
+            logDebug("🎵 Clique na tela para ativar a música");
             document.addEventListener('click', ativarMusicaComClique, { once: true });
         } 
     }
@@ -1032,11 +1111,6 @@
     
     setTimeout(() => iniciarCiclo(), 500);
     resetControlsTimer();
-    
-    console.log("✅ SISTEMA COMPLETO!");
-    console.log("📁 Para usar sua logo: coloque o arquivo 'ver.png' na mesma pasta");
-    console.log("📁 Para usar seu vídeo: coloque o arquivo 'versa.mp4' na mesma pasta");
-    console.log("🎬 Se não encontrar os arquivos, usa ícone e YouTube como fallback");
 </script>
 </body>
 </html>
