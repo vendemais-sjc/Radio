@@ -27,15 +27,6 @@
             background: #000;
         }
 
-        .video-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
         .video-mp4 {
             position: absolute;
             top: 0;
@@ -63,6 +54,7 @@
             border: none;
         }
 
+        /* CORREÇÃO: Saudação com display none quando escondida */
         .welcome-overlay {
             position: absolute;
             top: 0;
@@ -79,13 +71,11 @@
             text-align: center;
             padding: 30px 20px;
             transition: opacity 0.5s ease;
-            opacity: 1;
-            visibility: visible;
         }
 
+        /* Quando escondida, some completamente */
         .welcome-overlay.hide {
-            opacity: 0;
-            visibility: hidden;
+            display: none !important;
         }
 
         .logo-img {
@@ -463,7 +453,7 @@
 <body>
 <div class="tv-container">
     <!-- VÍDEO MP4 LOCAL (bsa.mp4) -->
-    <video id="bsaVideo" class="video-mp4" preload="auto" playsinline muted loop="false">
+    <video id="bsaVideo" class="video-mp4" preload="auto" playsinline muted>
         <source src="bsa.mp4" type="video/mp4">
     </video>
     
@@ -475,7 +465,7 @@
         </iframe>
     </div>
 
-    <!-- TELA DE SAUDAÇÃO -->
+    <!-- TELA DE SAUDAÇÃO - CORRIGIDA -->
     <div class="welcome-overlay" id="welcomeOverlay">
         <div>
             <img src="ver.png" alt="Logo" class="logo-img" id="logoImg" onerror="this.style.display='none'; document.getElementById('logoPlaceholder').style.display='flex';">
@@ -552,7 +542,7 @@
 
 <script>
     // =============================================
-    // CICLO DE VÍDEOS E SAUDAÇÃO
+    // CICLO DE VÍDEOS E SAUDAÇÃO - CORRIGIDO
     // =============================================
     const TEMPO_SAUDACAO = 20;      // 20 segundos
     const TEMPO_VIDEO_BSA = 15;     // 15 segundos
@@ -561,23 +551,19 @@
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     const bsaVideo = document.getElementById('bsaVideo');
     const youtubeContainer = document.getElementById('youtubeContainer');
-    const youtubeFrame = document.getElementById('youtubeFrame');
     
     let cicloAtivo = false;
     let timeoutAtual = null;
-    let isYouTubeVisible = true;
     
     // Mostrar saudação
     function mostrarSaudacao() {
         console.log("📢 Mostrando saudação por 20 segundos");
         welcomeOverlay.classList.remove('hide');
-        welcomeOverlay.style.opacity = '1';
-        welcomeOverlay.style.visibility = 'visible';
     }
     
-    // Esconder saudação
+    // Esconder saudação - AGORA FUNCIONA!
     function esconderSaudacao() {
-        console.log("👋 Escondendo saudação");
+        console.log("👋 Saudação escondida!");
         welcomeOverlay.classList.add('hide');
     }
     
@@ -593,11 +579,18 @@
         bsaVideo.style.display = 'block';
         bsaVideo.style.zIndex = '5';
         
-        // Toca o vídeo
+        // Reseta e toca o vídeo
         bsaVideo.currentTime = 0;
-        bsaVideo.play().catch(e => {
-            console.log("⚠️ Erro ao tocar bsa.mp4:", e);
-        });
+        const playPromise = bsaVideo.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.catch(e => {
+                console.log("⚠️ Erro ao tocar bsa.mp4:", e);
+                // Se não conseguir tocar, vai direto para o YouTube
+                if(timeoutAtual) clearTimeout(timeoutAtual);
+                mostrarYouTube();
+            });
+        }
     }
     
     // Esconder vídeo bsa.mp4 e mostrar YouTube
@@ -611,15 +604,17 @@
         // Mostra YouTube
         youtubeContainer.style.opacity = '1';
         youtubeContainer.style.zIndex = '2';
-        isYouTubeVisible = true;
     }
     
-    // Ciclo completo: Saudação → bsa.mp4 → Espera → Repete
+    // Ciclo completo: Saudação → bsa.mp4 → YouTube → Espera → Repete
     function executarCiclo() {
         if (cicloAtivo) return;
         cicloAtivo = true;
         
-        console.log("🔄 INICIANDO CICLO: Saudação → bsa.mp4 → YouTube (3min)");
+        console.log("🔄 INICIANDO CICLO: Saudação(20s) → bsa.mp4(15s) → YouTube(3min)");
+        
+        // LIMPA TIMEout ANTERIOR
+        if (timeoutAtual) clearTimeout(timeoutAtual);
         
         // PASSO 1: Mostrar Saudação por 20 segundos
         mostrarSaudacao();
@@ -646,7 +641,7 @@
     }
     
     // =============================================
-    // PLAYER DE MÚSICA (apenas algumas músicas para exemplo)
+    // PLAYER DE MÚSICA
     // =============================================
     const musicas = [
         { id: 1, title: "Flavio Venturini", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a" },
@@ -885,17 +880,11 @@
     
     // EVENTO PARA O VÍDEO BSA MP4
     bsaVideo.onended = () => {
-        console.log("📹 Vídeo bsa.mp4 terminou");
-        // Não precisa fazer nada aqui pois o timeout já vai chamar mostrarYouTube
+        console.log("📹 Vídeo bsa.mp4 terminou normalmente");
     };
     
     bsaVideo.onerror = () => {
         console.log("❌ Erro ao carregar bsa.mp4 - verifique se o arquivo está na pasta");
-        // Se o vídeo não existir, pula direto para o YouTube
-        if(timeoutAtual) clearTimeout(timeoutAtual);
-        mostrarYouTube();
-        cicloAtivo = false;
-        setTimeout(() => executarCiclo(), TEMPO_ESPERA * 1000);
     };
     
     // INICIALIZAR
@@ -914,6 +903,7 @@
     resetControlsTimer();
     
     console.log("✅ SISTEMA INICIADO - LÓGICA: Saudação(20s) → bsa.mp4(15s) → YouTube(3min) → Repete");
+    console.log("✅ CORREÇÃO: Saudação agora SOME completamente após 20 segundos!");
 </script>
 </body>
 </html>
