@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Clínica Versalis • Sala de Espera</title>
+    <title>Clínica Versalis • Sala de Espera Premium</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -16,17 +16,18 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background: #000;
-            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            background: #0a0a0a;
+            font-family: 'Segoe UI', 'Inter', 'Poppins', system-ui, sans-serif;
         }
 
         .tv-container {
             position: relative;
             width: 100%;
             height: 100%;
-            background: #000;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
         }
 
+        /* VÍDEOS */
         .video-mp4 {
             position: absolute;
             top: 0;
@@ -34,7 +35,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 5;
+            z-index: 1;
             display: none;
         }
 
@@ -54,153 +55,258 @@
             border: none;
         }
 
-        /* CORREÇÃO: Saudação com display none quando escondida */
+        /* OVERLAY DE SAUDAÇÃO PREMIUM */
         .welcome-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at center, rgba(0,25,30,0.95) 0%, rgba(0,0,0,0.98) 100%);
-            backdrop-filter: blur(12px);
-            z-index: 10;
+            background: linear-gradient(135deg, rgba(10, 25, 47, 0.98) 0%, rgba(0, 15, 30, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            z-index: 20;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 30px 20px;
-            transition: opacity 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Quando escondida, some completamente */
         .welcome-overlay.hide {
             display: none !important;
         }
 
+        /* ANIMAÇÃO DE ENTRADA */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-overlay > div {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* LOGO */
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
         .logo-img {
-            width: 110px;
-            height: 110px;
+            width: 130px;
+            height: 130px;
             object-fit: contain;
-            margin: 0 auto 18px;
+            margin: 0 auto 20px;
             border-radius: 50%;
-            background: rgba(78,205,196,0.1);
-            padding: 10px;
-            border: 2px solid rgba(78,205,196,0.3);
+            background: linear-gradient(135deg, rgba(78,205,196,0.2), rgba(44,122,123,0.2));
+            padding: 15px;
+            border: 3px solid rgba(78,205,196,0.4);
+            transition: all 0.3s;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
+            border-color: #4ecdc4;
+            box-shadow: 0 0 30px rgba(78,205,196,0.3);
         }
 
         .logo-placeholder {
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 18px;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 20px;
             background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
             border-radius: 50%;
             display: none;
             align-items: center;
             justify-content: center;
             border: 3px solid rgba(78,205,196,0.5);
+            animation: pulse 2s infinite;
         }
 
         .logo-placeholder i {
-            font-size: 55px;
+            font-size: 65px;
             color: white;
         }
 
         .clinic-name {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            background: linear-gradient(135deg, #fff, #4ecdc4);
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #ffffff, #4ecdc4, #2c7a7b);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-shadow: 0 0 20px rgba(78,205,196,0.3);
         }
 
         .clinic-tag {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: #4ecdc4;
-            letter-spacing: 2px;
-            margin-top: 5px;
+            letter-spacing: 3px;
+            margin-top: 8px;
+            font-weight: 300;
         }
 
         .welcome-card {
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(20px);
-            padding: 30px 50px;
-            border-radius: 48px;
-            border: 1px solid rgba(78,205,196,0.35);
-            margin: 20px;
+            padding: 35px 60px;
+            border-radius: 80px;
+            border: 1px solid rgba(78,205,196,0.3);
+            margin: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
         .welcome-card h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #fff;
             margin-bottom: 15px;
         }
 
         .welcome-card h2 i {
             color: #4ecdc4;
-            margin-right: 10px;
+            margin-right: 12px;
         }
 
-        .mensagem {
-            font-size: 1.2rem;
+        /* MENSAGEM ROTATIVA */
+        .mensagem-rotativa {
+            font-size: 1.3rem;
             color: #eef5f5;
+            font-weight: 500;
+            transition: opacity 0.5s ease;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .mensagem-rotativa i {
+            color: #4ecdc4;
+            font-size: 1.5rem;
+        }
+
+        /* QR CODE */
+        .qr-section {
+            margin: 20px 0;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .qr-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(78,205,196,0.2);
+        }
+
+        .qr-card:hover {
+            transform: translateY(-5px);
+            background: rgba(78,205,196,0.2);
+            border-color: #4ecdc4;
+        }
+
+        .qr-code {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .qr-code i {
+            font-size: 50px;
+            color: #2c7a7b;
+        }
+
+        .qr-card span {
+            font-size: 0.75rem;
+            color: white;
+            display: block;
         }
 
         .badge-row {
             display: flex;
             gap: 20px;
             justify-content: center;
-            margin: 15px 0;
+            margin: 20px 0;
             flex-wrap: wrap;
         }
 
         .badge {
             background: rgba(0,0,0,0.5);
-            padding: 8px 20px;
+            padding: 10px 25px;
             border-radius: 50px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #fff;
             border: 1px solid rgba(78,205,196,0.3);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+
+        .badge:hover {
+            background: rgba(78,205,196,0.2);
+            transform: scale(1.05);
         }
 
         .badge i {
             color: #4ecdc4;
-            margin-right: 6px;
+            margin-right: 8px;
         }
 
         .status-line {
             display: flex;
             align-items: center;
-            gap: 15px;
-            background: rgba(0,0,0,0.45);
-            padding: 10px 30px;
+            gap: 20px;
+            background: rgba(0,0,0,0.5);
+            padding: 12px 35px;
             border-radius: 60px;
+            backdrop-filter: blur(10px);
         }
 
         .pulse-dot {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             background: #4ecdc4;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
+            box-shadow: 0 0 10px #4ecdc4;
         }
 
         .status-line span {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             letter-spacing: 2px;
             color: white;
+            font-weight: 500;
         }
 
+        /* TICKER PREMIUM */
         .ticker {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(78,205,196,0.2) 50%, rgba(0,0,0,0.75) 100%);
-            backdrop-filter: blur(8px);
-            padding: 8px 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(78,205,196,0.2) 50%, rgba(0,0,0,0.8) 100%);
+            backdrop-filter: blur(10px);
+            padding: 10px 0;
             z-index: 15;
             border-bottom: 1px solid rgba(78,205,196,0.3);
             overflow: hidden;
@@ -209,74 +315,80 @@
 
         .ticker-content {
             display: inline-block;
-            animation: tickerScroll 22s linear infinite;
+            animation: tickerScroll 25s linear infinite;
             padding-left: 100%;
         }
 
         .ticker-text {
             display: inline-block;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 500;
         }
 
         .ticker-text i {
-            margin: 0 10px;
+            margin: 0 15px;
             color: #4ecdc4;
         }
 
         .ticker-text span {
-            margin: 0 14px;
+            margin: 0 18px;
             color: #fff;
         }
 
+        /* CLOCK PREMIUM */
         .clock {
             position: absolute;
-            top: 12px;
-            right: 20px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(6px);
-            padding: 5px 14px;
-            border-radius: 30px;
+            top: 15px;
+            right: 25px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            padding: 6px 18px;
+            border-radius: 40px;
             color: #4ecdc4;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             z-index: 16;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             font-weight: bold;
             border: 1px solid rgba(78,205,196,0.3);
+            letter-spacing: 2px;
         }
 
+        /* BOTÕES */
         .fullscreen-btn {
             position: absolute;
-            top: 70px;
-            right: 20px;
-            background: rgba(0,0,0,0.5);
+            top: 80px;
+            right: 25px;
+            background: rgba(0,0,0,0.6);
             border: 1px solid rgba(78,205,196,0.3);
             color: white;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
             z-index: 25;
-            transition: all 0.2s;
-            font-size: 1rem;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            backdrop-filter: blur(5px);
         }
 
         .fullscreen-btn:hover {
             background: #4ecdc4;
-            transform: scale(1.05);
+            transform: scale(1.1);
+            color: #000;
         }
 
+        /* PLAYER DE MÚSICA PREMIUM */
         .music-player {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(12px);
-            padding: 8px 20px;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.95));
+            backdrop-filter: blur(20px);
+            padding: 12px 25px;
             z-index: 20;
             border-top: 1px solid rgba(78,205,196,0.3);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .music-player.hide {
@@ -285,111 +397,119 @@
 
         .track-info {
             text-align: center;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .track-title {
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 700;
             color: #fff;
+            letter-spacing: 0.5px;
         }
 
         .track-artist {
-            font-size: 0.6rem;
-            color: #bbb;
+            font-size: 0.7rem;
+            color: #4ecdc4;
+            margin-top: 3px;
         }
 
         .progress-area {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .progress-time {
             display: flex;
             justify-content: space-between;
-            font-size: 0.5rem;
+            font-size: 0.6rem;
             color: #aaa;
+            margin-bottom: 4px;
         }
 
         .progress-bar-bg {
-            height: 2px;
+            height: 3px;
             background: rgba(255,255,255,0.2);
-            border-radius: 2px;
+            border-radius: 3px;
             cursor: pointer;
         }
 
         .progress-fill {
             height: 100%;
-            background: #4ecdc4;
+            background: linear-gradient(90deg, #4ecdc4, #2c7a7b);
             width: 0%;
-            border-radius: 2px;
+            border-radius: 3px;
+            transition: width 0.1s linear;
         }
 
         .control-buttons {
             display: flex;
             justify-content: center;
-            gap: 16px;
-            margin-top: 5px;
+            gap: 20px;
+            margin-top: 8px;
         }
 
         .ctrl-btn {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.15);
             color: white;
-            width: 32px;
-            height: 32px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
         .ctrl-btn:hover {
             background: #4ecdc4;
+            transform: scale(1.1);
+            color: #000;
         }
 
         .ctrl-btn.play {
-            width: 38px;
-            height: 38px;
-            background: #4ecdc4;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
             border: none;
         }
 
         .toggle-controls, .playlist-btn {
             position: absolute;
-            bottom: 12px;
-            background: rgba(0,0,0,0.5);
+            bottom: 15px;
+            background: rgba(0,0,0,0.6);
             border: 1px solid rgba(78,205,196,0.3);
             color: white;
-            width: 32px;
-            height: 32px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             cursor: pointer;
             z-index: 25;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
         }
 
         .toggle-controls {
-            left: 12px;
+            left: 15px;
         }
 
         .playlist-btn {
-            right: 60px;
+            right: 65px;
         }
 
         .toggle-controls:hover, .playlist-btn:hover {
             background: #4ecdc4;
+            transform: scale(1.1);
         }
 
         .playlist-container {
             position: absolute;
             bottom: 100%;
-            left: 12px;
-            width: 260px;
-            max-height: 300px;
+            left: 15px;
+            width: 280px;
+            max-height: 350px;
             background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(15px);
-            border-radius: 16px;
-            padding: 10px;
-            margin-bottom: 8px;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 10px;
             z-index: 20;
             display: none;
             overflow-y: auto;
@@ -402,28 +522,30 @@
 
         .playlist-header {
             color: #4ecdc4;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .playlist-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 8px 10px;
+            padding: 10px 12px;
             background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            margin-bottom: 5px;
+            border-radius: 12px;
+            margin-bottom: 6px;
             cursor: pointer;
             font-size: 0.75rem;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
         .playlist-item:hover, .playlist-item.active {
-            background: #4ecdc4;
+            background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
             color: #000;
+            transform: translateX(5px);
         }
 
         @keyframes tickerScroll {
@@ -432,32 +554,31 @@
         }
 
         @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
-        @media (max-width: 680px) {
+        @media (max-width: 768px) {
             .welcome-card { padding: 20px 30px; }
             .welcome-card h2 { font-size: 1.5rem; }
-            .clinic-name { font-size: 1.4rem; }
-            .logo-img, .logo-placeholder { width: 80px; height: 80px; }
-            .logo-placeholder i { font-size: 40px; }
-            .mensagem { font-size: 0.9rem; }
-            .badge { padding: 5px 12px; font-size: 0.65rem; }
-            .fullscreen-btn { top: 60px; right: 15px; width: 30px; height: 30px; font-size: 0.8rem; }
-            .clock { top: 10px; right: 15px; font-size: 0.7rem; padding: 3px 10px; }
+            .clinic-name { font-size: 1.6rem; letter-spacing: 2px; }
+            .logo-img, .logo-placeholder { width: 90px; height: 90px; }
+            .logo-placeholder i { font-size: 45px; }
+            .mensagem-rotativa { font-size: 0.95rem; min-height: 60px; }
+            .qr-code { width: 70px; height: 70px; }
+            .qr-code i { font-size: 35px; }
+            .badge { padding: 6px 15px; font-size: 0.7rem; }
         }
     </style>
 </head>
 <body>
 <div class="tv-container">
-    <!-- VÍDEO MP4 LOCAL (bsa.mp4) -->
+    <!-- VÍDEO MP4 LOCAL -->
     <video id="bsaVideo" class="video-mp4" preload="auto" playsinline muted>
         <source src="bsa.mp4" type="video/mp4">
     </video>
     
-    <!-- VÍDEO YOUTUBE (fundo contínuo) -->
+    <!-- VÍDEO YOUTUBE -->
     <div class="video-yt" id="youtubeContainer">
         <iframe id="youtubeFrame" src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -465,43 +586,78 @@
         </iframe>
     </div>
 
-    <!-- TELA DE SAUDAÇÃO - CORRIGIDA -->
+    <!-- TELA DE SAUDAÇÃO PREMIUM -->
     <div class="welcome-overlay" id="welcomeOverlay">
         <div>
-            <img src="ver.png" alt="Logo" class="logo-img" id="logoImg" onerror="this.style.display='none'; document.getElementById('logoPlaceholder').style.display='flex';">
-            <div class="logo-placeholder" id="logoPlaceholder">
-                <i class="fas fa-heartbeat"></i>
+            <div class="logo-wrapper">
+                <img src="ver.png" alt="Logo" class="logo-img" id="logoImg" onerror="this.style.display='none'; document.getElementById('logoPlaceholder').style.display='flex';">
+                <div class="logo-placeholder" id="logoPlaceholder">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
             </div>
             <div class="clinic-name">CLÍNICA VERSALIS</div>
             <div class="clinic-tag">Excelência em Saúde & Bem-estar</div>
         </div>
+        
         <div class="welcome-card">
             <h2><i class="fas fa-hand-peace"></i> Seja muito bem-vindo(a)!</h2>
-            <div class="mensagem">Em breve você será atendido(a) com todo cuidado e excelência.</div>
+            <div class="mensagem-rotativa" id="rotatingMessage">
+                <i class="fas fa-heartbeat"></i>
+                <span id="messageText">Em breve você será atendido(a) com todo cuidado!</span>
+            </div>
         </div>
+
+        <!-- QR CODES -->
+        <div class="qr-section">
+            <div class="qr-card" id="qrWifi">
+                <div class="qr-code">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <span>Wi-Fi Grátis</span>
+                <span style="font-size: 0.6rem; color: #aaa;">Toque para ver a senha</span>
+            </div>
+            <div class="qr-card" id="qrWhatsApp">
+                <div class="qr-code">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <span>WhatsApp</span>
+                <span style="font-size: 0.6rem; color: #aaa;">Fale conosco</span>
+            </div>
+            <div class="qr-card" id="qrAvaliacao">
+                <div class="qr-code">
+                    <i class="fas fa-star"></i>
+                </div>
+                <span>Avalie-nos</span>
+                <span style="font-size: 0.6rem; color: #aaa;">Google Avaliações</span>
+            </div>
+        </div>
+
         <div class="badge-row">
-            <div class="badge"><i class="fas fa-stethoscope"></i> ESPECIALIDADES MÉDICAS</div>
+            <div class="badge"><i class="fas fa-stethoscope"></i> 20+ ESPECIALIDADES</div>
             <div class="badge"><i class="fas fa-calendar-check"></i> AGENDAMENTO RÁPIDO</div>
             <div class="badge"><i class="fas fa-shield-alt"></i> SEGURANÇA E CONFORTO</div>
+            <div class="badge"><i class="fas fa-coffee"></i> CAFÉ & Wi-Fi</div>
         </div>
+
         <div class="status-line">
             <div class="pulse-dot"></div>
-            <span>AGUARDE UM MOMENTO • ATENDIMENTO HUMANIZADO</span>
+            <span>ATENDIMENTO HUMANIZADO • AGUARDE UM MOMENTO</span>
             <div class="pulse-dot"></div>
         </div>
     </div>
 
+    <!-- TICKER -->
     <div class="ticker">
         <div class="ticker-content">
             <div class="ticker-text">
                 <i class="fas fa-heartbeat"></i>
-                <span>CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE COM EXCELÊNCIA</span>
-                <i class="fas fa-circle" style="font-size: 0.3rem;"></i>
-                <span>🏥 MAIS DE 20 ESPECIALIDADES</span>
+                <span>🏥 CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE COM EXCELÊNCIA</span>
                 <i class="fas fa-circle" style="font-size: 0.3rem;"></i>
                 <span>📞 (12) 98846-1978</span>
                 <i class="fas fa-circle" style="font-size: 0.3rem;"></i>
                 <span>📍 AMBIENTE ACONCHEGANTE E SEGURO</span>
+                <i class="fas fa-circle" style="font-size: 0.3rem;"></i>
+                <span>💙 PLANOS DE SAÚDE ACEITOS</span>
             </div>
         </div>
     </div>
@@ -509,6 +665,7 @@
     <div class="clock" id="clock">--:--</div>
     <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
 
+    <!-- PLAYER DE MÚSICA -->
     <div class="music-player" id="musicPlayerBar">
         <div class="track-info">
             <div class="track-title" id="trackTitle">🎵 Carregando...</div>
@@ -542,11 +699,100 @@
 
 <script>
     // =============================================
-    // CICLO DE VÍDEOS E SAUDAÇÃO - CORRIGIDO
+    // NOVIDADE FASE 1: MENSAGENS ROTATIVAS
     // =============================================
-    const TEMPO_SAUDACAO = 20;      // 20 segundos
-    const TEMPO_VIDEO_BSA = 15;     // 15 segundos
-    const TEMPO_ESPERA = 180;       // 3 minutos (180 segundos)
+    const mensagensBoasVindas = [
+        { icon: "fas fa-clock", text: "Em breve você será atendido(a) com todo cuidado e excelência!" },
+        { icon: "fas fa-mug-hot", text: "☕ Café e água à sua disposição! Servimos com muito carinho." },
+        { icon: "fas fa-wifi", text: "📶 Wi-Fi disponível - Conecte-se e aguarde com conforto!" },
+        { icon: "fas fa-star", text: "⭐ Avalie nosso atendimento! Sua opinião é muito importante." },
+        { icon: "fas fa-hand-holding-heart", text: "💙 Aqui sua saúde é nossa prioridade número 1!" },
+        { icon: "fas fa-calendar-alt", text: "📅 Agende sua próxima consulta ainda hoje pelo WhatsApp!" },
+        { icon: "fas fa-smile", text: "😊 Nosso time está pronto para receber você com excelência!" },
+        { icon: "fas fa-heartbeat", text: "🏥 Mais de 20 especialidades médicas à sua disposição!" }
+    ];
+    
+    let mensagemIndex = 0;
+    let mensagemInterval = null;
+    
+    function rotacionarMensagem() {
+        const msgElement = document.getElementById('messageText');
+        const iconElement = document.querySelector('#rotatingMessage i');
+        const novaMensagem = mensagensBoasVindas[mensagemIndex];
+        
+        if (msgElement && iconElement) {
+            // Efeito fade
+            msgElement.style.opacity = '0';
+            iconElement.style.opacity = '0';
+            
+            setTimeout(() => {
+                iconElement.className = novaMensagem.icon;
+                msgElement.textContent = novaMensagem.text;
+                msgElement.style.opacity = '1';
+                iconElement.style.opacity = '1';
+            }, 300);
+        }
+        
+        mensagemIndex = (mensagemIndex + 1) % mensagensBoasVindas.length;
+    }
+    
+    // Iniciar rotação de mensagens a cada 8 segundos
+    function iniciarRotacaoMensagens() {
+        if (mensagemInterval) clearInterval(mensagemInterval);
+        mensagemInterval = setInterval(rotacionarMensagem, 8000);
+    }
+    
+    // =============================================
+    // QR CODE FUNCIONALIDADES
+    // =============================================
+    function showNotification(msg) {
+        // Criar notificação temporária
+        const notif = document.createElement('div');
+        notif.style.cssText = `
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 1000;
+            font-size: 0.9rem;
+            font-weight: bold;
+            animation: fadeInUp 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        `;
+        notif.innerHTML = `<i class="fas fa-info-circle"></i> ${msg}`;
+        document.body.appendChild(notif);
+        
+        setTimeout(() => {
+            notif.style.opacity = '0';
+            setTimeout(() => notif.remove(), 500);
+        }, 3000);
+    }
+    
+    document.getElementById('qrWifi').addEventListener('click', () => {
+        showNotification('📶 Wi-Fi: Clínica Versalis | Senha: saude2024');
+        navigator.clipboard.writeText('saude2024');
+    });
+    
+    document.getElementById('qrWhatsApp').addEventListener('click', () => {
+        showNotification('📱 Abrindo WhatsApp...');
+        window.open('https://wa.me/5512988461978', '_blank');
+    });
+    
+    document.getElementById('qrAvaliacao').addEventListener('click', () => {
+        showNotification('⭐ Obrigado por avaliar!');
+        window.open('https://g.page/r/avaliar', '_blank');
+    });
+    
+    // =============================================
+    // CICLO DE VÍDEOS E SAUDAÇÃO
+    // =============================================
+    const TEMPO_SAUDACAO = 20;
+    const TEMPO_VIDEO_BSA = 15;
+    const TEMPO_ESPERA = 180;
     
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     const bsaVideo = document.getElementById('bsaVideo');
@@ -555,80 +801,61 @@
     let cicloAtivo = false;
     let timeoutAtual = null;
     
-    // Mostrar saudação
     function mostrarSaudacao() {
         console.log("📢 Mostrando saudação por 20 segundos");
         welcomeOverlay.classList.remove('hide');
+        iniciarRotacaoMensagens();
     }
     
-    // Esconder saudação - AGORA FUNCIONA!
     function esconderSaudacao() {
         console.log("👋 Saudação escondida!");
         welcomeOverlay.classList.add('hide');
+        if (mensagemInterval) clearInterval(mensagemInterval);
     }
     
-    // Mostrar vídeo bsa.mp4
     function mostrarVideoBSA() {
         console.log("🎬 Iniciando vídeo bsa.mp4 por 15 segundos");
-        
-        // Esconde YouTube
         youtubeContainer.style.opacity = '0';
         youtubeContainer.style.zIndex = '1';
-        
-        // Mostra vídeo local
         bsaVideo.style.display = 'block';
         bsaVideo.style.zIndex = '5';
-        
-        // Reseta e toca o vídeo
         bsaVideo.currentTime = 0;
-        const playPromise = bsaVideo.play();
         
+        const playPromise = bsaVideo.play();
         if (playPromise !== undefined) {
             playPromise.catch(e => {
                 console.log("⚠️ Erro ao tocar bsa.mp4:", e);
-                // Se não conseguir tocar, vai direto para o YouTube
                 if(timeoutAtual) clearTimeout(timeoutAtual);
                 mostrarYouTube();
             });
         }
     }
     
-    // Esconder vídeo bsa.mp4 e mostrar YouTube
     function mostrarYouTube() {
         console.log("▶️ Voltando para YouTube");
-        
-        // Para o vídeo local
         bsaVideo.pause();
         bsaVideo.style.display = 'none';
-        
-        // Mostra YouTube
         youtubeContainer.style.opacity = '1';
         youtubeContainer.style.zIndex = '2';
     }
     
-    // Ciclo completo: Saudação → bsa.mp4 → YouTube → Espera → Repete
     function executarCiclo() {
         if (cicloAtivo) return;
         cicloAtivo = true;
         
         console.log("🔄 INICIANDO CICLO: Saudação(20s) → bsa.mp4(15s) → YouTube(3min)");
         
-        // LIMPA TIMEout ANTERIOR
         if (timeoutAtual) clearTimeout(timeoutAtual);
         
-        // PASSO 1: Mostrar Saudação por 20 segundos
         mostrarSaudacao();
         
         timeoutAtual = setTimeout(() => {
-            // PASSO 2: Esconder saudação e mostrar bsa.mp4
             esconderSaudacao();
             mostrarVideoBSA();
             
             timeoutAtual = setTimeout(() => {
-                // PASSO 3: Terminou bsa.mp4, volta para YouTube
                 mostrarYouTube();
                 
-                // PASSO 4: Aguarda 3 minutos e repete o ciclo
                 timeoutAtual = setTimeout(() => {
                     console.log("⏰ 3 minutos se passaram! Reiniciando ciclo...");
                     cicloAtivo = false;
@@ -824,7 +1051,6 @@
         playMusic();
     }
     
-    // Desbloquear áudio no mobile
     function unlockAudio() {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const ctx = new AudioContext();
@@ -878,13 +1104,12 @@
     updateClock();
     setInterval(updateClock, 1000);
     
-    // EVENTO PARA O VÍDEO BSA MP4
     bsaVideo.onended = () => {
         console.log("📹 Vídeo bsa.mp4 terminou normalmente");
     };
     
     bsaVideo.onerror = () => {
-        console.log("❌ Erro ao carregar bsa.mp4 - verifique se o arquivo está na pasta");
+        console.log("❌ Erro ao carregar bsa.mp4");
     };
     
     // INICIALIZAR
@@ -895,15 +1120,14 @@
         playMusic();
     }, 500);
     
-    // Inicia o ciclo de vídeos
     setTimeout(() => {
         executarCiclo();
     }, 500);
     
     resetControlsTimer();
     
-    console.log("✅ SISTEMA INICIADO - LÓGICA: Saudação(20s) → bsa.mp4(15s) → YouTube(3min) → Repete");
-    console.log("✅ CORREÇÃO: Saudação agora SOME completamente após 20 segundos!");
+    console.log("✅ SISTEMA PREMIUM INICIADO!");
+    console.log("✅ NOVIDADES: Mensagens rotativas, QR Codes, Design profissional!");
 </script>
 </body>
 </html>
