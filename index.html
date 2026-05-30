@@ -47,6 +47,7 @@
             z-index: 1;
         }
 
+        /* REMOVE TODOS OS BOTÕES DO IFRAME DO DRIVE */
         .video-drive iframe {
             width: 100%;
             height: 100%;
@@ -306,34 +307,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        /* BOTÃO TELA CHEIA */
-        .fullscreen-btn {
-            position: absolute;
-            top: 18px;
-            left: 30px;
-            background: rgba(26, 60, 61, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(78,205,196,0.4);
-            color: white;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 25;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-
-        .fullscreen-btn:hover {
-            background: #4ecdc4;
-            transform: scale(1.08);
-            color: #1a3c3d;
-        }
-
         @keyframes tickerScroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
@@ -346,19 +319,18 @@
             .mensagem-rotativa { font-size: 1.1rem; }
             .badge { padding: 8px 20px; font-size: 0.8rem; }
             .status-line span { font-size: 0.85rem; }
-            .fullscreen-btn { width: 38px; height: 38px; top: 15px; left: 20px; }
             .clock { top: 15px; right: 20px; padding: 6px 18px; }
         }
     </style>
 </head>
 <body>
 <div class="tv-container">
-    <!-- VÍDEO MP4 LOCAL (bsa.mp4) - aparece a cada 3 minutos -->
+    <!-- VÍDEO MP4 LOCAL (bsa.mp4) -->
     <video id="bsaVideo" class="video-mp4" preload="auto" playsinline muted>
         <source src="bsa.mp4" type="video/mp4">
     </video>
     
-    <!-- VÍDEO GOOGLE DRIVE - SEM BOTÕES (pointer-events: none) -->
+    <!-- VÍDEO GOOGLE DRIVE - SEM BOTÕES -->
     <div class="video-drive" id="driveContainer">
         <iframe id="driveFrame" src="https://drive.google.com/file/d/19czRGQGrbT_igU-rPIx3l-qJGH9G1Ago/preview" 
                 allow="autoplay; fullscreen" 
@@ -419,14 +391,26 @@
 
     <!-- RELÓGIO -->
     <div class="clock" id="clock">--:--</div>
-
-    <!-- BOTÃO TELA CHEIA -->
-    <button class="fullscreen-btn" id="fullscreenBtn">
-        <i class="fas fa-expand"></i>
-    </button>
 </div>
 
 <script>
+    // =============================================
+    // TELA CHEIA AUTOMÁTICA
+    // =============================================
+    function entrarTelaCheia() {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+            docEl.requestFullscreen();
+        } else if (docEl.webkitRequestFullscreen) {
+            docEl.webkitRequestFullscreen();
+        } else if (docEl.msRequestFullscreen) {
+            docEl.msRequestFullscreen();
+        }
+    }
+    
+    // Entrar em tela cheia automaticamente
+    entrarTelaCheia();
+    
     // =============================================
     // FORÇAR AUTOPLAY DO VÍDEO DO DRIVE
     // =============================================
@@ -544,32 +528,19 @@
         
         timeoutAtual = setTimeout(() => {
             esconderSaudacao();
-            mostrarVideoBSA(); // VÍDEO BSA.mp4 (15 segundos)
+            mostrarVideoBSA();
             
             timeoutAtual = setTimeout(() => {
-                mostrarDriveVideo(); // VÍDEO DRIVE (3 minutos)
+                mostrarDriveVideo();
                 
                 timeoutAtual = setTimeout(() => {
                     cicloAtivo = false;
-                    executarCiclo(); // REPETE O CICLO A CADA 3 MINUTOS
+                    executarCiclo();
                 }, TEMPO_ESPERA * 1000);
                 
             }, TEMPO_VIDEO_BSA * 1000);
             
         }, TEMPO_SAUDACAO * 1000);
-    }
-    
-    // =============================================
-    // TELA CHEIA
-    // =============================================
-    function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log(`Erro ao entrar em tela cheia: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
     }
     
     // RELÓGIO
@@ -587,9 +558,6 @@
     setTimeout(() => {
         executarCiclo();
     }, 500);
-    
-    // Botão tela cheia
-    document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
 </script>
 </body>
 </html>
