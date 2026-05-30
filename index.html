@@ -89,11 +89,6 @@
             }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         @keyframes pulseLight {
             0%, 100% { transform: scale(1); opacity: 0.6; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -259,7 +254,7 @@
             font-weight: 500;
         }
 
-        /* TICKER INFORMATIVO */
+        /* TICKER INFERIOR */
         .ticker {
             position: absolute;
             top: 0;
@@ -315,7 +310,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        /* BOTÃO TELA CHEIA - COR ESCURA (RESTAURADO) */
+        /* BOTÃO TELA CHEIA */
         .fullscreen-btn {
             position: absolute;
             top: 18px;
@@ -344,7 +339,7 @@
             border-color: #fff;
         }
 
-        /* PLAYER DE MÚSICA - ESTILO LIMPO */
+        /* PLAYER DE MÚSICA */
         .music-player {
             position: absolute;
             bottom: 0;
@@ -445,7 +440,6 @@
             transform: scale(1.08);
         }
 
-        /* BOTÕES DE CONTROLE */
         .toggle-controls, .playlist-btn {
             position: absolute;
             bottom: 18px;
@@ -478,7 +472,6 @@
             transform: scale(1.05);
         }
 
-        /* PLAYLIST */
         .playlist-container {
             position: absolute;
             bottom: 100%;
@@ -535,7 +528,6 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* RESPONSIVIDADE SMART TV */
         @media (max-width: 1024px) {
             .clinic-name { font-size: 2.2rem; }
             .welcome-card h2 { font-size: 1.8rem; }
@@ -550,7 +542,7 @@
 </head>
 <body>
 <div class="tv-container">
-    <!-- VÍDEO MP4 LOCAL (bsa.mp4) -->
+    <!-- VÍDEO MP4 LOCAL -->
     <video id="bsaVideo" class="video-mp4" preload="auto" playsinline muted>
         <source src="bsa.mp4" type="video/mp4">
     </video>
@@ -558,11 +550,11 @@
     <!-- VÍDEO GOOGLE DRIVE (canal online) -->
     <div class="video-gdrive" id="gdriveContainer">
         <video id="gdriveVideo" class="gdrive-video" autoplay muted loop playsinline>
-            <source src="https://drive.google.com/uc?export=download&id=fLtw4J7uiu50XHJy7" type="video/mp4">
+            <source src="https://drive.google.com/uc?export=download&id=1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-" type="video/mp4">
         </video>
     </div>
 
-    <!-- TELA DE SAUDAÇÃO PREMIUM - CORES CLARAS -->
+    <!-- TELA DE SAUDAÇÃO -->
     <div class="welcome-overlay" id="welcomeOverlay">
         <div>
             <div class="logo-wrapper">
@@ -583,7 +575,6 @@
             </div>
         </div>
 
-        <!-- BADGES DE SERVIÇOS -->
         <div class="badge-row">
             <div class="badge"><i class="fas fa-stethoscope"></i> 20+ Especialidades</div>
             <div class="badge"><i class="fas fa-calendar-check"></i> Agendamento Rápido</div>
@@ -591,7 +582,6 @@
             <div class="badge"><i class="fas fa-coffee"></i> Café & Wi-Fi</div>
         </div>
 
-        <!-- STATUS -->
         <div class="status-line">
             <div class="pulse-dot"></div>
             <span>ATENDIMENTO HUMANIZADO • AGUARDE UM MOMENTO</span>
@@ -618,7 +608,7 @@
     <!-- RELÓGIO -->
     <div class="clock" id="clock">--:--</div>
 
-    <!-- BOTÃO TELA CHEIA - COR ESCURA (RESTAURADO) -->
+    <!-- BOTÃO TELA CHEIA -->
     <button class="fullscreen-btn" id="fullscreenBtn">
         <i class="fas fa-expand"></i>
     </button>
@@ -646,7 +636,7 @@
         </div>
     </div>
 
-    <!-- BOTÕES SMART TV -->
+    <!-- BOTÕES -->
     <button class="toggle-controls" id="toggleControlsBtn"><i class="fas fa-chevron-up"></i></button>
     <button class="playlist-btn" id="playlistBtn"><i class="fas fa-list-ul"></i></button>
 
@@ -749,7 +739,6 @@
         gdriveContainer.style.opacity = '1';
         gdriveContainer.style.zIndex = '2';
         
-        // Garantir que o vídeo do Google Drive esteja tocando
         if (gdriveVideo.paused) {
             gdriveVideo.play().catch(e => console.log("GDrive video play:", e));
         }
@@ -1006,7 +995,6 @@
     bsaVideo.onended = () => {};
     bsaVideo.onerror = () => {};
     
-    // Garantir que o vídeo do Google Drive comece a tocar
     gdriveVideo.onloadeddata = () => {
         gdriveVideo.play().catch(e => console.log("Auto-play bloqueado:", e));
     };
