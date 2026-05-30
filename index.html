@@ -38,20 +38,20 @@
             display: none;
         }
 
-        .video-yt {
+        .video-gdrive {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
+            background: #000;
         }
 
-        iframe {
+        .gdrive-video {
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            border: none;
+            object-fit: cover;
         }
 
         /* OVERLAY DE SAUDAÇÃO - ESTILO PREMIUM CLARO */
@@ -555,12 +555,11 @@
         <source src="bsa.mp4" type="video/mp4">
     </video>
     
-    <!-- VÍDEO YOUTUBE (fundo contínuo) -->
-    <div class="video-yt" id="youtubeContainer">
-        <iframe id="youtubeFrame" src="https://www.youtube.com/embed/Us3z8PpExjc?autoplay=1&mute=1&loop=1&playlist=Us3z8PpExjc&controls=0&showinfo=0&rel=0&modestbranding=1" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-        </iframe>
+    <!-- VÍDEO GOOGLE DRIVE (canal online) -->
+    <div class="video-gdrive" id="gdriveContainer">
+        <video id="gdriveVideo" class="gdrive-video" autoplay muted loop playsinline>
+            <source src="https://drive.google.com/uc?export=download&id=fLtw4J7uiu50XHJy7" type="video/mp4">
+        </video>
     </div>
 
     <!-- TELA DE SAUDAÇÃO PREMIUM - CORES CLARAS -->
@@ -712,7 +711,8 @@
     
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     const bsaVideo = document.getElementById('bsaVideo');
-    const youtubeContainer = document.getElementById('youtubeContainer');
+    const gdriveContainer = document.getElementById('gdriveContainer');
+    const gdriveVideo = document.getElementById('gdriveVideo');
     
     let cicloAtivo = false;
     let timeoutAtual = null;
@@ -728,8 +728,8 @@
     }
     
     function mostrarVideoBSA() {
-        youtubeContainer.style.opacity = '0';
-        youtubeContainer.style.zIndex = '1';
+        gdriveContainer.style.opacity = '0';
+        gdriveContainer.style.zIndex = '1';
         bsaVideo.style.display = 'block';
         bsaVideo.style.zIndex = '5';
         bsaVideo.currentTime = 0;
@@ -738,16 +738,21 @@
         if (playPromise !== undefined) {
             playPromise.catch(e => {
                 if(timeoutAtual) clearTimeout(timeoutAtual);
-                mostrarYouTube();
+                mostrarGDrive();
             });
         }
     }
     
-    function mostrarYouTube() {
+    function mostrarGDrive() {
         bsaVideo.pause();
         bsaVideo.style.display = 'none';
-        youtubeContainer.style.opacity = '1';
-        youtubeContainer.style.zIndex = '2';
+        gdriveContainer.style.opacity = '1';
+        gdriveContainer.style.zIndex = '2';
+        
+        // Garantir que o vídeo do Google Drive esteja tocando
+        if (gdriveVideo.paused) {
+            gdriveVideo.play().catch(e => console.log("GDrive video play:", e));
+        }
     }
     
     function executarCiclo() {
@@ -763,7 +768,7 @@
             mostrarVideoBSA();
             
             timeoutAtual = setTimeout(() => {
-                mostrarYouTube();
+                mostrarGDrive();
                 
                 timeoutAtual = setTimeout(() => {
                     cicloAtivo = false;
@@ -1000,6 +1005,11 @@
     
     bsaVideo.onended = () => {};
     bsaVideo.onerror = () => {};
+    
+    // Garantir que o vídeo do Google Drive comece a tocar
+    gdriveVideo.onloadeddata = () => {
+        gdriveVideo.play().catch(e => console.log("Auto-play bloqueado:", e));
+    };
     
     // INICIALIZAR
     loadTrack(0);
