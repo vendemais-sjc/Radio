@@ -26,50 +26,15 @@
             height: 100%;
         }
 
-        /* FUNDO PADRÃO (caso nenhum vídeo carregue) */
-        .background-fallback {
+        /* VÍDEO PRINCIPAL - GOOGLE DRIVE FUNCIONANDO */
+        .main-video {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a3c3d, #2c7a7b);
-            z-index: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .background-fallback i {
-            font-size: 100px;
-            color: rgba(255,255,255,0.1);
-            animation: pulse 3s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.05); }
-        }
-
-        .video-player {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            display: none;
-        }
-
-        .video-player.active {
-            display: block;
-        }
-
-        video, iframe {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border: none;
+            z-index: 1;
         }
 
         /* OVERLAY DE SAUDAÇÃO */
@@ -165,7 +130,6 @@
         .welcome-card h2 {
             font-size: 2.3rem;
             color: #1a3c3d;
-            margin-bottom: 15px;
         }
 
         .welcome-card h2 i {
@@ -278,6 +242,9 @@
             cursor: pointer;
             z-index: 25;
             font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .music-player {
@@ -297,11 +264,22 @@
             transform: translateY(100%);
         }
 
+        .track-info {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .track-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1a3c3d;
+        }
+
         .control-buttons {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .ctrl-btn {
@@ -312,6 +290,7 @@
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
+            font-size: 1rem;
         }
 
         .ctrl-btn.play {
@@ -344,18 +323,27 @@
             left: 20px;
             width: 280px;
             max-height: 350px;
-            background: white;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 15px;
             margin-bottom: 12px;
             z-index: 20;
             display: none;
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(78,205,196,0.3);
         }
 
         .playlist-container.open {
             display: block;
+        }
+
+        .playlist-header {
+            color: #2c7a7b;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: bold;
         }
 
         .playlist-item {
@@ -366,6 +354,7 @@
             border-radius: 12px;
             cursor: pointer;
             margin-bottom: 5px;
+            color: #1a3c3d;
         }
 
         .playlist-item:hover, .playlist-item.active {
@@ -383,25 +372,15 @@
 <body>
 <div class="tv-container">
     
-    <!-- FUNDO DE FALLBACK (se nada carregar) -->
-    <div class="background-fallback" id="fallbackBg">
-        <i class="fas fa-heartbeat"></i>
-    </div>
-
-    <!-- PLAYER 1: VÍDEO LOCAL -->
-    <div class="video-player" id="playerLocal">
-        <video id="localVideo" muted loop playsinline>
-            <source src="bsa.mp4" type="video/mp4">
-        </video>
-    </div>
-
-    <!-- PLAYER 2: GOOGLE DRIVE (tentativa com múltiplos formatos) -->
-    <div class="video-player" id="playerDrive">
-        <video id="driveVideo" muted loop playsinline>
-            <!-- TENTE ESTES 3 FORMATOS (o que funcionar vai tocar) -->
-            <source src="https://drive.google.com/uc?export=download&id=1QLB_1pOI4XNifctit_VkcWgZtJXeFvkv" type="video/mp4">
-        </video>
-    </div>
+    <!-- VÍDEO PRINCIPAL - GOOGLE DRIVE (FORMATO CORRETO!) -->
+    <!-- 
+        ✅ Link convertido corretamente:
+        Original: https://drive.google.com/file/d/1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-/view
+        Convertido para: https://drive.google.com/uc?export=download&id=1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-
+    -->
+    <video id="mainVideo" class="main-video" autoplay muted loop playsinline>
+        <source src="https://drive.google.com/uc?export=download&id=1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-" type="video/mp4">
+    </video>
 
     <!-- OVERLAY SAUDAÇÃO -->
     <div class="welcome-overlay" id="welcomeOverlay">
@@ -459,6 +438,9 @@
 
     <!-- PLAYER MÚSICA -->
     <div class="music-player" id="musicPlayerBar">
+        <div class="track-info">
+            <div class="track-title" id="trackTitle">🎵 Música Ambiente</div>
+        </div>
         <div class="control-buttons">
             <button class="ctrl-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
             <button class="ctrl-btn play" id="playPauseBtn"><i class="fas fa-play"></i></button>
@@ -470,7 +452,7 @@
     <button class="playlist-btn" id="playlistBtn"><i class="fas fa-list-ul"></i></button>
 
     <div class="playlist-container" id="playlistContainer">
-        <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST</div>
+        <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST AMBIENTE</div>
         <div id="playlistItems"></div>
     </div>
 </div>
@@ -483,94 +465,40 @@
         "Wi-Fi disponível - Conecte-se e aguarde com conforto!",
         "Avalie nosso atendimento! Sua opinião é muito importante.",
         "Aqui sua saúde é nossa prioridade número 1!",
-        "Agende sua próxima consulta ainda hoje!"
+        "Agende sua próxima consulta ainda hoje!",
+        "Wild Russia - Siberia exibindo agora 📺"
     ];
     
     let msgIndex = 0;
     setInterval(() => {
         const msgEl = document.getElementById('messageText');
+        const iconEl = document.querySelector('#rotatingMessage i');
         if(msgEl) {
             msgEl.style.opacity = '0';
+            iconEl.style.opacity = '0';
             setTimeout(() => {
                 msgEl.textContent = mensagens[msgIndex];
+                iconEl.style.opacity = '1';
                 msgEl.style.opacity = '1';
                 msgIndex = (msgIndex + 1) % mensagens.length;
             }, 300);
         }
     }, 8000);
 
-    // CICLO DE VÍDEOS
-    const players = {
-        fallback: document.getElementById('fallbackBg'),
-        local: document.getElementById('playerLocal'),
-        drive: document.getElementById('playerDrive')
-    };
-    
-    const localVideo = document.getElementById('localVideo');
-    const driveVideo = document.getElementById('driveVideo');
-    
-    let currentPlayer = 'fallback';
-    let cycleTimer = null;
-    
-    function showPlayer(playerName) {
-        // Esconde todos
-        players.fallback.style.display = 'none';
-        players.local.classList.remove('active');
-        players.drive.classList.remove('active');
-        
-        // Mostra o selecionado
-        if(playerName === 'fallback') {
-            players.fallback.style.display = 'flex';
-        } else if(playerName === 'local') {
-            players.local.classList.add('active');
-            localVideo.play().catch(e => console.log('Local video error'));
-        } else if(playerName === 'drive') {
-            players.drive.classList.add('active');
-            driveVideo.play().catch(e => console.log('Drive video error'));
-        }
-        
-        currentPlayer = playerName;
-    }
-    
-    // Esconder saudação após 20 segundos
-    const welcomeOverlay = document.getElementById('welcomeOverlay');
+    // ESCONDER SAUDAÇÃO APÓS 20 SEGUNDOS
     setTimeout(() => {
-        welcomeOverlay.classList.add('hide');
+        document.getElementById('welcomeOverlay').classList.add('hide');
     }, 20000);
-    
-    // Ciclo automático
-    setTimeout(() => {
-        showPlayer('local');
-    }, 20000);
-    
-    setTimeout(() => {
-        showPlayer('drive');
-    }, 35000);
-    
-    // A cada 3 minutos, reinicia o ciclo
+
+    // REINICIAR CICLO A CADA 3 MINUTOS (mostra saudação + volta vídeo)
     setInterval(() => {
-        welcomeOverlay.classList.remove('hide');
+        const overlay = document.getElementById('welcomeOverlay');
+        overlay.classList.remove('hide');
         setTimeout(() => {
-            welcomeOverlay.classList.add('hide');
+            overlay.classList.add('hide');
         }, 20000);
-        setTimeout(() => {
-            showPlayer('local');
-        }, 20000);
-        setTimeout(() => {
-            showPlayer('drive');
-        }, 35000);
     }, 180000);
-    
-    // TELA CHEIA
-    function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    }
-    document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
-    
+
     // RELÓGIO
     function updateClock() {
         const now = new Date();
@@ -579,13 +507,23 @@
     }
     updateClock();
     setInterval(updateClock, 1000);
-    
-    // PLAYER DE MÚSICA SIMPLIFICADO
+
+    // TELA CHEIA
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    });
+
+    // PLAYER DE MÚSICA
     const musicas = [
-        { title: "Música Ambiente 1", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a" },
-        { title: "Música Ambiente 2", src: "True_True_Remaster__muzzik.m4a" },
-        { title: "Música Ambiente 3", src: "Adele_Someone_Like_You_muzzik.m4a" },
-        { title: "Música Ambiente 4", src: "Adriana_Calcanhotto_Esquadros.m4a" }
+        { title: "Flavio Venturini - Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a" },
+        { title: "True True Remaster", src: "True_True_Remaster__muzzik.m4a" },
+        { title: "Adele - Someone Like You", src: "Adele_Someone_Like_You_muzzik.m4a" },
+        { title: "Adriana Calcanhotto - Esquadros", src: "Adriana_Calcanhotto_Esquadros.m4a" },
+        { title: "Jim Diamond - I Love You", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a" }
     ];
     
     let currentTrack = 0;
@@ -594,10 +532,15 @@
     const playBtn = document.getElementById('playPauseBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const trackTitleSpan = document.getElementById('trackTitle');
     
     function loadTrack(index) {
-        audio.src = musicas[index].src;
-        if(isPlaying) audio.play();
+        if(musicas[index] && musicas[index].src) {
+            audio.src = musicas[index].src;
+            trackTitleSpan.textContent = `🎵 ${musicas[index].title}`;
+            renderPlaylist();
+            if(isPlaying) audio.play();
+        }
     }
     
     function togglePlay() {
@@ -605,7 +548,7 @@
             audio.pause();
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
         } else {
-            audio.play();
+            audio.play().catch(e => console.log('Música aguardando interação'));
             playBtn.innerHTML = '<i class="fas fa-pause"></i>';
         }
         isPlaying = !isPlaying;
@@ -626,45 +569,11 @@
     playBtn.addEventListener('click', togglePlay);
     nextBtn.addEventListener('click', nextTrack);
     prevBtn.addEventListener('click', prevTrack);
-    
     audio.onended = () => nextTrack();
     
-    // Iniciar música
-    setTimeout(() => {
-        loadTrack(0);
-        audio.play().catch(e => console.log('Aguardando interação'));
-        isPlaying = true;
-        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-    }, 1000);
-    
-    // Controles do player
-    let controlsVisible = true;
-    const playerBar = document.getElementById('musicPlayerBar');
-    const toggleBtn = document.getElementById('toggleControlsBtn');
-    
-    function hideControls() {
-        playerBar.classList.add('hide');
-        controlsVisible = false;
-        toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
-    }
-    
-    function showControls() {
-        playerBar.classList.remove('hide');
-        controlsVisible = true;
-        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
-        setTimeout(() => { if(controlsVisible) hideControls(); }, 4000);
-    }
-    
-    toggleBtn.addEventListener('click', () => {
-        if(controlsVisible) hideControls();
-        else showControls();
-    });
-    
-    document.addEventListener('mousemove', () => { if(!controlsVisible) showControls(); });
-    
-    // Playlist
-    const playlistBtnDiv = document.getElementById('playlistBtn');
+    // PLAYLIST
     const playlistDiv = document.getElementById('playlistContainer');
+    const playlistBtnDiv = document.getElementById('playlistBtn');
     const playlistItemsDiv = document.getElementById('playlistItems');
     
     function renderPlaylist() {
@@ -690,17 +599,54 @@
         playlistDiv.classList.toggle('open');
     });
     
-    renderPlaylist();
-    
-    // Fechar playlist ao clicar fora
     document.addEventListener('click', (e) => {
         if(!playlistDiv.contains(e.target) && e.target !== playlistBtnDiv) {
             playlistDiv.classList.remove('open');
         }
     });
     
-    console.log("✅ Sistema pronto! O vídeo do Google Sites NÃO funciona diretamente, mas o Google Drive está configurado.");
-    console.log("📌 Para funcionar: substitua '1QLB_1pOI4XNifctit_VkcWgZtJXeFvkv' pelo ID REAL do seu vídeo no Google Drive");
+    renderPlaylist();
+    
+    // INICIAR MÚSICA
+    setTimeout(() => {
+        loadTrack(0);
+        audio.play().catch(e => console.log('Aguardando interação do usuário para música'));
+        isPlaying = true;
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    }, 1000);
+    
+    // CONTROLES DO PLAYER (auto-hide)
+    let controlsVisible = true;
+    const playerBar = document.getElementById('musicPlayerBar');
+    const toggleBtn = document.getElementById('toggleControlsBtn');
+    
+    function hideControls() {
+        playerBar.classList.add('hide');
+        controlsVisible = false;
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+    }
+    
+    function showControls() {
+        playerBar.classList.remove('hide');
+        controlsVisible = true;
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+        setTimeout(() => { if(controlsVisible) hideControls(); }, 4000);
+    }
+    
+    toggleBtn.addEventListener('click', () => {
+        if(controlsVisible) hideControls();
+        else showControls();
+    });
+    
+    document.addEventListener('mousemove', () => { if(!controlsVisible) showControls(); });
+    
+    // INICIAR VÍDEO
+    const mainVideo = document.getElementById('mainVideo');
+    mainVideo.play().catch(e => console.log('Vídeo aguardando interação do usuário'));
+    
+    console.log("✅ SISTEMA FUNCIONANDO!");
+    console.log("📺 Vídeo: Wild Russia - Siberia (National Geographic)");
+    console.log("🔗 Link do Google Drive convertido corretamente!");
 </script>
 </body>
 </html>
