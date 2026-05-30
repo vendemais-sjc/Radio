@@ -17,7 +17,7 @@
             height: 100vh;
             overflow: hidden;
             background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
-            font-family: 'Segoe UI', 'Poppins', 'Montserrat', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
         }
 
         .tv-container {
@@ -26,36 +26,49 @@
             height: 100%;
         }
 
-        .video-mp4 {
+        /* FUNDO PADRÃO (caso nenhum vídeo carregue) */
+        .background-fallback {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            background: linear-gradient(135deg, #1a3c3d, #2c7a7b);
+            z-index: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background-fallback i {
+            font-size: 100px;
+            color: rgba(255,255,255,0.1);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+
+        .video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
             display: none;
         }
 
-        .video-gdrive, .video-sites {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background: #000;
+        .video-player.active {
+            display: block;
         }
 
-        .gdrive-video {
+        video, iframe {
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .sites-iframe {
-            width: 100%;
-            height: 100%;
             border: none;
         }
 
@@ -75,7 +88,7 @@
             justify-content: center;
             text-align: center;
             padding: 40px 20px;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s;
         }
 
         .welcome-overlay.hide {
@@ -83,14 +96,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes pulseLight {
@@ -100,12 +107,6 @@
 
         .welcome-overlay > div {
             animation: fadeInUp 0.8s ease-out;
-        }
-
-        .logo-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
         }
 
         .logo-img {
@@ -127,7 +128,6 @@
             display: none;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
         .logo-placeholder i {
@@ -150,8 +150,6 @@
             font-size: 1rem;
             color: #6b8c8d;
             letter-spacing: 3px;
-            margin-top: 5px;
-            font-weight: 400;
             text-transform: uppercase;
         }
 
@@ -162,14 +160,12 @@
             border-radius: 100px;
             border: 1px solid rgba(78,205,196,0.3);
             margin: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
         }
 
         .welcome-card h2 {
             font-size: 2.3rem;
             color: #1a3c3d;
             margin-bottom: 15px;
-            font-weight: 600;
         }
 
         .welcome-card h2 i {
@@ -181,19 +177,11 @@
             font-size: 1.4rem;
             color: #2c5a5b;
             font-weight: 500;
-            transition: opacity 0.5s ease;
             min-height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 15px;
-            flex-wrap: wrap;
-            padding: 10px;
-        }
-
-        .mensagem-rotativa i {
-            color: #4ecdc4;
-            font-size: 1.8rem;
         }
 
         .badge-row {
@@ -211,9 +199,6 @@
             font-size: 0.9rem;
             color: #1a3c3d;
             border: 1px solid rgba(78,205,196,0.4);
-            backdrop-filter: blur(5px);
-            font-weight: 500;
-            letter-spacing: 0.5px;
         }
 
         .badge i {
@@ -228,7 +213,6 @@
             background: rgba(255,255,255,0.6);
             padding: 15px 40px;
             border-radius: 80px;
-            backdrop-filter: blur(10px);
         }
 
         .pulse-dot {
@@ -237,14 +221,6 @@
             background: #4ecdc4;
             border-radius: 50%;
             animation: pulseLight 1.8s infinite;
-            box-shadow: 0 0 10px #4ecdc4;
-        }
-
-        .status-line span {
-            font-size: 0.95rem;
-            letter-spacing: 2px;
-            color: #1a3c3d;
-            font-weight: 500;
         }
 
         .ticker {
@@ -265,16 +241,14 @@
             padding-left: 100%;
         }
 
-        .ticker-text {
-            display: inline-block;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-
-        .ticker-text i, .ticker-text span {
+        .ticker-text span, .ticker-text i {
             margin: 0 25px;
             color: #fff;
+        }
+
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
         }
 
         .clock {
@@ -286,11 +260,9 @@
             padding: 8px 22px;
             border-radius: 50px;
             color: #1a3c3d;
-            font-size: 1rem;
             z-index: 16;
             font-family: monospace;
-            font-weight: 700;
-            border: 1px solid rgba(78,205,196,0.3);
+            font-weight: bold;
         }
 
         .fullscreen-btn {
@@ -298,8 +270,7 @@
             top: 18px;
             left: 30px;
             background: rgba(26, 60, 61, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(78,205,196,0.4);
+            border: none;
             color: white;
             width: 42px;
             height: 42px;
@@ -307,14 +278,6 @@
             cursor: pointer;
             z-index: 25;
             font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .fullscreen-btn:hover {
-            background: #4ecdc4;
-            color: #1a3c3d;
         }
 
         .music-player {
@@ -334,51 +297,10 @@
             transform: translateY(100%);
         }
 
-        .track-info {
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .track-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #1a3c3d;
-        }
-
-        .track-artist {
-            font-size: 0.75rem;
-            color: #6b8c8d;
-        }
-
-        .progress-area {
-            margin-bottom: 8px;
-        }
-
-        .progress-time {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.65rem;
-            color: #8ba3a4;
-        }
-
-        .progress-bar-bg {
-            height: 3px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4ecdc4, #2c7a7b);
-            width: 0%;
-            border-radius: 3px;
-        }
-
         .control-buttons {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 20px;
             margin-top: 10px;
         }
 
@@ -392,25 +314,16 @@
             cursor: pointer;
         }
 
-        .ctrl-btn:hover {
-            background: #4ecdc4;
-            color: white;
-        }
-
         .ctrl-btn.play {
-            width: 48px;
-            height: 48px;
             background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
-            border: none;
             color: white;
+            border: none;
         }
 
         .toggle-controls, .playlist-btn {
             position: absolute;
             bottom: 18px;
             background: rgba(26, 60, 61, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(78,205,196,0.3);
             color: white;
             width: 38px;
             height: 38px;
@@ -429,42 +342,30 @@
             position: absolute;
             bottom: 100%;
             left: 20px;
-            width: 300px;
+            width: 280px;
             max-height: 350px;
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(20px);
+            background: white;
             border-radius: 20px;
             padding: 15px;
             margin-bottom: 12px;
             z-index: 20;
             display: none;
             overflow-y: auto;
-            border: 1px solid rgba(78,205,196,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .playlist-container.open {
             display: block;
         }
 
-        .playlist-header {
-            color: #2c7a7b;
-            font-size: 0.9rem;
-            text-align: center;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-
         .playlist-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 12px;
-            background: rgba(0,0,0,0.03);
+            padding: 10px;
             border-radius: 12px;
-            margin-bottom: 6px;
             cursor: pointer;
-            font-size: 0.8rem;
-            color: #1a3c3d;
+            margin-bottom: 5px;
         }
 
         .playlist-item:hover, .playlist-item.active {
@@ -472,30 +373,34 @@
             color: white;
         }
 
-        @keyframes tickerScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
         @media (max-width: 1024px) {
-            .clinic-name { font-size: 2.2rem; }
-            .welcome-card h2 { font-size: 1.8rem; }
-            .welcome-card { padding: 25px 50px; }
+            .clinic-name { font-size: 2rem; }
+            .welcome-card { padding: 20px 40px; }
+            .welcome-card h2 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 <div class="tv-container">
-    <video id="bsaVideo" class="video-mp4" preload="auto" playsinline muted>
-        <source src="bsa.mp4" type="video/mp4">
-    </video>
     
-    <!-- TENTATIVA DE EMBUTIR GOOGLE SITES -->
-    <div class="video-sites" id="sitesContainer">
-        <iframe class="sites-iframe" id="sitesIframe" 
-                src="https://sites.google.com/d/1QLB_1pOI4XNifctit_VkcWgZtJXeFvkv/p/1szzUSBjIWyDoGS9eSkEe3snJu4Jl6b9A/edit"
-                allow="autoplay; fullscreen">
-        </iframe>
+    <!-- FUNDO DE FALLBACK (se nada carregar) -->
+    <div class="background-fallback" id="fallbackBg">
+        <i class="fas fa-heartbeat"></i>
+    </div>
+
+    <!-- PLAYER 1: VÍDEO LOCAL -->
+    <div class="video-player" id="playerLocal">
+        <video id="localVideo" muted loop playsinline>
+            <source src="bsa.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- PLAYER 2: GOOGLE DRIVE (tentativa com múltiplos formatos) -->
+    <div class="video-player" id="playerDrive">
+        <video id="driveVideo" muted loop playsinline>
+            <!-- TENTE ESTES 3 FORMATOS (o que funcionar vai tocar) -->
+            <source src="https://drive.google.com/uc?export=download&id=1QLB_1pOI4XNifctit_VkcWgZtJXeFvkv" type="video/mp4">
+        </video>
     </div>
 
     <!-- OVERLAY SAUDAÇÃO -->
@@ -552,24 +457,11 @@
     <div class="clock" id="clock">--:--</div>
     <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
 
+    <!-- PLAYER MÚSICA -->
     <div class="music-player" id="musicPlayerBar">
-        <div class="track-info">
-            <div class="track-title" id="trackTitle">🎵 Carregando...</div>
-            <div class="track-artist" id="trackArtist">Música ambiente</div>
-        </div>
-        <div class="progress-area">
-            <div class="progress-time">
-                <span id="currentTime">0:00</span>
-                <span id="totalTime">0:00</span>
-            </div>
-            <div class="progress-bar-bg" id="progressBar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
         <div class="control-buttons">
             <button class="ctrl-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
             <button class="ctrl-btn play" id="playPauseBtn"><i class="fas fa-play"></i></button>
-            <button class="ctrl-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
             <button class="ctrl-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
         </div>
     </div>
@@ -578,121 +470,98 @@
     <button class="playlist-btn" id="playlistBtn"><i class="fas fa-list-ul"></i></button>
 
     <div class="playlist-container" id="playlistContainer">
-        <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST AMBIENTE</div>
+        <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST</div>
         <div id="playlistItems"></div>
     </div>
 </div>
 
 <script>
     // MENSAGENS ROTATIVAS
-    const mensagensBoasVindas = [
-        { icon: "fas fa-clock", text: "Em breve você será atendido(a) com todo cuidado e excelência!" },
-        { icon: "fas fa-mug-hot", text: "Café e água à sua disposição! Servimos com muito carinho." },
-        { icon: "fas fa-wifi", text: "Wi-Fi disponível - Conecte-se e aguarde com conforto!" },
-        { icon: "fas fa-star", text: "Avalie nosso atendimento! Sua opinião é muito importante." },
-        { icon: "fas fa-hand-holding-heart", text: "Aqui sua saúde é nossa prioridade número 1!" },
-        { icon: "fas fa-calendar-alt", text: "Agende sua próxima consulta ainda hoje!" },
-        { icon: "fas fa-smile", text: "Nosso time está pronto para receber você com excelência!" }
+    const mensagens = [
+        "Em breve você será atendido(a) com todo cuidado e excelência!",
+        "Café e água à sua disposição! Servimos com muito carinho.",
+        "Wi-Fi disponível - Conecte-se e aguarde com conforto!",
+        "Avalie nosso atendimento! Sua opinião é muito importante.",
+        "Aqui sua saúde é nossa prioridade número 1!",
+        "Agende sua próxima consulta ainda hoje!"
     ];
     
-    let mensagemIndex = 0;
-    let mensagemInterval = null;
-    
-    function rotacionarMensagem() {
-        const msgElement = document.getElementById('messageText');
-        const iconElement = document.querySelector('#rotatingMessage i');
-        const novaMensagem = mensagensBoasVindas[mensagemIndex];
-        
-        if (msgElement && iconElement) {
-            msgElement.style.opacity = '0';
-            iconElement.style.opacity = '0';
+    let msgIndex = 0;
+    setInterval(() => {
+        const msgEl = document.getElementById('messageText');
+        if(msgEl) {
+            msgEl.style.opacity = '0';
             setTimeout(() => {
-                iconElement.className = novaMensagem.icon;
-                msgElement.textContent = novaMensagem.text;
-                msgElement.style.opacity = '1';
-                iconElement.style.opacity = '1';
+                msgEl.textContent = mensagens[msgIndex];
+                msgEl.style.opacity = '1';
+                msgIndex = (msgIndex + 1) % mensagens.length;
             }, 300);
         }
-        mensagemIndex = (mensagemIndex + 1) % mensagensBoasVindas.length;
-    }
-    
-    function iniciarRotacaoMensagens() {
-        if (mensagemInterval) clearInterval(mensagemInterval);
-        mensagemInterval = setInterval(rotacionarMensagem, 8000);
-    }
-    
+    }, 8000);
+
     // CICLO DE VÍDEOS
-    const TEMPO_SAUDACAO = 20;
-    const TEMPO_VIDEO_BSA = 15;
-    const TEMPO_ESPERA = 180;
+    const players = {
+        fallback: document.getElementById('fallbackBg'),
+        local: document.getElementById('playerLocal'),
+        drive: document.getElementById('playerDrive')
+    };
     
-    const welcomeOverlay = document.getElementById('welcomeOverlay');
-    const bsaVideo = document.getElementById('bsaVideo');
-    const sitesContainer = document.getElementById('sitesContainer');
-    const sitesIframe = document.getElementById('sitesIframe');
+    const localVideo = document.getElementById('localVideo');
+    const driveVideo = document.getElementById('driveVideo');
     
-    let cicloAtivo = false;
-    let timeoutAtual = null;
+    let currentPlayer = 'fallback';
+    let cycleTimer = null;
     
-    function mostrarSaudacao() {
-        welcomeOverlay.classList.remove('hide');
-        iniciarRotacaoMensagens();
-    }
-    
-    function esconderSaudacao() {
-        welcomeOverlay.classList.add('hide');
-        if (mensagemInterval) clearInterval(mensagemInterval);
-    }
-    
-    function mostrarVideoBSA() {
-        sitesContainer.style.opacity = '0';
-        sitesContainer.style.zIndex = '1';
-        bsaVideo.style.display = 'block';
-        bsaVideo.style.zIndex = '5';
-        bsaVideo.currentTime = 0;
+    function showPlayer(playerName) {
+        // Esconde todos
+        players.fallback.style.display = 'none';
+        players.local.classList.remove('active');
+        players.drive.classList.remove('active');
         
-        const playPromise = bsaVideo.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(e => {
-                console.log("BSA video error, pulando");
-                mostrarGoogleSites();
-            });
+        // Mostra o selecionado
+        if(playerName === 'fallback') {
+            players.fallback.style.display = 'flex';
+        } else if(playerName === 'local') {
+            players.local.classList.add('active');
+            localVideo.play().catch(e => console.log('Local video error'));
+        } else if(playerName === 'drive') {
+            players.drive.classList.add('active');
+            driveVideo.play().catch(e => console.log('Drive video error'));
         }
+        
+        currentPlayer = playerName;
     }
     
-    function mostrarGoogleSites() {
-        bsaVideo.pause();
-        bsaVideo.style.display = 'none';
-        sitesContainer.style.opacity = '1';
-        sitesContainer.style.zIndex = '2';
-        console.log("Google Sites carregado - ATENÇÃO: Google Sites NÃO é um player de vídeo direto!");
-    }
+    // Esconder saudação após 20 segundos
+    const welcomeOverlay = document.getElementById('welcomeOverlay');
+    setTimeout(() => {
+        welcomeOverlay.classList.add('hide');
+    }, 20000);
     
-    function executarCiclo() {
-        if (cicloAtivo) return;
-        cicloAtivo = true;
-        
-        if (timeoutAtual) clearTimeout(timeoutAtual);
-        
-        mostrarSaudacao();
-        
-        timeoutAtual = setTimeout(() => {
-            esconderSaudacao();
-            mostrarVideoBSA();
-            
-            timeoutAtual = setTimeout(() => {
-                mostrarGoogleSites();
-                
-                timeoutAtual = setTimeout(() => {
-                    cicloAtivo = false;
-                    executarCiclo();
-                }, TEMPO_ESPERA * 1000);
-                
-            }, TEMPO_VIDEO_BSA * 1000);
-            
-        }, TEMPO_SAUDACAO * 1000);
-    }
+    // Ciclo automático
+    setTimeout(() => {
+        showPlayer('local');
+    }, 20000);
     
+    setTimeout(() => {
+        showPlayer('drive');
+    }, 35000);
+    
+    // A cada 3 minutos, reinicia o ciclo
+    setInterval(() => {
+        welcomeOverlay.classList.remove('hide');
+        setTimeout(() => {
+            welcomeOverlay.classList.add('hide');
+        }, 20000);
+        setTimeout(() => {
+            showPlayer('local');
+        }, 20000);
+        setTimeout(() => {
+            showPlayer('drive');
+        }, 35000);
+    }, 180000);
+    
+    // TELA CHEIA
     function toggleFullscreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
@@ -700,220 +569,138 @@
             document.exitFullscreen();
         }
     }
+    document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
     
-    // PLAYER DE MÚSICA
-    const musicas = [
-        { id: 1, title: "Flavio Venturini", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a" },
-        { id: 2, title: "True True", artist: "True True Remaster", src: "True_True_Remaster__muzzik.m4a" },
-        { id: 3, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a" },
-        { id: 4, title: "Esquadros", artist: "Adriana Calcanhotto", src: "Adriana_Calcanhotto_Esquadros.m4a" },
-        { id: 5, title: "I Love You", artist: "Jim Diamond", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a" }
-    ];
-    
-    let currentMusic = 0, isPlaying = false, shuffle = false, timer = null;
-    let controlsVisible = true, controlsTimer = null;
-    
-    const audio = new Audio();
-    const playBtn = document.getElementById('playPauseBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const progressFill = document.getElementById('progressFill');
-    const currentTimeEl = document.getElementById('currentTime');
-    const totalTimeEl = document.getElementById('totalTime');
-    const trackTitle = document.getElementById('trackTitle');
-    const trackArtist = document.getElementById('trackArtist');
-    const progressBarBg = document.getElementById('progressBar');
-    const playlistDiv = document.getElementById('playlistContainer');
-    const playlistItemsDiv = document.getElementById('playlistItems');
-    const playlistBtnDiv = document.getElementById('playlistBtn');
-    const toggleBtn = document.getElementById('toggleControlsBtn');
-    const playerBar = document.getElementById('musicPlayerBar');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    
-    function formatTime(sec) { 
-        if(isNaN(sec)) return "0:00"; 
-        const m = Math.floor(sec/60); 
-        const s = Math.floor(sec%60); 
-        return `${m}:${s<10?'0':''}${s}`; 
-    }
-    
-    function startTimer() { 
-        if(timer) clearInterval(timer); 
-        timer = setInterval(()=>{ 
-            if(isPlaying && audio.duration && !isNaN(audio.duration)){ 
-                const p = (audio.currentTime/audio.duration)*100; 
-                progressFill.style.width = p+'%'; 
-                currentTimeEl.textContent = formatTime(audio.currentTime); 
-            } 
-        }, 200); 
-    }
-    
-    function resetControlsTimer() { 
-        if(controlsTimer) clearTimeout(controlsTimer); 
-        if(controlsVisible){ 
-            controlsTimer = setTimeout(()=>{ 
-                playerBar.classList.add('hide'); 
-                controlsVisible = false; 
-                toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>'; 
-            }, 4000); 
-        } 
-    }
-    
-    function showControls() { 
-        playerBar.classList.remove('hide'); 
-        controlsVisible = true; 
-        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>'; 
-        resetControlsTimer(); 
-    }
-    
-    function renderPlaylist() { 
-        playlistItemsDiv.innerHTML = musicas.map((m,i)=>`
-            <div class="playlist-item ${i===currentMusic?'active':''}" data-index="${i}">
-                <i class="fas fa-music"></i>
-                <div><strong>${m.title}</strong><br><small>${m.artist}</small></div>
-            </div>
-        `).join(''); 
-        
-        document.querySelectorAll('.playlist-item').forEach(item=>{ 
-            item.addEventListener('click',()=>{ 
-                selectSong(parseInt(item.dataset.index)); 
-                playlistDiv.classList.remove('open'); 
-            }); 
-        }); 
-    }
-    
-    function loadTrack(i) { 
-        currentMusic = i; 
-        const t = musicas[currentMusic]; 
-        audio.src = t.src; 
-        trackTitle.textContent = t.title; 
-        trackArtist.textContent = t.artist; 
-        progressFill.style.width = '0%'; 
-        currentTimeEl.textContent = '0:00';
-        totalTimeEl.textContent = '0:00';
-        renderPlaylist(); 
-        
-        audio.onloadedmetadata = () => { 
-            totalTimeEl.textContent = formatTime(audio.duration); 
-        };
-    }
-    
-    async function playMusic() { 
-        try{ 
-            await audio.play(); 
-            isPlaying = true; 
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>'; 
-            startTimer(); 
-            showControls(); 
-        } catch(e){ 
-            console.log("Música aguardando interação");
-        } 
-    }
-    
-    function pauseMusic() { 
-        audio.pause(); 
-        isPlaying = false; 
-        playBtn.innerHTML = '<i class="fas fa-play"></i>'; 
-        if(timer) clearInterval(timer); 
-        timer = null; 
-    }
-    
-    function togglePlayPause() { 
-        isPlaying ? pauseMusic() : playMusic(); 
-        showControls(); 
-    }
-    
-    function nextTrack() { 
-        let next = shuffle ? Math.floor(Math.random() * musicas.length) : (currentMusic+1) % musicas.length;
-        loadTrack(next); 
-        if(isPlaying) playMusic(); 
-        showControls(); 
-    }
-    
-    function prevTrack() { 
-        let prev = (currentMusic-1+musicas.length) % musicas.length; 
-        loadTrack(prev); 
-        if(isPlaying) playMusic(); 
-        showControls(); 
-    }
-    
-    function selectSong(i) { 
-        loadTrack(i); 
-        if(isPlaying) playMusic(); 
-        showControls(); 
-    }
-    
-    function toggleShuffle() { 
-        shuffle = !shuffle; 
-        shuffleBtn.style.background = shuffle ? '#4ecdc4' : ''; 
-        shuffleBtn.style.color = shuffle ? '#fff' : '#1a3c3d';
-        showControls(); 
-    }
-    
-    function togglePlaylist() { 
-        playlistDiv.classList.toggle('open'); 
-        showControls(); 
-    }
-    
-    function toggleControlsBar() { 
-        if(controlsVisible){ 
-            playerBar.classList.add('hide'); 
-            controlsVisible = false; 
-            toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>'; 
-            if(controlsTimer) clearTimeout(controlsTimer); 
-        }else{ 
-            showControls(); 
-        } 
-    }
-    
-    playBtn.addEventListener('click', togglePlayPause);
-    prevBtn.addEventListener('click', prevTrack);
-    nextBtn.addEventListener('click', nextTrack);
-    shuffleBtn.addEventListener('click', toggleShuffle);
-    toggleBtn.addEventListener('click', toggleControlsBar);
-    playlistBtnDiv.addEventListener('click', togglePlaylist);
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-    
-    progressBarBg.addEventListener('click', (e) => { 
-        if(audio.duration && !isNaN(audio.duration)){ 
-            const rect = progressBarBg.getBoundingClientRect(); 
-            const percent = (e.clientX - rect.left) / rect.width; 
-            audio.currentTime = percent * audio.duration; 
-        } 
-        showControls(); 
-    });
-    
-    document.addEventListener('mousemove', () => { 
-        if(!controlsVisible) showControls(); 
-        else resetControlsTimer(); 
-    });
-    
-    document.addEventListener('click', (e) => { 
-        if(!playlistDiv.contains(e.target) && e.target !== playlistBtnDiv) {
-            playlistDiv.classList.remove('open'); 
-        }
-    });
-    
-    audio.onended = () => nextTrack();
-    
-    function updateClock() { 
-        const now = new Date(); 
-        document.getElementById('clock').textContent = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`; 
+    // RELÓGIO
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = 
+            `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
     }
     updateClock();
     setInterval(updateClock, 1000);
     
-    bsaVideo.onended = () => {};
-    bsaVideo.onerror = () => {};
+    // PLAYER DE MÚSICA SIMPLIFICADO
+    const musicas = [
+        { title: "Música Ambiente 1", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a" },
+        { title: "Música Ambiente 2", src: "True_True_Remaster__muzzik.m4a" },
+        { title: "Música Ambiente 3", src: "Adele_Someone_Like_You_muzzik.m4a" },
+        { title: "Música Ambiente 4", src: "Adriana_Calcanhotto_Esquadros.m4a" }
+    ];
     
-    loadTrack(0);
-    setTimeout(() => playMusic(), 500);
-    setTimeout(() => executarCiclo(), 500);
-    resetControlsTimer();
+    let currentTrack = 0;
+    let isPlaying = false;
+    const audio = new Audio();
+    const playBtn = document.getElementById('playPauseBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
     
-    // ALERTA IMPORTANTE
-    console.warn("⚠️ Google Sites NÃO é um player de vídeo! O link do Google Sites mostra uma página, não um vídeo. Para funcionar corretamente, use YouTube ou Google Drive com link direto do vídeo.");
+    function loadTrack(index) {
+        audio.src = musicas[index].src;
+        if(isPlaying) audio.play();
+    }
+    
+    function togglePlay() {
+        if(isPlaying) {
+            audio.pause();
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        } else {
+            audio.play();
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        }
+        isPlaying = !isPlaying;
+    }
+    
+    function nextTrack() {
+        currentTrack = (currentTrack + 1) % musicas.length;
+        loadTrack(currentTrack);
+        if(isPlaying) audio.play();
+    }
+    
+    function prevTrack() {
+        currentTrack = (currentTrack - 1 + musicas.length) % musicas.length;
+        loadTrack(currentTrack);
+        if(isPlaying) audio.play();
+    }
+    
+    playBtn.addEventListener('click', togglePlay);
+    nextBtn.addEventListener('click', nextTrack);
+    prevBtn.addEventListener('click', prevTrack);
+    
+    audio.onended = () => nextTrack();
+    
+    // Iniciar música
+    setTimeout(() => {
+        loadTrack(0);
+        audio.play().catch(e => console.log('Aguardando interação'));
+        isPlaying = true;
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    }, 1000);
+    
+    // Controles do player
+    let controlsVisible = true;
+    const playerBar = document.getElementById('musicPlayerBar');
+    const toggleBtn = document.getElementById('toggleControlsBtn');
+    
+    function hideControls() {
+        playerBar.classList.add('hide');
+        controlsVisible = false;
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+    }
+    
+    function showControls() {
+        playerBar.classList.remove('hide');
+        controlsVisible = true;
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+        setTimeout(() => { if(controlsVisible) hideControls(); }, 4000);
+    }
+    
+    toggleBtn.addEventListener('click', () => {
+        if(controlsVisible) hideControls();
+        else showControls();
+    });
+    
+    document.addEventListener('mousemove', () => { if(!controlsVisible) showControls(); });
+    
+    // Playlist
+    const playlistBtnDiv = document.getElementById('playlistBtn');
+    const playlistDiv = document.getElementById('playlistContainer');
+    const playlistItemsDiv = document.getElementById('playlistItems');
+    
+    function renderPlaylist() {
+        playlistItemsDiv.innerHTML = musicas.map((m, i) => `
+            <div class="playlist-item ${i === currentTrack ? 'active' : ''}" data-index="${i}">
+                <i class="fas fa-music"></i>
+                <span>${m.title}</span>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.playlist-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentTrack = parseInt(item.dataset.index);
+                loadTrack(currentTrack);
+                if(isPlaying) audio.play();
+                renderPlaylist();
+                playlistDiv.classList.remove('open');
+            });
+        });
+    }
+    
+    playlistBtnDiv.addEventListener('click', () => {
+        playlistDiv.classList.toggle('open');
+    });
+    
+    renderPlaylist();
+    
+    // Fechar playlist ao clicar fora
+    document.addEventListener('click', (e) => {
+        if(!playlistDiv.contains(e.target) && e.target !== playlistBtnDiv) {
+            playlistDiv.classList.remove('open');
+        }
+    });
+    
+    console.log("✅ Sistema pronto! O vídeo do Google Sites NÃO funciona diretamente, mas o Google Drive está configurado.");
+    console.log("📌 Para funcionar: substitua '1QLB_1pOI4XNifctit_VkcWgZtJXeFvkv' pelo ID REAL do seu vídeo no Google Drive");
 </script>
 </body>
 </html>
