@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Clínica Versalis • Sala de Espera</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -16,8 +15,7 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
-            font-family: 'Segoe UI', 'Poppins', 'Montserrat', system-ui, -apple-system, sans-serif;
+            background: #000;
         }
 
         .tv-container {
@@ -35,7 +33,6 @@
             height: 100%;
             object-fit: cover;
             z-index: 1;
-            display: none;
         }
 
         .video-drive {
@@ -44,10 +41,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            z-index: 2;
+            display: none;
         }
 
-        /* REMOVE TODOS OS BOTÕES DO IFRAME DO DRIVE */
+        /* Remove TODOS os botões do iframe do Drive */
         .video-drive iframe {
             width: 100%;
             height: 100%;
@@ -55,278 +53,33 @@
             border: none;
         }
 
-        /* OVERLAY DE SAUDAÇÃO */
-        .welcome-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(245,247,250,0.98) 100%);
-            backdrop-filter: blur(2px);
-            z-index: 20;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 40px 20px;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .welcome-overlay.hide {
-            display: none !important;
-        }
-
-        /* ANIMAÇÕES */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulseLight {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.05); opacity: 1; }
-        }
-
-        .welcome-overlay > div {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        /* LOGO */
-        .logo-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-
-        .logo-img {
-            width: 140px;
-            height: 140px;
-            object-fit: contain;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ffffff, #f0f4f8);
-            padding: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 0 4px rgba(78,205,196,0.2);
-        }
-
-        .logo-placeholder {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        .logo-placeholder i {
-            font-size: 70px;
-            color: white;
-        }
-
-        /* NOME DA CLÍNICA */
-        .clinic-name {
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: 4px;
-            background: linear-gradient(135deg, #1a3c3d, #2c7a7b, #4ecdc4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 8px;
-        }
-
-        .clinic-tag {
-            font-size: 1rem;
-            color: #6b8c8d;
-            letter-spacing: 3px;
-            margin-top: 5px;
-            font-weight: 400;
-            text-transform: uppercase;
-        }
-
-        /* CARD DE BOAS-VINDAS */
-        .welcome-card {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(10px);
-            padding: 35px 70px;
-            border-radius: 100px;
-            border: 1px solid rgba(78,205,196,0.3);
-            margin: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-        }
-
-        .welcome-card h2 {
-            font-size: 2.3rem;
-            color: #1a3c3d;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .welcome-card h2 i {
-            color: #4ecdc4;
-            margin-right: 12px;
-        }
-
-        /* MENSAGEM ROTATIVA */
-        .mensagem-rotativa {
-            font-size: 1.4rem;
-            color: #2c5a5b;
-            font-weight: 500;
-            transition: opacity 0.5s ease;
-            min-height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            padding: 10px;
-        }
-
-        .mensagem-rotativa i {
-            color: #4ecdc4;
-            font-size: 1.8rem;
-        }
-
-        /* BADGES */
-        .badge-row {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 25px 0;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            background: rgba(255,255,255,0.8);
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-size: 0.9rem;
-            color: #1a3c3d;
-            border: 1px solid rgba(78,205,196,0.4);
-            backdrop-filter: blur(5px);
-            font-weight: 500;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .badge i {
-            color: #4ecdc4;
-            margin-right: 10px;
-        }
-
-        /* STATUS LINE */
-        .status-line {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            background: rgba(255,255,255,0.6);
-            padding: 15px 40px;
-            border-radius: 80px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        }
-
-        .pulse-dot {
-            width: 14px;
-            height: 14px;
-            background: #4ecdc4;
-            border-radius: 50%;
-            animation: pulseLight 1.8s infinite;
-            box-shadow: 0 0 10px #4ecdc4;
-        }
-
-        .status-line span {
-            font-size: 0.95rem;
-            letter-spacing: 2px;
-            color: #1a3c3d;
-            font-weight: 500;
-        }
-
-        /* TICKER */
-        .ticker {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(90deg, rgba(26,60,61,0.95) 0%, rgba(78,205,196,0.9) 50%, rgba(26,60,61,0.95) 100%);
-            padding: 12px 0;
-            z-index: 15;
-            overflow: hidden;
-            white-space: nowrap;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .ticker-content {
-            display: inline-block;
-            animation: tickerScroll 25s linear infinite;
-            padding-left: 100%;
-        }
-
-        .ticker-text {
-            display: inline-block;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-
-        .ticker-text i {
-            margin: 0 20px;
-            color: #fff;
-        }
-
-        .ticker-text span {
-            margin: 0 25px;
-            color: #fff;
-        }
-
-        /* RELÓGIO */
+        /* RELÓGIO - ÚNICO ELEMENTO NA TELA */
         .clock {
             position: absolute;
-            top: 18px;
+            bottom: 20px;
             right: 30px;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(10px);
-            padding: 8px 22px;
-            border-radius: 50px;
-            color: #1a3c3d;
-            font-size: 1rem;
-            z-index: 16;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: white;
+            font-size: 0.9rem;
+            z-index: 10;
             font-family: 'Courier New', monospace;
-            font-weight: 700;
-            border: 1px solid rgba(78,205,196,0.3);
-            letter-spacing: 2px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        @keyframes tickerScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
+            font-weight: 600;
+            letter-spacing: 1px;
+            pointer-events: none;
         }
 
         @media (max-width: 1024px) {
-            .clinic-name { font-size: 2.2rem; }
-            .welcome-card h2 { font-size: 1.8rem; }
-            .welcome-card { padding: 25px 50px; }
-            .mensagem-rotativa { font-size: 1.1rem; }
-            .badge { padding: 8px 20px; font-size: 0.8rem; }
-            .status-line span { font-size: 0.85rem; }
-            .clock { top: 15px; right: 20px; padding: 6px 18px; }
+            .clock { bottom: 15px; right: 20px; padding: 5px 14px; font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
 <div class="tv-container">
-    <!-- VÍDEO MP4 LOCAL (bsa.mp4) -->
-    <video id="bsaVideo" class="video-mp4" preload="auto" playsinline muted>
+    <!-- VÍDEO MP4 LOCAL (bsa.mp4) - INICIAL -->
+    <video id="bsaVideo" class="video-mp4" autoplay muted playsinline>
         <source src="bsa.mp4" type="video/mp4">
     </video>
     
@@ -336,57 +89,6 @@
                 allow="autoplay; fullscreen" 
                 allowfullscreen>
         </iframe>
-    </div>
-
-    <!-- TELA DE SAUDAÇÃO -->
-    <div class="welcome-overlay" id="welcomeOverlay">
-        <div>
-            <div class="logo-wrapper">
-                <img src="ver.png" alt="Logo" class="logo-img" id="logoImg" onerror="this.style.display='none'; document.getElementById('logoPlaceholder').style.display='flex';">
-                <div class="logo-placeholder" id="logoPlaceholder">
-                    <i class="fas fa-heartbeat"></i>
-                </div>
-            </div>
-            <div class="clinic-name">CLÍNICA VERSALIS</div>
-            <div class="clinic-tag">Excelência em Saúde & Bem-estar</div>
-        </div>
-        
-        <div class="welcome-card">
-            <h2><i class="fas fa-hand-peace"></i> Seja bem-vindo(a)!</h2>
-            <div class="mensagem-rotativa" id="rotatingMessage">
-                <i class="fas fa-heartbeat"></i>
-                <span id="messageText">Em breve você será atendido(a) com todo cuidado e excelência!</span>
-            </div>
-        </div>
-
-        <div class="badge-row">
-            <div class="badge"><i class="fas fa-stethoscope"></i> 20+ Especialidades</div>
-            <div class="badge"><i class="fas fa-calendar-check"></i> Agendamento Rápido</div>
-            <div class="badge"><i class="fas fa-shield-alt"></i> Segurança e Conforto</div>
-            <div class="badge"><i class="fas fa-coffee"></i> Café & Wi-Fi</div>
-        </div>
-
-        <div class="status-line">
-            <div class="pulse-dot"></div>
-            <span>ATENDIMENTO HUMANIZADO • AGUARDE UM MOMENTO</span>
-            <div class="pulse-dot"></div>
-        </div>
-    </div>
-
-    <!-- TICKER -->
-    <div class="ticker">
-        <div class="ticker-content">
-            <div class="ticker-text">
-                <i class="fas fa-heartbeat"></i>
-                <span>🏥 CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE COM EXCELÊNCIA</span>
-                <i class="fas fa-circle" style="font-size: 0.3rem; opacity: 0.5;"></i>
-                <span>📞 (12) 98846-1978</span>
-                <i class="fas fa-circle" style="font-size: 0.3rem; opacity: 0.5;"></i>
-                <span>📍 AMBIENTE ACONCHEGANTE E SEGURO</span>
-                <i class="fas fa-circle" style="font-size: 0.3rem; opacity: 0.5;"></i>
-                <span>💙 TODOS OS PLANOS DE SAÚDE</span>
-            </div>
-        </div>
     </div>
 
     <!-- RELÓGIO -->
@@ -424,137 +126,64 @@
         }
     }
     
-    setTimeout(forceDriveAutoplay, 1000);
-    
     // =============================================
-    // MENSAGENS ROTATIVAS
+    // CICLO DE VÍDEOS: bsa.mp4 (15s) → Drive (3min) → volta
     // =============================================
-    const mensagensBoasVindas = [
-        { icon: "fas fa-clock", text: "Em breve você será atendido(a) com todo cuidado e excelência!" },
-        { icon: "fas fa-mug-hot", text: "Café e água à sua disposição! Servimos com muito carinho." },
-        { icon: "fas fa-wifi", text: "Wi-Fi disponível - Conecte-se e aguarde com conforto!" },
-        { icon: "fas fa-star", text: "Avalie nosso atendimento! Sua opinião é muito importante." },
-        { icon: "fas fa-hand-holding-heart", text: "Aqui sua saúde é nossa prioridade número 1!" },
-        { icon: "fas fa-calendar-alt", text: "Agende sua próxima consulta ainda hoje!" },
-        { icon: "fas fa-smile", text: "Nosso time está pronto para receber você com excelência!" },
-        { icon: "fas fa-heartbeat", text: "Mais de 20 especialidades médicas à sua disposição!" },
-        { icon: "fas fa-shield-alt", text: "Ambiente seguro, confortável e totalmente climatizado." },
-        { icon: "fas fa-clock", text: "Atendimento de segunda a sábado, das 8h às 20h." }
-    ];
+    const TEMPO_VIDEO_BSA = 15;     // 15 segundos
+    const TEMPO_ESPERA = 180;       // 3 MINUTOS (180 segundos)
     
-    let mensagemIndex = 0;
-    let mensagemInterval = null;
-    
-    function rotacionarMensagem() {
-        const msgElement = document.getElementById('messageText');
-        const iconElement = document.querySelector('#rotatingMessage i');
-        const novaMensagem = mensagensBoasVindas[mensagemIndex];
-        
-        if (msgElement && iconElement) {
-            msgElement.style.opacity = '0';
-            iconElement.style.opacity = '0';
-            
-            setTimeout(() => {
-                iconElement.className = novaMensagem.icon;
-                msgElement.textContent = novaMensagem.text;
-                msgElement.style.opacity = '1';
-                iconElement.style.opacity = '1';
-            }, 300);
-        }
-        
-        mensagemIndex = (mensagemIndex + 1) % mensagensBoasVindas.length;
-    }
-    
-    function iniciarRotacaoMensagens() {
-        if (mensagemInterval) clearInterval(mensagemInterval);
-        mensagemInterval = setInterval(rotacionarMensagem, 8000);
-    }
-    
-    // =============================================
-    // CICLO DE VÍDEOS E SAUDAÇÃO
-    // =============================================
-    const TEMPO_SAUDACAO = 20;
-    const TEMPO_VIDEO_BSA = 15;
-    const TEMPO_ESPERA = 180; // 3 MINUTOS
-    
-    const welcomeOverlay = document.getElementById('welcomeOverlay');
     const bsaVideo = document.getElementById('bsaVideo');
     const driveContainer = document.getElementById('driveContainer');
     
-    let cicloAtivo = false;
     let timeoutAtual = null;
     
-    function mostrarSaudacao() {
-        welcomeOverlay.classList.remove('hide');
-        iniciarRotacaoMensagens();
-    }
-    
-    function esconderSaudacao() {
-        welcomeOverlay.classList.add('hide');
-        if (mensagemInterval) clearInterval(mensagemInterval);
-    }
-    
     function mostrarVideoBSA() {
-        driveContainer.style.opacity = '0';
-        driveContainer.style.zIndex = '1';
+        driveContainer.style.display = 'none';
         bsaVideo.style.display = 'block';
-        bsaVideo.style.zIndex = '5';
         bsaVideo.currentTime = 0;
-        
-        const playPromise = bsaVideo.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(e => {
-                if(timeoutAtual) clearTimeout(timeoutAtual);
-                mostrarDriveVideo();
-            });
-        }
+        bsaVideo.play().catch(e => console.log("bsa:", e));
     }
     
     function mostrarDriveVideo() {
         bsaVideo.pause();
         bsaVideo.style.display = 'none';
-        driveContainer.style.opacity = '1';
-        driveContainer.style.zIndex = '2';
+        driveContainer.style.display = 'block';
         forceDriveAutoplay();
     }
     
     function executarCiclo() {
-        if (cicloAtivo) return;
-        cicloAtivo = true;
-        
         if (timeoutAtual) clearTimeout(timeoutAtual);
         
-        mostrarSaudacao();
+        // Começa com bsa.mp4
+        mostrarVideoBSA();
         
         timeoutAtual = setTimeout(() => {
-            esconderSaudacao();
-            mostrarVideoBSA();
+            // Depois de 15 segundos, troca para Drive
+            mostrarDriveVideo();
             
             timeoutAtual = setTimeout(() => {
-                mostrarDriveVideo();
-                
-                timeoutAtual = setTimeout(() => {
-                    cicloAtivo = false;
-                    executarCiclo();
-                }, TEMPO_ESPERA * 1000);
-                
-            }, TEMPO_VIDEO_BSA * 1000);
+                // Depois de 3 minutos, volta para bsa.mp4 e repete
+                executarCiclo();
+            }, TEMPO_ESPERA * 1000);
             
-        }, TEMPO_SAUDACAO * 1000);
+        }, TEMPO_VIDEO_BSA * 1000);
     }
     
+    // =============================================
     // RELÓGIO
+    // =============================================
     function updateClock() { 
         const now = new Date(); 
-        document.getElementById('clock').textContent = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`; 
+        const horas = now.getHours().toString().padStart(2,'0');
+        const minutos = now.getMinutes().toString().padStart(2,'0');
+        document.getElementById('clock').textContent = `${horas}:${minutos}`; 
     }
     updateClock();
     setInterval(updateClock, 1000);
     
-    bsaVideo.onended = () => {};
-    bsaVideo.onerror = () => {};
-    
-    // INICIALIZAR
+    // =============================================
+    // INICIAR SISTEMA
+    // =============================================
     setTimeout(() => {
         executarCiclo();
     }, 500);
