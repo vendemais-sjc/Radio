@@ -47,13 +47,14 @@
             z-index: 1;
         }
 
-        .video-drive video {
+        .video-drive iframe {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            pointer-events: none;
+            border: none;
         }
 
-        /* OVERLAY DE SAUDAÇÃO */
+        /* OVERLAY DE SAUDAÇÃO - ESTILO PREMIUM CLARO */
         .welcome-overlay {
             position: absolute;
             top: 0;
@@ -88,6 +89,11 @@
             }
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         @keyframes pulseLight {
             0%, 100% { transform: scale(1); opacity: 0.6; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -97,7 +103,7 @@
             animation: fadeInUp 0.8s ease-out;
         }
 
-        /* LOGO */
+        /* LOGO PREMIUM */
         .logo-wrapper {
             position: relative;
             display: inline-block;
@@ -112,6 +118,7 @@
             background: linear-gradient(135deg, #ffffff, #f0f4f8);
             padding: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 0 4px rgba(78,205,196,0.2);
+            transition: all 0.3s;
         }
 
         .logo-placeholder {
@@ -131,7 +138,7 @@
             color: white;
         }
 
-        /* NOME DA CLÍNICA */
+        /* NOME DA CLÍNICA - ELEGANTE */
         .clinic-name {
             font-size: 3rem;
             font-weight: 800;
@@ -140,6 +147,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-shadow: 0 2px 10px rgba(78,205,196,0.2);
             margin-bottom: 8px;
         }
 
@@ -152,7 +160,7 @@
             text-transform: uppercase;
         }
 
-        /* CARD DE BOAS-VINDAS */
+        /* CARD DE BOAS-VINDAS - TRANSPARENTE E ELEGANTE */
         .welcome-card {
             background: rgba(255,255,255,0.7);
             backdrop-filter: blur(10px);
@@ -175,7 +183,7 @@
             margin-right: 12px;
         }
 
-        /* MENSAGEM ROTATIVA */
+        /* MENSAGEM ROTATIVA - DESTAQUE */
         .mensagem-rotativa {
             font-size: 1.4rem;
             color: #2c5a5b;
@@ -195,7 +203,7 @@
             font-size: 1.8rem;
         }
 
-        /* BADGES */
+        /* BADGES - SERVIÇOS */
         .badge-row {
             display: flex;
             gap: 20px;
@@ -213,7 +221,9 @@
             border: 1px solid rgba(78,205,196,0.4);
             backdrop-filter: blur(5px);
             font-weight: 500;
+            letter-spacing: 0.5px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
         }
 
         .badge i {
@@ -249,7 +259,7 @@
             font-weight: 500;
         }
 
-        /* TICKER */
+        /* TICKER INFORMATIVO */
         .ticker {
             position: absolute;
             top: 0;
@@ -286,7 +296,7 @@
             color: #fff;
         }
 
-        /* RELÓGIO */
+        /* RELÓGIO ELEGANTE */
         .clock {
             position: absolute;
             top: 18px;
@@ -305,7 +315,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        /* BOTÃO TELA CHEIA */
+        /* BOTÃO TELA CHEIA - COR ESCURA (RESTAURADO) */
         .fullscreen-btn {
             position: absolute;
             top: 18px;
@@ -331,9 +341,10 @@
             background: #4ecdc4;
             transform: scale(1.08);
             color: #1a3c3d;
+            border-color: #fff;
         }
 
-        /* PLAYER DE MÚSICA */
+        /* PLAYER DE MÚSICA - ESTILO LIMPO */
         .music-player {
             position: absolute;
             bottom: 0;
@@ -419,6 +430,7 @@
             background: #4ecdc4;
             transform: scale(1.05);
             color: white;
+            border-color: #4ecdc4;
         }
 
         .ctrl-btn.play {
@@ -427,6 +439,10 @@
             background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
             border: none;
             color: white;
+        }
+
+        .ctrl-btn.play:hover {
+            transform: scale(1.08);
         }
 
         /* BOTÕES DE CONTROLE */
@@ -519,6 +535,7 @@
             100% { transform: translateX(-100%); }
         }
 
+        /* RESPONSIVIDADE SMART TV */
         @media (max-width: 1024px) {
             .clinic-name { font-size: 2.2rem; }
             .welcome-card h2 { font-size: 1.8rem; }
@@ -538,14 +555,15 @@
         <source src="bsa.mp4" type="video/mp4">
     </video>
     
-    <!-- VÍDEO GOOGLE DRIVE - SEM ÁUDIO (usando tag video com volume 0) -->
+    <!-- VÍDEO GOOGLE DRIVE - IFRAME COM EMBED CORRETO -->
     <div class="video-drive" id="driveContainer">
-        <video id="driveVideo" autoplay loop muted playsinline>
-            <source src="https://drive.google.com/uc?export=download&id=1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-" type="video/mp4">
-        </video>
+        <iframe id="driveFrame" src="https://drive.google.com/file/d/1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-/preview" 
+                allow="autoplay; fullscreen" 
+                allowfullscreen>
+        </iframe>
     </div>
 
-    <!-- TELA DE SAUDAÇÃO -->
+    <!-- TELA DE SAUDAÇÃO PREMIUM - CORES CLARAS -->
     <div class="welcome-overlay" id="welcomeOverlay">
         <div>
             <div class="logo-wrapper">
@@ -566,6 +584,7 @@
             </div>
         </div>
 
+        <!-- BADGES DE SERVIÇOS -->
         <div class="badge-row">
             <div class="badge"><i class="fas fa-stethoscope"></i> 20+ Especialidades</div>
             <div class="badge"><i class="fas fa-calendar-check"></i> Agendamento Rápido</div>
@@ -573,6 +592,7 @@
             <div class="badge"><i class="fas fa-coffee"></i> Café & Wi-Fi</div>
         </div>
 
+        <!-- STATUS -->
         <div class="status-line">
             <div class="pulse-dot"></div>
             <span>ATENDIMENTO HUMANIZADO • AGUARDE UM MOMENTO</span>
@@ -580,7 +600,7 @@
         </div>
     </div>
 
-    <!-- TICKER -->
+    <!-- TICKER INFERIOR -->
     <div class="ticker">
         <div class="ticker-content">
             <div class="ticker-text">
@@ -599,7 +619,7 @@
     <!-- RELÓGIO -->
     <div class="clock" id="clock">--:--</div>
 
-    <!-- BOTÃO TELA CHEIA -->
+    <!-- BOTÃO TELA CHEIA - COR ESCURA (RESTAURADO) -->
     <button class="fullscreen-btn" id="fullscreenBtn">
         <i class="fas fa-expand"></i>
     </button>
@@ -640,14 +660,21 @@
 
 <script>
     // =============================================
-    // VÍDEO DO DRIVE - FORÇAR SEM ÁUDIO
+    // FORÇAR AUTOPLAY DO VÍDEO DO DRIVE
     // =============================================
-    const driveVideo = document.getElementById('driveVideo');
-    if (driveVideo) {
-        driveVideo.volume = 0;      // Volume zero
-        driveVideo.muted = true;     // Mutado
-        driveVideo.play().catch(e => console.log("Drive video:", e));
+    function forceDriveAutoplay() {
+        const driveFrame = document.getElementById('driveFrame');
+        if (driveFrame) {
+            // Recarregar o iframe com parâmetro autoplay
+            const currentSrc = driveFrame.src;
+            if (currentSrc && !currentSrc.includes('autoplay=1')) {
+                driveFrame.src = currentSrc + (currentSrc.includes('?') ? '&' : '?') + 'autoplay=1';
+            }
+        }
     }
+    
+    // Tentar forçar autoplay após carregar
+    setTimeout(forceDriveAutoplay, 1000);
     
     // =============================================
     // MENSAGENS ROTATIVAS
@@ -738,12 +765,7 @@
         bsaVideo.style.display = 'none';
         driveContainer.style.opacity = '1';
         driveContainer.style.zIndex = '2';
-        
-        if (driveVideo) {
-            driveVideo.volume = 0;
-            driveVideo.muted = true;
-            driveVideo.play().catch(e => console.log("Drive:", e));
-        }
+        forceDriveAutoplay();
     }
     
     function executarCiclo() {
