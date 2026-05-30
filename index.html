@@ -353,12 +353,12 @@
 </head>
 <body>
 <div class="tv-container">
-    <!-- VÍDEO MP4 LOCAL (bsa.mp4) -->
+    <!-- VÍDEO MP4 LOCAL (bsa.mp4) - aparece a cada 3 minutos -->
     <video id="bsaVideo" class="video-mp4" preload="auto" playsinline muted>
         <source src="bsa.mp4" type="video/mp4">
     </video>
     
-    <!-- VÍDEO GOOGLE DRIVE - LINK CORRETO -->
+    <!-- VÍDEO GOOGLE DRIVE - SEM BOTÕES (pointer-events: none) -->
     <div class="video-drive" id="driveContainer">
         <iframe id="driveFrame" src="https://drive.google.com/file/d/19czRGQGrbT_igU-rPIx3l-qJGH9G1Ago/preview" 
                 allow="autoplay; fullscreen" 
@@ -491,7 +491,7 @@
     // =============================================
     const TEMPO_SAUDACAO = 20;
     const TEMPO_VIDEO_BSA = 15;
-    const TEMPO_ESPERA = 180;
+    const TEMPO_ESPERA = 180; // 3 MINUTOS
     
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     const bsaVideo = document.getElementById('bsaVideo');
@@ -544,14 +544,14 @@
         
         timeoutAtual = setTimeout(() => {
             esconderSaudacao();
-            mostrarVideoBSA();
+            mostrarVideoBSA(); // VÍDEO BSA.mp4 (15 segundos)
             
             timeoutAtual = setTimeout(() => {
-                mostrarDriveVideo();
+                mostrarDriveVideo(); // VÍDEO DRIVE (3 minutos)
                 
                 timeoutAtual = setTimeout(() => {
                     cicloAtivo = false;
-                    executarCiclo();
+                    executarCiclo(); // REPETE O CICLO A CADA 3 MINUTOS
                 }, TEMPO_ESPERA * 1000);
                 
             }, TEMPO_VIDEO_BSA * 1000);
