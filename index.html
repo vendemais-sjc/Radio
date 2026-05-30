@@ -1,652 +1,823 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Clínica Versalis • Sala de Espera</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+# ===================================================================
+# 🎬 FRAMEWORK PROFISSIONAL DE PROCESSAMENTO DE VÍDEO
+# National Geographic - Wild Russia: Siberia
+# Google Colab - Versão Completa com Todos os Recursos
+# ===================================================================
 
-        body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
-            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-        }
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from google.colab import drive, files
+import os
+import sys
+import time
+import json
+import datetime
+import shutil
+from pathlib import Path
+import warnings
+warnings.filterwarnings('ignore')
 
-        .tv-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
+# Bibliotecas avançadas
+!pip install -q opencv-python-headless moviepy pydub scikit-image tqdm pillow pandas seaborn
+!apt-get install -qq ffmpeg
 
-        /* VÍDEO PRINCIPAL - GOOGLE DRIVE FUNCIONANDO */
-        .main-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
-        }
+from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip
+from moviepy.video.fx import resize, crop
+from pydub import AudioSegment
+from skimage import filters, exposure, color
+from tqdm import tqdm
+from PIL import Image, ImageDraw, ImageFont
+import pandas as pd
+import seaborn as sns
 
-        /* OVERLAY DE SAUDAÇÃO */
-        .welcome-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(245,247,250,0.98) 100%);
-            backdrop-filter: blur(2px);
-            z-index: 20;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 40px 20px;
-            transition: all 0.5s;
-        }
+# ===================================================================
+# 📁 CONFIGURAÇÃO INICIAL
+# ===================================================================
 
-        .welcome-overlay.hide {
-            display: none !important;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulseLight {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.05); opacity: 1; }
-        }
-
-        .welcome-overlay > div {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .logo-img {
-            width: 140px;
-            height: 140px;
-            object-fit: contain;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ffffff, #f0f4f8);
-            padding: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 0 4px rgba(78,205,196,0.2);
-        }
-
-        .logo-placeholder {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-placeholder i {
-            font-size: 70px;
-            color: white;
-        }
-
-        .clinic-name {
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: 4px;
-            background: linear-gradient(135deg, #1a3c3d, #2c7a7b, #4ecdc4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 8px;
-        }
-
-        .clinic-tag {
-            font-size: 1rem;
-            color: #6b8c8d;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .welcome-card {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(10px);
-            padding: 35px 70px;
-            border-radius: 100px;
-            border: 1px solid rgba(78,205,196,0.3);
-            margin: 25px;
-        }
-
-        .welcome-card h2 {
-            font-size: 2.3rem;
-            color: #1a3c3d;
-        }
-
-        .welcome-card h2 i {
-            color: #4ecdc4;
-            margin-right: 12px;
-        }
-
-        .mensagem-rotativa {
-            font-size: 1.4rem;
-            color: #2c5a5b;
-            font-weight: 500;
-            min-height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .badge-row {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 25px 0;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            background: rgba(255,255,255,0.8);
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-size: 0.9rem;
-            color: #1a3c3d;
-            border: 1px solid rgba(78,205,196,0.4);
-        }
-
-        .badge i {
-            color: #4ecdc4;
-            margin-right: 10px;
-        }
-
-        .status-line {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            background: rgba(255,255,255,0.6);
-            padding: 15px 40px;
-            border-radius: 80px;
-        }
-
-        .pulse-dot {
-            width: 14px;
-            height: 14px;
-            background: #4ecdc4;
-            border-radius: 50%;
-            animation: pulseLight 1.8s infinite;
-        }
-
-        .ticker {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(90deg, rgba(26,60,61,0.95) 0%, rgba(78,205,196,0.9) 50%, rgba(26,60,61,0.95) 100%);
-            padding: 12px 0;
-            z-index: 15;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .ticker-content {
-            display: inline-block;
-            animation: tickerScroll 25s linear infinite;
-            padding-left: 100%;
-        }
-
-        .ticker-text span, .ticker-text i {
-            margin: 0 25px;
-            color: #fff;
-        }
-
-        @keyframes tickerScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        .clock {
-            position: absolute;
-            top: 18px;
-            right: 30px;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(10px);
-            padding: 8px 22px;
-            border-radius: 50px;
-            color: #1a3c3d;
-            z-index: 16;
-            font-family: monospace;
-            font-weight: bold;
-        }
-
-        .fullscreen-btn {
-            position: absolute;
-            top: 18px;
-            left: 30px;
-            background: rgba(26, 60, 61, 0.85);
-            border: none;
-            color: white;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 25;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .music-player {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
-            padding: 12px 30px;
-            z-index: 20;
-            border-top: 1px solid rgba(78,205,196,0.3);
-            transition: transform 0.3s;
-        }
-
-        .music-player.hide {
-            transform: translateY(100%);
-        }
-
-        .track-info {
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .track-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #1a3c3d;
-        }
-
-        .control-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 5px;
-        }
-
-        .ctrl-btn {
-            background: rgba(0,0,0,0.05);
-            border: 1px solid rgba(78,205,196,0.3);
-            color: #1a3c3d;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .ctrl-btn.play {
-            background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
-            color: white;
-            border: none;
-        }
-
-        .toggle-controls, .playlist-btn {
-            position: absolute;
-            bottom: 18px;
-            background: rgba(26, 60, 61, 0.85);
-            color: white;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 25;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .toggle-controls { left: 20px; }
-        .playlist-btn { right: 70px; }
-
-        .playlist-container {
-            position: absolute;
-            bottom: 100%;
-            left: 20px;
-            width: 280px;
-            max-height: 350px;
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 12px;
-            z-index: 20;
-            display: none;
-            overflow-y: auto;
-            border: 1px solid rgba(78,205,196,0.3);
-        }
-
-        .playlist-container.open {
-            display: block;
-        }
-
-        .playlist-header {
-            color: #2c7a7b;
-            font-size: 0.9rem;
-            text-align: center;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-
-        .playlist-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            margin-bottom: 5px;
-            color: #1a3c3d;
-        }
-
-        .playlist-item:hover, .playlist-item.active {
-            background: linear-gradient(135deg, #4ecdc4, #2c7a7b);
-            color: white;
-        }
-
-        @media (max-width: 1024px) {
-            .clinic-name { font-size: 2rem; }
-            .welcome-card { padding: 20px 40px; }
-            .welcome-card h2 { font-size: 1.5rem; }
-        }
-    </style>
-</head>
-<body>
-<div class="tv-container">
+class Config:
+    """Configurações globais do sistema"""
+    VERSION = "2.0.0"
+    AUTHOR = "Framework Profissional"
+    TEMP_DIR = "/content/temp_processing"
+    OUTPUT_DIR = "/content/output_results"
+    FRAMES_DIR = "/content/frames_extracted"
+    LOG_FILE = "/content/processing_log.json"
     
-    <!-- VÍDEO PRINCIPAL - GOOGLE DRIVE (FORMATO CORRETO!) -->
-    <!-- 
-        ✅ Link convertido corretamente:
-        Original: https://drive.google.com/file/d/1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-/view
-        Convertido para: https://drive.google.com/uc?export=download&id=1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-
-    -->
-    <video id="mainVideo" class="main-video" autoplay muted loop playsinline>
-        <source src="https://drive.google.com/uc?export=download&id=1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-" type="video/mp4">
-    </video>
+    # Configurações de vídeo
+    DEFAULT_FPS = 30
+    QUALITY_PRESETS = {
+        'alta': (1920, 1080, 5000),
+        'media': (1280, 720, 2500),
+        'baixa': (854, 480, 1000),
+        'mobile': (640, 360, 500)
+    }
+    
+    @classmethod
+    def setup_directories(cls):
+        """Cria todas as pastas necessárias"""
+        for dir_path in [cls.TEMP_DIR, cls.OUTPUT_DIR, cls.FRAMES_DIR]:
+            Path(dir_path).mkdir(parents=True, exist_ok=True)
+        print(f"✅ Pastas criadas: {cls.TEMP_DIR}, {cls.OUTPUT_DIR}, {cls.FRAMES_DIR}")
 
-    <!-- OVERLAY SAUDAÇÃO -->
-    <div class="welcome-overlay" id="welcomeOverlay">
-        <div>
-            <div class="logo-wrapper">
-                <img src="ver.png" alt="Logo" class="logo-img" id="logoImg" onerror="this.style.display='none'; document.getElementById('logoPlaceholder').style.display='flex';">
-                <div class="logo-placeholder" id="logoPlaceholder">
-                    <i class="fas fa-heartbeat"></i>
-                </div>
-            </div>
-            <div class="clinic-name">CLÍNICA VERSALIS</div>
-            <div class="clinic-tag">Excelência em Saúde & Bem-estar</div>
-        </div>
+# ===================================================================
+# 📊 SISTEMA DE LOGS E MONITORAMENTO
+# ===================================================================
+
+class Logger:
+    """Sistema profissional de logging"""
+    
+    def __init__(self):
+        self.logs = []
+        self.start_time = time.time()
         
-        <div class="welcome-card">
-            <h2><i class="fas fa-hand-peace"></i> Seja bem-vindo(a)!</h2>
-            <div class="mensagem-rotativa" id="rotatingMessage">
-                <i class="fas fa-heartbeat"></i>
-                <span id="messageText">Em breve você será atendido(a) com todo cuidado e excelência!</span>
-            </div>
-        </div>
-
-        <div class="badge-row">
-            <div class="badge"><i class="fas fa-stethoscope"></i> 20+ Especialidades</div>
-            <div class="badge"><i class="fas fa-calendar-check"></i> Agendamento Rápido</div>
-            <div class="badge"><i class="fas fa-shield-alt"></i> Segurança e Conforto</div>
-            <div class="badge"><i class="fas fa-coffee"></i> Café & Wi-Fi</div>
-        </div>
-
-        <div class="status-line">
-            <div class="pulse-dot"></div>
-            <span>ATENDIMENTO HUMANIZADO • AGUARDE UM MOMENTO</span>
-            <div class="pulse-dot"></div>
-        </div>
-    </div>
-
-    <!-- TICKER -->
-    <div class="ticker">
-        <div class="ticker-content">
-            <div class="ticker-text">
-                <i class="fas fa-heartbeat"></i>
-                <span>🏥 CLÍNICA VERSALIS - CUIDANDO DA SUA SAÚDE COM EXCELÊNCIA</span>
-                <i class="fas fa-circle" style="font-size: 0.3rem;"></i>
-                <span>📞 (12) 98846-1978</span>
-                <i class="fas fa-circle" style="font-size: 0.3rem;"></i>
-                <span>📍 AMBIENTE ACONCHEGANTE E SEGURO</span>
-                <i class="fas fa-circle" style="font-size: 0.3rem;"></i>
-                <span>💙 TODOS OS PLANOS DE SAÚDE</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="clock" id="clock">--:--</div>
-    <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
-
-    <!-- PLAYER MÚSICA -->
-    <div class="music-player" id="musicPlayerBar">
-        <div class="track-info">
-            <div class="track-title" id="trackTitle">🎵 Música Ambiente</div>
-        </div>
-        <div class="control-buttons">
-            <button class="ctrl-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-            <button class="ctrl-btn play" id="playPauseBtn"><i class="fas fa-play"></i></button>
-            <button class="ctrl-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
-        </div>
-    </div>
-
-    <button class="toggle-controls" id="toggleControlsBtn"><i class="fas fa-chevron-up"></i></button>
-    <button class="playlist-btn" id="playlistBtn"><i class="fas fa-list-ul"></i></button>
-
-    <div class="playlist-container" id="playlistContainer">
-        <div class="playlist-header"><i class="fas fa-music"></i> PLAYLIST AMBIENTE</div>
-        <div id="playlistItems"></div>
-    </div>
-</div>
-
-<script>
-    // MENSAGENS ROTATIVAS
-    const mensagens = [
-        "Em breve você será atendido(a) com todo cuidado e excelência!",
-        "Café e água à sua disposição! Servimos com muito carinho.",
-        "Wi-Fi disponível - Conecte-se e aguarde com conforto!",
-        "Avalie nosso atendimento! Sua opinião é muito importante.",
-        "Aqui sua saúde é nossa prioridade número 1!",
-        "Agende sua próxima consulta ainda hoje!",
-        "Wild Russia - Siberia exibindo agora 📺"
-    ];
-    
-    let msgIndex = 0;
-    setInterval(() => {
-        const msgEl = document.getElementById('messageText');
-        const iconEl = document.querySelector('#rotatingMessage i');
-        if(msgEl) {
-            msgEl.style.opacity = '0';
-            iconEl.style.opacity = '0';
-            setTimeout(() => {
-                msgEl.textContent = mensagens[msgIndex];
-                iconEl.style.opacity = '1';
-                msgEl.style.opacity = '1';
-                msgIndex = (msgIndex + 1) % mensagens.length;
-            }, 300);
+    def log(self, message, level="INFO"):
+        """Registra um evento no log"""
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = {
+            "timestamp": timestamp,
+            "level": level,
+            "message": message,
+            "elapsed": f"{time.time() - self.start_time:.2f}s"
         }
-    }, 8000);
-
-    // ESCONDER SAUDAÇÃO APÓS 20 SEGUNDOS
-    setTimeout(() => {
-        document.getElementById('welcomeOverlay').classList.add('hide');
-    }, 20000);
-
-    // REINICIAR CICLO A CADA 3 MINUTOS (mostra saudação + volta vídeo)
-    setInterval(() => {
-        const overlay = document.getElementById('welcomeOverlay');
-        overlay.classList.remove('hide');
-        setTimeout(() => {
-            overlay.classList.add('hide');
-        }, 20000);
-    }, 180000);
-
-    // RELÓGIO
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('clock').textContent = 
-            `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // TELA CHEIA
-    document.getElementById('fullscreenBtn').addEventListener('click', () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    });
-
-    // PLAYER DE MÚSICA
-    const musicas = [
-        { title: "Flavio Venturini - Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a" },
-        { title: "True True Remaster", src: "True_True_Remaster__muzzik.m4a" },
-        { title: "Adele - Someone Like You", src: "Adele_Someone_Like_You_muzzik.m4a" },
-        { title: "Adriana Calcanhotto - Esquadros", src: "Adriana_Calcanhotto_Esquadros.m4a" },
-        { title: "Jim Diamond - I Love You", src: "Jim_Diamond_Remember_I_Love_You_muzzik.m4a" }
-    ];
-    
-    let currentTrack = 0;
-    let isPlaying = false;
-    const audio = new Audio();
-    const playBtn = document.getElementById('playPauseBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const trackTitleSpan = document.getElementById('trackTitle');
-    
-    function loadTrack(index) {
-        if(musicas[index] && musicas[index].src) {
-            audio.src = musicas[index].src;
-            trackTitleSpan.textContent = `🎵 ${musicas[index].title}`;
-            renderPlaylist();
-            if(isPlaying) audio.play();
-        }
-    }
-    
-    function togglePlay() {
-        if(isPlaying) {
-            audio.pause();
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        } else {
-            audio.play().catch(e => console.log('Música aguardando interação'));
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        }
-        isPlaying = !isPlaying;
-    }
-    
-    function nextTrack() {
-        currentTrack = (currentTrack + 1) % musicas.length;
-        loadTrack(currentTrack);
-        if(isPlaying) audio.play();
-    }
-    
-    function prevTrack() {
-        currentTrack = (currentTrack - 1 + musicas.length) % musicas.length;
-        loadTrack(currentTrack);
-        if(isPlaying) audio.play();
-    }
-    
-    playBtn.addEventListener('click', togglePlay);
-    nextBtn.addEventListener('click', nextTrack);
-    prevBtn.addEventListener('click', prevTrack);
-    audio.onended = () => nextTrack();
-    
-    // PLAYLIST
-    const playlistDiv = document.getElementById('playlistContainer');
-    const playlistBtnDiv = document.getElementById('playlistBtn');
-    const playlistItemsDiv = document.getElementById('playlistItems');
-    
-    function renderPlaylist() {
-        playlistItemsDiv.innerHTML = musicas.map((m, i) => `
-            <div class="playlist-item ${i === currentTrack ? 'active' : ''}" data-index="${i}">
-                <i class="fas fa-music"></i>
-                <span>${m.title}</span>
-            </div>
-        `).join('');
+        self.logs.append(log_entry)
         
-        document.querySelectorAll('.playlist-item').forEach(item => {
-            item.addEventListener('click', () => {
-                currentTrack = parseInt(item.dataset.index);
-                loadTrack(currentTrack);
-                if(isPlaying) audio.play();
-                renderPlaylist();
-                playlistDiv.classList.remove('open');
-            });
-        });
-    }
-    
-    playlistBtnDiv.addEventListener('click', () => {
-        playlistDiv.classList.toggle('open');
-    });
-    
-    document.addEventListener('click', (e) => {
-        if(!playlistDiv.contains(e.target) && e.target !== playlistBtnDiv) {
-            playlistDiv.classList.remove('open');
+        # Mostrar no console com cores
+        colors = {
+            "INFO": "\033[92m",    # Verde
+            "WARNING": "\033[93m", # Amarelo
+            "ERROR": "\033[91m",   # Vermelho
+            "SUCCESS": "\033[95m"  # Magenta
         }
-    });
+        color = colors.get(level, "\033[0m")
+        print(f"{color}[{level}] {message}\033[0m")
+        
+    def save_to_file(self):
+        """Salva logs em arquivo JSON"""
+        with open(Config.LOG_FILE, 'w') as f:
+            json.dump(self.logs, f, indent=2)
+        return Config.LOG_FILE
     
-    renderPlaylist();
+    def get_summary(self):
+        """Retorna resumo dos logs"""
+        total = len(self.logs)
+        errors = len([l for l in self.logs if l['level'] == 'ERROR'])
+        warnings = len([l for l in self.logs if l['level'] == 'WARNING'])
+        return {
+            "total_events": total,
+            "errors": errors,
+            "warnings": warnings,
+            "success_rate": f"{(total - errors)/total*100:.1f}%" if total > 0 else "0%",
+            "total_time": f"{time.time() - self.start_time:.2f}s"
+        }
+
+# ===================================================================
+# 🎥 PROCESSADOR PRINCIPAL DE VÍDEO
+# ===================================================================
+
+class VideoProcessor:
+    """Classe principal para processamento de vídeo"""
     
-    // INICIAR MÚSICA
-    setTimeout(() => {
-        loadTrack(0);
-        audio.play().catch(e => console.log('Aguardando interação do usuário para música'));
-        isPlaying = true;
-        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-    }, 1000);
+    def __init__(self, video_path, logger):
+        self.video_path = video_path
+        self.logger = logger
+        self.cap = None
+        self.info = {}
+        self.frames_cache = {}
+        
+    def load_video(self):
+        """Carrega e analisa informações do vídeo"""
+        try:
+            self.cap = cv2.VideoCapture(self.video_path)
+            if not self.cap.isOpened():
+                raise Exception("Não foi possível abrir o vídeo")
+            
+            # Extrair informações detalhadas
+            self.info = {
+                'width': int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                'height': int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
+                'fps': self.cap.get(cv2.CAP_PROP_FPS),
+                'total_frames': int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT)),
+                'codec': int(self.cap.get(cv2.CAP_PROP_FOURCC)),
+                'duration': self.cap.get(cv2.CAP_PROP_FRAME_COUNT) / self.cap.get(cv2.CAP_PROP_FPS)
+            }
+            
+            # Calcular duração formatada
+            duration_seconds = self.info['duration']
+            hours = int(duration_seconds // 3600)
+            minutes = int((duration_seconds % 3600) // 60)
+            seconds = int(duration_seconds % 60)
+            self.info['duration_formatted'] = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+            
+            self.logger.log(f"Vídeo carregado: {os.path.basename(self.video_path)}", "SUCCESS")
+            self.logger.log(f"Resolução: {self.info['width']}x{self.info['height']}", "INFO")
+            self.logger.log(f"Duração: {self.info['duration_formatted']}", "INFO")
+            self.logger.log(f"FPS: {self.info['fps']:.2f}", "INFO")
+            
+            return True
+            
+        except Exception as e:
+            self.logger.log(f"Erro ao carregar vídeo: {str(e)}", "ERROR")
+            return False
     
-    // CONTROLES DO PLAYER (auto-hide)
-    let controlsVisible = true;
-    const playerBar = document.getElementById('musicPlayerBar');
-    const toggleBtn = document.getElementById('toggleControlsBtn');
+    def get_video_info(self):
+        """Retorna informações detalhadas em formato amigável"""
+        return self.info
     
-    function hideControls() {
-        playerBar.classList.add('hide');
-        controlsVisible = false;
-        toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
-    }
+    def extract_audio(self, format='mp3'):
+        """Extrai áudio do vídeo em diferentes formatos"""
+        self.logger.log("Iniciando extração de áudio...", "INFO")
+        
+        try:
+            video_clip = VideoFileClip(self.video_path)
+            output_file = f"{Config.OUTPUT_DIR}/audio_extracted.{format}"
+            
+            # Converter para formato desejado
+            if format == 'mp3':
+                video_clip.audio.write_audiofile(output_file, 
+                                                codec='mp3', 
+                                                bitrate='192k',
+                                                verbose=False, 
+                                                logger=None)
+            elif format == 'wav':
+                video_clip.audio.write_audiofile(output_file, 
+                                                codec='pcm_s16le',
+                                                verbose=False, 
+                                                logger=None)
+            elif format == 'aac':
+                video_clip.audio.write_audiofile(output_file, 
+                                                codec='aac',
+                                                verbose=False, 
+                                                logger=None)
+            
+            video_clip.close()
+            
+            file_size = os.path.getsize(output_file) / (1024*1024)
+            self.logger.log(f"Áudio extraído com sucesso! Tamanho: {file_size:.2f}MB", "SUCCESS")
+            
+            # Baixar automaticamente
+            files.download(output_file)
+            return output_file
+            
+        except Exception as e:
+            self.logger.log(f"Erro na extração de áudio: {str(e)}", "ERROR")
+            return None
     
-    function showControls() {
-        playerBar.classList.remove('hide');
-        controlsVisible = true;
-        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
-        setTimeout(() => { if(controlsVisible) hideControls(); }, 4000);
-    }
+    def extract_frames_advanced(self, mode='time', value=1, quality=95):
+        """Extrai frames com múltiplos modos"""
+        self.logger.log(f"Iniciando extração de frames (modo: {mode})...", "INFO")
+        
+        try:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            frame_count = 0
+            saved_count = 0
+            metadata = []
+            
+            # Determinar intervalo
+            if mode == 'time':
+                interval_frames = int(self.info['fps'] * value)
+            elif mode == 'frames':
+                interval_frames = value
+            else:
+                interval_frames = int(self.info['fps'])
+            
+            # Criar pasta para este lote
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            frame_folder = f"{Config.FRAMES_DIR}/frames_{timestamp}"
+            Path(frame_folder).mkdir(parents=True, exist_ok=True)
+            
+            # Barra de progresso
+            total_to_extract = self.info['total_frames'] // interval_frames
+            pbar = tqdm(total=total_to_extract, desc="Extraindo frames")
+            
+            while True:
+                ret, frame = self.cap.read()
+                if not ret:
+                    break
+                
+                if frame_count % interval_frames == 0:
+                    # Processar frame (melhorar qualidade)
+                    if quality < 100:
+                        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
+                    else:
+                        encode_param = []
+                    
+                    # Salvar frame
+                    frame_filename = f"{frame_folder}/frame_{saved_count:06d}.jpg"
+                    cv2.imwrite(frame_filename, frame, encode_param)
+                    
+                    # Salvar metadados
+                    metadata.append({
+                        'frame_number': frame_count,
+                        'time_seconds': frame_count / self.info['fps'],
+                        'file': frame_filename,
+                        'timestamp': datetime.datetime.now().isoformat()
+                    })
+                    
+                    saved_count += 1
+                    pbar.update(1)
+                
+                frame_count += 1
+            
+            pbar.close()
+            
+            # Salvar metadados em CSV
+            metadata_df = pd.DataFrame(metadata)
+            metadata_df.to_csv(f"{frame_folder}/metadata.csv", index=False)
+            
+            # Criar arquivo ZIP
+            zip_path = f"{Config.OUTPUT_DIR}/frames_{timestamp}.zip"
+            shutil.make_archive(zip_path.replace('.zip', ''), 'zip', frame_folder)
+            
+            self.logger.log(f"Extraídos {saved_count} frames! ZIP: {zip_path}", "SUCCESS")
+            
+            # Baixar ZIP
+            files.download(zip_path)
+            
+            return saved_count, metadata_df
+            
+        except Exception as e:
+            self.logger.log(f"Erro na extração de frames: {str(e)}", "ERROR")
+            return 0, None
     
-    toggleBtn.addEventListener('click', () => {
-        if(controlsVisible) hideControls();
-        else showControls();
-    });
+    def create_timelapse(self, speed_factor=10):
+        """Cria timelapse acelerando o vídeo"""
+        self.logger.log(f"Criando timelapse (velocidade {speed_factor}x)...", "INFO")
+        
+        try:
+            video_clip = VideoFileClip(self.video_path)
+            new_fps = self.info['fps'] * speed_factor
+            
+            # Acelerar vídeo
+            timelapse = video_clip.fx(lambda clip: clip.speedx(speed_factor))
+            
+            output_file = f"{Config.OUTPUT_DIR}/timelapse_{speed_factor}x.mp4"
+            timelapse.write_videofile(output_file, 
+                                     fps=min(new_fps, 60),
+                                     codec='libx264',
+                                     audio_codec='aac',
+                                     verbose=False,
+                                     logger=None)
+            
+            video_clip.close()
+            
+            file_size = os.path.getsize(output_file) / (1024*1024)
+            self.logger.log(f"Timelapse criado! Tamanho: {file_size:.2f}MB", "SUCCESS")
+            files.download(output_file)
+            return output_file
+            
+        except Exception as e:
+            self.logger.log(f"Erro ao criar timelapse: {str(e)}", "ERROR")
+            return None
     
-    document.addEventListener('mousemove', () => { if(!controlsVisible) showControls(); });
+    def apply_filters(self, filter_type='grayscale'):
+        """Aplica filtros ao vídeo completo"""
+        self.logger.log(f"Aplicando filtro: {filter_type}", "INFO")
+        
+        try:
+            video_clip = VideoFileClip(self.video_path)
+            
+            # Aplicar diferentes filtros
+            if filter_type == 'grayscale':
+                processed = video_clip.fx(lambda clip: clip.to_mask().to_video())
+            elif filter_type == 'sepia':
+                def sepia(frame):
+                    frame = np.array(frame)
+                    sepia_matrix = np.array([[0.272, 0.534, 0.131],
+                                             [0.349, 0.686, 0.168],
+                                             [0.393, 0.769, 0.189]])
+                    frame = np.dot(frame[...,:3], sepia_matrix.T)
+                    return np.clip(frame, 0, 255).astype(np.uint8)
+                processed = video_clip.fl_image(sepia)
+            elif filter_type == 'edge_detection':
+                def edges(frame):
+                    gray = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2GRAY)
+                    edges = cv2.Canny(gray, 100, 200)
+                    return cv2.cvtColor(edges, cv2.COLOR_GRAY2RGB)
+                processed = video_clip.fl_image(edges)
+            else:
+                processed = video_clip
+            
+            output_file = f"{Config.OUTPUT_DIR}/video_{filter_type}.mp4"
+            processed.write_videofile(output_file,
+                                     codec='libx264',
+                                     audio_codec='aac',
+                                     verbose=False,
+                                     logger=None)
+            
+            video_clip.close()
+            
+            self.logger.log(f"Filtro '{filter_type}' aplicado!", "SUCCESS")
+            files.download(output_file)
+            return output_file
+            
+        except Exception as e:
+            self.logger.log(f"Erro ao aplicar filtro: {str(e)}", "ERROR")
+            return None
     
-    // INICIAR VÍDEO
-    const mainVideo = document.getElementById('mainVideo');
-    mainVideo.play().catch(e => console.log('Vídeo aguardando interação do usuário'));
+    def analyze_scene_changes(self, threshold=30):
+        """Detecta mudanças de cena no vídeo"""
+        self.logger.log("Analisando mudanças de cena...", "INFO")
+        
+        try:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            prev_frame = None
+            scene_changes = []
+            frame_num = 0
+            
+            pbar = tqdm(total=self.info['total_frames'], desc="Analisando cenas")
+            
+            while True:
+                ret, frame = self.cap.read()
+                if not ret:
+                    break
+                
+                if prev_frame is not None:
+                    # Calcular diferença entre frames
+                    diff = cv2.absdiff(prev_frame, frame)
+                    mean_diff = np.mean(diff)
+                    
+                    if mean_diff > threshold:
+                        scene_changes.append({
+                            'frame': frame_num,
+                            'time': frame_num / self.info['fps'],
+                            'difference': mean_diff
+                        })
+                
+                prev_frame = frame
+                frame_num += 1
+                pbar.update(1)
+            
+            pbar.close()
+            
+            # Criar gráfico de mudanças
+            plt.figure(figsize=(15, 6))
+            times = [sc['time'] for sc in scene_changes]
+            diffs = [sc['difference'] for sc in scene_changes]
+            
+            plt.scatter(times, diffs, alpha=0.6, s=20)
+            plt.xlabel('Tempo (segundos)', fontsize=12)
+            plt.ylabel('Diferença média', fontsize=12)
+            plt.title(f'Mudanças de Cena Detectadas ({len(scene_changes)} cenas)', fontsize=14)
+            plt.grid(True, alpha=0.3)
+            
+            # Salvar gráfico
+            chart_path = f"{Config.OUTPUT_DIR}/scene_changes.png"
+            plt.savefig(chart_path, dpi=150, bbox_inches='tight')
+            plt.show()
+            
+            # Salvar dados em JSON
+            changes_path = f"{Config.OUTPUT_DIR}/scene_changes.json"
+            with open(changes_path, 'w') as f:
+                json.dump(scene_changes, f, indent=2)
+            
+            self.logger.log(f"Detectadas {len(scene_changes)} mudanças de cena", "SUCCESS")
+            files.download(chart_path)
+            files.download(changes_path)
+            
+            return scene_changes
+            
+        except Exception as e:
+            self.logger.log(f"Erro na análise de cenas: {str(e)}", "ERROR")
+            return []
     
-    console.log("✅ SISTEMA FUNCIONANDO!");
-    console.log("📺 Vídeo: Wild Russia - Siberia (National Geographic)");
-    console.log("🔗 Link do Google Drive convertido corretamente!");
-</script>
-</body>
-</html>
+    def generate_statistics_report(self):
+        """Gera relatório estatístico completo do vídeo"""
+        self.logger.log("Gerando relatório estatístico...", "INFO")
+        
+        try:
+            # Coletar dados dos frames
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            sample_frames = []
+            sample_interval = max(1, self.info['total_frames'] // 100)  # Amostragem
+            
+            frame_count = 0
+            while len(sample_frames) < 100 and frame_count < self.info['total_frames']:
+                ret, frame = self.cap.read()
+                if not ret:
+                    break
+                
+                if frame_count % sample_interval == 0:
+                    # Calcular estatísticas do frame
+                    brightness = np.mean(frame)
+                    contrast = np.std(frame)
+                    saturation = np.std(frame, axis=(0,1)).mean()
+                    
+                    sample_frames.append({
+                        'frame': frame_count,
+                        'brightness': brightness,
+                        'contrast': contrast,
+                        'saturation': saturation
+                    })
+                
+                frame_count += 1
+            
+            # Criar DataFrame
+            df = pd.DataFrame(sample_frames)
+            
+            # Criar visualizações
+            fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+            
+            # 1. Brilho ao longo do tempo
+            axes[0,0].plot(df['frame'], df['brightness'], 'b-', alpha=0.7)
+            axes[0,0].set_title('Brilho Médio por Frame', fontsize=12)
+            axes[0,0].set_xlabel('Número do Frame')
+            axes[0,0].set_ylabel('Brilho')
+            axes[0,0].grid(True, alpha=0.3)
+            
+            # 2. Contraste
+            axes[0,1].plot(df['frame'], df['contrast'], 'r-', alpha=0.7)
+            axes[0,1].set_title('Contraste por Frame', fontsize=12)
+            axes[0,1].set_xlabel('Número do Frame')
+            axes[0,1].set_ylabel('Contraste')
+            axes[0,1].grid(True, alpha=0.3)
+            
+            # 3. Distribuição de Brilho
+            axes[1,0].hist(df['brightness'], bins=30, color='green', alpha=0.7)
+            axes[1,0].set_title('Distribuição de Brilho', fontsize=12)
+            axes[1,0].set_xlabel('Brilho')
+            axes[1,0].set_ylabel('Frequência')
+            
+            # 4. Heatmap de correlação
+            corr = df[['brightness', 'contrast', 'saturation']].corr()
+            sns.heatmap(corr, annot=True, cmap='coolwarm', ax=axes[1,1], square=True)
+            axes[1,1].set_title('Correlação entre Características', fontsize=12)
+            
+            plt.tight_layout()
+            
+            # Salvar relatório
+            report_path = f"{Config.OUTPUT_DIR}/statistics_report.png"
+            plt.savefig(report_path, dpi=150, bbox_inches='tight')
+            plt.show()
+            
+            # Salvar dados
+            df.to_csv(f"{Config.OUTPUT_DIR}/frame_statistics.csv", index=False)
+            
+            # Estatísticas resumidas
+            stats_summary = {
+                'brightness': {
+                    'mean': float(df['brightness'].mean()),
+                    'std': float(df['brightness'].std()),
+                    'min': float(df['brightness'].min()),
+                    'max': float(df['brightness'].max())
+                },
+                'contrast': {
+                    'mean': float(df['contrast'].mean()),
+                    'std': float(df['contrast'].std()),
+                    'min': float(df['contrast'].min()),
+                    'max': float(df['contrast'].max())
+                }
+            }
+            
+            # Salvar JSON
+            with open(f"{Config.OUTPUT_DIR}/statistics_summary.json", 'w') as f:
+                json.dump(stats_summary, f, indent=2)
+            
+            self.logger.log("Relatório estatístico gerado com sucesso!", "SUCCESS")
+            files.download(report_path)
+            files.download(f"{Config.OUTPUT_DIR}/frame_statistics.csv")
+            
+            return stats_summary
+            
+        except Exception as e:
+            self.logger.log(f"Erro ao gerar estatísticas: {str(e)}", "ERROR")
+            return None
+    
+    def create_collage(self, cols=4, rows=3):
+        """Cria collage de frames do vídeo"""
+        self.logger.log(f"Criando collage {cols}x{rows}...", "INFO")
+        
+        try:
+            # Calcular frames a extrair
+            total_frames_needed = cols * rows
+            frame_step = max(1, self.info['total_frames'] // total_frames_needed)
+            
+            frames_to_use = []
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            
+            for i in range(total_frames_needed):
+                frame_pos = i * frame_step
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame_pos)
+                ret, frame = self.cap.read()
+                if ret:
+                    # Redimensionar frame
+                    frame_resized = cv2.resize(frame, (200, 150))
+                    frames_to_use.append(frame_resized)
+                else:
+                    frames_to_use.append(np.zeros((150, 200, 3), dtype=np.uint8))
+            
+            # Criar collage
+            collage = np.zeros((rows * 150, cols * 200, 3), dtype=np.uint8)
+            
+            for idx, frame in enumerate(frames_to_use):
+                row = idx // cols
+                col = idx % cols
+                collage[row*150:(row+1)*150, col*200:(col+1)*200] = frame
+            
+            # Salvar collage
+            collage_path = f"{Config.OUTPUT_DIR}/video_collage.jpg"
+            cv2.imwrite(collage_path, collage)
+            
+            self.logger.log(f"Collage criada: {collage_path}", "SUCCESS")
+            files.download(collage_path)
+            
+            # Mostrar no notebook
+            plt.figure(figsize=(12, 9))
+            plt.imshow(cv2.cvtColor(collage, cv2.COLOR_BGR2RGB))
+            plt.axis('off')
+            plt.title(f'Collage de Frames - {cols}x{rows}')
+            plt.show()
+            
+            return collage_path
+            
+        except Exception as e:
+            self.logger.log(f"Erro ao criar collage: {str(e)}", "ERROR")
+            return None
+    
+    def compress_video(self, target_size_mb=50):
+        """Comprime vídeo para tamanho específico"""
+        self.logger.log(f"Comprimindo vídeo para ~{target_size_mb}MB...", "INFO")
+        
+        try:
+            current_size_mb = os.path.getsize(self.video_path) / (1024*1024)
+            compression_ratio = target_size_mb / current_size_mb
+            
+            # Ajustar bitrate
+            original_bitrate = 5000000  # 5 Mbps padrão
+            new_bitrate = int(original_bitrate * compression_ratio)
+            new_bitrate = max(100000, min(new_bitrate, 5000000))  # Limitar entre 100k e 5M
+            
+            video_clip = VideoFileClip(self.video_path)
+            output_file = f"{Config.OUTPUT_DIR}/compressed_{target_size_mb}mb.mp4"
+            
+            video_clip.write_videofile(output_file,
+                                      codec='libx264',
+                                      audio_codec='aac',
+                                      bitrate=f"{new_bitrate}",
+                                      preset='medium',
+                                      verbose=False,
+                                      logger=None)
+            
+            video_clip.close()
+            
+            final_size = os.path.getsize(output_file) / (1024*1024)
+            self.logger.log(f"Vídeo comprimido: {current_size_mb:.1f}MB → {final_size:.1f}MB", "SUCCESS")
+            files.download(output_file)
+            return output_file
+            
+        except Exception as e:
+            self.logger.log(f"Erro na compressão: {str(e)}", "ERROR")
+            return None
+
+# ===================================================================
+# 🎨 INTERFACE PRINCIPAL
+# ===================================================================
+
+class MainApplication:
+    """Aplicação principal com menu interativo"""
+    
+    def __init__(self):
+        self.logger = Logger()
+        self.processor = None
+        self.video_path = None
+        
+    def initialize(self):
+        """Inicializa a aplicação"""
+        print("="*70)
+        print(f"🎬 FRAMEWORK DE PROCESSAMENTO DE VÍDEO v{Config.VERSION}")
+        print("="*70)
+        print("National Geographic - Wild Russia: Siberia")
+        print("="*70)
+        
+        Config.setup_directories()
+        self.logger.log("Framework inicializado com sucesso!", "SUCCESS")
+        
+        # Montar Drive
+        print("\n📀 Montando Google Drive...")
+        drive.mount('/content/drive')
+        
+        # Procurar vídeo
+        self.find_or_upload_video()
+        
+        if self.video_path:
+            self.processor = VideoProcessor(self.video_path, self.logger)
+            if self.processor.load_video():
+                self.show_main_menu()
+            else:
+                print("❌ Falha ao carregar o vídeo")
+        else:
+            print("❌ Não foi possível obter o vídeo")
+    
+    def find_or_upload_video(self):
+        """Procura vídeo ou permite upload"""
+        print("\n🔍 Procurando vídeo 'Wild Russia Siberia'...")
+        
+        # Caminhos comuns
+        possible_paths = [
+            '/content/drive/MyDrive/Wild_Rusia__Siberia___Nat_Geo_MP4_720p.mp4',
+            '/content/drive/MyDrive/Meu Drive/Wild_Rusia__Siberia___Nat_Geo_MP4_720p.mp4',
+            '/content/drive/MyDrive/Videos/Wild_Rusia__Siberia___Nat_Geo_MP4_720p.mp4'
+        ]
+        
+        for path in possible_paths:
+            if os.path.exists(path):
+                self.video_path = path
+                self.logger.log(f"Vídeo encontrado: {path}", "SUCCESS")
+                return
+        
+        # Se não encontrar, oferecer upload
+        print("\n📤 Vídeo não encontrado no Drive. Faça o upload agora:")
+        uploaded = files.upload()
+        if uploaded:
+            self.video_path = f"/content/{list(uploaded.keys())[0]}"
+            self.logger.log(f"Upload concluído: {self.video_path}", "SUCCESS")
+    
+    def show_main_menu(self):
+        """Mostra menu principal interativo"""
+        while True:
+            print("\n" + "="*70)
+            print("🎯 MENU PRINCIPAL - ESCOLHA UMA OPERAÇÃO")
+            print("="*70)
+            
+            # Mostrar info do vídeo
+            info = self.processor.get_video_info()
+            print(f"\n📹 VÍDEO: {os.path.basename(self.video_path)}")
+            print(f"   🎬 Resolução: {info['width']}x{info['height']}")
+            print(f"   ⏱️  Duração: {info['duration_formatted']}")
+            print(f"   📀 Tamanho: {os.path.getsize(self.video_path)/(1024*1024):.1f}MB")
+            
+            print("\n" + "─"*70)
+            print("🎨 OPERAÇÕES DISPONÍVEIS:")
+            print("─"*70)
+            
+            menu_items = [
+                ("1️⃣", "Extrair Áudio", "Extrai áudio em MP3/WAV/AAC"),
+                ("2️⃣", "Extrair Frames", "Extrai imagens do vídeo com metadados"),
+                ("3️⃣", "Criar Timelapse", "Acelera o vídeo (speed x2, x5, x10)"),
+                ("4️⃣", "Aplicar Filtros", "Filtros: Preto&Branco, Sépia, Detecção de Bordas"),
+                ("5️⃣", "Analisar Cenas", "Detecta automaticamente mudanças de cena"),
+                ("6️⃣", "Estatísticas", "Gera relatório completo do vídeo"),
+                ("7️⃣", "Criar Collage", "Montagem de frames em grade"),
+                ("8️⃣", "Comprimir Vídeo", "Reduz tamanho do arquivo"),
+                ("9️⃣", "PROCESSAMENTO COMPLETO", "🚀 Executa TODAS as operações acima"),
+                ("0️⃣", "Sair", "Encerrar aplicação")
+            ]
+            
+            for icon, name, desc in menu_items:
+                print(f"{icon} {name:<20} - {desc}")
+            
+            print("─"*70)
+            
+            choice = input("\n👉 Digite sua escolha (0-9): ").strip()
+            
+            if choice == '0':
+                self.logger.log("Encerrando aplicação...", "INFO")
+                summary = self.logger.get_summary()
+                print("\n📊 RESUMO DA SESSÃO:")
+                print(f"   ✅ Total de operações: {summary['total_events']}")
+                print(f"   ⚠️  Warnings: {summary['warnings']}")
+                print(f"   ❌ Erros: {summary['errors']}")
+                print(f"   📈 Taxa de sucesso: {summary['success_rate']}")
+                print(f"   ⏱️  Tempo total: {summary['total_time']}")
+                self.logger.save_to_file()
+                print("\n👋 Obrigado por usar o Framework!")
+                break
+            
+            elif choice == '1':
+                print("\n🎵 EXTRAÇÃO DE ÁUDIO")
+                format_choice = input("Formato (mp3/wav/aac) [padrão: mp3]: ").strip() or 'mp3'
+                self.processor.extract_audio(format_choice)
+            
+            elif choice == '2':
+                print("\n🖼️ EXTRAÇÃO DE FRAMES")
+                mode = input("Modo (time/frames) [padrão: time]: ").strip() or 'time'
+                value = float(input("Intervalo (segundos ou frames) [padrão: 1]: ") or 1)
+                self.processor.extract_frames_advanced(mode, value)
+            
+            elif choice == '3':
+                print("\n⏩ TIMELAPSE")
+                speed = float(input("Velocidade (2, 5, 10, 20x) [padrão: 10]: ") or 10)
+                self.processor.create_timelapse(speed)
+            
+            elif choice == '4':
+                print("\n🎨 FILTROS")
+                print("Opções: grayscale, sepia, edge_detection")
+                filter_type = input("Filtro [padrão: grayscale]: ").strip() or 'grayscale'
+                self.processor.apply_filters(filter_type)
+            
+            elif choice == '5':
+                print("\n🔍 ANÁLISE DE CENAS")
+                threshold = float(input("Sensibilidade (10-100) [padrão: 30]: ") or 30)
+                self.processor.analyze_scene_changes(threshold)
+            
+            elif choice == '6':
+                print("\n📊 ESTATÍSTICAS")
+                self.processor.generate_statistics_report()
+            
+            elif choice == '7'):
+                print("\n🎨 COLLAGE")
+                cols = int(input("Colunas [padrão: 4]: ") or 4)
+                rows = int(input("Linhas [padrão: 3]: ") or 3)
+                self.processor.create_collage(cols, rows)
+            
+            elif choice == '8':
+                print("\n🗜️ COMPRESSÃO")
+                target = float(input("Tamanho alvo (MB) [padrão: 50]: ") or 50)
+                self.processor.compress_video(target)
+            
+            elif choice == '9':
+                print("\n" + "="*70)
+                print("🚀 PROCESSAMENTO COMPLETO")
+                print("="*70)
+                print("Isso executará TODAS as operações. Pode levar vários minutos...")
+                confirm = input("Confirmar? (s/N): ").strip().lower()
+                
+                if confirm == 's':
+                    print("\n🔄 Executando processamento completo...\n")
+                    
+                    operations = [
+                        ("Áudio", lambda: self.processor.extract_audio('mp3')),
+                        ("Frames", lambda: self.processor.extract_frames_advanced('time', 2)),
+                        ("Timelapse", lambda: self.processor.create_timelapse(10)),
+                        ("Filtro", lambda: self.processor.apply_filters('grayscale')),
+                        ("Análise de Cenas", lambda: self.processor.analyze_scene_changes(30)),
+                        ("Estatísticas", lambda: self.processor.generate_statistics_report()),
+                        ("Collage", lambda: self.processor.create_collage(4, 3)),
+                        ("Compressão", lambda: self.processor.compress_video(50))
+                    ]
+                    
+                    for op_name, op_func in operations:
+                        print(f"\n▶️ Executando: {op_name}")
+                        try:
+                            op_func()
+                            self.logger.log(f"✓ {op_name} concluído", "SUCCESS")
+                        except Exception as e:
+                            self.logger.log(f"✗ {op_name} falhou: {str(e)}", "ERROR")
+                    
+                    print("\n" + "="*70)
+                    print("✅ PROCESSAMENTO COMPLETO FINALIZADO!")
+                    print("="*70)
+                else:
+                    print("❌ Operação cancelada")
+            
+            else:
+                print("❌ Opção inválida! Tente novamente.")
+            
+            # Perguntar se quer continuar
+            input("\n⏎ Pressione Enter para continuar...")
+
+# ===================================================================
+# 🚀 PONTO DE ENTRADA PRINCIPAL
+# ===================================================================
+
+if __name__ == "__main__":
+    app = MainApplication()
+    app.initialize()
+    
+    print("\n" + "="*70)
+    print("🎬 FIM DO PROCESSAMENTO")
+    print("="*70)
+    print("\n📁 Todos os resultados estão disponíveis para download")
+    print("📊 Log salvo em:", Config.LOG_FILE)
+    print("\n✨ Framework desenvolvido com tecnologia avançada")
