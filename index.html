@@ -47,13 +47,7 @@
             z-index: 1;
         }
 
-        .video-drive video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        iframe {
+        .video-drive iframe {
             width: 100%;
             height: 100%;
             pointer-events: none;
@@ -561,11 +555,12 @@
         <source src="bsa.mp4" type="video/mp4">
     </video>
     
-    <!-- VÍDEO GOOGLE DRIVE - USANDO TAG VIDEO COM LINK DIRETO -->
+    <!-- VÍDEO GOOGLE DRIVE - IFRAME COM EMBED CORRETO -->
     <div class="video-drive" id="driveContainer">
-        <video id="driveVideo" autoplay loop muted playsinline>
-            <source src="https://drive.google.com/uc?export=download&id=1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-" type="video/mp4">
-        </video>
+        <iframe id="driveFrame" src="https://drive.google.com/file/d/1Z8wpqbrBiqWsTutDgp3m0NzO0HJZbSd-/preview" 
+                allow="autoplay; fullscreen" 
+                allowfullscreen>
+        </iframe>
     </div>
 
     <!-- TELA DE SAUDAÇÃO PREMIUM - CORES CLARAS -->
@@ -665,6 +660,23 @@
 
 <script>
     // =============================================
+    // FORÇAR AUTOPLAY DO VÍDEO DO DRIVE
+    // =============================================
+    function forceDriveAutoplay() {
+        const driveFrame = document.getElementById('driveFrame');
+        if (driveFrame) {
+            // Recarregar o iframe com parâmetro autoplay
+            const currentSrc = driveFrame.src;
+            if (currentSrc && !currentSrc.includes('autoplay=1')) {
+                driveFrame.src = currentSrc + (currentSrc.includes('?') ? '&' : '?') + 'autoplay=1';
+            }
+        }
+    }
+    
+    // Tentar forçar autoplay após carregar
+    setTimeout(forceDriveAutoplay, 1000);
+    
+    // =============================================
     // MENSAGENS ROTATIVAS
     // =============================================
     const mensagensBoasVindas = [
@@ -718,7 +730,6 @@
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     const bsaVideo = document.getElementById('bsaVideo');
     const driveContainer = document.getElementById('driveContainer');
-    const driveVideo = document.getElementById('driveVideo');
     
     let cicloAtivo = false;
     let timeoutAtual = null;
@@ -754,11 +765,7 @@
         bsaVideo.style.display = 'none';
         driveContainer.style.opacity = '1';
         driveContainer.style.zIndex = '2';
-        
-        // Garantir que o vídeo do Drive está tocando
-        if (driveVideo) {
-            driveVideo.play().catch(e => console.log("Drive video:", e));
-        }
+        forceDriveAutoplay();
     }
     
     function executarCiclo() {
@@ -1011,11 +1018,6 @@
     
     bsaVideo.onended = () => {};
     bsaVideo.onerror = () => {};
-    
-    // Forçar reprodução do vídeo do Drive
-    if (driveVideo) {
-        driveVideo.play().catch(e => console.log("Aguardando interação para vídeo Drive"));
-    }
     
     // INICIALIZAR
     loadTrack(0);
